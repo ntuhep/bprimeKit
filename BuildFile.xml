@@ -1,0 +1,26 @@
+<use   name="DataFormats/Candidate"/>
+<use   name="DataFormats/PatCandidates"/>
+<use   name="PhysicsTools/CandUtils"/>
+<use   name="FWCore/ServiceRegistry"/>
+<use   name="FWCore/Framework"/>
+<use   name="DataFormats/Provenance"/>
+<use   name="DataFormats/HepMCCandidate"/>
+<use   name="DataFormats/BeamSpot"/>
+<use   name="DataFormats/L1GlobalTrigger"/>
+<use   name="CommonTools/UtilAlgos"/>
+<use   name="MagneticField/Records"/>
+<use   name="MagneticField/Engine"/>
+<use   name="RecoEgamma/EgammaTools"/>
+<use   name="PhysicsTools/PatAlgos"/>
+<use   name="CondFormats/JetMETObjects"/>
+<use   name="MyAna/bpkHitFit"/>
+<use   name="MyAna/bpkHitFitForExcitedQuark"/>
+<use   name="JetMETCorrections/Algorithms"/>
+<use   name="JetMETCorrections/Objects"/>
+<use   name="JetMETCorrections/Modules"/>
+<use   name="EGamma/EGammaAnalysisTools"/>
+<use   name="root"/>
+<flags EDM_PLUGIN="1"/>
+<export>
+  <lib   name="1"/>
+</export>
