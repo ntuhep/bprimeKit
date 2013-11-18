@@ -1,7 +1,19 @@
 #!/bin/tcsh
 
 #### SET FOLDER IN Tier3 FOR SAVING OUTPUT FILES like :/dpm/phys.ntu.edu.tw/home/cms/store/user/USERID/T3_folder #### 
-set T3_folder=CMSSW536_patch1_MC_AOD
+set T3_folder=CMSSW5_3_11_MC_AOD_v3
+
+set WORKINGPATH=`pwd`
+
+if ( "$1" == "" ) then
+echo "Please input your afs ID like : "
+echo "./SUBMIT_MC_Summer12.csh [afs ID]"
+exit
+endif
+if ( ! -e MC_datasets_$1 ) then 
+echo "Please check if $WORKINGPATH/MC_datasets_$1 exists or not."
+exit
+endif
 
 #### SOURCE CRAB ENVIRONMENT ####
 #source /uscmst1/prod/sw/cms/cshrc prod
@@ -12,7 +24,8 @@ scramv1 runtime -csh
 source /afs/cern.ch/cms/ccs/wm/scripts/Crab/crab.csh
 voms-proxy-init -voms cms -valid 192:0	
 
-set datasets_=`cat MC_datasets`
+
+set datasets_=`cat MC_datasets_$1`
 #### CREATE SUBMITTING FOLDER : DATASET+RUN RANGE and SUBMIT CRAB JOBS ####
 foreach lt($datasets_)
    set lt_t1=`echo $lt | awk -F "/" '{print $2"_"$3}'`
@@ -28,7 +41,7 @@ foreach lt($datasets_)
    echo "Please execute this script under MyAna/bprimeKit/test/Production_Data_DCSONLY_CMSSW52X_AOD"
    exit
    endif
-   sed 's/dataEIDMVA\///g' ../bprimeKit.py | sed 's/START53_V7E/START53_V15/g' >& ./SUBMIT_MC/$lt_t/bprimeKit.py
+   sed 's/dataEIDMVA\///g' ../bprimeKit.py | sed 's/START53_V7E/START53_V27/g' >& ./SUBMIT_MC/$lt_t/bprimeKit.py
 
    set lt_c=`echo $lt | sed 's/\//\\\//g'`
    sed "s/datasetpath=DataSet/datasetpath=$lt_c/g" crab_MC.cfg | \
@@ -43,18 +56,18 @@ foreach lt($datasets_)
    set checkJobNumber_=`grep "crab:  Total" log_$lt_t | grep "jobs created"| awk '{print $4}'|head -n 1|wc|awk '{print $1}' `
 
    if ( $checkJobNumber_ != "0" ) then
-      if ( $JobNumber_ < 2000 ) then
-         crab -submit 
+      if ( $JobNumber_ < 500 ) then
+      crab -submit 
       else
    	set counter_=1
            set counterEnd_=0
            while ( $counter_ < $JobNumber_ ) 
-              @ counterEnd_=$counterEnd_ + 2000
+              @ counterEnd_=$counterEnd_ + 500
               if ( $counterEnd_ > $JobNumber_ ) then
    	      @ counterEnd_=$JobNumber_
    	   endif
               crab -submit ${counter_}-${counterEnd_} 
-              @ counter_=$counter_ + 2000
+              @ counter_=$counter_ + 500
    	end
       endif
    else

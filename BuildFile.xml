@@ -19,6 +19,11 @@
 <use   name="JetMETCorrections/Objects"/>
 <use   name="JetMETCorrections/Modules"/>
 <use   name="EGamma/EGammaAnalysisTools"/>
+<use   name="QuarkGluonTagger/EightTeV"/>
+<use   name="SimGeneral/HepPDTRecord"/>
+<use   name="HLTrigger/HLTcore"/>
+<use   name="SimDataFormats/GeneratorProducts"/>
+<use   name="RecoBTag/SecondaryVertex"/>
 <use   name="root"/>
 <flags EDM_PLUGIN="1"/>
 <export>

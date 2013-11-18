@@ -12,6 +12,7 @@
 #define N_TRIGGER_BOOKINGS	5842 // from 226 (CMSSW_3_6_1 : 8E29 & 1E31) to 644 (CMSSW_3_8_3 : 2E32) ; 904 (CMSSW_4_1_3 : 5E32); 1212 (CMSSW_4_1_4 : 1E33); 2014 (CMSSW_4_2_3)	; 2390 (CMSSW_4_2_3) ; 2722 (prompt_v5); 2996 (prompt_v6)
 
 #include <TTree.h>
+#include <vector>
 
 //For CMSSW_3_8_3
 
@@ -59,11 +60,15 @@ class EvtInfoBranches {
 		float TrueIT[MAX_BX];
 
 		float PFMET;
+		float PFMETType1CorrectedPFMetUnclusteredEnUp;
+		float PFMETType1CorrectedPFMetUnclusteredEnDown;
 		float PFMETPhi;
 		float PFRawMET;
 		float PFRawMETPhi;
 		float PFSumEt;
 		float PFMETSig;
+		float PFMETlongitudinal;
+		float PFMETRealSig;
 		float PFGenMET;
 		float PFGenMETPhi;
 
@@ -74,11 +79,14 @@ class EvtInfoBranches {
 		int   nTrgBook;
 		char  TrgBook[N_TRIGGER_BOOKINGS];	// Trigger bits, reserved up to 120 entries
 		int   nHLT;
+        int   HLTPrescaleFactor[512];
+        int   HLTName2enum[512];
 		bool  HLTbits[N_TRIGGER_BOOKINGS];
 		int L1[128]; // L1 trigger bits
 		int TT[64]; 	// Techical trigger bits
 		float HighPurityFraction; //Added by Dmitry to help filter out bad events
 		int NofTracks; //Added by Dmitry to help filter out bad events
+		float ptHat; 
 
 
 		void RegisterTree(TTree *root) {
@@ -116,11 +124,15 @@ class EvtInfoBranches {
 			root->Branch("EvtInfo.BeamSpotY"    , &BeamSpotY       , "EvtInfo.BeamSpotY/F"      );
 			root->Branch("EvtInfo.BeamSpotZ"    , &BeamSpotZ       , "EvtInfo.BeamSpotZ/F"      );
 			root->Branch("EvtInfo.PFMET"          , &PFMET             , "EvtInfo.PFMET/F"            );
+			root->Branch("EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp"          , &PFMETType1CorrectedPFMetUnclusteredEnUp             , "EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp/F"            );
+			root->Branch("EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown"          , &PFMETType1CorrectedPFMetUnclusteredEnDown             , "EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown/F"            );
 			root->Branch("EvtInfo.PFMETPhi"       , &PFMETPhi          , "EvtInfo.PFMETPhi/F"         );
 			root->Branch("EvtInfo.PFRawMET"       , &PFRawMET          , "EvtInfo.PFRawMET/F"         );
 			root->Branch("EvtInfo.PFRawMETPhi"    , &PFRawMETPhi       , "EvtInfo.PFRawMETPhi/F"      );
 			root->Branch("EvtInfo.PFSumEt"        , &PFSumEt           , "EvtInfo.PFSumEt/F"          );
 			root->Branch("EvtInfo.PFMETSig"       , &PFMETSig          , "EvtInfo.PFMETSig/F"         );
+			root->Branch("EvtInfo.PFMETlongitudinal"       , &PFMETlongitudinal          , "EvtInfo.PFMETlongitudinal/F");
+			root->Branch("EvtInfo.PFMETRealSig"       , &PFMETRealSig          , "EvtInfo.PFMETRealSig/F"         );
 			root->Branch("EvtInfo.PFGenMET"       , &PFGenMET          , "EvtInfo.PFGenMET/F"         );
 			root->Branch("EvtInfo.PFGenMETPhi"    , &PFGenMETPhi       , "EvtInfo.PFGenMETPhi/F"      );
 			root->Branch("EvtInfo.PFMETx"         , &PFMETx            , "EvtInfo.PFMETx/F"            ); //Uly 2011-04-04
@@ -134,10 +146,13 @@ class EvtInfoBranches {
 			root->Branch("EvtInfo.NofTracks"    , &NofTracks       , "EvtInfo.NofTracks/I"      );
 			root->Branch("EvtInfo.nHLT"			, &nHLT	 		, "EvtInfo.nHLT/I");
 			root->Branch("EvtInfo.HLTbits"			, HLTbits		, "EvtInfo.HLTbits[EvtInfo.nHLT]/O");
+			root->Branch("EvtInfo.HLTPrescaleFactor"			, HLTPrescaleFactor		, "EvtInfo.HLTPrescaleFactor[EvtInfo.nHLT]/I");
+			root->Branch("EvtInfo.HLTName2enum"			, HLTName2enum		, "EvtInfo.HLTName2enum[EvtInfo.nHLT]/I");
 			root->Branch("EvtInfo.nBX"			, &nBX	 		, "EvtInfo.nBX/I");
 			root->Branch("EvtInfo.nPU"			, &nPU[0]		, "EvtInfo.nPU[EvtInfo.nBX]/I");
 			root->Branch("EvtInfo.BXPU"			, &BXPU[0]		, "EvtInfo.BXPU[EvtInfo.nBX]/I");
 			root->Branch("EvtInfo.TrueIT"			, &TrueIT[0]		, "EvtInfo.TrueIT[EvtInfo.nBX]/F");
+			root->Branch("EvtInfo.ptHat"    , &ptHat       , "EvtInfo.ptHat/F"      );
 		}										    
 
 
@@ -178,11 +193,15 @@ class EvtInfoBranches {
 			root->SetBranchAddress("EvtInfo.BeamSpotZ"    , &BeamSpotZ	 );
 
 			root->SetBranchAddress("EvtInfo.PFMET"          , &PFMET             );
+			root->SetBranchAddress("EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp"          , &PFMETType1CorrectedPFMetUnclusteredEnUp             );
+			root->SetBranchAddress("EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown"          , &PFMETType1CorrectedPFMetUnclusteredEnDown             );
 			root->SetBranchAddress("EvtInfo.PFMETPhi"       , &PFMETPhi          );
 			root->SetBranchAddress("EvtInfo.PFRawMET"       , &PFRawMET          );
 			root->SetBranchAddress("EvtInfo.PFRawMETPhi"    , &PFRawMETPhi       );
 			root->SetBranchAddress("EvtInfo.PFSumEt"        , &PFSumEt           );
 			root->SetBranchAddress("EvtInfo.PFMETSig"       , &PFMETSig          );
+			root->SetBranchAddress("EvtInfo.PFMETlongitudinal"       , &PFMETlongitudinal          );
+			root->SetBranchAddress("EvtInfo.PFMETRealSig"       , &PFMETRealSig          );
 			root->SetBranchAddress("EvtInfo.PFGenMET"       , &PFGenMET          );
 			root->SetBranchAddress("EvtInfo.PFGenMETPhi"    , &PFGenMETPhi       );
 			root->SetBranchAddress("EvtInfo.PFMETx"         , &PFMETx            ); //Uly 2011-04-04
@@ -197,10 +216,13 @@ class EvtInfoBranches {
 			root->SetBranchAddress("EvtInfo.NofTracks"    , &NofTracks	 );
 			root->SetBranchAddress("EvtInfo.nHLT"			, &nHLT	);
 			root->SetBranchAddress("EvtInfo.HLTbits"			, HLTbits);
+			root->SetBranchAddress("EvtInfo.HLTPrescaleFactor"			, HLTPrescaleFactor);
+			root->SetBranchAddress("EvtInfo.HLTName2enum"			, HLTName2enum);
 			root->SetBranchAddress("EvtInfo.nBX"			, &nBX);
 			root->SetBranchAddress("EvtInfo.nPU"			, &nPU[0]);
 			root->SetBranchAddress("EvtInfo.BXPU"			, &BXPU[0]);
 			root->SetBranchAddress("EvtInfo.TrueIT"			, &TrueIT[0]);
+			root->SetBranchAddress("EvtInfo.ptHat"   , &ptHat	 );
 		}  										    
 };
 
@@ -725,6 +747,8 @@ class JetInfoBranches {
 		float Phi[MAX_JETS];
 		int   JetIDLOOSE[MAX_JETS]; //Add by Chiyi
 		float JetCharge[MAX_JETS];
+		float QGTagsMLP[MAX_JETS];
+		float QGTagsLikelihood[MAX_JETS];
 		int   NConstituents[MAX_JETS];
 		int   NCH[MAX_JETS];
 		float CEF[MAX_JETS];
@@ -776,17 +800,27 @@ class JetInfoBranches {
 		float Mass[MAX_JETS];
 		float Area[MAX_JETS];
 
-		float MassD1[MAX_JETS];
-		float MassD2[MAX_JETS];
-		float PtD1[MAX_JETS];
-		float PtD2[MAX_JETS];
-		float EtD1[MAX_JETS];
-		float EtD2[MAX_JETS];
-		float EtaD1[MAX_JETS];
-		float EtaD2[MAX_JETS];
-		float PhiD1[MAX_JETS];
-		float PhiD2[MAX_JETS];
+		int NSubjets[MAX_JETS];
+		int SubjetsIdxStart[MAX_JETS];
+        // Vector for writing 
+        std::vector<float> SubjetMass_w;
+        std::vector<float> SubjetPt_w;
+        std::vector<float> SubjetEt_w;
+        std::vector<float> SubjetEta_w;
+        std::vector<float> SubjetPhi_w;
+        std::vector<float> SubjetCombinedSVBJetTags_w;
+        std::vector<float> SubjetPtUncorr_w;
+        std::vector<float> SubjetArea_w;
 
+        // Vector for reading 
+        std::vector<float> *SubjetMass;
+        std::vector<float> *SubjetPt;
+        std::vector<float> *SubjetEt;
+        std::vector<float> *SubjetEta;
+        std::vector<float> *SubjetPhi;
+        std::vector<float> *SubjetCombinedSVBJetTags;
+        std::vector<float> *SubjetPtUncorr;
+        std::vector<float> *SubjetArea;
 #ifdef __BPRIMEKIT__
 		reco::Candidate* CandRef[MAX_JETS]; // backward pointer to the PAT objects
 #endif  
@@ -802,6 +836,8 @@ class JetInfoBranches {
 			root->Branch((name+".Phi").c_str()		       , &Phi[0]		     , (name+".Phi["+name+".Size]/F").c_str()			);
 			root->Branch((name+".JetIDLOOSE").c_str()	       ,&JetIDLOOSE[0]	     , (name+".JetIDLOOSE["+name+".Size]/I").c_str()		); //Add by Chiyi
 			root->Branch((name+".JetCharge").c_str()	       , &JetCharge[0]  	     , (name+".JetCharge["+name+".Size]/F").c_str()		);
+			root->Branch((name+".QGTagsMLP").c_str()	       , &QGTagsMLP[0]  	     , (name+".QGTagsMLP["+name+".Size]/F").c_str()		);
+			root->Branch((name+".QGTagsLikelihood").c_str()	       , &QGTagsLikelihood[0]  	     , (name+".QGTagsLikelihood["+name+".Size]/F").c_str()		);
 			root->Branch((name+".NConstituents").c_str()	       , &NConstituents[0]	     , (name+".NConstituents["+name+".Size]/I").c_str()		);
 			root->Branch((name+".NCH").c_str()	       , &NCH[0]	     , (name+".NCH["+name+".Size]/I").c_str()		);
 			root->Branch((name+".CEF").c_str() 	       	       , &CEF[0]		     , (name+".CEF["+name+".Size]/F").c_str()		);
@@ -853,16 +889,16 @@ class JetInfoBranches {
 			root->Branch((name+".Energy").c_str()	       , &Energy[0] 		     , (name+".Energy["+name+".Size]/F").c_str()			); //Uly 2011-04-04
 			root->Branch((name+".Mass").c_str()	       , &Mass[0] 		     , (name+".Mass["+name+".Size]/F").c_str()			); 
 			root->Branch((name+".Area").c_str()	       , &Area[0] 		     , (name+".Area["+name+".Size]/F").c_str()			); 
-			root->Branch((name+".MassD1").c_str()	     , &MassD1[0] 		   , (name+".MassD1["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".MassD2").c_str()	     , &MassD2[0] 		   , (name+".MassD2["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".PtD1").c_str()	     , &PtD1[0] 		   , (name+".PtD1["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".PtD2").c_str()	     , &PtD2[0] 		   , (name+".PtD2["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".EtD1").c_str()	     , &EtD1[0] 		   , (name+".EtD1["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".EtD2").c_str()	     , &EtD2[0] 		   , (name+".EtD2["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".EtaD1").c_str()	     , &EtaD1[0] 		   , (name+".EtaD1["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".EtaD2").c_str()	     , &EtaD2[0] 		   , (name+".EtaD2["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".PhiD1").c_str()	     , &PhiD1[0] 		   , (name+".PhiD1["+name+".Size]/F").c_str()		); 
-			root->Branch((name+".PhiD2").c_str()	     , &PhiD2[0] 		   , (name+".PhiD2["+name+".Size]/F").c_str()		); 
+			root->Branch((name+".NSubjets").c_str()	       , &NSubjets[0] 		     , (name+".NSubjets["+name+".Size]/I").c_str()			); 
+			root->Branch((name+".SubjetsIdxStart").c_str()	       , &SubjetsIdxStart[0] 		     , (name+".SubjetsIdxStart["+name+".Size]/I").c_str()			); 
+			root->Branch((name+".SubjetMass").c_str()	     , &SubjetMass_w); 
+			root->Branch((name+".SubjetPt").c_str()	     , &SubjetPt_w); 
+			root->Branch((name+".SubjetEt").c_str()	     , &SubjetEt_w); 
+			root->Branch((name+".SubjetEta").c_str()	     , &SubjetEta_w); 
+			root->Branch((name+".SubjetPhi").c_str()	     , &SubjetPhi_w); 
+			root->Branch((name+".SubjetCombinedSVBJetTags").c_str()	     , &SubjetCombinedSVBJetTags_w); 
+			root->Branch((name+".SubjetPtUncorr").c_str()	     , &SubjetPtUncorr_w); 
+			root->Branch((name+".SubjetArea").c_str()	     , &SubjetArea_w); 
 		}  
 
 
@@ -878,6 +914,8 @@ class JetInfoBranches {
 			root->SetBranchAddress((name+".Phi").c_str()			 , &Phi[0]		       );
 			root->SetBranchAddress((name+".JetIDLOOSE").c_str()		 , &JetIDLOOSE[0]	       ); //Add by Chiyi
 			root->SetBranchAddress((name+".JetCharge").c_str()		 , &JetCharge[0]	       );
+			root->SetBranchAddress((name+".QGTagsMLP").c_str()		 , &QGTagsMLP[0]	       );
+			root->SetBranchAddress((name+".QGTagsLikelihood").c_str()		 , &QGTagsLikelihood[0]	       );
 			root->SetBranchAddress((name+".NConstituents").c_str()		 , &NConstituents[0]	       );
 			root->SetBranchAddress((name+".NCH").c_str()		 , &NCH[0]	       );
 			root->SetBranchAddress((name+".CEF").c_str()		 , &CEF[0]  	       );
@@ -930,16 +968,26 @@ class JetInfoBranches {
 
 			root->SetBranchAddress((name+".Mass").c_str()		 , &Mass[0]		       );
 			root->SetBranchAddress((name+".Area").c_str()		 , &Area[0]		       );
-			root->SetBranchAddress((name+".MassD1").c_str()		 , &MassD1[0]		       );
-			root->SetBranchAddress((name+".MassD2").c_str()		 , &MassD2[0]		       );
-			root->SetBranchAddress((name+".PtD1").c_str()		 , &PtD1[0]		       );
-			root->SetBranchAddress((name+".PtD2").c_str()		 , &PtD2[0]		       );
-			root->SetBranchAddress((name+".EtD1").c_str()		 , &EtD1[0]		       );
-			root->SetBranchAddress((name+".EtD2").c_str()		 , &EtD2[0]		       );
-			root->SetBranchAddress((name+".EtaD1").c_str()		 , &EtaD1[0]		       );
-			root->SetBranchAddress((name+".EtaD2").c_str()		 , &EtaD2[0]		       );
-			root->SetBranchAddress((name+".PhiD1").c_str()		 , &PhiD1[0]		       );
-			root->SetBranchAddress((name+".PhiD2").c_str()		 , &PhiD2[0]		       );
+			root->SetBranchAddress((name+".NSubjets").c_str()		 , &NSubjets[0]		       );
+			root->SetBranchAddress((name+".SubjetsIdxStart").c_str()		 , &SubjetsIdxStart[0]		       );
+
+			root->SetBranchAddress((name+".SubjetMass").c_str()		 , &SubjetMass		       );
+			root->SetBranchAddress((name+".SubjetPt").c_str()		 , &SubjetPt		       );
+			root->SetBranchAddress((name+".SubjetEt").c_str()		 , &SubjetEt		       );
+			root->SetBranchAddress((name+".SubjetEta").c_str()		 , &SubjetEta		       );
+			root->SetBranchAddress((name+".SubjetPhi").c_str()		 , &SubjetPhi		       );
+			root->SetBranchAddress((name+".SubjetCombinedSVBJetTags").c_str()		 , &SubjetCombinedSVBJetTags		       );
+			root->SetBranchAddress((name+".SubjetPtUncorr").c_str()		 , &SubjetPtUncorr		       );
+			root->SetBranchAddress((name+".SubjetArea").c_str()		 , &SubjetArea		       );
+
+            SubjetMass=0;
+            SubjetPt=0;
+            SubjetEt=0;
+            SubjetEta=0;
+            SubjetPhi=0;
+            SubjetCombinedSVBJetTags=0;
+            SubjetPtUncorr=0;
+            SubjetArea=0;
 		}   
 };
 
@@ -1138,6 +1186,7 @@ class GenInfoBranches {
 		float Phi[MAX_GENS];
 		float Mass[MAX_GENS];
 		int PdgID[MAX_GENS];
+		int PhotonFlag[MAX_GENS];   // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
 		int Status[MAX_GENS];
 		int nMo[MAX_GENS];
 		int nDa[MAX_GENS];
@@ -1145,6 +1194,17 @@ class GenInfoBranches {
 		int Mo2[MAX_GENS];
 		int Da1[MAX_GENS];
 		int Da2[MAX_GENS];
+
+		int Mo1PdgID[MAX_GENS];
+		int Mo2PdgID[MAX_GENS];
+		int Mo1Status[MAX_GENS];
+		int Mo2Status[MAX_GENS];
+		int Da1PdgID[MAX_GENS];
+		int Da2PdgID[MAX_GENS];
+		int GrandMo1PdgID[MAX_GENS];
+		int GrandMo2PdgID[MAX_GENS];
+		int GrandMo1Status[MAX_GENS];
+		int GrandMo2Status[MAX_GENS];
 
 		void RegisterTree(TTree *root) {
 			root->Branch("GenInfo.Size"	, &Size		, "GenInfo.Size/I"			);
@@ -1154,6 +1214,7 @@ class GenInfoBranches {
 			root->Branch("GenInfo.Phi"	, &Phi[0]	, "GenInfo.Phi[GenInfo.Size]/F"		);
 			root->Branch("GenInfo.Mass"	, &Mass[0]	, "GenInfo.Mass[GenInfo.Size]/F"	);
 			root->Branch("GenInfo.PdgID"	, &PdgID[0]	, "GenInfo.PdgID[GenInfo.Size]/I"	);
+			root->Branch("GenInfo.PhotonFlag"	, &PhotonFlag[0]	, "GenInfo.PhotonFlag[GenInfo.Size]/I"	);
 			root->Branch("GenInfo.Status"	, &Status[0]	, "GenInfo.Status[GenInfo.Size]/I"	);
 			root->Branch("GenInfo.nMo"	, &nMo[0]	, "GenInfo.nMo[GenInfo.Size]/I"		);
 			root->Branch("GenInfo.nDa"	, &nDa[0]	, "GenInfo.nDa[GenInfo.Size]/I"		);
@@ -1161,6 +1222,17 @@ class GenInfoBranches {
 			root->Branch("GenInfo.Mo2"	, &Mo2[0]	, "GenInfo.Mo2[GenInfo.Size]/I"		);
 			root->Branch("GenInfo.Da1"	, &Da1[0]	, "GenInfo.Da1[GenInfo.Size]/I"		);
 			root->Branch("GenInfo.Da2"	, &Da2[0]	, "GenInfo.Da2[GenInfo.Size]/I"		);
+
+			root->Branch("GenInfo.Mo1PdgID"	, &Mo1PdgID[0]	, "GenInfo.Mo1PdgID[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.Mo2PdgID"	, &Mo2PdgID[0]	, "GenInfo.Mo2PdgID[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.Mo1Status"	, &Mo1Status[0]	, "GenInfo.Mo1Status[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.Mo2Status"	, &Mo2Status[0]	, "GenInfo.Mo2Status[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.Da1PdgID"	, &Da1PdgID[0]	, "GenInfo.Da1PdgID[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.Da2PdgID"	, &Da2PdgID[0]	, "GenInfo.Da2PdgID[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.GrandMo1PdgID"	, &GrandMo1PdgID[0]	, "GenInfo.GrandMo1PdgID[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.GrandMo2PdgID"	, &GrandMo2PdgID[0]	, "GenInfo.GrandMo2PdgID[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.GrandMo1Status"	, &GrandMo1Status[0]	, "GenInfo.GrandMo1Status[GenInfo.Size]/I"		);
+			root->Branch("GenInfo.GrandMo2Status"	, &GrandMo2Status[0]	, "GenInfo.GrandMo2Status[GenInfo.Size]/I"		);
 		}
 
 		void Register(TTree *root) {
@@ -1171,6 +1243,7 @@ class GenInfoBranches {
 			root->SetBranchAddress("GenInfo.Phi"	, &Phi[0]	);
 			root->SetBranchAddress("GenInfo.Mass"	, &Mass[0]	);
 			root->SetBranchAddress("GenInfo.PdgID"	, &PdgID[0]	);
+			root->SetBranchAddress("GenInfo.PhotonFlag"	, &PhotonFlag[0]	);
 			root->SetBranchAddress("GenInfo.Status"	, &Status[0]	);
 			root->SetBranchAddress("GenInfo.nMo"	, &nMo[0]	);
 			root->SetBranchAddress("GenInfo.nDa"	, &nDa[0]	);
@@ -1178,6 +1251,17 @@ class GenInfoBranches {
 			root->SetBranchAddress("GenInfo.Mo2"	, &Mo2[0]	);
 			root->SetBranchAddress("GenInfo.Da1"	, &Da1[0]	);
 			root->SetBranchAddress("GenInfo.Da2"	, &Da2[0]	);
+			root->SetBranchAddress("GenInfo.Mo1PdgID"	, &Mo1PdgID[0]	);
+			root->SetBranchAddress("GenInfo.Mo2PdgID"	, &Mo2PdgID[0]	);
+			root->SetBranchAddress("GenInfo.Mo1Status"	, &Mo1Status[0]	);
+			root->SetBranchAddress("GenInfo.Mo2Status"	, &Mo2Status[0]	);
+			root->SetBranchAddress("GenInfo.Da1PdgID"	, &Da1PdgID[0]	);
+			root->SetBranchAddress("GenInfo.Da1PdgID"	, &Da1PdgID[0]	);
+			root->SetBranchAddress("GenInfo.Da2PdgID"	, &Da2PdgID[0]	);
+			root->SetBranchAddress("GenInfo.GrandMo1PdgID"	, &GrandMo1PdgID[0]	);
+			root->SetBranchAddress("GenInfo.GrandMo2PdgID"	, &GrandMo2PdgID[0]	);
+			root->SetBranchAddress("GenInfo.GrandMo1Status"	, &GrandMo1Status[0]	);
+			root->SetBranchAddress("GenInfo.GrandMo2Status"	, &GrandMo2Status[0]	);
 		}
 
 };

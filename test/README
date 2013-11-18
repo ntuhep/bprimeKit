@@ -17,5 +17,3 @@ cvs co -r CMSSW_3_9_7 PhysicsTools/SelectorUtils
 cvs co -d MyAna/bprimeKit UserCode/NTUHEP/bprimeKit
 (Refer : https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATReleaseNotes39X )
 
-
-## test 0507

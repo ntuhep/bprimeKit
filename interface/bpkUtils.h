@@ -10,8 +10,23 @@
 #define bpkUtils_h
 
 #include "MyAna/bprimeKit/interface/format.h"
+#include "TMath.h"
 
 namespace {
+
+   double dPhi(double p1,double p2)
+   {
+      double dp = p1 - p2;
+      if      (fabs(dp+TMath::Pi()*2.) < fabs(dp)) dp += TMath::Pi()*2.;
+      else if (fabs(dp-TMath::Pi()*2.) < fabs(dp)) dp -= TMath::Pi()*2.;
+      
+      return fabs(dp);
+   }
+   
+   double dR(double e1, double e2, double p1, double p2)
+   {
+      return sqrt(pow(e1-e2,2)+pow(dPhi(p1,p2),2));
+   }
 
     template<class T>
     bool

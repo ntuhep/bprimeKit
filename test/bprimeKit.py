@@ -10,13 +10,14 @@ from FWCore.ParameterSet.VarParsing import VarParsing
 options = VarParsing ('python')
 
 options.register ('tlbsmTag',
-                  'tlbsm_53x_v1',
+                  'tlbsm_53x_v3',
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.string,
                   'TLBSM tag use in production')
 
 options.register ('useData',
-                  True,
+                  False,
+#True,
                   VarParsing.multiplicity.singleton,
                   VarParsing.varType.int,
                   "Run this on real data")
@@ -88,65 +89,19 @@ options.parseArguments()
 resultsFile = 'results.root'
 
 if not options.useData :
-  inputJetCorrLabel = ('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute'])
+  inputJetCorrLabelAK5PFchs = ('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute'])
+  inputJetCorrLabelAK7PFchs = ('AK7PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute'])
 
   process.source.fileNames = [
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_10_1_fm0.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_11_1_ctO.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_12_1_Ovg.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_13_1_i4g.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_14_1_40h.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_15_1_lGH.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_16_1_iiT.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_17_1_bZ6.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_18_1_v0u.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_19_1_OVv.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_1_1_o5R.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_20_1_D3h.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_21_1_4tE.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_22_1_mp6.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_23_1_4Vn.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_24_1_e5f.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_25_1_Qx5.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_26_1_Mw1.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_27_1_vsP.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_28_1_8U8.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_29_1_JsW.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_2_1_4q2.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_30_1_wKE.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_31_1_b0h.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_32_1_gAc.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_33_1_xvk.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_34_1_9Xv.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_35_1_m9V.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_36_1_3f4.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_37_1_Uow.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_38_1_uy5.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_39_1_TlH.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_3_1_MJp.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_40_1_OKu.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_41_1_zWD.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_42_1_FRh.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_43_1_AMN.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_44_1_Xi7.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_45_1_eNH.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_46_1_26k.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_47_1_h1S.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_48_1_IBp.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_49_1_Eef.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_4_1_NKc.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_50_1_kcx.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_5_1_mxM.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_6_1_XV2.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_7_1_AW6.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_8_1_z8R.root',
-'/store/user/devdatta/MC/EightTeV/Summer12/START53/FSIM/Bprime/800GeV/BprimeBprimeToBHBH_HToBB_M_800_TuneZ2star_8TeV_madgraph_cff_py_GEN_FASTSIM_HLT_PU_9_1_jCO.root' 
+    'file:/raid1/cmsdata/QCD_pt15to30_bEnriched_MuEnrichedPt14_TuneZ2star_8TeV-pythia6_Summer12_DR53X_PU_S10_START53_V7A-v1_54A04C76-D813-E211-99CC-001A92811734.root'
   ]
 
 else :
-    inputJetCorrLabel = ('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+    inputJetCorrLabelAK5PFchs = ('AK5PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
+    inputJetCorrLabelAK7PFchs = ('AK7PFchs', ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'])
     process.source.fileNames = [
-    'root://eoscms//eos/cms/store/data/Run2012C/SingleElectron/AOD/PromptReco-v2/000/202/045/AE252B14-8CF5-E111-AD69-BCAEC518FF76.root'
+    #'root://eoscms//eos/cms/store/data/Run2012C/SingleElectron/AOD/PromptReco-v2/000/202/045/AE252B14-8CF5-E111-AD69-BCAEC518FF76.root'
+    'file:/raid1/cmsdata/Photon_Run2012A_20Nov2012-v2_AOD_127D39FB-8C34-E211-8DDD-00261894386D.root'
     ]
 
 #process.source.eventsToProcess = cms.untracked.VEventRange( ['1:86747'] )
@@ -156,7 +111,7 @@ else :
 print options
 
 print 'Running jet corrections: '
-print inputJetCorrLabel
+print inputJetCorrLabelAK5PFchs
 
 import sys
 
@@ -167,12 +122,12 @@ import sys
 
 if options.useData :
     if options.globalTag is '':
-        process.GlobalTag.globaltag = cms.string( 'GR_P_V40_AN2::All' )
+        process.GlobalTag.globaltag = cms.string( 'FT_53_V21_AN5::All' )
     else:
         process.GlobalTag.globaltag = cms.string( options.globalTag )
 else :
     if options.globalTag is '':
-        process.GlobalTag.globaltag = cms.string( 'START53_V7E::All' )
+        process.GlobalTag.globaltag = cms.string( 'START53_V27::All' )
     else:
         process.GlobalTag.globaltag = cms.string( options.globalTag )
 
@@ -405,7 +360,7 @@ from RecoJets.JetProducers.GenJetParameters_cfi import *
 from PhysicsTools.PatAlgos.tools.pfTools import *
 postfix = "PFlow"
 usePF2PAT(process,runPF2PAT=True, jetAlgo='AK5', runOnMC=not options.useData, postfix=postfix,
-	  jetCorrections=inputJetCorrLabel, pvCollection=cms.InputTag('goodOfflinePrimaryVertices'), typeIMetCorrections=True)
+	  jetCorrections=inputJetCorrLabelAK5PFchs, pvCollection=cms.InputTag('goodOfflinePrimaryVertices'), typeIMetCorrections=True)
 useGsfElectrons(process,postfix,dR="03")
 if not options.forceCheckClosestZVertex :
     process.pfPileUpPFlow.checkClosestZVertex = False
@@ -413,7 +368,7 @@ if not options.forceCheckClosestZVertex :
 
 postfixLoose = "PFlowLoose"
 usePF2PAT(process,runPF2PAT=True, jetAlgo='AK5', runOnMC=not options.useData, postfix=postfixLoose,
-	  jetCorrections=inputJetCorrLabel, pvCollection=cms.InputTag('goodOfflinePrimaryVertices'), typeIMetCorrections=True)
+	  jetCorrections=inputJetCorrLabelAK5PFchs, pvCollection=cms.InputTag('goodOfflinePrimaryVertices'), typeIMetCorrections=True)
 useGsfElectrons(process,postfixLoose,dR="03")
 if not options.forceCheckClosestZVertex :
     process.pfPileUpPFlowLoose.checkClosestZVertex = False
@@ -489,6 +444,14 @@ process.kt6PFJetsForIsolation =  kt4PFJets.clone(
     doRhoFastjet = True,
     Rho_EtaMax = cms.double(2.5)
     )
+
+###############################
+##### Gluon Tagger      #######
+###############################
+process.load('QuarkGluonTagger.EightTeV.QGTagger_RecoJets_cff')  
+process.QGTagger.srcJets = cms.InputTag("selectedPatJetsPFlow")
+process.QGTagger.isPatJet  = cms.untracked.bool(True) 
+process.QGTagger.useCHS  = cms.untracked.bool(True)
 
 ###############################
 ###### Bare CA 0.8 jets #######
@@ -791,8 +754,8 @@ addJetCollection(process,
                  'CA8', 'PF',
                  doJTA=True,
                  doBTagging=True,
-                 jetCorrLabel=inputJetCorrLabel,
-                 doType1MET=True,
+                 jetCorrLabel=inputJetCorrLabelAK7PFchs,
+                 doType1MET=False,
                  doL1Cleaning=False,
                  doL1Counters=False,
                  genJetCollection = cms.InputTag("ca8GenJetsNoNu"),
@@ -805,8 +768,8 @@ addJetCollection(process,
                  'CA8Pruned', 'PF',
                  doJTA=False,
                  doBTagging=True,
-                 jetCorrLabel=inputJetCorrLabel,
-                 doType1MET=True,
+                 jetCorrLabel=inputJetCorrLabelAK7PFchs,
+                 doType1MET=False,
                  doL1Cleaning=False,
                  doL1Counters=False,
                  genJetCollection = cms.InputTag("ca8GenJetsNoNu"),
@@ -814,19 +777,44 @@ addJetCollection(process,
                  )
 
 
+addJetCollection(process,
+                 cms.InputTag('caPrunedPFlow','SubJets'),
+                 'CA8PrunedSubjets', 'PF',
+                 doJTA=True,
+                 doBTagging=True,
+                 jetCorrLabel=inputJetCorrLabelAK5PFchs,
+                 doType1MET=False,
+                 doL1Cleaning=False,
+                 doL1Counters=False,
+                 genJetCollection=cms.InputTag('caPrunedGen','SubJets'),
+                 doJetID=False
+                 ) 
 
 addJetCollection(process, 
                  cms.InputTag('caTopTagPFlow'),
                  'CATopTag', 'PF',
                  doJTA=True,
                  doBTagging=True,
-                 jetCorrLabel=inputJetCorrLabel,
-                 doType1MET=True,
+                 jetCorrLabel=inputJetCorrLabelAK7PFchs,
+                 doType1MET=False,
                  doL1Cleaning=False,
                  doL1Counters=False,
                  genJetCollection = cms.InputTag("ca8GenJetsNoNu"),
                  doJetID = False
                  )
+
+addJetCollection(process,
+             cms.InputTag('caTopTagPFlow', 'caTopSubJets'),
+             'CATopTagSubjets', 'PF',
+             doJTA=True,
+             doBTagging=True,
+             jetCorrLabel=inputJetCorrLabelAK5PFchs,
+             doType1MET=False,
+             doL1Cleaning=False,
+             doL1Counters=False,
+             genJetCollection = None,
+             doJetID = False
+             )   
 
 
 if options.useExtraJetColls: 
@@ -835,7 +823,7 @@ if options.useExtraJetColls:
 			 'CA12Filtered', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -849,20 +837,19 @@ if options.useExtraJetColls:
 			 'CA12MassDropFiltered', 'PF',
 			 doJTA=True,
 			 doBTagging=True,
-			 jetCorrLabel=inputJetCorrLabel,
-			 doType1MET=True,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
+			 doType1MET=False,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
 			 genJetCollection = cms.InputTag("ca8GenJetsNoNu"),
 			 doJetID = False
 			 )
 
-
 	addJetCollection(process, 
-			 cms.InputTag('caMassDropFilteredPFlow', 'SubJets'),         # Jet collection; must be already in the event when patLayer0 sequence is executed
+			 cms.InputTag('caMassDropFilteredPFlow','SubJets'),
 			 'CA12MassDropFilteredSubjets', 'PF',
-			 doJTA=True,            # Run Jet-Track association & JetCharge
-			 doBTagging=True,       # Run b-tagging
+			 doJTA=True,
+			 doBTagging=True,
 			 jetCorrLabel=None,
 			 doType1MET=True,
 			 doL1Cleaning=False,
@@ -876,7 +863,7 @@ if options.useExtraJetColls:
 			 'AK5Pruned', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK5PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -890,7 +877,7 @@ if options.useExtraJetColls:
 			 'AK5Filtered', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK5PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -903,7 +890,7 @@ if options.useExtraJetColls:
 			 'AK5Trimmed', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK5PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -917,7 +904,7 @@ if options.useExtraJetColls:
 			 'AK7', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -930,7 +917,7 @@ if options.useExtraJetColls:
 			 'AK7Pruned', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -944,7 +931,7 @@ if options.useExtraJetColls:
 			 'AK7Filtered', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -957,7 +944,7 @@ if options.useExtraJetColls:
 			 'AK7Trimmed', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -974,7 +961,7 @@ if options.useExtraJetColls:
 			 'AK8', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -987,7 +974,7 @@ if options.useExtraJetColls:
 			 'AK8Pruned', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -1001,7 +988,7 @@ if options.useExtraJetColls:
 			 'AK8Filtered', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -1014,7 +1001,7 @@ if options.useExtraJetColls:
 			 'AK8Trimmed', 'PF',
 			 doJTA=False,
 			 doBTagging=False,
-			 jetCorrLabel=inputJetCorrLabel,
+			 jetCorrLabel=inputJetCorrLabelAK7PFchs,
 			 doType1MET=True,
 			 doL1Cleaning=False,
 			 doL1Counters=False,
@@ -1025,7 +1012,7 @@ if options.useExtraJetColls:
 switchJetCollection(process,cms.InputTag('ak5PFJets'),
 		    doJTA        = False,
 		    doBTagging   = False,
-		    jetCorrLabel = inputJetCorrLabel,
+		    jetCorrLabel = inputJetCorrLabelAK5PFchs,
 		    doType1MET   = True,
 		    genJetCollection=cms.InputTag("ak5GenJetsNoNu"),
 		    doJetID      = False
@@ -1083,7 +1070,10 @@ for jetcoll in (process.patJetsPFlow,
 process.patJetsPFlow.addBTagInfo = True
 process.patJetsCATopTagPF.addBTagInfo = True
 process.patJetsCA8PrunedPF.addBTagInfo = True
+process.patJetsCA8PrunedSubjetsPF.addBTagInfo = True
+process.patJetsCATopTagSubjetsPF.addBTagInfo = True
 
+process.patJetsCA8PrunedSubjetsPF.embedPFCandidates = False
 
 # Do some configuration of the jet substructure things
 if options.useExtraJetColls: 
@@ -1168,6 +1158,7 @@ process.selectedPatJetsCA8PF.cut = cms.string("pt > 20")
 
 # CA8 Pruned jets
 process.selectedPatJetsCA8PrunedPF.cut = cms.string("pt > 20 & abs(rapidity) < 2.5")
+process.patJetsCA8PrunedSubjetsPF.addTagInfos = False
 
 
 # CA8 TopJets
@@ -1249,6 +1240,15 @@ process.goodPatJetsCATopTagPF = cms.EDFilter("PFJetIDSelectionFunctorFilter",
                                              src = cms.InputTag("selectedPatJetsCATopTagPF")
                                              )
 
+process.goodPatJetsCA8PrunedPFPacked = cms.EDProducer("BoostedJetMerger",
+        jetSrc=cms.InputTag("goodPatJetsCA8PrunedPF"),
+        subjetSrc=cms.InputTag("selectedPatJetsCA8PrunedSubjetsPF")
+        )    
+
+process.goodPatJetsCATopTagPFPacked = cms.EDProducer("BoostedJetMerger",
+        jetSrc=cms.InputTag("goodPatJetsCATopTagPF"),
+        subjetSrc=cms.InputTag("selectedPatJetsCATopTagSubjetsPF")
+        )
 
 if options.useExtraJetColls:
 	process.goodPatJetsCA12FilteredPF = cms.EDFilter("PFJetIDSelectionFunctorFilter",
@@ -1604,6 +1604,10 @@ from CommonTools.ParticleFlow.Tools.pfIsolation import setupPFElectronIso, setup
 process.eleIsoSequence = setupPFElectronIso(process, 'gsfElectrons')
 process.pfiso = cms.Sequence(process.pfParticleSelectionSequence + process.eleIsoSequence)
 
+from PhysicsTools.PatUtils.tools.metUncertaintyTools import runMEtUncertainties
+if not options.useData :
+  runMEtUncertainties(process)
+
 ##bprimeKit process
 process.bprimeKit = cms.EDAnalyzer(
   "bprimeKit",
@@ -1614,9 +1618,9 @@ process.bprimeKit = cms.EDAnalyzer(
   LepCollections = cms.vstring('PFLepInfo','LepInfo'),
   pholabel = cms.VInputTag('selectedPatPhotons'),
   PhoCollections = cms.vstring('PhotonInfo'),
-  jetlabel= cms.VInputTag('selectedPatJets'+postfix,'goodPatJetsCA8PrunedPF'),
-  JetCollections = cms.vstring('PFJetInfo','WJetInfo'),
-  JetType = cms.vint32(0,2),
+  jetlabel= cms.VInputTag('selectedPatJets'+postfix,'goodPatJetsCA8PrunedPFPacked','goodPatJetsCATopTagPFPacked'),
+  JetCollections = cms.vstring('PFJetInfo','CA8BosonJetInfo','CA8TopJetInfo'),
+  JetType = cms.vint32(0,2,3),
   PairCollection = cms.untracked.int32(1),
   metlabel  = cms.VInputTag("patMETs"),
   pfmetlabel  = cms.VInputTag("patMETsPFlow"),
@@ -1702,6 +1706,7 @@ process.patseq = cms.Sequence(
     process.inclusiveSecondaryVertexFinderTagInfosFiltered* 
     process.simpleInclusiveSecondaryVertexHighEffBJetTags*
     process.simpleInclusiveSecondaryVertexHighPurBJetTags*
+    process.inclusiveSecondaryVertexFinderTagInfosFilteredTemp*
     process.doubleSecondaryVertexHighEffBJetTags*
     process.softElectronCands*
     process.genParticlesForJetsNoNu*
@@ -1709,21 +1714,24 @@ process.patseq = cms.Sequence(
     process.ak8GenJetsNoNu*
     process.caFilteredGenJetsNoNu*
     process.caMassDropFilteredGenJetsNoNu*
+    process.caPrunedGen*
+    process.caTopTagGen*
+    process.CATopTagInfosGen*
     getattr(process,"patPF2PATSequence"+postfix)*
     process.patDefaultSequence*
     process.goodPatJetsPFlow*
     process.goodPatJetsCA8PF*
     process.goodPatJetsCA8PrunedPF*
     process.goodPatJetsCATopTagPF*
+    process.goodPatJetsCA8PrunedPFPacked*
+    process.goodPatJetsCATopTagPFPacked*
     process.flavorHistorySeq*
     process.prunedGenParticles*
-    process.caPrunedGen*
-    process.caTopTagGen*
-    process.CATopTagInfosGen*
     process.kt6PFJetsForIsolation*
     getattr(process,"patPF2PATSequence"+postfixLoose)*
 #    process.miniPFLeptonSequence
     process.bpkitTriggerSequence*
+    process.QuarkGluonTagger*
     process.bprimeKit
     )
 
@@ -1833,11 +1841,18 @@ else :
 
 
 # reduce verbosity
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(100)
+process.MessageLogger = cms.Service("MessageLogger",
+        categories = cms.untracked.vstring('HLTConfigData','FwkReport'),
+        destinations = cms.untracked.vstring('cerr'),
+        cerr = cms.untracked.PSet (
+            HLTConfigData = cms.untracked.PSet(limit = cms.untracked.int32(0) ),
+            FwkReport = cms.untracked.PSet(reportEvery = cms.untracked.int32(100))
+            )
+        )
 
 
 # process all the events
-process.maxEvents.input = -1  
+process.maxEvents.input = -1
 process.options.wantSummary = False
 process.out.dropMetaData = cms.untracked.string("DROPPED")
 
@@ -1896,6 +1911,12 @@ process.out.outputCommands = [
     'drop patJets_goodPatJetsAK8PrunedPF_*_*',
     'drop patJets_goodPatJetsAK8TrimmedPF_*_*',
     'drop recoGenJets_selectedPatJets*_*_*',
+    # However, KEEP the PAT jets corresponding
+    # to the subjets. 
+    'keep patJets_selectedPat*Subjets*_*_*',
+    # And finally, keep the "packed" pat jets
+    # which contain the subjets, as pat jets. 
+    'keep patJets_goodPatJets*Packed_*_*',
     'keep *_*_rho_*',
     'drop *_*PFlowLoose*_*_*',
     #'keep patElectrons_selected*PFlowLoose*_*_*',
@@ -1904,6 +1925,7 @@ process.out.outputCommands = [
     #'keep patTaus_*PFlowLoose*_*_*',
     'keep *_offlineBeamSpot_*_*',
     'drop *_*atTaus_*_*',
+    'keep *_patType*CorrectedPFMet*_*_*',
     'keep *_pfType1CorrectedMet_*_*',
     'keep *_pfType1p2CorrectedMet_*_*'
     #'keep recoTracks_generalTracks_*_*'

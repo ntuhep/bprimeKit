@@ -8,20 +8,6 @@
 #include "MyAna/bprimeKit/interface/TriggerBooking.h"
 #include "MyAna/bprimeKit/interface/bpkUtils.h"
 
-double dPhi(double p1,double p2)
-{
-  double dp = p1 - p2;
-  if      (fabs(dp+TMath::Pi()*2.) < fabs(dp)) dp += TMath::Pi()*2.;
-  else if (fabs(dp-TMath::Pi()*2.) < fabs(dp)) dp -= TMath::Pi()*2.;
-
-  return fabs(dp);
-}
-
-double dR(double e1, double e2, double p1, double p2)
-{
-  return sqrt(pow(e1-e2,2)+pow(dPhi(p1,p2),2));
-}
-
 using namespace std;
 
 eventSelector::eventSelector(const edm::ParameterSet& iConfig,
@@ -289,7 +275,7 @@ int eventSelector::nCleanMuons()
   std::vector<int>::iterator jet = _goodJets.begin();
   for(; jet!=_goodJets.end(); ++jet) {
     for(mu=_goodMuons.begin();mu!=_goodMuons.end(); ++mu) {
-      double dr = dR(_leptons->Eta[*mu],_jets->Eta[*jet],_leptons->Phi[*mu],_jets->Phi[*jet]);
+       double dr = ::dR(_leptons->Eta[*mu],_jets->Eta[*jet],_leptons->Phi[*mu],_jets->Phi[*jet]);
       if(_debug) {
 	cout << "\tjet " << *jet << "(" << _jets->Eta[*jet] << "," << _jets->Phi[*jet] << ") ";
 	cout << "muon " << *mu << "(" << _leptons->Eta[*mu] << "," << _leptons->Phi[*mu] << ") ";
@@ -319,7 +305,7 @@ int eventSelector::nCleanJets()
     std::vector<int>::iterator jet;
     for(; el!=_goodElectrons.end(); ++el) {
       for(jet=_goodJets.begin();jet!=_goodJets.end(); ++jet) {
-	double dr = dR(_leptons->Eta[*el],_jets->Eta[*jet],_leptons->Phi[*el],_jets->Phi[*jet]);
+         double dr = ::dR(_leptons->Eta[*el],_jets->Eta[*jet],_leptons->Phi[*el],_jets->Phi[*jet]);
 	if(_debug) {
 	  cout << "\telectron " << *el << "(" << _leptons->Eta[*el] << "," << _leptons->Phi[*el] << ") ";
 	  cout << "jet " << *jet << "(" << _jets->Eta[*jet] << "," << _jets->Phi[*jet] << ") ";
@@ -337,7 +323,7 @@ int eventSelector::nCleanJets()
     std::vector<int>::iterator jet;
     for(; mu!=_goodMuons.end(); ++mu) {
       for(jet=_goodJets.begin();jet!=_goodJets.end(); ++jet) {
-	double dr = dR(_leptons->Eta[*mu],_jets->Eta[*jet],_leptons->Phi[*mu],_jets->Phi[*jet]);
+         double dr = ::dR(_leptons->Eta[*mu],_jets->Eta[*jet],_leptons->Phi[*mu],_jets->Phi[*jet]);
 	if(_debug) {
 	  cout << "\tmuon " << *mu << "(" << _leptons->Eta[*mu] << "," << _leptons->Phi[*mu] << ") ";
 	  cout << "jet " << *jet << "(" << _jets->Eta[*jet] << "," << _jets->Phi[*jet] << ") ";

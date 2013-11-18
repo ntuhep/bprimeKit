@@ -1,8 +1,7 @@
 #!/bin/tcsh
 
 #### SET FOLDER IN Tier3 FOR SAVING OUTPUT FILES like :/dpm/phys.ntu.edu.tw/home/cms/store/user/USERID/T3_folder #### 
-set T3_folder=CMSSW536_patch1_data_DCSONLY_AOD_v2
-#set T3_folder=CMSSW532_patch4_data_DCSONLY_AOD
+set T3_folder=CMSSW_5_3_11_data_DCSONLY_AOD
 
 #### SET RUN RANGE BY HAND (LIKE run_rangeByhand="161234-164321"). IF NOT SET BY HAND, IT WILL BE SET AUTOMATICALLY ####
 set run_rangeByhand=""      ## for default
@@ -209,7 +208,7 @@ foreach lt($datasets_)
    set checkJobNumber_=`grep "crab:  Total" log_$lt_t | grep "jobs created"| awk '{print $4}'|head -n 1|wc|awk '{print $1}' `
 
    if ( $checkJobNumber_ != "0" ) then
-      if ( $JobNumber_ < 2000 ) then
+      if ( $JobNumber_ < 500 ) then
          echo "crab -submit "
          crab -submit 
          crab -status 
@@ -217,14 +216,14 @@ foreach lt($datasets_)
          set counter_=1
          set counterEnd_=0
          while ( $counter_ < $JobNumber_ ) 
-            @ counterEnd_=$counterEnd_ + 2000
+            @ counterEnd_=$counterEnd_ + 500
             if ( $counterEnd_ > $JobNumber_ ) then
             @ counterEnd_=$JobNumber_
             endif
             echo "crab -submit ${counter_}-${counterEnd_} "
             crab -submit ${counter_}-${counterEnd_} 
             crab -status 
-            @ counter_=$counter_ + 2000
+            @ counter_=$counter_ + 500
          end
       endif
    else

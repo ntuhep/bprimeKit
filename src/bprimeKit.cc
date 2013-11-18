@@ -22,9 +22,11 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TLorentzVector.h>
+#include <map>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -60,6 +62,7 @@
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "FWCore/Common/interface/TriggerNames.h"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
 #include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
@@ -115,6 +118,10 @@
 #include "RecoBTag/SecondaryVertex/interface/SecondaryVertex.h"
 #include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
 
+#include "QuarkGluonTagger/EightTeV/interface/QGTagger.h"
+#include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
+#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+
 
 #define W_MASS          80.403
 #define Z_MASS          91.1876
@@ -144,6 +151,10 @@ private:
   virtual void beginJob() ;
   virtual void analyze(const edm::Event&, const edm::EventSetup&) ;
   virtual void endJob() ;
+
+  virtual void beginRun(edm::Run const & iRun, edm::EventSetup const& iSetup);
+  virtual void endRun(edm::Run const&, edm::EventSetup const&);
+
 
   TTree *root;
   EvtInfoBranches EvtInfo;
@@ -208,7 +219,9 @@ private:
   objectSelector* Selector_;
 
   int debug_;
-
+  map < std::string, int > HLTmaplist;
+  map < std::string, int >::iterator HLTmaplist_pr;
+  HLTConfigProvider hltConfig_;
 };
 
 // constants, enums and typedefs for 2012 EID
@@ -281,12 +294,6 @@ bprimeKit::bprimeKit(const edm::ParameterSet& iConfig)
   std::vector<std::string> myManualCatWeigths;
   if(EIDMVAInputTags_.size()!=12) cout<<"EIDMVAInputTags array size (12) is not correct"<<endl;
   for(int ie=0;ie<6;ie++) myManualCatWeigths.push_back(EIDMVAInputTags_[ie].c_str());
-  //myManualCatWeigths.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_NonTrigV0_Cat1.weights.xml");
-  //myManualCatWeigths.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_NonTrigV0_Cat2.weights.xml");
-  //myManualCatWeigths.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_NonTrigV0_Cat3.weights.xml");
-  //myManualCatWeigths.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_NonTrigV0_Cat4.weights.xml");
-  //myManualCatWeigths.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_NonTrigV0_Cat5.weights.xml");
-  //myManualCatWeigths.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_NonTrigV0_Cat6.weights.xml");
 
   Bool_t manualCat = true;
 
@@ -296,21 +303,16 @@ bprimeKit::bprimeKit(const edm::ParameterSet& iConfig)
           myManualCatWeigths);
 
   // NOTE: it is better if you copy the MVA weight files locally. See the previous remark
-
   std::vector<std::string> myManualCatWeigthsTrig;
   for(int ie=0;ie<6;ie++) myManualCatWeigthsTrig.push_back(EIDMVAInputTags_[ie+6].c_str());
-  //myManualCatWeigthsTrig.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_TrigV0_Cat1.weights.xml");
-  //myManualCatWeigthsTrig.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_TrigV0_Cat2.weights.xml");
-  //myManualCatWeigthsTrig.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_TrigV0_Cat3.weights.xml");
-  //myManualCatWeigthsTrig.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_TrigV0_Cat4.weights.xml");
-  //myManualCatWeigthsTrig.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_TrigV0_Cat5.weights.xml");
-  //myManualCatWeigthsTrig.push_back("/afs/cern.ch/cms/data/CMSSW/RecoEgamma/ElectronIdentification/data/Electrons_BDTG_TrigV0_Cat6.weights.xml");
 
   myMVATrig = new EGammaMvaEleEstimator();
   myMVATrig->initialize("BDT",
           EGammaMvaEleEstimator::kTrig,
           manualCat,
           myManualCatWeigthsTrig);
+
+  for(int i=0;i<N_TRIGGER_BOOKINGS;i++) HLTmaplist.insert( pair< std::string, int > (TriggerBooking[i], i) );
 
 }
 
@@ -345,14 +347,33 @@ void bprimeKit::beginJob()
     HitFit_ = new doHitFit(HitFitParameters_,EvtInfo,LepInfo[0],JetInfo[0],GenInfo);
     Selector_ = new objectSelector(SelectionParameters_,LepInfo[0],JetInfo[0],VertexInfo);
   }
+
 }
 
 void bprimeKit::endJob() 
 {
 }
 
+// ------------ method called when starting to processes a run  ------------
+void
+bprimeKit::beginRun(edm::Run const & iRun, edm::EventSetup const& iSetup)
+{
+    std::string processName_ = "HLT";
+    bool changed(false);
+    hltConfig_.init(iRun,iSetup,processName_,changed);
+}
+
+// ------------ method called when ending the processing of a run  ------------
+void
+bprimeKit::endRun(edm::Run const&, edm::EventSetup const&)
+{
+}
+
+
 void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  edm::ESHandle<ParticleDataTable> pdt_;
+  iSetup.getData( pdt_ );
   if(debug_>0) cout << "Begin Analyze" << endl;
   bool isData = iEvent.isRealData();	// Add by Jacky
 
@@ -1373,6 +1394,11 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
    //=================================================================================
    // Jets
    //=================================================================================
+   // Gluon tagger
+   edm::Handle<edm::ValueMap<float> >  QGTagsHandleMLP;
+   edm::Handle<edm::ValueMap<float> >  QGTagsHandleLikelihood;
+   iEvent.getByLabel("QGTagger","qgMLP", QGTagsHandleMLP);
+   iEvent.getByLabel("QGTagger","qgLikelihood", QGTagsHandleLikelihood);
 
    for(unsigned icoll=0; icoll<jetcollections_.size(); icoll++) {//loop over collections
      if(icoll >= MAX_JETCOLLECTIONS) break;
@@ -1382,6 +1408,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      bool pfjetcoll = false;
      bool calojetcoll = false;
      bool fatjetcoll = false;
+     bool CAjetcoll = false;
      switch(jettype_[icoll]) {
        case 0 :
          pfjetcoll = true;
@@ -1392,19 +1419,28 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
        case 2 : 
          fatjetcoll = true;
          break;
+       case 3 : 
+         CAjetcoll = true;
+         break;
      }
-
      // For Jet Uncertainty
-     //JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty("GR_R_42_V19_AK5PF_Uncertainty.txt");
-
+     char bufferJECU[32];
+     if(pfjetcoll){
+         sprintf(bufferJECU,"AK5PFchs");
+     }else if(calojetcoll){
+         sprintf(bufferJECU,"AK5chs");
+     }else if(fatjetcoll||CAjetcoll){
+         sprintf(bufferJECU,"AK7PFchs");
+     }
      edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-     iSetup.get<JetCorrectionsRecord>().get("AK5PF",JetCorParColl); 
+     iSetup.get<JetCorrectionsRecord>().get(bufferJECU,JetCorParColl); 
      JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
      JetCorrectionUncertainty *jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
-     if(JetHandle.size() > icoll) {//have jet collection
 
-       for( std::vector<pat::Jet>::const_iterator it_jet = JetHandle[icoll]->begin(); it_jet != JetHandle[icoll]->end(); it_jet++ ) 
+    if(JetHandle.size() > icoll) {//have jet collection
+
+    for( std::vector<pat::Jet>::const_iterator it_jet = JetHandle[icoll]->begin(); it_jet != JetHandle[icoll]->end(); it_jet++ ) 
 	 {//loop over jets in collection
 	   if(debug_>11) cout << "  Size " << JetInfo[icoll].Size << " jet pt,eta,phi " << it_jet->pt() << "," << it_jet->eta() << "," << it_jet->phi() << endl;
 
@@ -1414,6 +1450,19 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   }
 
 	   if (it_jet->pt()<=15.) continue; // IMPORTANT: Only book jet with pt>15 GeV. 
+
+       JetInfo[icoll].QGTagsMLP       [JetInfo[icoll].Size] = -999;
+       JetInfo[icoll].QGTagsLikelihood       [JetInfo[icoll].Size] = -1;
+       if(jetcollections_.at(icoll) == "PFJetInfo"){
+           int ijet = it_jet - JetHandle[icoll]->begin();
+           edm::RefToBase<reco::Jet> jetRef(edm::Ref<std::vector <pat::Jet> >(JetHandle[icoll],ijet));
+           if (QGTagsHandleMLP.isValid()){
+               JetInfo[icoll].QGTagsMLP       [JetInfo[icoll].Size] = (*QGTagsHandleMLP)[jetRef];
+           }
+           if (QGTagsHandleLikelihood.isValid()){
+               JetInfo[icoll].QGTagsLikelihood       [JetInfo[icoll].Size] = (*QGTagsHandleLikelihood)[jetRef];
+           }
+       }
 
 	   JetInfo[icoll].Index       [JetInfo[icoll].Size] = JetInfo[icoll].Size;
 	   JetInfo[icoll].NTracks     [JetInfo[icoll].Size] = it_jet->associatedTracks().size();
@@ -1445,17 +1494,50 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
      JetInfo[icoll].Mass        [JetInfo[icoll].Size] = it_jet->mass();
      JetInfo[icoll].Area        [JetInfo[icoll].Size] = it_jet->jetArea();
-     if(fatjetcoll) {
-       JetInfo[icoll].MassD1     [JetInfo[icoll].Size] = it_jet->daughter(0)->mass();
-       JetInfo[icoll].MassD2     [JetInfo[icoll].Size] = it_jet->daughter(1)->mass();
-       JetInfo[icoll].PtD1       [JetInfo[icoll].Size] = it_jet->daughter(0)->pt();
-       JetInfo[icoll].PtD2       [JetInfo[icoll].Size] = it_jet->daughter(1)->pt();
-       JetInfo[icoll].EtaD1      [JetInfo[icoll].Size] = it_jet->daughter(0)->eta();
-       JetInfo[icoll].EtaD2      [JetInfo[icoll].Size] = it_jet->daughter(1)->eta();
-       JetInfo[icoll].PhiD1      [JetInfo[icoll].Size] = it_jet->daughter(0)->phi();
-       JetInfo[icoll].PhiD2      [JetInfo[icoll].Size] = it_jet->daughter(1)->phi();
-       JetInfo[icoll].EtD1       [JetInfo[icoll].Size] = it_jet->daughter(0)->et();
-       JetInfo[icoll].EtD2       [JetInfo[icoll].Size] = it_jet->daughter(1)->et();
+
+     // Subjet structure
+     if(fatjetcoll || CAjetcoll) {
+         //std::cout<<"it_jet->daughter().size() : "<<it_jet->numberOfDaughters()<<std::endl;
+         //std::cout<<"it_jet->getJetConstituents().size() : "<<it_jet->getJetConstituents().size()<<std::endl;
+         JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] = 0;
+         JetInfo[icoll].SubjetsIdxStart [JetInfo[icoll].Size] = 0;
+
+         for(int idx_pre=0;idx_pre<JetInfo[icoll].Size;idx_pre++) 
+             JetInfo[icoll].SubjetsIdxStart[JetInfo[icoll].Size]+=JetInfo[icoll].NSubjets[idx_pre];
+         for(unsigned int ind=0;ind<it_jet->numberOfDaughters();ind++){
+             pat::Jet const * subjet = dynamic_cast<pat::Jet const *>(it_jet->daughter(ind));
+             //if(subjet->pt()<0.1) continue;
+             JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] +=1;
+
+             JetInfo[icoll].SubjetMass_w.push_back(subjet->mass());
+             JetInfo[icoll].SubjetPt_w.push_back(subjet->pt());
+             JetInfo[icoll].SubjetEt_w.push_back(subjet->et());
+             JetInfo[icoll].SubjetEta_w.push_back(subjet->eta());
+             JetInfo[icoll].SubjetPhi_w.push_back(subjet->phi());
+             JetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back(subjet->bDiscriminator("combinedSecondaryVertexBJetTags"));
+             JetInfo[icoll].SubjetPtUncorr_w.push_back(subjet->correctedP4(0).pt());
+             JetInfo[icoll].SubjetArea_w.push_back(subjet->jetArea());
+
+             /*
+             double subjet0Bdisc = subjet->bDiscriminator("combinedSecondaryVertexBJetTags");
+             std::cout<<"bDiscriminator(combinedSecondaryVertexBJetTags) : "<<
+                 subjet0Bdisc<<std::endl;
+             std::cout<<"mass : "<<
+                 subjet->mass() <<" ( "<< it_jet->daughter(ind)->mass() <<" )"<<std::endl;
+             std::cout<<"et : "<<
+                 subjet->et() << " ( "<< it_jet->daughter(ind)->et() <<" )"<<std::endl;
+             std::cout<<"pt : "<<
+                 subjet->pt() << " ( "<< it_jet->daughter(ind)->pt() <<" )"<<std::endl;
+             std::cout<<"eta : "<<
+                 subjet->eta() << " ( "<< it_jet->daughter(ind)->eta() <<" )"<<std::endl;
+             std::cout<<"phi : "<<
+                 subjet->phi() << " ( "<< it_jet->daughter(ind)->phi() <<" )"<<std::endl;
+             std::cout<<"PtUncorr : "<<
+                 subjet->correctedP4(0).pt()<<std::endl;
+             std::cout<<"Area : "<<
+                 subjet->jetArea()<<std::endl;
+             */
+         }
      } 
 
 	   bool JetID = true;
@@ -1535,6 +1617,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
 	   // Jet corrections, B-tagging, and Jet ID information
 	   // now we just fill everything (regardless of availability)
+
 	   JetInfo[icoll].PtCorrRaw   [JetInfo[icoll].Size] = it_jet->correctedJet("Uncorrected"       ).pt();
 	   JetInfo[icoll].PtCorrL2    [JetInfo[icoll].Size] = it_jet->correctedJet("L2Relative"        ).pt(); // L2(rel) 
 	   JetInfo[icoll].PtCorrL3    [JetInfo[icoll].Size] = it_jet->correctedJet("L3Absolute"        ).pt(); // L3(abs) 
@@ -1562,6 +1645,8 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   JetInfo[icoll].SoftMuonByIP3dBJetTags  [JetInfo[icoll].Size] = it_jet->bDiscriminator("softMuonByIP3dBJetTags");
 	   JetInfo[icoll].SoftMuonByPtBJetTags    [JetInfo[icoll].Size] = it_jet->bDiscriminator("softMuonByPtBJetTags");
 	   JetInfo[icoll].DoubleSVHighEffBJetTags [JetInfo[icoll].Size] = it_jet->bDiscriminator("doubleSecondaryVertexHighEffBJetTags"); //// Added by DM 
+       //std::cout<<jetlabel_[icoll]<<" JetInfo["<<icoll<<"].CombinedSVMVABJetTags : "<<JetInfo[icoll].CombinedSVMVABJetTags[JetInfo[icoll].Size]<<std::endl;
+       //std::cout<<jetlabel_[icoll]<<" JetInfo["<<icoll<<"].DoubleSVHighEffBJetTags : "<<JetInfo[icoll].DoubleSVHighEffBJetTags[JetInfo[icoll].Size]<<std::endl;
 
 	   //
 	   // DM: access double secondary vertex info 
@@ -1616,6 +1701,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   JetInfo[icoll].Size++;
 	 }//loop over jets in collection
 	 }//have jet collection
+     delete jecUnc;
      }//loop over collections
 
 
@@ -1768,7 +1854,6 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      }
 #endif
 
-
      vector<const reco::Candidate *> cands;
      vector<const Candidate *>::const_iterator found = cands.begin();
      if(!isData && !skipGenInfo_) {
@@ -1789,6 +1874,21 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      EvtInfo.LumiNo = iEvent.luminosityBlock();
      EvtInfo.Orbit  = iEvent.orbitNumber();
      EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
+
+     EvtInfo.ptHat = -1.;
+     /*
+        // only for RECO, thus used GenProducer instead of HepMC with AOD sample 
+        // https://cmssdt.cern.ch/SDT/lxr/source/SimDataFormats/GeneratorProducts/src/GenEventInfoProduct.cc
+     if(!isData){
+         edm::Handle<HepMCProduct> evtpthat;
+         iEvent.getByLabel("generator", evtpthat);
+         std::cout<<"not data : evtpthat.isValid() : "<<evtpthat.isValid()<<std::endl;
+         if(evtpthat.isValid()){
+             HepMC::GenEvent * myGenEvent = new HepMC::GenEvent(*(evtpthat->GetEvent()));
+             EvtInfo.ptHat = myGenEvent->event_scale();
+         }
+     }
+     */
 
 
      for(unsigned int ri_=0;ri_<2;ri_++){
@@ -1819,9 +1919,14 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	     iEvent.getByLabel("generator", genEventInfo);
 	     if (genEventInfo.isValid()) {
 		     evWeight = genEventInfo->weight();
+             EvtInfo.ptHat = genEventInfo->qScale();
+             //double ptHat_        = (genEventInfo->hasBinningValues() ? genEventInfo->binningValues()[0] : 0.0);
+             //std::cout<<"qScale : "<<genEventInfo->qScale()<<" ( "<< ptHat_<<")"<<std::endl;
 	     }
 	     GenInfo.Weight = evWeight;
 
+         if(debug_)
+             printf(" idx  |    ID -       Name |Stat|  Mo1  Mo2  Da1  Da2 |nMo nDa|    pt       eta     phi   |     px         py         pz        m     |\n"); 
 	     for( std::vector<reco::GenParticle>::const_iterator it_gen = GenHandle->begin(); 
 			     it_gen != GenHandle->end(); it_gen++ ) 
 	     {
@@ -1838,27 +1943,46 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			     int iMo2 = -1;
 			     int iDa1 = -1;
 			     int iDa2 = -1;
+			     int iGrandMo1 = -1;
+			     int iGrandMo2 = -1;
 			     int NMo = it_gen->numberOfMothers();
 			     int NDa = it_gen->numberOfDaughters();
 
 			     found = find(cands.begin(), cands.end(), it_gen->mother(0));
 			     if(found != cands.end()) iMo1 = found - cands.begin() ;
-			     if(iMo1>GenInfo.Size) iMo1 = 0;
+			     //if(iMo1>GenInfo.Size) iMo1 = 0;
 
-			     found = find(cands.begin(), cands.end(), it_gen->mother(1));
+			     found = find(cands.begin(), cands.end(), it_gen->mother(NMo-1));
 			     if(found != cands.end()) iMo2 = found - cands.begin() ;
 
 			     found = find(cands.begin(), cands.end(), it_gen->daughter(0));
 			     if(found != cands.end()) iDa1 = found - cands.begin() ;
 
-			     found = find(cands.begin(), cands.end(), it_gen->daughter(1));
+			     found = find(cands.begin(), cands.end(), it_gen->daughter(NDa-1));
 			     if(found != cands.end()) iDa2 = found - cands.begin() ;
+
+                 if(iMo1!=-1){
+                     found = find(cands.begin(), cands.end(), (GenHandle->begin() + iMo1)->mother(0));
+                     if(found != cands.end()) iGrandMo1 = found - cands.begin() ;
+                 }
+
+                 if(iMo2!=-1){
+                     found = find(cands.begin(), cands.end(), (GenHandle->begin() + iMo2)->mother(0));
+                     if(found != cands.end()) iGrandMo2 = found - cands.begin() ;
+                 }
 
 			     GenInfo.Pt[GenInfo.Size] 		= it_gen->pt();
 			     GenInfo.Eta[GenInfo.Size]	 	= it_gen->eta();
 			     GenInfo.Phi[GenInfo.Size]	 	= it_gen->phi();
 			     GenInfo.Mass[GenInfo.Size]		= it_gen->mass();
 			     GenInfo.PdgID[GenInfo.Size]		= it_gen->pdgId();
+
+                 if(it_gen->pdgId()==22){
+                     // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
+                     GenInfo.PhotonFlag[GenInfo.Size]		= 0;
+                 }else{
+                     GenInfo.PhotonFlag[GenInfo.Size]		= -1;
+                 }
 			     GenInfo.Status[GenInfo.Size]	= it_gen->status();
 			     GenInfo.nMo[GenInfo.Size]		= NMo; 
 			     GenInfo.nDa[GenInfo.Size]		= NDa; 
@@ -1867,9 +1991,180 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 			     GenInfo.Da1[GenInfo.Size]		= iDa1; 
 			     GenInfo.Da2[GenInfo.Size]		= iDa2; 
 
-			     GenInfo.Size++;
-		     }
+                 GenInfo.Mo1PdgID[GenInfo.Size]		= 0; 
+                 GenInfo.Mo2PdgID[GenInfo.Size]		= 0; 
+                 GenInfo.Mo1Status[GenInfo.Size]	= -1; 
+                 GenInfo.Mo2Status[GenInfo.Size]	= -1; 
+                 GenInfo.Da1PdgID[GenInfo.Size]		= 0; 
+                 GenInfo.Da2PdgID[GenInfo.Size]		= 0; 
 
+                 GenInfo.GrandMo1PdgID[GenInfo.Size]= 0; 
+                 GenInfo.GrandMo2PdgID[GenInfo.Size]= 0; 
+                 GenInfo.GrandMo1Status[GenInfo.Size]= -1; 
+                 GenInfo.GrandMo2Status[GenInfo.Size]= -1; 
+
+                 if(iMo1!=-1){
+                     GenInfo.Mo1PdgID[GenInfo.Size]		= (GenHandle->begin() + iMo1)->pdgId(); 
+                     GenInfo.Mo1Status[GenInfo.Size]	= (GenHandle->begin() + iMo1)->status(); 
+                 }
+                 if(iMo2!=-1){
+                     GenInfo.Mo2PdgID[GenInfo.Size]		= (GenHandle->begin() + iMo2)->pdgId(); 
+                     GenInfo.Mo2Status[GenInfo.Size]	= (GenHandle->begin() + iMo2)->status(); 
+                 }
+                 if(iDa1!=-1)
+                     GenInfo.Da1PdgID[GenInfo.Size]		= (GenHandle->begin() + iDa1)->pdgId(); 
+                 if(iDa2!=-1)
+                     GenInfo.Da2PdgID[GenInfo.Size]		= (GenHandle->begin() + iDa2)->pdgId(); 
+
+                 if(iGrandMo1!=-1){
+                     GenInfo.GrandMo1PdgID[GenInfo.Size]		= (GenHandle->begin() + iGrandMo1)->pdgId(); 
+                     GenInfo.GrandMo1Status[GenInfo.Size]		= (GenHandle->begin() + iGrandMo1)->status(); 
+                 }
+                 if(iGrandMo2!=-1){
+                     GenInfo.GrandMo2PdgID[GenInfo.Size]		= (GenHandle->begin() + iGrandMo2)->pdgId(); 
+                     GenInfo.GrandMo2Status[GenInfo.Size]		= (GenHandle->begin() + iGrandMo2)->status(); 
+                 }
+
+			     GenInfo.Size++;
+		     }else if(it_gen->status() == 1){
+                 if(it_gen->pt()<20) continue;  // remove lots of soft photon
+                 // Particles Mothers and Daighters
+                 int iMo1 = -1;
+                 int iMo2 = -1;
+                 int iDa1 = -1;
+                 int iDa2 = -1;
+			     int iGrandMo1 = -1;
+			     int iGrandMo2 = -1;
+                 int nMo = it_gen->numberOfMothers();
+                 int nDa = it_gen->numberOfDaughters();
+
+                 found = find(cands.begin(), cands.end(), it_gen->mother(0));
+                 if(found != cands.end()) iMo1 = found - cands.begin() ;
+
+                 found = find(cands.begin(), cands.end(), it_gen->mother(nMo-1));
+                 if(found != cands.end()) iMo2 = found - cands.begin() ;
+
+                 found = find(cands.begin(), cands.end(), it_gen->daughter(0));
+                 if(found != cands.end()) iDa1 = found - cands.begin() ;
+
+                 found = find(cands.begin(), cands.end(), it_gen->daughter(nDa-1));
+                 if(found != cands.end()) iDa2 = found - cands.begin() ;
+                 const ParticleData * pd = pdt_->particle( it_gen->pdgId() );
+
+                 if(iMo1!=-1){
+                     found = find(cands.begin(), cands.end(), (GenHandle->begin() + iMo1)->mother(0));
+                     if(found != cands.end()) iGrandMo1 = found - cands.begin() ;
+                 }
+
+                 if(iMo2!=-1){
+                     found = find(cands.begin(), cands.end(), (GenHandle->begin() + iMo2)->mother(0));
+                     if(found != cands.end()) iGrandMo2 = found - cands.begin() ;
+                 }
+
+			     GenInfo.Pt[GenInfo.Size] 		= it_gen->pt();
+			     GenInfo.Eta[GenInfo.Size]	 	= it_gen->eta();
+			     GenInfo.Phi[GenInfo.Size]	 	= it_gen->phi();
+			     GenInfo.Mass[GenInfo.Size]		= it_gen->mass();
+			     GenInfo.PdgID[GenInfo.Size]	= it_gen->pdgId();
+			     GenInfo.Status[GenInfo.Size]	= it_gen->status();
+			     GenInfo.nMo[GenInfo.Size]		= nMo; 
+			     GenInfo.nDa[GenInfo.Size]		= nDa; 
+			     GenInfo.Mo1[GenInfo.Size]		= iMo1; 
+			     GenInfo.Mo2[GenInfo.Size]		= iMo2; 
+			     GenInfo.Da1[GenInfo.Size]		= iDa1; 
+			     GenInfo.Da2[GenInfo.Size]		= iDa2; 
+
+                 GenInfo.Mo1PdgID[GenInfo.Size]		= 0; 
+                 GenInfo.Mo2PdgID[GenInfo.Size]		= 0; 
+                 GenInfo.Mo1Status[GenInfo.Size]	= -1; 
+                 GenInfo.Mo2Status[GenInfo.Size]	= -1; 
+                 GenInfo.Da1PdgID[GenInfo.Size]		= 0; 
+                 GenInfo.Da2PdgID[GenInfo.Size]		= 0; 
+                 GenInfo.GrandMo1PdgID[GenInfo.Size]= 0; 
+                 GenInfo.GrandMo2PdgID[GenInfo.Size]= 0; 
+                 GenInfo.GrandMo1Status[GenInfo.Size]= -1; 
+                 GenInfo.GrandMo2Status[GenInfo.Size]= -1; 
+
+                 if(iMo1!=-1){
+                     GenInfo.Mo1PdgID[GenInfo.Size]		= (GenHandle->begin() + iMo1)->pdgId(); 
+                     GenInfo.Mo1Status[GenInfo.Size]	= (GenHandle->begin() + iMo1)->status(); 
+                 }
+                 if(iMo2!=-1){
+                     GenInfo.Mo2PdgID[GenInfo.Size]		= (GenHandle->begin() + iMo2)->pdgId(); 
+                     GenInfo.Mo2Status[GenInfo.Size]	= (GenHandle->begin() + iMo2)->status(); 
+                 }
+                 if(iDa1!=-1)
+                     GenInfo.Da1PdgID[GenInfo.Size]		= (GenHandle->begin() + iDa1)->pdgId(); 
+                 if(iDa2!=-1)
+                     GenInfo.Da2PdgID[GenInfo.Size]		= (GenHandle->begin() + iDa2)->pdgId(); 
+
+                 if(iGrandMo1!=-1){
+                     GenInfo.GrandMo1PdgID[GenInfo.Size]		= (GenHandle->begin() + iGrandMo1)->pdgId(); 
+                     GenInfo.GrandMo1Status[GenInfo.Size]		= (GenHandle->begin() + iGrandMo1)->status(); 
+                 }
+                 if(iGrandMo2!=-1){
+                     GenInfo.GrandMo2PdgID[GenInfo.Size]		= (GenHandle->begin() + iGrandMo2)->pdgId(); 
+                     GenInfo.GrandMo2Status[GenInfo.Size]		= (GenHandle->begin() + iGrandMo2)->status(); 
+                 }
+                 /*
+                    Photon Flag Rule :
+                    -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
+
+                    1). prompt photon : 
+                        {pid(22) && status(3)} or 
+                        {pid(22) && status(1) && M_pid(22) && M_status(3)}
+
+                    2). decay in flight : 
+                        pid(22) && status(1) && M_status(2)
+
+                    3). ISR : 
+                        pid(22) && status(1) && M_status(3) && M_pid(<6 || =21) && GM_status(3) && GM_pid(2212)
+
+                    4). FSR : 
+                        pid(22) && status(1) && M_status(3) && GM_status(3) && GM_pid(!2212)
+                    */
+                 GenInfo.PhotonFlag[GenInfo.Size]		= -1;
+
+                 if(iMo1!=-1 && iMo2!=-1 && it_gen->pdgId()==22){
+                     if(GenInfo.Mo1PdgID[GenInfo.Size]==22 && GenInfo.Mo2PdgID[GenInfo.Size]==22){
+                         if((GenHandle->begin() + iMo1)->status()==3 && (GenHandle->begin() + iMo2)->status()==3)
+                             GenInfo.PhotonFlag[GenInfo.Size]	= 0;
+                     }else if((GenHandle->begin() + iMo1)->status()==2 && (GenHandle->begin() + iMo2)->status()==2){
+                         GenInfo.PhotonFlag[GenInfo.Size]		= 1;
+                     }else if((GenHandle->begin() + iMo1)->status()==3 && (GenHandle->begin() + iMo2)->status()==3 &&
+                             ( ( abs((GenHandle->begin() + iMo1)->pdgId()) < 6 || (GenHandle->begin() + iMo1)->pdgId() == 21 ) &&
+                               ( abs((GenHandle->begin() + iMo1)->pdgId()) < 6 || (GenHandle->begin() + iMo1)->pdgId() == 21 )) 
+                             ){
+                         if(iGrandMo1!=-1 && iGrandMo2!=-1)
+                         if((GenHandle->begin() + iGrandMo1)->pdgId()==2212)
+                         if((GenHandle->begin() + iGrandMo2)->pdgId()==2212)
+                             GenInfo.PhotonFlag[GenInfo.Size]		= 2;
+                     }else if((GenHandle->begin() + iMo1)->status()==3 && (GenHandle->begin() + iMo2)->status()==3 ){
+                         if(iGrandMo1!=-1 && iGrandMo2!=-1)
+                         if((GenHandle->begin() + iGrandMo1)->pdgId()!=2212)
+                         if((GenHandle->begin() + iGrandMo2)->pdgId()!=2212)
+                             GenInfo.PhotonFlag[GenInfo.Size]		= 3;
+                     }
+                 }
+
+			     GenInfo.Size++;
+                 if(debug_)
+                     if( !(it_gen->pdgId()==22 && (GenHandle->begin() + iMo1)->status() == 2  ) )
+                         printf(" %4d | %5d - %10s | %2d | %4d %4d %4d %4d | %2d %2d | %7.3f %10.3f %6.3f | %10.3f %10.3f %10.3f %8.3f |\n",
+                                 (int)(it_gen - GenHandle->begin()),
+                                 it_gen->pdgId(),
+                                 pd->name().c_str(),
+                                 it_gen->status(),
+                                 iMo1,iMo2,iDa1,iDa2,nMo,nDa,
+                                 it_gen->pt(),
+                                 it_gen->eta(),
+                                 it_gen->phi(),
+                                 it_gen->px(),
+                                 it_gen->py(),
+                                 it_gen->pz(),
+                                 it_gen->mass()
+                               );
+             }
 
 		     if (numberOfDaughters>=2) {	
 			     dau1    = it_gen->daughter(0);
@@ -2105,8 +2400,10 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     EvtInfo.PFMETx          = it_pfmet->px(); //Uly 2011-04-04
 		     EvtInfo.PFMETy          = it_pfmet->py(); //Uly 2011-04-04
 
-		     EvtInfo.PFSumEt           = it_pfmet->sumEt();
-		     EvtInfo.PFMETSig        = it_pfmet->mEtSig();
+		     EvtInfo.PFSumEt         = it_pfmet->sumEt();
+		     EvtInfo.PFMETSig        = it_pfmet->mEtSig();  //MET Significance = MET / std::sqrt(SumET)
+		     EvtInfo.PFMETRealSig    = it_pfmet->significance();  //real MET significance
+		     EvtInfo.PFMETlongitudinal    = it_pfmet->e_longitudinal();  //longitudinal component of the vector sum of energy over all object
 
 		     const reco::GenMET * genmet = it_pfmet->genMET();
 		     if (!skipGenInfo_ && genmet!=NULL) {
@@ -2115,6 +2412,23 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     }
 	     }
      }
+
+     edm::Handle<std::vector<pat::MET> >          pfMETHandle_TempPlus;
+     iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus);
+     if(pfMETHandle_TempPlus.isValid()) 
+	     for( std::vector<pat::MET>::const_iterator it_pfmet = pfMETHandle_TempPlus->begin();
+			     it_pfmet != pfMETHandle_TempPlus->end(); it_pfmet++ ) {
+		     EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_pfmet->pt();
+         }
+     edm::Handle<std::vector<pat::MET> >          pfMETHandle_TempDown;
+     iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  pfMETHandle_TempDown);
+     if(pfMETHandle_TempDown.isValid()) 
+	     for( std::vector<pat::MET>::const_iterator it_pfmet = pfMETHandle_TempDown->begin();
+			     it_pfmet != pfMETHandle_TempDown->end(); it_pfmet++ ) {
+		     EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_pfmet->pt();
+         }
+
+
 
 
      edm::Handle<GenEventInfoProduct> GenEventInfoHandle;	 
@@ -2155,8 +2469,24 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     }
 	     }
 	     EvtInfo.nHLT = TrgNames.size();
+         std::pair<int,int>  psValueCombo;
 	     for(unsigned int i=0; i<TrgNames.size();i++){
 		     EvtInfo.HLTbits[i] = (TrgResultsHandle->accept(i) == true) ? 1:0;
+             const std::string triggerName_ = TrgNames.triggerName(i);
+             psValueCombo = hltConfig_.prescaleValues(iEvent, iSetup, triggerName_);
+             EvtInfo.HLTPrescaleFactor[i] = (int)psValueCombo.second;
+
+             //std::cout << "TriggerPath= " << TrgNames.triggerName(i) <<" Prescale= "<< psValueCombo.first*psValueCombo.second 
+             //    <<" "<< (int)psValueCombo.first<<" "<<(int)psValueCombo.second 
+             //    << std::endl;
+
+
+             HLTmaplist_pr = HLTmaplist.find(TrgNames.triggerName(i));
+             if(HLTmaplist_pr != HLTmaplist.end()){
+                 EvtInfo.HLTName2enum[i] = HLTmaplist_pr->second ;
+             }else{
+                 EvtInfo.HLTName2enum[i] = -1;
+             }
 		     // Print out Trigger table
 		     //std::cout << "trigger path= " << TrgNames.triggerName(i) << std::endl;
 	     }
