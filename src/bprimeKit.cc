@@ -80,15 +80,15 @@
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
-#include "EGamma/EGammaAnalysisTools/interface/EGammaCutBasedEleId.h"
+#include "EgammaAnalysis/ElectronTools/interface/EGammaCutBasedEleId.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "EGamma/EGammaAnalysisTools/src/PFIsolationEstimator.cc"
-#include "EGamma/EGammaAnalysisTools/interface/EGammaMvaEleEstimator.h"
-#include "EGamma/EGammaAnalysisTools/interface/ElectronEffectiveArea.h"
+#include "EgammaAnalysis/ElectronTools/src/PFIsolationEstimator.cc"
+#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
+#include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
@@ -286,7 +286,7 @@ bprimeKit::bprimeKit(const edm::ParameterSet& iConfig)
   PhotonisolatorR04.initializePhotonIsolation(kTRUE); //NOTE: this automatically set all the correct defaul veto values
   PhotonisolatorR03.setConeSize(0.3);
   PhotonisolatorR04.setConeSize(0.4);
-  // NOTE: It is safer and crab-compliant to get the files locally, i.e in EGamma/EGammaAnalysisTools/data
+  // NOTE: It is safer and crab-compliant to get the files locally, i.e in EgammaAnalysis/ElectronTools/data
   // (see the downloard.url file in that directory)
   // Alternatively (for tests), they can be read from AFS:
   //*
@@ -1014,7 +1014,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                          /*
                             iso_correct = iso_ch + max(iso_nh + iso_em - rhoPrime * AEff, 0.0) .
                             Effective area : 
-                                http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/EGamma/EGammaAnalysisTools/interface/ElectronEffectiveArea.h?revision=1.3&view=markup
+                                http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h?revision=1.3&view=markup
                             */
                          LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = iso_ch;
                          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = iso_nh;
