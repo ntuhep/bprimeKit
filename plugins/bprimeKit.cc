@@ -108,8 +108,6 @@
 #include <string>
 #include "MyAna/bprimeKit/interface/format.h"
 #include "MyAna/bprimeKit/interface/TriggerBooking.h"
-#include "MyAna/bprimeKit/interface/HitFitInfoBranches.h"
-#include "MyAna/bprimeKit/interface/doHitFit.h"
 #include "MyAna/bprimeKit/interface/objectSelector.h"
 
 //
@@ -164,7 +162,6 @@ private:
   VertexInfoBranches VertexInfo;
   JetInfoBranches JetInfo[MAX_JETCOLLECTIONS];
   PairInfoBranches PairInfo;
-  HitFitInfoBranches HitFitInfo;
   //bool MCtag;
   std::vector<edm::InputTag> muonlabel_;
   std::vector<edm::InputTag> eleclabel_;
@@ -211,11 +208,8 @@ private:
   bool skipGenInfo_;
   bool includeL7_;
 
-  bool doHitFit_;
-  edm::ParameterSet HitFitParameters_;
   edm::ParameterSet SelectionParameters_;
 
-  doHitFit* HitFit_;
   objectSelector* Selector_;
 
   int debug_;
@@ -271,8 +265,6 @@ bprimeKit::bprimeKit(const edm::ParameterSet& iConfig)
   skipGenInfo_         = iConfig.getUntrackedParameter<bool>("SkipGenInfo",false);
   includeL7_           = iConfig.getUntrackedParameter<bool>("IncludeL7",true);
 
-  doHitFit_            = iConfig.getUntrackedParameter<bool>(std::string("doHitFit"),false);
-  HitFitParameters_    = iConfig.getParameter<edm::ParameterSet>("HitFitParameters");
   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>("SelectionParameters");
 
   debug_ = iConfig.getUntrackedParameter<int>("Debug",0);
@@ -342,11 +334,6 @@ void bprimeKit::beginJob()
     JetInfo[i].RegisterTree(root,jetcollections_[i]);
   }
   if(pairColl_>=0) PairInfo.RegisterTree(root);
-  if(doHitFit_) {
-    HitFitInfo.RegisterTree(root);
-    HitFit_ = new doHitFit(HitFitParameters_,EvtInfo,LepInfo[0],JetInfo[0],GenInfo);
-    Selector_ = new objectSelector(SelectionParameters_,LepInfo[0],JetInfo[0],VertexInfo);
-  }
 
 }
 
@@ -2545,47 +2532,6 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	     }
 	     EvtInfo.NofTracks = TrackHandle->size();
 	     EvtInfo.HighPurityFraction = (float)numhighpurity/(float)TrackHandle->size();
-     }
-
-     //HitFit for top/tprime mass
-     if(doHitFit_) { //doHitFit_
-	     if(debug_>5) cout << "\tFill HitFit Info.";
-	     int vtxIdx = -1;
-	     for(int v=0; v<VertexInfo.Size; v++) {
-		     if(vtxIdx>=0) break; //already found primary vertex
-		     if(Selector_->isPrimaryVertex(v)) vtxIdx = v;
-	     }
-	     int selectedLepIdx = -1;
-	     double maxPt = 0.;
-	     if(vtxIdx>=0) { //have primary vertex
-		     for(int l=0; l<LepInfo[0].Size; l++) {
-			     if(Selector_->isGoodElectron(l,vtxIdx)) {
-				     if(LepInfo[0].Et[l] > maxPt) {
-					     selectedLepIdx = l;
-					     maxPt = LepInfo[0].Et[l];
-				     }
-			     }
-			     else if(Selector_->isGoodMuon(l,vtxIdx)) {
-				     if(LepInfo[0].Pt[l] > maxPt) {
-					     selectedLepIdx = l;
-					     maxPt = LepInfo[0].Pt[l];
-				     }
-			     }
-		     }
-
-		     if(selectedLepIdx >= 0) {
-			     std::vector<int> selectedJetsIdx;
-                             std::vector<bool> jetisbtag;
-			     for(int j=0; j<JetInfo[0].Size; j++) {
-				     if(Selector_->isGoodJet(j))
-					     selectedJetsIdx.push_back(j);
-				             jetisbtag.push_back(false);//not going to worry about this now 
-			     }
-
-			     HitFit_->runHitFit(selectedLepIdx,selectedJetsIdx,jetisbtag);
-			     HitFit_->fillHitFitInfo(HitFitInfo);
-		     }
-	     }
      }
 
      if(debug_>11) {
