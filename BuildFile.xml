@@ -13,7 +13,6 @@
 <use   name="RecoEgamma/EgammaTools"/>
 <use   name="PhysicsTools/PatAlgos"/>
 <use   name="CondFormats/JetMETObjects"/>
-<use   name="MyAna/bpkHitFit"/>
 <use   name="JetMETCorrections/Algorithms"/>
 <use   name="JetMETCorrections/Objects"/>
 <use   name="JetMETCorrections/Modules"/>
@@ -24,7 +23,7 @@
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="RecoBTag/SecondaryVertex"/>
 <use   name="root"/>
-<flags EDM_PLUGIN="1"/>
-#<export>
-#  <lib   name="1"/>
-#</export>
+#<flags EDM_PLUGIN="1"/>
+<export>
+  <lib   name="1"/>
+</export>

@@ -196,9 +196,7 @@ process.bprimeKit = cms.EDAnalyzer("bprimeKit",
       gtdigilabel = cms.InputTag("gtDigis"),
       rhocorrectionlabel = cms.InputTag("kt6PFJets","rho"),
       sigmaLabel = cms.InputTag("kt6PFJets","sigma"),
-      puInfoLabel = cms.InputTag("addPileupInfo"),
-      doHitFit = cms.untracked.bool(True)
-
+      puInfoLabel = cms.InputTag("addPileupInfo")
       )
 
 process.TFileService = cms.Service("TFileService",

@@ -88,8 +88,7 @@ process.bprimeKit = cms.EDAnalyzer("bprimeKit",
       tracklabel = cms.InputTag("generalTracks"),
       dcslabel = cms.InputTag("scalersRawToDigi"),
       genevtlabel = cms.InputTag("generator"),
-      gtdigilabel = cms.InputTag("gtDigis"),
-      doHitFit = cms.untracked.bool(True)
+      gtdigilabel = cms.InputTag("gtDigis")
 
       )
 

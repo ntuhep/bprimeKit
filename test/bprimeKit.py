@@ -1580,7 +1580,6 @@ process.bpkitTriggerSequence = cms.Sequence(
           * process.patTriggerEvent
         )
 
-from MyAna.bprimeKit.HitFitParameters_cfi import *
 from MyAna.bprimeKit.ObjectParameters_cfi import *
 
 # rho value for isolation
@@ -1658,8 +1657,6 @@ process.bprimeKit = cms.EDAnalyzer(
           'dataEIDMVA/Electrons_BDTG_TrigV0_Cat6.weights.xml'
           ),
   IncludeL7 = cms.untracked.bool(False),
-  doHitFit = cms.untracked.bool(False),
-  HitFitParameters = defaultHitFitParameters.clone(),
   SelectionParameters = defaultObjectParameters.clone(),
   Debug = cms.untracked.int32(0)
   )
