@@ -142,7 +142,7 @@ int objectSelector::qualityLep(const int lepIdx, const int vtxIdx) const
     return code;
   }
   if(vtxIdx < 0 || vtxIdx > _vertices->Size) {
-    std::cout << "WARNING: Invalid vertex index.  Can't check lepton against vertex.\n";
+    std::cout << "WARNING: Invalid vertex index. Can't check lepton against vertex. Allowing to pass any related selections.\n";
     novtx = true;
     //return code;
   }
