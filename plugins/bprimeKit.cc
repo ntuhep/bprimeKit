@@ -55,6 +55,9 @@
 //  beam energy and fill number
 //#include "DataFormats/Common/interface/ConditionsInEdm.h"
 
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
+
 #include "DataFormats/METReco/interface/CaloMETCollection.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -84,6 +87,10 @@
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
+
+#include "DataFormats/EgammaCandidates/interface/GsfElectronCore.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectronCoreFwd.h"
+
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
 #include "EgammaAnalysis/ElectronTools/src/PFIsolationEstimator.cc"
@@ -125,6 +132,7 @@
 #define Z_MASS          91.1876
 #define MUON_MASS       0.105658
 #define ELECTRON_MASS   0.0005109989
+#define TurnOffInCMSSW73x true
 
 // uncomment the following line for filling the di-jet pairs
 //#define FILL_DIJET_PAIRS 1
@@ -198,6 +206,12 @@ private:
   EGammaMvaEleEstimator* myMVATrig;
   std::vector<std::string> EIDMVAInputTags_;
 
+  // update for CMSSW_7_2_0
+  edm::EDGetTokenT<EcalRecHitCollection> reducedEBRecHitCollectionToken_;
+  edm::EDGetTokenT<EcalRecHitCollection> reducedEERecHitCollectionToken_;
+
+  edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
+
   std::vector<std::string> lepcollections_;
   std::vector<std::string> phocollections_;
   std::vector<std::string> jetcollections_;
@@ -249,6 +263,8 @@ bprimeKit::bprimeKit(const edm::ParameterSet& iConfig)
   sigmaLabel_          = iConfig.getParameter<std::vector<InputTag>>("sigmaLabel"); // For PU correction
   puInfoLabel_         = iConfig.getParameter<std::vector<InputTag> >("puInfoLabel");
 
+  pfToken_             = (consumes<pat::PackedCandidateCollection>(iConfig.getParameter<edm::InputTag>("pfCands")));
+
   // Add 2012 EID simple-cut-based
   conversionsInputTag_    = iConfig.getParameter<edm::InputTag>("conversionsInputTag");
   rhoIsoInputTag          = iConfig.getParameter<edm::InputTag>("rhoIsoInputTag");
@@ -266,6 +282,13 @@ bprimeKit::bprimeKit(const edm::ParameterSet& iConfig)
   includeL7_           = iConfig.getUntrackedParameter<bool>("IncludeL7",true);
 
   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>("SelectionParameters");
+
+  // update for CMSSW_7_2_0
+  reducedEBRecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEBRecHitCollection"));
+  reducedEERecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEERecHitCollection"));
+  // update for CMSSW_7_3_1
+ // reducedEBRecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEBRecHits"));
+  //reducedEERecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEERecHits"));
 
   debug_ = iConfig.getUntrackedParameter<int>("Debug",0);
 
@@ -382,6 +405,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   std::vector<edm::Handle<double> > rhoH;
   std::vector<edm::Handle<double> > sigmaHandle;
+  if(!TurnOffInCMSSW73x)
   for(unsigned il=0; il<rhocorrectionlabel_.size(); il++) {
       rhoH.push_back(edm::Handle<double> ());
       iEvent.getByLabel( rhocorrectionlabel_[il],rhoH[il]);
@@ -399,7 +423,10 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     iEvent.getByLabel( eleclabel_[il], ElectronHandle[il]);
     if(debug_>10) cout << "leps " << il << " electronlabel " << eleclabel_[il] << " with " << ElectronHandle[il]->size() << " entries\n";
   }
+
+  string NonLabel ="";
   for(unsigned il=0; il<taulabel_.size(); il++) {
+    if(NonLabel.compare(taulabel_[il].label()) == 0) continue;
     TauHandle.push_back(edm::Handle<std::vector<pat::Tau> >());
     iEvent.getByLabel( taulabel_[il], TauHandle[il]);
     if(debug_>10) cout << "leps " << il << " taulabel " << taulabel_[il] << " with " << TauHandle[il]->size() << " entries\n";
@@ -423,9 +450,13 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   const reco::VertexCollection *pvCol = VertexHandle.product();
 
   if(offlinePVBSlabel_.size() > 0) iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS);   //Offline primary vertices with Beam Spot constraint //Dmitry
+  if(!TurnOffInCMSSW73x)
   if(tracklabel_.size() > 0) iEvent.getByLabel( tracklabel_[0], TrackHandle);            //get tracks for calculating dRmin (Dmitry)
   if(dcslabel_.size() > 0) iEvent.getByLabel( dcslabel_[0], dcsHandle);	            //refer to ElectroWeakAnalysis/MultiBosons/VgAnalyzerKit.cc (Jacky)
+  if(!TurnOffInCMSSW73x)
   if(tracklabel_.size() > 0) iEvent.getByLabel( tracklabel_[0], tracks_h);	            //Add by Jacky
+
+  printf("[Test] tracklabel is ok?\n");
 
   edm::Handle< pat::TriggerEvent > triggerEvent;
   if(pathltlabel_.size() > 0) iEvent.getByLabel( pathltlabel_[0], triggerEvent );
@@ -435,7 +466,9 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   // electrons
   edm::Handle<reco::GsfElectronCollection> els_h;
-  iEvent.getByLabel("gsfElectrons", els_h);
+  if(!TurnOffInCMSSW73x)
+  iEvent.getByLabel("reducedEgamma","reducedGedGsfElectronCores", els_h);	//  for CMSSW73x
+  //iEvent.getByLabel("gsfElectrons", els_h);
 
   // conversions
   edm::Handle<reco::ConversionCollection> conversions_h;
@@ -449,19 +482,34 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   // rho for isolation
   edm::Handle<double> rhoIso_h;
-  iEvent.getByLabel(rhoIsoInputTag, rhoIso_h);
-  double rhoIso = *(rhoIso_h.product());
+  if(!TurnOffInCMSSW73x)
+      iEvent.getByLabel(rhoIsoInputTag, rhoIso_h);
+  double rhoIso = 0;
+  if(!TurnOffInCMSSW73x)
+      rhoIso = *(rhoIso_h.product());
 
   // All PF Candidate for alternate isolation
   edm::Handle<reco::PFCandidateCollection> pfCandidatesH;
-  //iEvent.getByLabel(particleFlowTag_, pfCandidatesH);
-  iEvent.getByLabel("particleFlow", pfCandidatesH);
-  const  PFCandidateCollection thePfColl = *(pfCandidatesH.product());
+  if(!TurnOffInCMSSW73x)
+      iEvent.getByLabel("particleFlow", pfCandidatesH);
+  PFCandidateCollection thePfColl;
+  if(!TurnOffInCMSSW73x)
+      thePfColl = *(pfCandidatesH.product());
+  
+  // development for CMSSW_73X
+  //edm::Handle<pat::PackedCandidateCollection> thePfColl;
+  //iEvent.getByToken(pfToken_, thePfColl);
+  //const  PackedCandidateCollection thePfColl = pfCandidatesH;
 
 
-  InputTag  reducedEBRecHitCollection(string("reducedEcalRecHitsEB"));
-  InputTag  reducedEERecHitCollection(string("reducedEcalRecHitsEE"));
-  EcalClusterLazyTools lazyTools(iEvent, iSetup, reducedEBRecHitCollection, reducedEERecHitCollection);
+  // update for CMSSW_7_2_0 
+  // reference to (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/plugins/ElectronIdMVAProducer.cc)
+  EcalClusterLazyTools lazyTools(iEvent, iSetup, reducedEBRecHitCollectionToken_, reducedEERecHitCollectionToken_);
+
+  // for CMSSW_5_3_11
+  //InputTag  reducedEBRecHitCollection(string("reducedEcalRecHitsEB"));
+  //InputTag  reducedEERecHitCollection(string("reducedEcalRecHitsEE"));
+  //EcalClusterLazyTools lazyTools(iEvent, iSetup, reducedEBRecHitCollection, reducedEERecHitCollection);
 
   edm::ESHandle<TransientTrackBuilder> builder;
   iSetup.get<TransientTrackRecord>().get("TransientTrackBuilder", builder);
@@ -725,7 +773,9 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
          MuonEffectiveArea::MuonEffectiveAreaTarget EATarget = MuonEffectiveArea::kMuEAFall11MC;
          if(isData) EATarget = MuonEffectiveArea::kMuEAData2012;
          float AEffR03 = MuonEffectiveArea::GetMuonEffectiveArea(MuonEffectiveArea::kMuGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget);
-         double rhoPrime = max((double)*(rhoH[1].product()), 0.0);
+         double rhoPrime = 0;
+	 if(!TurnOffInCMSSW73x)
+	     rhoPrime = max((double)*(rhoH[1].product()), 0.0);
          LepInfo[icoll].IsoRhoCorrR03             [LepInfo[icoll].Size] = 
              LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] + 
              max(LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size]
@@ -773,7 +823,9 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	     LepInfo[icoll].MuInnerTrackNHits      [LepInfo[icoll].Size] = it_mu->innerTrack()->numberOfValidHits(); 
 	     LepInfo[icoll].MuNTrackerHits         [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidTrackerHits(); 
 	     LepInfo[icoll].MuNPixelLayers         [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidPixelHits();
-	     LepInfo[icoll].MuNLostInnerHits       [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfLostHits();
+	     //LepInfo[icoll].MuNLostInnerHits       [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfLostHits();
+         // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
+	     LepInfo[icoll].MuNLostInnerHits       [LepInfo[icoll].Size] = -1; 
 	     LepInfo[icoll].vertexZ                [LepInfo[icoll].Size] = it_mu->vertex().z(); //Uly 2011-04-04
 	     LepInfo[icoll].MuNPixelLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().pixelLayersWithMeasurement(); //Uly 2011-04-04
 	     LepInfo[icoll].MuNTrackLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
@@ -800,7 +852,9 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	   }
 	 if ((it_mu->type() & 0x02) || (it_mu->type() & 0x08)) 
 	   {
-	     LepInfo[icoll].MuNLostOuterHits       [LepInfo[icoll].Size] = it_mu->outerTrack()->hitPattern().numberOfLostHits();
+	     //LepInfo[icoll].MuNLostOuterHits       [LepInfo[icoll].Size] = it_mu->outerTrack()->hitPattern().numberOfLostHits();
+         // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
+	     LepInfo[icoll].MuNLostOuterHits       [LepInfo[icoll].Size] = -1;
 	   }
 
 	 LepInfo[icoll].MuCaloCompat              [LepInfo[icoll].Size] = it_mu->caloCompatibility();
@@ -899,6 +953,9 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
              LepInfo[icoll].LeptonType      [LepInfo[icoll].Size] = 11;
              LepInfo[icoll].Charge          [LepInfo[icoll].Size] = it_el->charge();
              LepInfo[icoll].ChargeGsf       [LepInfo[icoll].Size] = it_el->gsfTrack()->charge();
+
+	     // turn off on CMSSW73X
+	     if(!TurnOffInCMSSW73x)
              if( tracks_h.isValid() && it_el->closestCtfTrackRef().isNonnull() ) //tracks_h may not be exactly right, but should work?
                  LepInfo[icoll].ChargeCtf       [LepInfo[icoll].Size] = it_el->closestCtfTrackRef()->charge();
              LepInfo[icoll].ChargeScPix     [LepInfo[icoll].Size] = it_el->scPixCharge();
@@ -932,6 +989,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
              if(getElectronID_) {
                  // Add 2012 EID (https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification)
                  unsigned int nGsfEle = 0;
+		 if(!TurnOffInCMSSW73x)
                  for(reco::GsfElectronCollection::const_iterator gsfEle = els_h->begin(); 
                          gsfEle!=els_h->end(); ++gsfEle) {
 
@@ -967,22 +1025,31 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                          unsigned int ivtx = 0;
                          VertexRef myVtxRef(VertexHandle, ivtx);
 
-                         isolatorR03.fGetIsolation(&*gsfEle,&thePfColl,myVtxRef,VertexHandle);
-                         isolatorR04.fGetIsolation(&*gsfEle,&thePfColl,myVtxRef,VertexHandle);
+			 if(!TurnOffInCMSSW73x){
+			     isolatorR03.fGetIsolation(&*gsfEle,&thePfColl,myVtxRef,VertexHandle);
+			     isolatorR04.fGetIsolation(&*gsfEle,&thePfColl,myVtxRef,VertexHandle);
+			 }
 
                          // get particle flow isolation
-//                         double iso_ch = (*(isoVals)[0])[ele];
-//                         double iso_em = (*(isoVals)[1])[ele];
-//                         double iso_nh = (*(isoVals)[2])[ele];
-                         double iso_ch = it_el->pfIsolationVariables().chargedHadronIso;
-                         double iso_em = it_el->pfIsolationVariables().photonIso;
-                         double iso_nh = it_el->pfIsolationVariables().neutralHadronIso;
+                         // For CMSSW_5_3_11
+                         //double iso_ch = it_el->pfIsolationVariables().chargedHadronIso;
+                         //double iso_em = it_el->pfIsolationVariables().photonIso;
+                         //double iso_nh = it_el->pfIsolationVariables().neutralHadronIso;
+                         // For CMSSW_7_2_0
+                         // Reference to https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/EgammaCandidates/interface/GsfElectron.h
+                         double iso_ch = it_el->pfIsolationVariables().sumChargedHadronPt;
+                         double iso_em = it_el->pfIsolationVariables().sumPhotonEt;
+                         double iso_nh = it_el->pfIsolationVariables().sumNeutralHadronEt;
+
+                         ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
+                         if(isData) EATarget = ElectronEffectiveArea::kEleEAData2012;
 
                          // working points
-                         bool veto       = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::VETO, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso);
-                         bool loose      = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::LOOSE, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso);
-                         bool medium     = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::MEDIUM, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso);
-                         bool tight      = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::TIGHT, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso);
+                         // update for CMSSW_7_2_0 (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/src/EGammaCutBasedEleId.cc)
+                         bool veto       = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::VETO, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget);
+                         bool loose      = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::LOOSE, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget);
+                         bool medium     = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::MEDIUM, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget);
+                         bool tight      = EgammaCutBasedEleId::PassWP(EgammaCutBasedEleId::TIGHT, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget);
 
                          LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = veto;
                          LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = loose;
@@ -1010,10 +1077,10 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
                          LepInfo[icoll].NeutralHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationNeutral();
                          LepInfo[icoll].PhotonIsoR03              [LepInfo[icoll].Size] = isolatorR03.getIsolationPhoton();
                          LepInfo[icoll].sumPUPtR03                [LepInfo[icoll].Size] = isolatorR03.getIsolationChargedAll();
-                         ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
-                         if(isData) EATarget = ElectronEffectiveArea::kEleEAData2012;
                          float AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea(ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget);
-                         double rhoPrime = max((double)*(rhoH[0].product()), 0.0);
+                         double rhoPrime = 0.;
+			 if(!TurnOffInCMSSW73x)
+			     rhoPrime = max((double)*(rhoH[0].product()), 0.0);
                          LepInfo[icoll].IsoRhoCorrR03             [LepInfo[icoll].Size] = 
                              LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] + 
                              max(LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size]
@@ -1114,7 +1181,9 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
              LepInfo[icoll].ElEnergyErr           [LepInfo[icoll].Size] = it_el->ecalEnergyError();
              LepInfo[icoll].ElMomentumErr         [LepInfo[icoll].Size] = it_el->trackMomentumError();
              //      LepInfo[icoll].ElTrackNHits          [LepInfo[icoll].Size] = it_el->gsfTrack()->recHitsSize();   //CANNOT RUN THIS LINE WITH AODSIM
-             LepInfo[icoll].ElTrackNLostHits      [LepInfo[icoll].Size] = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfLostHits();
+             //LepInfo[icoll].ElTrackNLostHits      [LepInfo[icoll].Size] = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfLostHits();
+             // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
+             LepInfo[icoll].ElTrackNLostHits      [LepInfo[icoll].Size] = -1;
              LepInfo[icoll].ElTrackDz             [LepInfo[icoll].Size] = it_el->gsfTrack()->dz(PrimVtx.position());
              LepInfo[icoll].ElTrackDz_BS          [LepInfo[icoll].Size] = it_el->gsfTrack()->dz(beamSpot.position());
              LepInfo[icoll].ElTrackD0             [LepInfo[icoll].Size] = it_el->gsfTrack()->d0();
@@ -1136,7 +1205,8 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
              LepInfo[icoll].ElClassification	    [LepInfo[icoll].Size] = it_el->classification();
              LepInfo[icoll].ElFBrem     	        [LepInfo[icoll].Size] = it_el->fbrem();
              LepInfo[icoll].ElNumberOfBrems	    [LepInfo[icoll].Size] = it_el->numberOfBrems();
-             LepInfo[icoll].NumberOfExpectedInnerHits[LepInfo[icoll].Size] = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfHits();// Add by Jacky
+             //LepInfo[icoll].NumberOfExpectedInnerHits[LepInfo[icoll].Size] = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfHits();// Add by Jacky
+             LepInfo[icoll].NumberOfExpectedInnerHits[LepInfo[icoll].Size] = it_el->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS);// Add by Jacky
 
              LepInfo[icoll].vertexZ               [LepInfo[icoll].Size] = it_el->vertex().z();//Uly 2011-04-04
 
@@ -1144,7 +1214,8 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
              ConversionFinder convFinder;
 
              // Conversion rejection (Version2).
-             if(tracks_h.isValid()) {
+	     if(!TurnOffInCMSSW73x)
+             if(tracks_h.isValid()) {  // turn off on CMSSW73X
                  if(debug_>15) cout << "   Get conversion info\n";
                  ConversionInfo convInfo = convFinder.getConversionInfo(*it_el, tracks_h, evt_bField);
                  LepInfo[icoll].Eldist 		   [LepInfo[icoll].Size] = convInfo.dist();
@@ -1273,18 +1344,23 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
          LepInfo[icoll].isPFTau         [LepInfo[icoll].Size] = it_tau->isPFTau();    // YoungKyu 2012-10-16
          //LepInfo[icoll].signalCharge         [LepInfo[icoll].Size] = it_tau->signalCharge();    // YoungKyu 2012-11-08
          //hpsPFTau ID  
-         LepInfo[icoll].decayModeFinding[LepInfo[icoll].Size] = it_tau->tauID("decayModeFinding"); // YoungKyu 2012-10-31
-         LepInfo[icoll].byVLooseCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byVLooseCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
-         LepInfo[icoll].byLooseCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byLooseCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
-         LepInfo[icoll].byMediumCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byMediumCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
-         LepInfo[icoll].byTightCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byTightCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
-         LepInfo[icoll].againstElectronLoose[LepInfo[icoll].Size] = it_tau->tauID("againstElectronLoose"); // YoungKyu 2012-10-31
-         LepInfo[icoll].againstElectronMedium[LepInfo[icoll].Size] = it_tau->tauID("againstElectronMedium"); // YoungKyu 2012-10-31
-         LepInfo[icoll].againstElectronTight[LepInfo[icoll].Size] = it_tau->tauID("againstElectronTight"); // YoungKyu 2012-10-31
-         LepInfo[icoll].againstElectronMVA[LepInfo[icoll].Size] = it_tau->tauID("againstElectronMVA"); // YoungKyu 2012-10-31
-         LepInfo[icoll].againstMuonLoose[LepInfo[icoll].Size] = it_tau->tauID("againstMuonLoose"); // YoungKyu 2012-10-31
-         LepInfo[icoll].againstMuonMedium[LepInfo[icoll].Size] = it_tau->tauID("againstMuonMedium"); // YoungKyu 2012-10-31
-         LepInfo[icoll].againstMuonTight[LepInfo[icoll].Size] = it_tau->tauID("againstMuonTight"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].decayModeFinding[LepInfo[icoll].Size] = it_tau->tauID("decayModeFinding"); // YoungKyu 2012-10-31
+	 if(!TurnOffInCMSSW73x)
+	     LepInfo[icoll].byVLooseCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byVLooseCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].byLooseCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].byMediumCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].byTightCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byTightCombinedIsolationDeltaBetaCorr3Hits"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].againstElectronLoose[LepInfo[icoll].Size] = it_tau->tauID("againstElectronLoose"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].againstElectronMedium[LepInfo[icoll].Size] = it_tau->tauID("againstElectronMedium"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].againstElectronTight[LepInfo[icoll].Size] = it_tau->tauID("againstElectronTight"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].againstElectronMVA[LepInfo[icoll].Size] = it_tau->tauID("againstElectronMVA5category"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].againstMuonLoose[LepInfo[icoll].Size] = it_tau->tauID("againstMuonLoose"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].againstMuonMedium[LepInfo[icoll].Size] = it_tau->tauID("againstMuonMedium"); // YoungKyu 2012-10-31
+	 LepInfo[icoll].againstMuonTight[LepInfo[icoll].Size] = it_tau->tauID("againstMuonTight"); // YoungKyu 2012-10-31
+	 //LepInfo[icoll].againstElectronMVA[LepInfo[icoll].Size] = it_tau->tauID("againstElectronMVA"); // YoungKyu 2012-10-31
+	 //LepInfo[icoll].byLooseCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byLooseCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
+	 //LepInfo[icoll].byMediumCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byMediumCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
+	 //LepInfo[icoll].byTightCombinedIsolationDeltaBetaCorr[LepInfo[icoll].Size] = it_tau->tauID("byTightCombinedIsolationDeltaBetaCorr"); // YoungKyu 2012-10-31
 
          if (!isData && !skipGenInfo_) {//MC                                            // YoungKyu 2012-11-08
            if(debug_>15) cout << "   Getting MC information\n";                         // YoungKyu 2012-11-08         
@@ -1330,31 +1406,51 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
            break;//exit(0);
          }
 
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].Pt         [PhotonInfo[icoll].Size] = it_pho->pt();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].Eta        [PhotonInfo[icoll].Size] = it_pho->eta();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].Phi        [PhotonInfo[icoll].Size] = it_pho->phi();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].TrackIso   [PhotonInfo[icoll].Size] = it_pho->trackIso();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].EcalIso    [PhotonInfo[icoll].Size] = it_pho->ecalIso();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].HcalIso    [PhotonInfo[icoll].Size] = it_pho->hcalIso();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].HoverE     [PhotonInfo[icoll].Size] = it_pho->hadronicOverEm();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].SigmaIetaIeta           [PhotonInfo[icoll].Size] = it_pho->sigmaIetaIeta();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].hadTowOverEm            [PhotonInfo[icoll].Size] = it_pho->hadTowOverEm();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          PhotonInfo[icoll].hcalIsoConeDR04_2012    [PhotonInfo[icoll].Size] = it_pho->hcalTowerSumEtConeDR04() + 
              (it_pho->hadronicOverEm() - it_pho->hadTowOverEm())*it_pho->superCluster()->energy()/cosh(it_pho->superCluster()->eta());
 
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          edm::Ptr<reco::Candidate> recoPhoRef = it_pho->originalObjectRef();
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          const reco::Photon *refPhoton = dynamic_cast<const reco::Photon *>(recoPhoRef.get());
 
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
+	 if(!TurnOffInCMSSW73x)
          PhotonInfo[icoll].passelectronveto        [PhotonInfo[icoll].Size] = 
              !ConversionTools::hasMatchedPromptElectron(refPhoton->superCluster(), els_h, conversions_h, beamSpot.position());
 
+	 if(debug_>11) printf("[DEBUG] Line%i\n", __LINE__);
          VertexRef myVtxRef(VertexHandle, 0);
-         PhotonisolatorR03.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
+	 if(!TurnOffInCMSSW73x)
+	     PhotonisolatorR03.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
+	 if(debug_>10) cout << " B4 Photon getIsolation " << endl;
          PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationCharged();
          PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
          PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationPhoton();
 
-         PhotonisolatorR04.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
+	 if(debug_>10) cout << " Af Photon getIsolation " << endl;
+
+	 if(!TurnOffInCMSSW73x)
+	     PhotonisolatorR04.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
          PhotonInfo[icoll].phoPFChIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationCharged();
          PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
          PhotonInfo[icoll].phoPFPhoIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationPhoton();
@@ -1878,6 +1974,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      */
 
 
+  if(!TurnOffInCMSSW73x)
      for(unsigned int ri_=0;ri_<2;ri_++){
 	     if(rhoH[ri_].isValid()) EvtInfo.RhoPU[ri_] = *(rhoH[ri_].product());
 	     if(sigmaHandle[ri_].isValid()) EvtInfo.SigmaPU[ri_] = *(sigmaHandle[ri_].product());
@@ -2456,11 +2553,12 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 		     }
 	     }
 	     EvtInfo.nHLT = TrgNames.size();
-         std::pair<int,int>  psValueCombo;
+	     std::pair<int,int>  psValueCombo;
 	     for(unsigned int i=0; i<TrgNames.size();i++){
 		     EvtInfo.HLTbits[i] = (TrgResultsHandle->accept(i) == true) ? 1:0;
              const std::string triggerName_ = TrgNames.triggerName(i);
              psValueCombo = hltConfig_.prescaleValues(iEvent, iSetup, triggerName_);
+	     // 02/13/2015 : new function for prescale of L1/HLT (http://cmslxr.fnal.gov/source/HLTrigger/HLTcore/plugins/HLTEventAnalyzerAOD.cc)
              EvtInfo.HLTPrescaleFactor[i] = (int)psValueCombo.second;
 
              //std::cout << "TriggerPath= " << TrgNames.triggerName(i) <<" Prescale= "<< psValueCombo.first*psValueCombo.second 
@@ -2520,6 +2618,7 @@ void bprimeKit::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
      //then 25% of HighPurity tracks have to be present in the event for it to be called good event
 
      int numhighpurity=0;
+     if(!TurnOffInCMSSW73x)
      if( TrackHandle.isValid() && !TrackHandle.failedToGet() && TrackHandle->size() > 0 ) {
 
 	     reco::TrackBase::TrackQuality _trackQuality = reco::TrackBase::qualityByName("highPurity");

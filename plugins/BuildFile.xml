@@ -23,7 +23,8 @@
 <use   name="HLTrigger/HLTcore"/>
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="RecoBTag/SecondaryVertex"/>
-#<flags EDM_PLUGIN="1"/>
-<export>
-  <lib   name="1"/>
-</export>
+
+<library file="bprimeKit.cc" name="bprimeKitPlugins">
+<flags EDM_PLUGIN="1"/>
+</library>
+
