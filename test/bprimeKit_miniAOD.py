@@ -397,7 +397,9 @@ process.skimmedCMSTOPTAGSubJets = cms.EDFilter(
 
 
 process.EventUserData = cms.EDProducer(
-    'EventUserData'
+    'EventUserData',
+    pileup = cms.InputTag("addPileupInfo"),
+    pvSrc  = cms.InputTag("offlineSlimmedPrimaryVertices")
 )
 
 process.muonUserData = cms.EDProducer(
