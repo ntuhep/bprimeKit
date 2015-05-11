@@ -1412,22 +1412,14 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             PhotonInfo[icoll].hcalIsoConeDR04_2012    [PhotonInfo[icoll].Size] = it_pho->hcalTowerSumEtConeDR04() +
                   ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
-
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             edm::Ptr<reco::Candidate> recoPhoRef = it_pho->originalObjectRef();
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             const reco::Photon* refPhoton = (const reco::Photon*)( recoPhoRef.get() );
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
+            
             cerr << "refPhoton pointer position: " << refPhoton << endl ;
             cerr << "recoPhotRef.get() results : " << recoPhoRef.get() << endl;
-            if( refPhoton ) {
-               PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] 
-                  = !ConversionTools::hasMatchedPromptElectron( 
-                        refPhoton->superCluster(), 
-                        els_h, conversions_h, 
-                        beamSpot.position() );
-            }
-
             if( !TurnOffInCMSSW73x )
                PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] 
                   = !ConversionTools::hasMatchedPromptElectron( 
@@ -1446,8 +1438,8 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
             if( debug_ > 10 ) { cout << " Af Photon getIsolation " << endl; }
 
-            if( !TurnOffInCMSSW73x )
-            { PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); }
+            if( !TurnOffInCMSSW73x ){ 
+               PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); }
             PhotonInfo[icoll].phoPFChIsoDR04[PhotonInfo[icoll].Size]   = PhotonisolatorR04.getIsolationCharged();
             PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
             PhotonInfo[icoll].phoPFPhoIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationPhoton();
