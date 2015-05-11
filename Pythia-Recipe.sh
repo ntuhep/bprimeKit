@@ -6,7 +6,7 @@ EventCount="300"
 Channel="Tstar900GeV-ggChannel"
 EventDir="$HOME/Events/$Channel/"
 WorkDir="/afs/cern.ch/work/y/yichen/CMSSW_7_3_1_patch2/src/"
-ScriptDir="/afs/cern.ch/work/y/yichen/sripts/"
+ScriptDir="/afs/cern.ch/work/y/yichen/scripts/"
 StoreDir="/tmp/"
 AnaDir="$WorkDir/MyAna/bprimeKit/test/"
 
@@ -84,13 +84,13 @@ while [[ $Label -lt MaxLabel ]] ; do
    echo "#!/bin/bash"                                                      >> $RunFileDir/run_local.sh
    echo "cd $WorkDir"                                                      >> $RunFileDir/run_local.sh
    echo "eval \`scramv1 runtime -sh\`"                                     >> $RunFileDir/run_local.sh
-   echo "cmsRun $RunDir/step1.py &> /dev/null "                            >> $RunFileDir/run_local.sh
-   echo "cmsRun $RunDir/step2.py &> /dev/null "                            >> $RunFileDir/run_local.sh
-   echo "cmsRun $RunDir/step3.py &> /dev/null "                            >> $RunFileDir/run_local.sh
-   echo "cmsRun $RunDir/step4.py &> /dev/null "                            >> $RunFileDir/run_local.sh
-   echo "cmsRun $RunDir/step5.py &> /dev/null "                            >> $RunFileDir/run_local.sh
+   echo "cmsRun $RunFileDir/step1.py &> /dev/null "                        >> $RunFileDir/run_local.sh
+   echo "cmsRun $RunFileDir/step2.py &> /dev/null "                        >> $RunFileDir/run_local.sh
+   echo "cmsRun $RunFileDir/step3.py &> /dev/null "                        >> $RunFileDir/run_local.sh
+   echo "cmsRun $RunFileDir/step4.py &> /dev/null "                        >> $RunFileDir/run_local.sh
+   echo "cmsRun $RunFileDir/step5.py &> /dev/null "                        >> $RunFileDir/run_local.sh
    echo "cd $AnaDir"                                                       >> $RunFileDir/run_local.sh
-   echo "cmsRun $RunDir/bprimeKit_miniAOD-$EventLabel.py &> /dev/null"     >> $RunFileDir/run_local.sh
+   echo "cmsRun $RunFileDir/bprimeKit_miniAOD-$EventLabel.py &> /dev/null" >> $RunFileDir/run_local.sh
    echo "scp $outputFile ensc@ntugrid5.phys.ntu.edu.tw:~/Results/$Channel" >> $RunFileDir/run_local.sh
    echo "rm $output_1 $output_2"                                           >> $RunFileDir/run_local.sh
    echo "rm $output_3 $output_4"                                           >> $RunFileDir/run_local.sh
