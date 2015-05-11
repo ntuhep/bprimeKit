@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CMSSW_VERSION="CMSSW_7_3_1_patch2"
+CMSSW_VERSION="CMSSW_7_4_1_patch1"
 
 scramv1 project CMSSW ${CMSSW_VERSION}
 cd ${CMSSW_VERSION}/src
