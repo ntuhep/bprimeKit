@@ -14,10 +14,9 @@ cd ..
 scram b -j 10
 
 
-git clone https://github.com/ntuhep/bprimeKit MyAna/bprimeKit
+git clone https://github.com/enochnotsocool/bprimeKit.git MyAna/bprimeKit
 cd MyAna/bprimeKit
 git checkout CMSSW_7_3_x.Enoch_Edit
-
 
 cd ../..
 git clone https://github.com/ETHZ/sixie-Muon-MuonAnalysisTools.git UserCode/sixie/Muon/MuonAnalysisTools
