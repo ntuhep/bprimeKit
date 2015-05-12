@@ -688,7 +688,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
       iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
 
       if ( beamSpotHandle.isValid() ) {
-         beamSpot = *beamSpotHandle;
+         beamSpot = *beamSpotHandle.product();
          EvtInfo.BeamSpotX = beamSpot.position().x();
          EvtInfo.BeamSpotY = beamSpot.position().y();
          EvtInfo.BeamSpotZ = beamSpot.position().z();
@@ -1413,19 +1413,15 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             PhotonInfo[icoll].hcalIsoConeDR04_2012    [PhotonInfo[icoll].Size] = it_pho->hcalTowerSumEtConeDR04() +
                   ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            edm::Ptr<reco::Candidate> recoPhoRef = it_pho->originalObjectRef();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            const reco::Photon* refPhoton = (const reco::Photon*)( recoPhoRef.get() );
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             
-            cerr << "refPhoton pointer position: " << refPhoton << endl ;
-            cerr << "recoPhotRef.get() results : " << recoPhoRef.get() << endl;
-            if( !TurnOffInCMSSW73x )
-               PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] 
+            // const reco::Photon* refPhoton = (const reco::Photon*)( it_pho->originalObject() );
+            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
+            // cerr << "refPhoton pointer position: " << refPhoton << endl ;
+            // cerr << "recoPhotRef.get() results : " << recoPhoRef.get() << endl;
+            PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] 
                   = !ConversionTools::hasMatchedPromptElectron( 
-                        refPhoton->superCluster(), 
-                        els_h, conversions_h, 
-                        beamSpot.position() );
+                        it_pho->superCluster() , 
+                        els_h, conversions_h, beamSpot.position() );
 
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             VertexRef myVtxRef( VertexHandle, 0 );
