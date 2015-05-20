@@ -1418,15 +1418,12 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             // cerr << "refPhoton pointer position: " << refPhoton << endl ;
             // cerr << "recoPhotRef.get() results : " << recoPhoRef.get() << endl;
-            PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] 
-                  = !ConversionTools::hasMatchedPromptElectron( 
-                        it_pho->superCluster() , 
-                        els_h, conversions_h, beamSpot.position() );
+            PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
 
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             VertexRef myVtxRef( VertexHandle, 0 );
-            if( !TurnOffInCMSSW73x ){ 
-               PhotonisolatorR03.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); }
+            
+            //PhotonisolatorR03.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); 
             if( debug_ > 10 ) { cout << " B4 Photon getIsolation " << endl; }
             PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]   = PhotonisolatorR03.getIsolationCharged();
             PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
