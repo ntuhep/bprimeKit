@@ -93,6 +93,8 @@
 
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PileUpPFCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PileUpPFCandidateFwd.h"
 #include "EgammaAnalysis/ElectronTools/src/PFIsolationEstimator.cc"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
@@ -405,6 +407,9 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    std::vector<edm::Handle<double> > rhoH;
    std::vector<edm::Handle<double> > sigmaHandle;
+
+   cout << "Attempting to read rhoH ..." << endl; 
+    
    if( !TurnOffInCMSSW73x )
       for( unsigned il = 0; il < rhocorrectionlabel_.size(); il++ ) {
          rhoH.push_back( edm::Handle<double> () );
@@ -473,19 +478,14 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle<reco::ConversionCollection> conversions_h;
    iEvent.getByLabel( conversionsInputTag_, conversions_h );
 
-   // iso deposits
-   //  IsoDepositVals isoVals(isoValInputTags_.size());
-   //  for (size_t j = 0; j < isoValInputTags_.size(); ++j) {
-   //      iEvent.getByLabel(isoValInputTags_[j], isoVals[j]);
-   //  }
-
    // rho for isolation
+   cout << "Attempting to read rhoiso..." << endl;
    edm::Handle<double> rhoIso_h;
    if( !TurnOffInCMSSW73x )
-   { iEvent.getByLabel( rhoIsoInputTag, rhoIso_h ); }
+   iEvent.getByLabel( rhoIsoInputTag, rhoIso_h ); 
    double rhoIso = 0;
    if( !TurnOffInCMSSW73x )
-   { rhoIso = *( rhoIso_h.product() ); }
+   rhoIso = *( rhoIso_h.product() );
 
    // All PF Candidate for alternate isolation
    edm::Handle<reco::PFCandidateCollection> pfCandidatesH;
@@ -504,11 +504,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    // update for CMSSW_7_2_0
    // reference to (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/plugins/ElectronIdMVAProducer.cc)
    EcalClusterLazyTools lazyTools( iEvent, iSetup, reducedEBRecHitCollectionToken_, reducedEERecHitCollectionToken_ );
-
-   // for CMSSW_5_3_11
-   //InputTag  reducedEBRecHitCollection(string("reducedEcalRecHitsEB"));
-   //InputTag  reducedEERecHitCollection(string("reducedEcalRecHitsEE"));
-   //EcalClusterLazyTools lazyTools(iEvent, iSetup, reducedEBRecHitCollection, reducedEERecHitCollection);
 
    edm::ESHandle<TransientTrackBuilder> builder;
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
@@ -771,8 +766,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                if( isData ) { EATarget = MuonEffectiveArea::kMuEAData2012; }
                float AEffR03 = MuonEffectiveArea::GetMuonEffectiveArea( MuonEffectiveArea::kMuGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
                double rhoPrime = 0;
+
                if( !TurnOffInCMSSW73x )
-               { rhoPrime = max( ( double ) * ( rhoH[1].product() ), 0.0 ); }
+               rhoPrime = max( ( double ) * ( rhoH[1].product() ), 0.0 );
+               
                LepInfo[icoll].IsoRhoCorrR03             [LepInfo[icoll].Size] =
                   LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
                   max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size]
@@ -1067,7 +1064,8 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                         float AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
                         double rhoPrime = 0.;
                         if( !TurnOffInCMSSW73x )
-                        { rhoPrime = max( ( double ) * ( rhoH[0].product() ), 0.0 ); }
+                        rhoPrime = max( ( double ) * ( rhoH[0].product() ), 0.0 ); 
+                        
                         LepInfo[icoll].IsoRhoCorrR03             [LepInfo[icoll].Size] =
                            LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
                            max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size]
@@ -1414,25 +1412,23 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                   ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             
-            // const reco::Photon* refPhoton = (const reco::Photon*)( it_pho->originalObject() );
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            // cerr << "refPhoton pointer position: " << refPhoton << endl ;
-            // cerr << "recoPhotRef.get() results : " << recoPhoRef.get() << endl;
             PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
 
             if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
             VertexRef myVtxRef( VertexHandle, 0 );
             
-            //PhotonisolatorR03.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); 
+            // TODO
+            PhotonisolatorR03.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); 
             if( debug_ > 10 ) { cout << " B4 Photon getIsolation " << endl; }
             PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]   = PhotonisolatorR03.getIsolationCharged();
             PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
             PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationPhoton();
 
             if( debug_ > 10 ) { cout << " Af Photon getIsolation " << endl; }
-
-            if( !TurnOffInCMSSW73x ){ 
-               PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); }
+            
+            // TODO
+            PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle );
             PhotonInfo[icoll].phoPFChIsoDR04[PhotonInfo[icoll].Size]   = PhotonisolatorR04.getIsolationCharged();
             PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
             PhotonInfo[icoll].phoPFPhoIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationPhoton();
