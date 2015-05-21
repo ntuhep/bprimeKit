@@ -170,7 +170,7 @@ private:
    VertexInfoBranches VertexInfo;
    JetInfoBranches JetInfo[MAX_JETCOLLECTIONS];
    PairInfoBranches PairInfo;
-   //bool MCtag;
+   
    std::vector<edm::InputTag> muonlabel_;
    std::vector<edm::InputTag> eleclabel_;
    std::vector<edm::InputTag> taulabel_;
@@ -599,13 +599,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             VertexInfo.Pt_Sum[VertexInfo.Size] += ( *it )->pt();
             VertexInfo.Pt_Sum2[VertexInfo.Size] += ( ( *it )->pt() * ( *it )->pt() );
          }
-         //        if( VertexInfo.Pt_Sum2[VertexInfo.Size] > PV_Pt2_Max ) {
-         //     if(PV_Pt2_Max > 0.) cout << "Odd, vertices don't seem to be ordered in sum Pt2\n";
-         //     PV_Pt2_Max = VertexInfo.Pt_Sum2[VertexInfo.Size];
-         // //     PrimVtx = *it_vtx;
-         //        }
-         //Uly 2012-07-19: If we use goodOfflinePrimaryVertices we should drop this bit and just take the first vtx.
-         //also probably shouldn't hard code the cuts
          if( !gotPrimVtx && ( !it_vtx->isFake() && it_vtx->ndof() >= 4. && it_vtx->z() <= 24. && it_vtx->position().Rho() <= 2. ) ) {
             PrimVtx = *it_vtx;
             gotPrimVtx = true;
@@ -653,33 +646,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
          VertexInfo.Size++;
       }
    }
-   /*
-    *    //Pixel Vertices
-    *    const vector<reco::Vertex> VerticesPixel = *VertexHandlePixel;
-    *    if( !VertexHandlePixel.failedToGet() && VertexHandlePixel->size() > 0 ) {
-    *       for(vector<reco::Vertex>::const_iterator it_vtx = VerticesPixel.begin();
-    *             it_vtx != VerticesPixel.end(); it_vtx++ ) {
-    *          if (VertexInfo.Size>=MAX_Vertices) {
-    *             cout << "Pixel Vertices " << VertexInfo.Size << endl;
-    *             fprintf(stderr,"ERROR: number of  Vertices exceeds the size of array.\n");
-    *             break;//exit(0);
-    *          }
-    *          VertexInfo.Type[VertexInfo.Size] = 2;  //Pixel Vertices
-    *          //Only Z coordinate is available for pixel vertices
-    *          //       VertexInfo.x[VertexInfo.Size] = it_vtx->x();
-    *          //       VertexInfo.y[VertexInfo.Size] = it_vtx->y();
-    *          VertexInfo.isValid[VertexInfo.Size] = it_vtx->isValid();
-    *          VertexInfo.Ndof[VertexInfo.Size] = it_vtx->ndof();
-    *          VertexInfo.NormalizedChi2[VertexInfo.Size] = it_vtx->normalizedChi2();
-    *          VertexInfo.z[VertexInfo.Size] = it_vtx->z();
-    *          VertexInfo.Pt_Sum[VertexInfo.Size] = 0.;
-    *          for (reco::Vertex::trackRef_iterator it = it_vtx->tracks_begin();
-    *                it != it_vtx->tracks_end(); it++)  VertexInfo.Pt_Sum[VertexInfo.Size] += (*it)->pt();
-    *          VertexInfo.Size++;
-    *       }
-    *    }
-    *
-    */
    // Get Beam Spot
    if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
    reco::BeamSpot beamSpot;
