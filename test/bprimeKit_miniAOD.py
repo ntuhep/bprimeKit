@@ -525,13 +525,6 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    SelectEvents = cms.vstring('filterPath')
 #    )
 
-#------------------------------------------------------------------------------- 
-# Rho computations 
-#------------------------------------------------------------------------------- 
-from RecoJets.JetProducers.kt4PFJets_cfi import *
-process.load('RecoJets.JetProducers.kt4PFJets_cfi')
-process.kt6PFJetsForIsolation = kt4PFJets.clone( rParam = 0.6, doRhoFastjet = True )
-process.kt6PFJetsForIsolation.Rho_EtaMax = cms.double(2.5)
 
 #------------------------------------------------------------------------------- 
 # BprimeKit setup 

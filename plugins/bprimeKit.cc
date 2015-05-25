@@ -45,18 +45,14 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "DataFormats/METReco/interface/PFMETCollection.h"
 #include "DataFormats/METReco/interface/PFMET.h"
 
 #include "DataFormats/Math/interface/angle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
-
-//  beam energy and fill number
-//#include "DataFormats/Common/interface/ConditionsInEdm.h"
-
-#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
-#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 
 #include "DataFormats/METReco/interface/CaloMETCollection.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -128,6 +124,10 @@
 #include "QuarkGluonTagger/EightTeV/interface/QGTagger.h"
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
+
+
+// Including tool from ggNTuplizer for isolation calculation 
+#include "ggAnalysis/ggNtuplizer/interface/GEDPhoIDTools.h"
 
 
 #define W_MASS          80.403
@@ -1337,6 +1337,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    //=================================================================================
    // Photon
    //=================================================================================
+   
+   // Setting up helper variables for photon management 
+   GEDPhoIDTools* GEDIdTool = new GEDPhoIDTools( iEvent ) ; 
+   
    for( unsigned icoll = 0; icoll < phocollections_.size(); icoll++ ) {
 
       if( icoll >= MAX_PHOCOLLECTIONS ) { break; }
@@ -1385,11 +1389,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             VertexRef myVtxRef( VertexHandle, 0 );
             
             // TODO
-            PhotonisolatorR03.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle ); 
             if( debug_ > 10 ) { cout << " B4 Photon getIsolation " << endl; }
-            PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]   = PhotonisolatorR03.getIsolationCharged();
-            PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
-            PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationPhoton();
+            PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]   = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::h     ) ;
+            PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::h0    ) ;   
+            PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::gamma ) ;  
 
             if( debug_ > 10 ) { cout << " Af Photon getIsolation " << endl; }
             
@@ -1417,6 +1420,9 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
          }//loop over photons
       }//have photons collection
    }
+
+   // Removing remaining tool 
+   delete GEDIdTool ; 
 
    //=================================================================================
    // Jets
