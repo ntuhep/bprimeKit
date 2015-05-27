@@ -114,6 +114,7 @@
 #include "MyAna/bprimeKit/interface/format.h"
 #include "MyAna/bprimeKit/interface/TriggerBooking.h"
 #include "MyAna/bprimeKit/interface/objectSelector.h"
+#include "MyAna/bprimeKit/interface/GEDPhoIDTools.h"
 
 //
 // DM: Addiign header for IVF and double b tagging
@@ -127,7 +128,6 @@
 
 
 // Including tool from ggNTuplizer for isolation calculation 
-#include "ggAnalysis/ggNtuplizer/interface/GEDPhoIDTools.h"
 
 
 #define W_MASS          80.403
@@ -1338,7 +1338,8 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    // Photon
    //=================================================================================
    
-   // Setting up helper variables for photon management 
+   // Setting up helper variables for photon management
+   if( debug_ > 10 ) cout <<"Creating new tool" << endl;
    GEDPhoIDTools* GEDIdTool = new GEDPhoIDTools( iEvent ) ; 
    
    for( unsigned icoll = 0; icoll < phocollections_.size(); icoll++ ) {

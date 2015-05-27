@@ -97,6 +97,7 @@ process.source = cms.Source("PoolSource",
 )
 
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
+process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 process.load("Configuration.EventContent.EventContent_cff")
 process.load('Configuration.StandardSequences.Geometry_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
@@ -524,7 +525,6 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
 #    SelectEvents = cms.vstring('filterPath')
 #    )
-
 
 #------------------------------------------------------------------------------- 
 # BprimeKit setup 

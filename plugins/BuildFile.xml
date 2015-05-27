@@ -24,7 +24,4 @@
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="RecoBTag/SecondaryVertex"/>
 
-<library file="bprimeKit.cc" name="bprimeKitPlugins">
 <flags EDM_PLUGIN="1"/>
-</library>
-
