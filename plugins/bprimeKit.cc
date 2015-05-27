@@ -24,10 +24,7 @@
 #include <TLorentzVector.h>
 #include <map>
 
-#include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Run.h"
-#include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -42,10 +39,8 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "DataFormats/METReco/interface/PFMETCollection.h"
 #include "DataFormats/METReco/interface/PFMET.h"
@@ -61,7 +56,6 @@
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "FWCore/Common/interface/TriggerNames.h"
-#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "DataFormats/PatCandidates/interface/TriggerEvent.h"
 #include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
@@ -91,8 +85,6 @@
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PileUpPFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PileUpPFCandidateFwd.h"
-#include "EgammaAnalysis/ElectronTools/src/PFIsolationEstimator.cc"
-#include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
@@ -111,10 +103,7 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
 #include <string>
-#include "MyAna/bprimeKit/interface/format.h"
-#include "MyAna/bprimeKit/interface/TriggerBooking.h"
-#include "MyAna/bprimeKit/interface/objectSelector.h"
-#include "MyAna/bprimeKit/interface/GEDPhoIDTools.h"
+#include "MyAna/bprimeKit/interface/bprimeKit.h"
 
 //
 // DM: Addiign header for IVF and double b tagging
@@ -135,7 +124,7 @@
 #define MUON_MASS       0.105658
 #define ELECTRON_MASS   0.0005109989
 #define TurnOffInCMSSW73x true
-
+#define TurnOnInCMSSW_7_4_1 false
 // uncomment the following line for filling the di-jet pairs
 //#define FILL_DIJET_PAIRS 1
 
@@ -146,97 +135,6 @@ using namespace pat;
 using namespace math;
 using namespace ROOT;
 
-#define MAX_LEPCOLLECTIONS 3
-#define MAX_PHOCOLLECTIONS 3
-#define MAX_JETCOLLECTIONS 3
-
-class bprimeKit : public edm::EDAnalyzer {
-public:
-   explicit bprimeKit( const edm::ParameterSet& ) ;
-   ~bprimeKit();
-
-private:
-   virtual void beginJob() ;
-   virtual void analyze( const edm::Event&, const edm::EventSetup& ) ;
-   virtual void endJob() ;
-
-   virtual void beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup );
-   virtual void endRun( edm::Run const&, edm::EventSetup const& );
-
-
-   TTree* root;
-   EvtInfoBranches EvtInfo;
-   GenInfoBranches GenInfo;
-   LepInfoBranches LepInfo[MAX_LEPCOLLECTIONS];
-   PhotonInfoBranches PhotonInfo[MAX_PHOCOLLECTIONS];
-   VertexInfoBranches VertexInfo;
-   JetInfoBranches JetInfo[MAX_JETCOLLECTIONS];
-   PairInfoBranches PairInfo;
-   
-   std::vector<edm::InputTag> muonlabel_;
-   std::vector<edm::InputTag> eleclabel_;
-   std::vector<edm::InputTag> taulabel_;
-   std::vector<edm::InputTag> pholabel_;
-   std::vector<edm::InputTag> jetlabel_;
-   std::vector<edm::InputTag> metlabel_;
-   std::vector<edm::InputTag> pfmetlabel_;
-   std::vector<edm::InputTag> pfjetlabel_;
-   std::vector<edm::InputTag> genlabel_;
-   std::vector<edm::InputTag> hltlabel_;
-   std::vector<edm::InputTag> pathltlabel_;
-   std::vector<edm::InputTag> offlinePVlabel_;
-   std::vector<edm::InputTag> offlinePVBSlabel_;
-   std::vector<edm::InputTag> offlineBSlabel_;
-   std::vector<edm::InputTag> tracklabel_;
-   std::vector<edm::InputTag> dcslabel_;
-   std::vector<edm::InputTag> genevtlabel_;
-   std::vector<edm::InputTag> gtdigilabel_;
-   std::vector<edm::InputTag> rhocorrectionlabel_;
-   std::vector<edm::InputTag> sigmaLabel_;
-   std::vector<edm::InputTag> puInfoLabel_;
-
-   // Add 2012 EID simple-cut-based
-   edm::InputTag               conversionsInputTag_;
-   edm::InputTag               rhoIsoInputTag;
-   std::vector<edm::InputTag>  isoValInputTags_;
-   PFIsolationEstimator isolatorR03;
-   PFIsolationEstimator isolatorR04;
-   PFIsolationEstimator PhotonisolatorR03;
-   PFIsolationEstimator PhotonisolatorR04;
-
-   EGammaMvaEleEstimator* myMVANonTrig;
-   EGammaMvaEleEstimator* myMVATrig;
-   std::vector<std::string> EIDMVAInputTags_;
-
-   // update for CMSSW_7_2_0
-   edm::EDGetTokenT<EcalRecHitCollection> reducedEBRecHitCollectionToken_;
-   edm::EDGetTokenT<EcalRecHitCollection> reducedEERecHitCollectionToken_;
-
-   edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
-
-   std::vector<std::string> lepcollections_;
-   std::vector<std::string> phocollections_;
-   std::vector<std::string> jetcollections_;
-   std::vector<int> jettype_;//true for pf jets, false for calo
-
-   int pairColl_;//which lepton collection to use for pairs
-   bool getElectronID_;
-   bool skipGenInfo_;
-   bool includeL7_;
-
-   edm::ParameterSet SelectionParameters_;
-
-   objectSelector* Selector_;
-
-   int debug_;
-   map < std::string, int > HLTmaplist;
-   map < std::string, int >::iterator HLTmaplist_pr;
-   HLTConfigProvider hltConfig_;
-};
-
-// constants, enums and typedefs for 2012 EID
-typedef std::vector< edm::Handle< edm::ValueMap<reco::IsoDeposit> > >   IsoDepositMaps;
-typedef std::vector< edm::Handle< edm::ValueMap<double> > >             IsoDepositVals;
 
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
 {
@@ -248,7 +146,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    eleclabel_           = iConfig.getParameter<std::vector<InputTag> >( "eleclabel" ); // "cleanPatElectrons"
    taulabel_            = iConfig.getParameter<std::vector<InputTag> >( "taulabel" ); // "selectedPatTausPFlow"
    pholabel_            = iConfig.getParameter<std::vector<InputTag> >( "pholabel" );
-   jetlabel_            = iConfig.getParameter<std::vector<InputTag> >( "jetlabel" ); // "cleanPatJets"
+   // jetlabel_            = iConfig.getParameter<std::vector<InputTag> >( "jetlabel" ); // "cleanPatJets"
    metlabel_            = iConfig.getParameter<std::vector<InputTag> >( "metlabel" ); //"patMETs"
    pfmetlabel_          = iConfig.getParameter<std::vector<InputTag> >( "pfmetlabel" ); //"pfpatMETs"
    genlabel_            = iConfig.getParameter<std::vector<InputTag> >( "genlabel" ); // "genParticles"
@@ -387,18 +285,16 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::ESHandle<ParticleDataTable> pdt_;
    iSetup.getData( pdt_ );
    if( debug_ > 0 ) { cout << "Begin Analyze" << endl; }
-   bool isData = iEvent.isRealData();   // Add by Jacky
+   isData = iEvent.isRealData();   // Add by Jacky
 
-   std::vector< edm::Handle<std::vector<pat::Muon> > > MuonHandle;
-   std::vector< edm::Handle<std::vector<pat::Electron> > > ElectronHandle;
-   std::vector< edm::Handle<std::vector<pat::Tau> > > TauHandle;
-   std::vector< edm::Handle<std::vector<pat::Photon> > > PhoHandle;
+   std::vector<edm::Handle<std::vector<pat::Muon    >>> MuonHandle;
+   std::vector<edm::Handle<std::vector<pat::Electron>>> ElectronHandle;
+   std::vector<edm::Handle<std::vector<pat::Tau     >>> TauHandle;
    edm::Handle<std::vector<pat::MET> >          METHandle;
    edm::Handle<std::vector<pat::MET> >          pfMETHandle;
    std::vector< edm::Handle<std::vector<pat::Jet> > >     JetHandle;  //PFJets
 
    edm::Handle<reco::GenParticleCollection>     GenHandle;
-   edm::Handle<reco::VertexCollection>          VertexHandle;
    edm::Handle<reco::VertexCollection>          VertexHandleBS; //Dmitry
    //edm::Handle<reco::VertexCollection>          VertexHandlePixel; //Dmitry
    edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
@@ -408,8 +304,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    std::vector<edm::Handle<double> > rhoH;
    std::vector<edm::Handle<double> > sigmaHandle;
 
-   cout << "Attempting to read rhoH ..." << endl; 
-    
    if( !TurnOffInCMSSW73x )
       for( unsigned il = 0; il < rhocorrectionlabel_.size(); il++ ) {
          rhoH.push_back( edm::Handle<double> () );
@@ -436,11 +330,8 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
       iEvent.getByLabel( taulabel_[il], TauHandle[il] );
       if( debug_ > 10 ) { cout << "leps " << il << " taulabel " << taulabel_[il] << " with " << TauHandle[il]->size() << " entries\n"; }
    }
-   for( unsigned il = 0; il < pholabel_.size(); il++ ) {
-      PhoHandle.push_back( edm::Handle<std::vector<pat::Photon> >() );
-      iEvent.getByLabel( pholabel_[il], PhoHandle[il] );
-      if( debug_ > 10 ) { cout << "photons " << il << " pholabel " << pholabel_[il] << " with " << PhoHandle[il]->size() << " entries\n"; }
-   }
+
+   if( TurnOnInCMSSW_7_4_1 )
    for( unsigned il = 0; il < jetlabel_.size(); il++ ) {
       JetHandle.push_back( edm::Handle<std::vector<pat::Jet> >() );
       iEvent.getByLabel( jetlabel_[il], JetHandle[il] );
@@ -452,7 +343,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if( !isData && genlabel_.size() > 0 ) { iEvent.getByLabel( genlabel_[0], GenHandle ); }
 
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
-   const reco::VertexCollection* pvCol = VertexHandle.product();
+   //const reco::VertexCollection* pvCol = VertexHandle.product();
 
    if( offlinePVBSlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS ); } //Offline primary vertices with Beam Spot constraint //Dmitry
    if( !TurnOffInCMSSW73x )
@@ -491,7 +382,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::Handle<reco::PFCandidateCollection> pfCandidatesH;
    if( !TurnOffInCMSSW73x )
    { iEvent.getByLabel( "particleFlow", pfCandidatesH ); }
-   PFCandidateCollection thePfColl;
    if( !TurnOffInCMSSW73x )
    { thePfColl = *( pfCandidatesH.product() ); }
 
@@ -505,11 +395,12 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    // reference to (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/plugins/ElectronIdMVAProducer.cc)
    EcalClusterLazyTools lazyTools( iEvent, iSetup, reducedEBRecHitCollectionToken_, reducedEERecHitCollectionToken_ );
 
-   edm::ESHandle<TransientTrackBuilder> builder;
-   iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
-   TransientTrackBuilder thebuilder = *( builder.product() );
-   const TransientTrackBuilder* transientTrackBuilder = builder.product();
-
+   if( TurnOnInCMSSW_7_4_1 ){
+   //    edm::ESHandle<TransientTrackBuilder> builder;
+   //    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
+   //    TransientTrackBuilder thebuilder = *( builder.product() );
+   //    const TransientTrackBuilder* transientTrackBuilder = builder.product();
+   }
 
    //  get ConditionsInRunBlock (Only for RECO)
    /*
@@ -790,14 +681,16 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                LepInfo[icoll].MuNTrackLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
 
                // Reference from UserCode/MitProd/TreeFiller/src/FillerMuons.cc
-               const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
-               reco::Vertex thevtx = pvCol->at( 0 );
-               const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
-               const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
-               //std::cout<<"Muon Ip3dPVSignificance : "<<thesign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
-               LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
-               LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
-               LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
+               if( TurnOnInCMSSW_7_4_1 ) {
+               //   const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
+               //   reco::Vertex thevtx = pvCol->at( 0 );
+               //   const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
+               //   const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
+               //   //std::cout<<"Muon Ip3dPVSignificance : "<<thesign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
+               //   LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
+               //   LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
+               //   LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
+               }
             }
 
             if ( it_mu->type() & 0x02 ) {
@@ -950,9 +843,11 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                         // MVA-ID  -- start
                         const GsfElectronCollection theEGamma = *( els_h.product() );
                         Vertex dummy;
-                        const Vertex* pv = &dummy;
+                        if( TurnOffInCMSSW73x ) {
+                        //const Vertex* pv = &dummy;
+                        }
                         if ( VertexHandle->size() != 0 ) {
-                           pv = &*VertexHandle->begin();
+                        //   pv = &*VertexHandle->begin();
                         } else { // create a dummy PV
                            Vertex::Error e;
                            e( 0, 0 ) = 0.0015 * 0.0015;
@@ -962,13 +857,15 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                            dummy = Vertex( p, e, 0, 0, 0 );
                         }
 
-                        bool debugMVAclass = false;
-                        float myMVANonTrigMethod =
-                           myMVANonTrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
-                        float myMVATrigMethod =
-                           myMVATrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
-                        LepInfo[icoll].EgammaMVANonTrig   [LepInfo[icoll].Size] = myMVANonTrigMethod;
-                        LepInfo[icoll].EgammaMVATrig      [LepInfo[icoll].Size] = myMVATrigMethod;
+                        //bool debugMVAclass = false;
+                        if ( TurnOnInCMSSW_7_4_1 ) {
+                        //   float myMVANonTrigMethod =
+                        //      myMVANonTrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
+                        //   float myMVATrigMethod =
+                        //      myMVATrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
+                        //   LepInfo[icoll].EgammaMVANonTrig   [LepInfo[icoll].Size] = myMVANonTrigMethod;
+                        //   LepInfo[icoll].EgammaMVATrig      [LepInfo[icoll].Size] = myMVATrigMethod;
+                        }
                         // MVA-ID  -- end
 
                         // alternative way to access to PF iso
@@ -1143,14 +1040,16 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             LepInfo[icoll].ElTrackDxy_PVBS       [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx_BS.position() );
 
             // Reference from UserCode/MitProd/TreeFiller/src/FillerElectrons.cc
-            const reco::TransientTrack& tt = transientTrackBuilder->build( it_el->gsfTrack() );
-            reco::Vertex thevtx = pvCol->at( 0 );
-            const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
-            const double gsfsign   = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
-            //std::cout<<"Electron Ip3dPVSignificance : "<<gsfsign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
-            LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value();
-            LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
-            LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
+            if( TurnOnInCMSSW_7_4_1 ) {
+            //   const reco::TransientTrack& tt = transientTrackBuilder->build( it_el->gsfTrack() );
+            //   reco::Vertex thevtx = pvCol->at( 0 );
+            //   const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
+            //   const double gsfsign   = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
+            //   //std::cout<<"Electron Ip3dPVSignificance : "<<gsfsign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
+            //   LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value();
+            //   LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
+            //   LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
+            }
 
             LepInfo[icoll].ElNClusters           [LepInfo[icoll].Size] = it_el->basicClustersSize();
             LepInfo[icoll].ElClassification     [LepInfo[icoll].Size] = it_el->classification();
@@ -1334,97 +1233,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    }//loop over collections
 
-   //=================================================================================
-   // Photon
-   //=================================================================================
-   
-   // Setting up helper variables for photon management
-   if( debug_ > 10 ) cout <<"Creating new tool" << endl;
-   GEDPhoIDTools* GEDIdTool = new GEDPhoIDTools( iEvent ) ; 
-   
-   for( unsigned icoll = 0; icoll < phocollections_.size(); icoll++ ) {
-
-      if( icoll >= MAX_PHOCOLLECTIONS ) { break; }
-      if( debug_ > 5 ) { cout << "Fill photon info, collection " << icoll << " with name " << phocollections_[icoll] << endl; }
-
-      memset( &PhotonInfo[icoll], 0x00, sizeof( PhotonInfo[icoll] ) );
-
-      if( PhoHandle.size() > icoll ) { //have photon collection
-         if( debug_ > 10 ) { cout << " Photon collection size " << PhoHandle[icoll]->size() << endl; }
-         for( std::vector<pat::Photon>::const_iterator it_pho = PhoHandle[icoll]->begin();
-              it_pho != PhoHandle[icoll]->end(); it_pho++ ) {//loop over photon in collection
-
-            if( debug_ > 11 ) { cout << "  Size " << PhotonInfo[icoll].Size << " photon pt,eta,phi " << it_pho->pt() << "," << it_pho->eta() << "," << it_pho->phi() << endl; }
-            if ( PhotonInfo[icoll].Size >= MAX_PHOTONS ) {
-               fprintf( stderr, "ERROR: number of photons exceeds the size of array.\n" );
-               break;//exit(0);
-            }
-
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].Pt         [PhotonInfo[icoll].Size] = it_pho->pt();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].Eta        [PhotonInfo[icoll].Size] = it_pho->eta();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].Phi        [PhotonInfo[icoll].Size] = it_pho->phi();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].TrackIso   [PhotonInfo[icoll].Size] = it_pho->trackIso();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].EcalIso    [PhotonInfo[icoll].Size] = it_pho->ecalIso();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].HcalIso    [PhotonInfo[icoll].Size] = it_pho->hcalIso();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].HoverE     [PhotonInfo[icoll].Size] = it_pho->hadronicOverEm();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].SigmaIetaIeta           [PhotonInfo[icoll].Size] = it_pho->sigmaIetaIeta();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].hadTowOverEm            [PhotonInfo[icoll].Size] = it_pho->hadTowOverEm();
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].hcalIsoConeDR04_2012    [PhotonInfo[icoll].Size] = it_pho->hcalTowerSumEtConeDR04() +
-                  ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            PhotonInfo[icoll].passelectronveto[PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
-
-            if( debug_ > 11 ) { printf( "[DEBUG] Line%i\n", __LINE__ ); }
-            VertexRef myVtxRef( VertexHandle, 0 );
-            
-            // TODO
-            if( debug_ > 10 ) { cout << " B4 Photon getIsolation " << endl; }
-            PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]   = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::h     ) ;
-            PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::h0    ) ;   
-            PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::gamma ) ;  
-
-            if( debug_ > 10 ) { cout << " Af Photon getIsolation " << endl; }
-            
-            // TODO
-            PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle );
-            PhotonInfo[icoll].phoPFChIsoDR04[PhotonInfo[icoll].Size]   = PhotonisolatorR04.getIsolationCharged();
-            PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
-            PhotonInfo[icoll].phoPFPhoIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationPhoton();
-
-            PhotonInfo[icoll].r9[PhotonInfo[icoll].Size]  = it_pho->r9();
-
-            if ( !isData && !skipGenInfo_ ) { //MC
-               if( debug_ > 15 ) { cout << "   Getting MC information\n"; }
-               const reco::Candidate* gen = it_pho->genPhoton();
-
-               if ( gen != NULL ) {
-                  PhotonInfo[icoll].GenPt        [PhotonInfo[icoll].Size] = gen->pt();
-                  PhotonInfo[icoll].GenEta       [PhotonInfo[icoll].Size] = gen->eta();
-                  PhotonInfo[icoll].GenPhi       [PhotonInfo[icoll].Size] = gen->phi();
-                  PhotonInfo[icoll].GenPdgID     [PhotonInfo[icoll].Size] = gen->pdgId();
-               }
-
-            }
-            PhotonInfo[icoll].Size++;
-         }//loop over photons
-      }//have photons collection
-   }
-
-   // Removing remaining tool 
-   delete GEDIdTool ; 
-
+   fillPhoton( iEvent , iSetup );
    //=================================================================================
    // Jets
    //=================================================================================

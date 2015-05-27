@@ -575,8 +575,9 @@ process.bprimeKit = cms.EDAnalyzer(
     conversionsInputTag       = cms.InputTag("reducedEgamma","reducedConversions"),
     rhoIsoInputTag            = cms.InputTag("kt6PFJetsForIsolation", "rho"),	# not used in 73x
     
-    isoValInputTags         = cms.VInputTag( cms.InputTag('elPFIsoValueCharged03PFIdPFIso'),
-	    cms.InputTag('elPFIsoValueGamma03PFIdPFIso'),
+    isoValInputTags         = cms.VInputTag( 
+       cms.InputTag('elPFIsoValueCharged03PFIdPFIso'),
+	    cms.InputTag('elPFIsoValueGamma03PFIdPFIso'  ),
 	    cms.InputTag('elPFIsoValueNeutral03PFIdPFIso')),
     EIDMVAInputTags         = cms.vstring(
 	    'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat1.weights.xml',
