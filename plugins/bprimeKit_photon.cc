@@ -16,7 +16,7 @@
 //------------------------------------------------------------------------------ 
 //   enums and typedefs 
 //------------------------------------------------------------------------------ 
-typedef std::vector<pat::Photon>   PhotonList 
+typedef std::vector<pat::Photon>   PhotonList; 
 typedef edm::Handle<PhotonList>    PhotonHandle;
 typedef std::vector<PhotonHandle>  PhotonHandleList;
 
