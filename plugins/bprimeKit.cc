@@ -1233,11 +1233,14 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    }//loop over collections
 
+   //=================================================================================
+   // Photons 
+   //=================================================================================
    fillPhoton( iEvent , iSetup );
+
    //=================================================================================
    // Jets
    //=================================================================================
-   // Gluon tagger
    edm::Handle<edm::ValueMap<float> >  QGTagsHandleMLP;
    edm::Handle<edm::ValueMap<float> >  QGTagsHandleLikelihood;
    iEvent.getByLabel( "QGTagger", "qgMLP", QGTagsHandleMLP );
@@ -1310,18 +1313,18 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             JetInfo[icoll].Index       [JetInfo[icoll].Size] = JetInfo[icoll].Size;
             JetInfo[icoll].NTracks     [JetInfo[icoll].Size] = it_jet->associatedTracks().size();
             JetInfo[icoll].Eta         [JetInfo[icoll].Size] = it_jet->eta();
-
             JetInfo[icoll].Pt          [JetInfo[icoll].Size] = it_jet->pt();
             JetInfo[icoll].Et          [JetInfo[icoll].Size] = it_jet->et();
-
-
             jecUnc->setJetEta( it_jet->eta() );
             jecUnc->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
-            if( fabs( it_jet->eta() ) <= 5.0 ) { JetInfo[icoll].Unc         [JetInfo[icoll].Size] = jecUnc->getUncertainty( true ); }
+            if( fabs( it_jet->eta() ) <= 5.0 ) { 
+               JetInfo[icoll].Unc         [JetInfo[icoll].Size] = jecUnc->getUncertainty( true ); 
+            }
 
             JetInfo[icoll].Phi         [JetInfo[icoll].Size] = it_jet->phi();
             JetInfo[icoll].JetCharge   [JetInfo[icoll].Size] = it_jet->jetCharge();
             JetInfo[icoll].NConstituents[JetInfo[icoll].Size] = it_jet->numberOfDaughters();
+            
             if( pfjetcoll ) {
                JetInfo[icoll].NCH[JetInfo[icoll].Size] = it_jet->chargedMultiplicity();
                JetInfo[icoll].CEF[JetInfo[icoll].Size] = it_jet->chargedEmEnergyFraction();
@@ -1422,7 +1425,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                      const reco::PFCandidatePtr pfcand = it_jet->getPFConstituent( i );
                      reco::TrackRef trackref = pfcand->trackRef();
                      if( trackref.isNonnull() ) {
-                        //            std::cout<<JetInfo[icoll].Eta[JetInfo[icoll].Size]<<" "<<(trackref)->pt() <<" "<< (trackref)->eta()<<" "<<(trackref)->phi()<<" "<<(trackref)->vz()<<" "<<Signal_Vz<<std::endl;
                         tracks_x_tot += ( trackref )->px();
                         tracks_y_tot += ( trackref )->py();
                         if ( fabs( ( trackref )->vz() - Signal_Vz ) < 0.1 ) {
@@ -1443,7 +1445,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                   }
                }
             }
-
 
             JetInfo[icoll].JVAlpha[JetInfo[icoll].Size] = sqrt( tracks_x * tracks_x + tracks_y * tracks_y ) / it_jet->pt();
             if ( tracks_x_tot != 0. || tracks_y_tot != 0. ) {
@@ -1497,7 +1498,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
             //  if ( bjetv.DeltaR(jetv) < 0.5 ) {
             //    JetInfo[icoll].DoubleSecondaryVertexHighEffBJetTags [JetInfo[icoll].Size] = it->second ;
             //    break ;
-            //  }
+            //  }}
             //}
 
             if ( !isData && !skipGenInfo_ ) {
