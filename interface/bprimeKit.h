@@ -131,7 +131,8 @@ private:
    edm::EDGetTokenT<EcalRecHitCollection> reducedEERecHitCollectionToken_;
 
    edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
-
+   
+   
    int pairColl_;//which lepton collection to use for pairs
    bool getElectronID_;
    bool skipGenInfo_;

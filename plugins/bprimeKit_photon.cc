@@ -24,7 +24,6 @@ typedef std::vector<PhotonHandle>  PhotonHandleList;
 //   Helper static variables and functions 
 //------------------------------------------------------------------------------ 
 static PhotonHandleList           PhoHandle;
-static GEDPhoIDTools*             GEDIdTool; 
 static PhotonList::const_iterator it_pho ;
 
 //------------------------------------------------------------------------------ 
@@ -38,10 +37,6 @@ void bprimeKit::fillPhoton
       iEvent.getByLabel( pholabel_[il], PhoHandle[il] );
       if( debug_ > 10 ) { cout << "photons " << il << " pholabel " << pholabel_[il] << " with " << PhoHandle[il]->size() << " entries\n"; }
    }
-   
-   // Setting up helper variables for photon management
-   if( debug_ > 10 ) cout <<"Creating new tool" << endl;
-   GEDIdTool = new GEDPhoIDTools( iEvent ) ; 
    
    for( unsigned icoll = 0; icoll < phocollections_.size(); icoll++ ) {
 
@@ -77,9 +72,10 @@ void bprimeKit::fillPhoton
          
          // TODO
          if( debug_ > 10 ) { cout << " B4 Photon getIsolation " << endl; }
-         PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]   = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::h     ) ;
-         PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::h0    ) ;   
-         PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = GEDIdTool->SolidConeIso( 0.3 , reco::PFCandidate::gamma ) ;  
+         PhotonisolatorR03.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
+         PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationCharged();
+         PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
+         PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationPhoton();
 
          if( debug_ > 10 ) { cout << " Af Photon getIsolation " << endl; }
          
@@ -105,7 +101,4 @@ void bprimeKit::fillPhoton
          PhotonInfo[icoll].Size++;
       }//loop over photons
    }
-   // Removing remaining tool 
-   delete GEDIdTool ; 
-
 }

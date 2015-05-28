@@ -189,7 +189,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    // update for CMSSW_7_3_1
    // reducedEBRecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEBRecHits"));
    // reducedEERecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEERecHits"));
-
+   
    debug_ = iConfig.getUntrackedParameter<int>( "Debug", 0 );
 
    isolatorR03.initializeElectronIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
