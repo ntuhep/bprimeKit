@@ -1,7 +1,6 @@
 /*******************************************************************************
  *
  *  Filename    : bprimeKit.h
- *  Description : The class for operating bprime kit
  *
 *******************************************************************************/
 
@@ -9,32 +8,25 @@
 #define __BPRIMEKIT_H__
 
 //------------------------------------------------------------------------------ 
-//   Standard template libraries 
+//   Libraries 
 //------------------------------------------------------------------------------ 
+
+//--------------------------  Standard Template Libraries  --------------------------
 #include <map>
 
-//------------------------------------------------------------------------------ 
-//   Required root libraries 
-//------------------------------------------------------------------------------ 
+//--------------------------------  ROOT Libraries  ---------------------------------
 #include "TTree.h"
 
-//------------------------------------------------------------------------------ 
-//   CMS Software libraries 
-//------------------------------------------------------------------------------ 
+//----------------------------  CMS Software Libraries  -----------------------------
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
-
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
-
 #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
-
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
-//------------------------------------------------------------------------------ 
-//  Helper custom classes 
-//------------------------------------------------------------------------------ 
+//--------------------------------  Custom Classes  ---------------------------------
 #include "MyAna/bprimeKit/interface/format.h"
 #include "MyAna/bprimeKit/interface/TriggerBooking.h"
 #include "MyAna/bprimeKit/interface/objectSelector.h"
@@ -60,36 +52,36 @@ public:
    ~bprimeKit();
 
 private:
-   //-----Methods required by plugin------------------------------------
+   //--------------------------  Methods required by plugin  ---------------------------
    virtual void beginJob() ;
    virtual void analyze( const edm::Event&, const edm::EventSetup& ) ;
    virtual void endJob() ;
    virtual void beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup );
    virtual void endRun( edm::Run const&, edm::EventSetup const& );
 
-   //-----Custom helper methods----------------------------------------
+   //-----------------------------  Custom helper methods  -----------------------------
+   void fillVertex       ( const edm::Event&, const edm::EventSetup& ) ;
    void fillPhoton       ( const edm::Event&, const edm::EventSetup& ) ;
    // void fillMuons     ( const edm::Event&, const edm::EventSetup& ) ;
    // void fillElectrons ( const edm::Event&, const edm::EventSetup& ) ;
    // void fillTaus      ( const edm::Event&, const edm::EventSetup& ) ;
    // void fillJets      ( const edm::Event&, const edm::EventSetup& ) ;
 
-   //-----NTuple file interaction variables----------------------
-   TTree*                root                           ;
-   EvtInfoBranches       EvtInfo                        ;
-   GenInfoBranches       GenInfo                        ;
-   LepInfoBranches       LepInfo   [MAX_LEPCOLLECTIONS] ;
-   PhotonInfoBranches    PhotonInfo[MAX_PHOCOLLECTIONS] ;
-   JetInfoBranches       JetInfo   [MAX_JETCOLLECTIONS] ;
-   VertexInfoBranches    VertexInfo                     ;
-   PairInfoBranches      PairInfo                       ;
-
-   std::vector<std::string> lepcollections_;
-   std::vector<std::string> phocollections_;
-   std::vector<std::string> jetcollections_;
-   std::vector<int> jettype_;//true for pf jets, false for calo
+   //-------------------------  NTuple interaction variables  --------------------------
+   TTree*                   root                           ;
+   EvtInfoBranches          EvtInfo                        ;
+   GenInfoBranches          GenInfo                        ;
+   LepInfoBranches          LepInfo   [MAX_LEPCOLLECTIONS] ;
+   PhotonInfoBranches       PhotonInfo[MAX_PHOCOLLECTIONS] ;
+   JetInfoBranches          JetInfo   [MAX_JETCOLLECTIONS] ;
+   VertexInfoBranches       VertexInfo                     ;
+   PairInfoBranches         PairInfo                       ;
+   std::vector<std::string> lepcollections_                ;
+   std::vector<std::string> phocollections_                ;
+   std::vector<std::string> jetcollections_                ;
+   std::vector<int>         jettype_                       ; //true for pf jets, false for calo
    
-   //-----Plugin interaction variables---------------------------
+   //-------------------------  Plugin interaction variables  --------------------------
    std::vector<edm::InputTag>  muonlabel_           ;
    std::vector<edm::InputTag>  eleclabel_           ;
    std::vector<edm::InputTag>  taulabel_            ;
@@ -115,12 +107,23 @@ private:
    edm::InputTag               rhoIsoInputTag       ;
    std::vector<edm::InputTag>  isoValInputTags_     ;
 
-   //----- Type independent helper variables------------------------------
-   // Add 2012 EID simple-cut-based
-   PFIsolationEstimator isolatorR03;
-   PFIsolationEstimator isolatorR04;
-   PFIsolationEstimator PhotonisolatorR03;
-   PFIsolationEstimator PhotonisolatorR04;
+
+   //----------------  Information type independent helper variables  -----------------
+
+   //--------------------------------  Vertex related  --------------------------------- 
+   double                               Signal_Vz      ;
+   reco::Vertex                         PrimVtx        ;
+   reco::Vertex                         PrimVtx_BS     ;
+   reco::BeamSpot                       beamSpot       ;
+   edm::Handle<reco::BeamSpot>          beamSpotHandle ;
+   edm::Handle<reco::VertexCollection>  VertexHandle   ;
+   edm::Handle<reco::VertexCollection>  VertexHandleBS ; //Dmitry
+  
+   //----------------------------  Electron ID, added 2012  ----------------------------
+   PFIsolationEstimator isolatorR03       ;
+   PFIsolationEstimator isolatorR04       ;
+   PFIsolationEstimator PhotonisolatorR03 ;
+   PFIsolationEstimator PhotonisolatorR04 ;
 
    EGammaMvaEleEstimator* myMVANonTrig;
    EGammaMvaEleEstimator* myMVATrig;
@@ -147,8 +150,8 @@ private:
    map < std::string, int >::iterator HLTmaplist_pr;
    HLTConfigProvider hltConfig_;
 
-   bool isData; 
-   edm::Handle<reco::VertexCollection>          VertexHandle;
+   bool isData;
+   
    PFCandidateCollection thePfColl;
 };
 

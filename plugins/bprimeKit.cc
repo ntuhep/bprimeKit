@@ -16,6 +16,8 @@
 #define __BPRIMEKIT__
 #endif
 
+#include "MyAna/bprimeKit/interface/bprimeKit.h"
+
 #include <TROOT.h>
 #include <TSystem.h>
 #include <TObject.h>
@@ -103,7 +105,6 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
 #include <string>
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
 
 //
 // DM: Addiign header for IVF and double b tagging
@@ -159,8 +160,8 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    dcslabel_            = iConfig.getParameter<std::vector<InputTag> >( "dcslabel" ); //scalersRawToDigi
    genevtlabel_         = iConfig.getParameter<std::vector<InputTag> >( "genevtlabel" ); //generator
    gtdigilabel_         = iConfig.getParameter<std::vector<InputTag> >( "gtdigilabel" ); //gtDigis
-   rhocorrectionlabel_  = iConfig.getParameter<std::vector<InputTag>>( "rhocorrectionlabel" ); // For PU correction
-   sigmaLabel_          = iConfig.getParameter<std::vector<InputTag>>( "sigmaLabel" ); // For PU correction
+   rhocorrectionlabel_  = iConfig.getParameter<std::vector<InputTag> >( "rhocorrectionlabel" ); // For PU correction
+   sigmaLabel_          = iConfig.getParameter<std::vector<InputTag> >( "sigmaLabel" ); // For PU correction
    puInfoLabel_         = iConfig.getParameter<std::vector<InputTag> >( "puInfoLabel" );
 
    pfToken_             = ( consumes<pat::PackedCandidateCollection>( iConfig.getParameter<edm::InputTag>( "pfCands" ) ) );
@@ -174,7 +175,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    lepcollections_      = iConfig.getParameter<std::vector<std::string> >( "LepCollections" ); //branch names
    phocollections_      = iConfig.getParameter<std::vector<std::string> >( "PhoCollections" ); //branch names
    jetcollections_      = iConfig.getParameter<std::vector<std::string> >( "JetCollections" ); //branch names
-   jettype_           = iConfig.getParameter<std::vector<int> >( "JetType" );
+   jettype_             = iConfig.getParameter<std::vector<int> >( "JetType" );
 
    pairColl_            = iConfig.getUntrackedParameter<int>( "PairCollection", 0 );
    getElectronID_       = iConfig.getUntrackedParameter<bool>( "ElectronID", true );
@@ -264,23 +265,25 @@ void bprimeKit::endJob()
 {
 }
 
-// ------------ method called when starting to processes a run  ------------
-void
-bprimeKit::beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup )
+
+//-----------------  Method called when starting to process a run  ------------------
+void bprimeKit::beginRun
+( edm::Run const& iRun, edm::EventSetup const& iSetup )
 {
    std::string processName_ = "HLT";
    bool changed( false );
    hltConfig_.init( iRun, iSetup, processName_, changed );
 }
 
-// ------------ method called when ending the processing of a run  ------------
-void
-bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )
+//-----------------------------  When ending a process  -----------------------------
+void bprimeKit::endRun
+( edm::Run const&, edm::EventSetup const& )
 {
 }
 
 
-void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
+void bprimeKit::analyze
+( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    edm::ESHandle<ParticleDataTable> pdt_;
    iSetup.getData( pdt_ );
@@ -295,7 +298,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    std::vector< edm::Handle<std::vector<pat::Jet> > >     JetHandle;  //PFJets
 
    edm::Handle<reco::GenParticleCollection>     GenHandle;
-   edm::Handle<reco::VertexCollection>          VertexHandleBS; //Dmitry
    //edm::Handle<reco::VertexCollection>          VertexHandlePixel; //Dmitry
    edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
    edm::Handle<reco::TrackCollection>           tracks_h; // Jacky
@@ -447,113 +449,14 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
       evt_bField = magneticField->inTesla( Surface::GlobalPoint( 0., 0., 0. ) ).z();
    }
 
-   // Locate primary vertex
-   //**************************************************************************************
-   //         VertexInfo added by Dmitry to help filter out pile up and bad events
-   //**************************************************************************************
-   //Fill vertex info
-   if( debug_ > 5 ) { cout << "\tFill Vertex Info.\n"; }
-   memset( &VertexInfo, 0x00, sizeof( VertexInfo ) );
-   //Vertices WITHOUT beam spot contraint
-   //    double PV_Pt2_Max = -100.;
-   double Signal_Vz = 0.;
-
-   reco::Vertex PrimVtx;
-   bool gotPrimVtx = false;
-   if( VertexHandle.isValid() && !VertexHandle.failedToGet() && VertexHandle->size() > 0 ) {
-      const vector<reco::Vertex> Vertices = *VertexHandle;
-      PrimVtx = *( Vertices.begin() ); //Uly 2012-07-19: just get something valid to start with
-      for( vector<reco::Vertex>::const_iterator it_vtx = Vertices.begin();
-           it_vtx != Vertices.end(); it_vtx++ ) {
-         if ( VertexInfo.Size >= MAX_Vertices ) {
-            cout << "PV " << VertexInfo.Size << endl;
-            fprintf( stderr, "ERROR: number of  Tracks exceeds the size of array.\n" );
-            break;//exit(0);
-         }
-         VertexInfo.Type[VertexInfo.Size] = 0; //Vertices WITHOUT the Beam Spot constraint
-         VertexInfo.isValid[VertexInfo.Size] = it_vtx->isValid();
-         VertexInfo.isFake[VertexInfo.Size] = it_vtx->isFake(); //Uly 2011-05-16
-         VertexInfo.Ndof[VertexInfo.Size] = it_vtx->ndof();
-         VertexInfo.NormalizedChi2[VertexInfo.Size] = it_vtx->normalizedChi2();
-         VertexInfo.x[VertexInfo.Size] = it_vtx->x();
-         VertexInfo.y[VertexInfo.Size] = it_vtx->y();
-         VertexInfo.z[VertexInfo.Size] = it_vtx->z();
-         VertexInfo.Rho[VertexInfo.Size] = it_vtx->position().Rho();
-         VertexInfo.Pt_Sum[VertexInfo.Size] = 0.;
-         VertexInfo.Pt_Sum2[VertexInfo.Size] = 0.;
-         for ( reco::Vertex::trackRef_iterator it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
-            VertexInfo.Pt_Sum[VertexInfo.Size] += ( *it )->pt();
-            VertexInfo.Pt_Sum2[VertexInfo.Size] += ( ( *it )->pt() * ( *it )->pt() );
-         }
-         if( !gotPrimVtx && ( !it_vtx->isFake() && it_vtx->ndof() >= 4. && it_vtx->z() <= 24. && it_vtx->position().Rho() <= 2. ) ) {
-            PrimVtx = *it_vtx;
-            gotPrimVtx = true;
-         }
-
-         VertexInfo.Size++;
-      }
-      //find and store z pozition for track to jet  association
-      Signal_Vz = PrimVtx.z();
-   }
-
-
-   //Vertices WITH beam spot constraint
-   double PVBS_Pt_Max = -100.;
-   reco::Vertex PrimVtx_BS;
-
-   if( VertexHandleBS.isValid() && !VertexHandleBS.failedToGet() && VertexHandleBS->size() > 0 ) {
-      const vector<reco::Vertex> VerticesBS = *VertexHandleBS;
-      for( vector<reco::Vertex>::const_iterator it_vtx = VerticesBS.begin();
-           it_vtx != VerticesBS.end(); it_vtx++ ) {
-         if ( VertexInfo.Size >= MAX_Vertices ) {
-            cout << "PVBS " << VertexInfo.Size << endl;
-            fprintf( stderr, "ERROR: number of  Vertices exceeds the size of array.\n" );
-            break;//exit(0);
-         }
-         VertexInfo.Type[VertexInfo.Size] = 1;  //Vertices WITH the Beam Spot constraint
-         VertexInfo.isValid[VertexInfo.Size] = it_vtx->isValid();
-         VertexInfo.isFake[VertexInfo.Size] = it_vtx->isFake(); //Uly 2011-05-16
-         VertexInfo.Ndof[VertexInfo.Size] = it_vtx->ndof();
-         VertexInfo.NormalizedChi2[VertexInfo.Size] = it_vtx->normalizedChi2();
-         VertexInfo.x[VertexInfo.Size] = it_vtx->x();
-         VertexInfo.y[VertexInfo.Size] = it_vtx->y();
-         VertexInfo.z[VertexInfo.Size] = it_vtx->z();
-         VertexInfo.Rho[VertexInfo.Size] = it_vtx->position().Rho();
-         VertexInfo.Pt_Sum[VertexInfo.Size] = 0.;
-         VertexInfo.Pt_Sum2[VertexInfo.Size] = 0.;
-         for ( reco::Vertex::trackRef_iterator it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
-            VertexInfo.Pt_Sum[VertexInfo.Size] += ( *it )->pt();
-            VertexInfo.Pt_Sum2[VertexInfo.Size] += ( ( *it )->pt() * ( *it )->pt() );
-         }
-         if( VertexInfo.Pt_Sum[VertexInfo.Size] >= PVBS_Pt_Max ) {
-            PVBS_Pt_Max = VertexInfo.Pt_Sum[VertexInfo.Size];
-            PrimVtx_BS = *it_vtx;
-         }
-         VertexInfo.Size++;
-      }
-   }
-   // Get Beam Spot
-   if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
-   reco::BeamSpot beamSpot;
-   edm::Handle<reco::BeamSpot> beamSpotHandle;
-   if( offlineBSlabel_.size() > 0 ) {
-      iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
-
-      if ( beamSpotHandle.isValid() ) {
-         beamSpot = *beamSpotHandle.product();
-         EvtInfo.BeamSpotX = beamSpot.position().x();
-         EvtInfo.BeamSpotY = beamSpot.position().y();
-         EvtInfo.BeamSpotZ = beamSpot.position().z();
-      } else {
-         edm::LogInfo( "MyAnalyzer" )
-               << "No beam spot available from EventSetup \n";
-      }
-   }
+   //------------------------------------------------------------------------------ 
+   //   VertexInfo added by Dmitry to help filter out pile up and bad events
+   //------------------------------------------------------------------------------ 
+   fillVertex( iEvent , iSetup ) ;
 
    //=================================================================================
    // Leptons
    //=================================================================================
-
    for( unsigned icoll = 0; icoll < lepcollections_.size(); icoll++ ) { //loop over collections
       if( icoll >= MAX_LEPCOLLECTIONS ) { break; }
       if( debug_ > 5 ) { cout << "Fill lepton info, collection " << icoll << " with name " << lepcollections_[icoll] << endl; }
@@ -737,16 +640,16 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
                      if ( abs( genCand->pdgId() ) == 7 ) { bprime_tag = 1; } // check if it's bprime
                      if ( abs( genCand->pdgId() ) == 8 ) { bprime_tag = 2; } // check if it's tprime.
 
-                     if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 ) {
-                        if( abs( genCand->pdgId() ) == 23 )                     { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 2; }
-                        else if( abs( genCand->pdgId() ) == 24 )                { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 1; }
-                        else if( abs( genCand->pdgId() ) == 5 )                { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 3; } // from a b quark
-                        else if( ( abs( genCand->pdgId() ) % 1000 ) / 100 == 5 )    { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 3; } // from a B meson
-                        else if( ( abs( genCand->pdgId() ) % 10000 ) / 1000 == 5 )    { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 3; } // from a bottom baryon
-                        else if( abs( genCand->pdgId() ) == 4 )                { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 4; } // from a c quark
-                        else if( ( abs( genCand->pdgId() ) % 1000 ) / 100 == 4 )    { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 4; } // from a D meson
-                        else if( ( abs( genCand->pdgId() ) % 10000 ) / 1000 == 4 )    { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 4; } // from a charm baryon
-                        else if( abs( genCand->pdgId() ) == 15 )                { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 7; } // from tau
+                     if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0  ) {
+                        if     ( abs( genCand->pdgId() )                    == 23 ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 2; }
+                        else if( abs( genCand->pdgId() )                    == 24 ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 1; }
+                        else if( abs( genCand->pdgId() )                    == 5  ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 3; } // from a b quark
+                        else if( ( abs( genCand->pdgId() ) % 1000 ) / 100   == 5  ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 3; } // from a B meson
+                        else if( ( abs( genCand->pdgId() ) % 10000 ) / 1000 == 5  ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 3; } // from a bottom baryon
+                        else if( abs( genCand->pdgId() )                    == 4  ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 4; } // from a c quark
+                        else if( ( abs( genCand->pdgId() ) % 1000 ) / 100   == 4  ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 4; } // from a D meson
+                        else if( ( abs( genCand->pdgId() ) % 10000 ) / 1000 == 4  ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 4; } // from a charm baryon
+                        else if( abs( genCand->pdgId() )                    == 15 ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = 7; } // from tau
                      }
                   }
                   if ( bprime_tag == 1 ) { LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] += 10; }
