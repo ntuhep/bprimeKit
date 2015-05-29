@@ -7,6 +7,11 @@
 #ifndef __BPRIMEKIT_H__
 #define __BPRIMEKIT_H__
 
+
+#ifndef __BPRIMEKIT__
+#define __BPRIMEKIT__
+#endif
+
 //------------------------------------------------------------------------------ 
 //   Libraries 
 //------------------------------------------------------------------------------ 
@@ -65,7 +70,7 @@ private:
    // void fillMuons     ( const edm::Event&, const edm::EventSetup& ) ;
    // void fillElectrons ( const edm::Event&, const edm::EventSetup& ) ;
    // void fillTaus      ( const edm::Event&, const edm::EventSetup& ) ;
-   // void fillJets      ( const edm::Event&, const edm::EventSetup& ) ;
+   void fillJets      ( const edm::Event&, const edm::EventSetup& ) ;
 
    //-------------------------  NTuple interaction variables  --------------------------
    TTree*                   root                           ;
