@@ -28,8 +28,7 @@ static PhotonList::const_iterator it_pho ;
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 
-void bprimeKit::fillPhoton
-( const edm::Event& iEvent ,  const edm::EventSetup& iSetup )
+bool bprimeKit::fillPhoton( const edm::Event& iEvent ,  const edm::EventSetup& iSetup )
 {
    for( unsigned il = 0; il < pholabel_.size(); il++ ) {
       PhoHandle.push_back( PhotonHandle() );
@@ -93,4 +92,5 @@ void bprimeKit::fillPhoton
          PhotonInfo[icoll].Size++;
       }
    }
+   return true;
 }

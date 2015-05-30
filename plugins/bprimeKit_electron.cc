@@ -9,7 +9,7 @@
 //   Libraries
 //------------------------------------------------------------------------------ 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
-#include "MyAna/bprimeKit/interface/bprimeKit_utils.h"
+#include "MyAna/bprimeKit/interface/bprimeKit_util.h"
 
 //-----------------------  Electron specific CMSSW libraries  -----------------------
 #include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
@@ -135,10 +135,10 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //-------------------------  Getting isolation information  -------------------------
       if( getElectronID_ ) {
          // Add 2012 EID (https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification)
-         if( !TurnOffInCMSSW73x )
-            for( gsfEle = els_h->begin() , size_t nGsfEle = 0 ; gsfEle != els_h->end(); ++gsfEle , ++nGsfEle ) {
+         if( !TurnOffInCMSSW73x ){
+            size_t nGsfEle = 0 ;
+            for( gsfEle=els_h->begin() ; gsfEle != els_h->end(); ++gsfEle , ++nGsfEle ){
                if ( gsfEle->gsfTrack()->pt() != it_el->gsfTrack()->pt() ) { continue ; }
-
                reco::GsfElectronRef ele( els_h, nGsfEle );
                const GsfElectronCollection theEGamma = *( els_h.product() );
                // MVA-ID  -- start
@@ -257,6 +257,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = ele->dr04HcalDepth1TowerSumEtBc();
                LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = ele->dr04HcalDepth2TowerSumEtBc();
             }
+         }
          //simpleEleId status : (Add by Jacky)
          //0: fails
          //1: passes electron ID only
@@ -401,7 +402,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          if( debug_ > 15 ) { cout << "Get GenHandle\n"; }
          if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && GenHandle.isValid() ) {
             for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end() ; it_gen++ ) {
-               if( LepInfo[icoll].GenMCTag[LepInfo.Size] != 0 ) break;
+               if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) break;
                LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_el )  ;
             }
          }

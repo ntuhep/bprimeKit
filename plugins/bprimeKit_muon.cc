@@ -7,7 +7,7 @@
 
 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "MyAna/bprimeKit/interface/bprimeKit_util.h"
 
 //-------------------------  Muon specific CMSSW libraries  -------------------------
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
@@ -206,8 +206,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
             LepInfo[icoll].GenPhi   [LepInfo[icoll].Size] = gen->phi();
             LepInfo[icoll].GenPdgID [LepInfo[icoll].Size] = gen->pdgId();
 
-            const reco::Candidate* genCand = gen;
-            LepInfo[icoll].GenMCTag[LepInfo[icoll].SIze] = getGenMCTag( gen ) ;
+            LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( gen ) ;
          }
       }
 

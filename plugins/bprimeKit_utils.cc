@@ -6,7 +6,7 @@
  *
 *******************************************************************************/
 
-#include "MyAna/bprimeKit/interface/bprimeKitTypes.h"
+#include "MyAna/bprimeKit/interface/bprimeKit_types.h"
 
 //------------------------------------------------------------------------------ 
 //   Prototype of all functions, static variables are function specific
@@ -75,4 +75,8 @@ int getGenMCTag( GenIterator& gen , ElectronIterator& el )
 {
    return getGenMCTag( gen , el->eta() , el->phi() , el->pt() ) ;
 }
-      
+
+int getGenMCTag( GenIterator& gen , MuonIterator& mu ) 
+{
+   return getGenMCTag( gen , mu->eta() , mu->phi() , mu->pt() ) ; 
+}
