@@ -26,8 +26,7 @@ static double PVBS_Pt_Max;
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 
 
-void bprimeKit::fillVertex
-( const edm::Event& iEvent , const edm::EventSetup& iSetup )
+bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    if( debug_ > 5 ) { cout << "\tFill Vertex Info.\n"; }
    memset( &VertexInfo, 0x00, sizeof( VertexInfo ) );
@@ -116,5 +115,6 @@ void bprimeKit::fillVertex
          edm::LogInfo( "MyAnalyzer" )
                << "No beam spot available from EventSetup \n";
       }
-   }   
+   }
+   return true;
 }

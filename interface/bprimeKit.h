@@ -46,6 +46,8 @@ typedef std::vector< edm::Handle< edm::ValueMap<double> > >             IsoDepos
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
 #define MAX_JETCOLLECTIONS 3
+#define TurnOffInCMSSW73x true
+#define TurnOnInCMSSW_7_4_1 false
 
 
 //------------------------------------------------------------------------------ 
@@ -65,13 +67,13 @@ private:
    virtual void endRun( edm::Run const&, edm::EventSetup const& );
 
    //-----------------------------  Custom helper methods  -----------------------------
-   void fillVertex       ( const edm::Event&, const edm::EventSetup& ) ;
-   void fillPhoton       ( const edm::Event&, const edm::EventSetup& ) ;
-   // void fillMuons     ( const edm::Event&, const edm::EventSetup& ) ;
-   // void fillElectrons ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillVertex    ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillPhoton    ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillMuon      ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
+   bool fillElectron  ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
    // void fillTaus      ( const edm::Event&, const edm::EventSetup& ) ;
-   void fillJets      ( const edm::Event&, const edm::EventSetup& ) ;
-
+   bool fillJet       ( const edm::Event&, const edm::EventSetup& ) ;
+ 
    //-------------------------  NTuple interaction variables  --------------------------
    TTree*                   root                           ;
    EvtInfoBranches          EvtInfo                        ;
@@ -114,6 +116,7 @@ private:
 
 
    //----------------  Information type independent helper variables  -----------------
+   edm::Handle<reco::GenParticleCollection>     GenHandle;
 
    //--------------------------------  Vertex related  --------------------------------- 
    double                               Signal_Vz      ;
@@ -123,6 +126,8 @@ private:
    edm::Handle<reco::BeamSpot>          beamSpotHandle ;
    edm::Handle<reco::VertexCollection>  VertexHandle   ;
    edm::Handle<reco::VertexCollection>  VertexHandleBS ; //Dmitry
+
+   std::vector<edm::Handle<double> > rhoH;
   
    //----------------------------  Electron ID, added 2012  ----------------------------
    PFIsolationEstimator isolatorR03       ;
