@@ -71,8 +71,13 @@ private:
    bool fillPhoton    ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillMuon      ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
    bool fillElectron  ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
-   // void fillTaus      ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillTau       ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
    bool fillJet       ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillLepPair   ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillJetPair   ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillPairInfo  ( int , int );
+   bool fillPairGen   ();
+   bool fillGenInfo   ( const edm::Event& , const edm::EventSetup& ) ; 
  
    //-------------------------  NTuple interaction variables  --------------------------
    TTree*                   root                           ;
