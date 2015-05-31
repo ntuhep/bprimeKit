@@ -15,82 +15,16 @@
 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
-#include <TROOT.h>
-#include <TSystem.h>
-#include <TObject.h>
 #include <TFile.h>
 #include <TTree.h>
-#include <TLorentzVector.h>
-#include <map>
 
-#include "FWCore/Framework/interface/Run.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-#include "CommonTools/Utils/interface/TFileDirectory.h"
-
-#include "DataFormats/Candidate/interface/Particle.h"
-#include "DataFormats/Candidate/interface/Candidate.h"
-
-#include "DataFormats/PatCandidates/interface/Particle.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
-#include "DataFormats/METReco/interface/PFMETCollection.h"
-#include "DataFormats/METReco/interface/PFMET.h"
-
-#include "DataFormats/Math/interface/angle.h"
-#include "DataFormats/Math/interface/deltaR.h"
-#include "DataFormats/Math/interface/deltaPhi.h"
-
-#include "DataFormats/METReco/interface/CaloMETCollection.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/PatCandidates/interface/TriggerEvent.h"
-#include "PhysicsTools/PatUtils/interface/TriggerHelper.h"
-#include "DataFormats/BeamSpot/interface/BeamSpot.h"
-
-//For electron convertion flag
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-//#include "DataFormats/TrackReco/interface/TrackExtra.h"
-#include "FWCore/Framework/interface/ESHandle.h"
-#include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "DataFormats/RecoCandidate/interface/IsoDeposit.h"
-#include "DataFormats/Common/interface/ValueMap.h"
-#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
-#include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
-
-#include "DataFormats/EgammaCandidates/interface/GsfElectronCore.h"
-#include "DataFormats/EgammaCandidates/interface/GsfElectronCoreFwd.h"
-
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PileUpPFCandidate.h"
-#include "DataFormats/ParticleFlowCandidate/interface/PileUpPFCandidateFwd.h"
-#include "EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h"
-#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
-#include "TrackingTools/Records/interface/TransientTrackRecord.h"
-
-
-// For JEC
-#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-//#include "JetMETCorrections/Objects/interface/JetCorrector.h"
-
-// PileupSummaryInfo
 
 #include <string>
 
-//
-// DM: Addiign header for IVF and double b tagging
-//
-#include "RecoBTag/SecondaryVertex/interface/SecondaryVertex.h"
-#include "DataFormats/BTauReco/interface/SecondaryVertexTagInfo.h"
-
-#include "QuarkGluonTagger/EightTeV/interface/QGTagger.h"
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
-#include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
 
 
 // Including tool from ggNTuplizer for isolation calculation 
@@ -103,69 +37,67 @@
 // uncomment the following line for filling the di-jet pairs
 //#define FILL_DIJET_PAIRS 1
 
-using namespace edm;
 using namespace reco;
-using namespace std;
 using namespace pat;
-using namespace math;
-using namespace ROOT;
 
+typedef std::vector<edm::InputTag> TagList;
+typedef std::vector<std::string>   StrList;
+
+edm::Service<TFileService> fs;
+TFileDirectory results ;
 
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
 {
-   edm::Service<TFileService> fs;
-   TFileDirectory results = TFileDirectory( fs->mkdir( "results" ) );
+   results = TFileDirectory( fs->mkdir( "results" ) );
 
-   //MCtag                = iConfig.getUntrackedParameter<bool>("MCtag",true);
-   muonlabel_           = iConfig.getParameter<std::vector<InputTag> >( "muonlabel" ); //"cleanPatMuons"
-   eleclabel_           = iConfig.getParameter<std::vector<InputTag> >( "eleclabel" ); // "cleanPatElectrons"
-   taulabel_            = iConfig.getParameter<std::vector<InputTag> >( "taulabel" ); // "selectedPatTausPFlow"
-   pholabel_            = iConfig.getParameter<std::vector<InputTag> >( "pholabel" );
-   // jetlabel_            = iConfig.getParameter<std::vector<InputTag> >( "jetlabel" ); // "cleanPatJets"
-   metlabel_            = iConfig.getParameter<std::vector<InputTag> >( "metlabel" ); //"patMETs"
-   pfmetlabel_          = iConfig.getParameter<std::vector<InputTag> >( "pfmetlabel" ); //"pfpatMETs"
-   genlabel_            = iConfig.getParameter<std::vector<InputTag> >( "genlabel" ); // "genParticles"
-   hltlabel_            = iConfig.getParameter<std::vector<InputTag> >( "hltlabel" ); // "TriggerResults::HLT"
-   pathltlabel_         = iConfig.getParameter<std::vector<InputTag> >( "pathltlabel" ); // patTriggerEvent
-   offlinePVlabel_      = iConfig.getParameter<std::vector<InputTag> >( "offlinePVlabel" ); //offlinePrimaryVertices
-   offlinePVBSlabel_    = iConfig.getParameter<std::vector<InputTag> >( "offlinePVBSlabel" ); //offlinePrimaryVerticesWithBS
-   offlineBSlabel_      = iConfig.getParameter<std::vector<InputTag> >( "offlineBSlabel" ); //offlineBeamSpot
-   tracklabel_          = iConfig.getParameter<std::vector<InputTag> >( "tracklabel" ); //generalTracks
-   dcslabel_            = iConfig.getParameter<std::vector<InputTag> >( "dcslabel" ); //scalersRawToDigi
-   genevtlabel_         = iConfig.getParameter<std::vector<InputTag> >( "genevtlabel" ); //generator
-   gtdigilabel_         = iConfig.getParameter<std::vector<InputTag> >( "gtdigilabel" ); //gtDigis
-   rhocorrectionlabel_  = iConfig.getParameter<std::vector<InputTag> >( "rhocorrectionlabel" ); // For PU correction
-   sigmaLabel_          = iConfig.getParameter<std::vector<InputTag> >( "sigmaLabel" ); // For PU correction
-   puInfoLabel_         = iConfig.getParameter<std::vector<InputTag> >( "puInfoLabel" );
+   muonlabel_          = iConfig.getParameter<TagList>( "muonlabel"          ) ; //"cleanPatMuons"
+   eleclabel_          = iConfig.getParameter<TagList>( "eleclabel"          ) ; // "cleanPatElectrons"
+   taulabel_           = iConfig.getParameter<TagList>( "taulabel"           ) ; // "selectedPatTausPFlow"
+   pholabel_           = iConfig.getParameter<TagList>( "pholabel"           ) ;
+// jetlabel_           = iConfig.getParameter<TagList>( "jetlabel"           ) ; // "cleanPatJets"
+   metlabel_           = iConfig.getParameter<TagList>( "metlabel"           ) ; //"patMETs"
+   pfmetlabel_         = iConfig.getParameter<TagList>( "pfmetlabel"         ) ; //"pfpatMETs"
+   genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
+   hltlabel_           = iConfig.getParameter<TagList>( "hltlabel"           ) ; // "TriggerResults::HLT"
+   pathltlabel_        = iConfig.getParameter<TagList>( "pathltlabel"        ) ; // patTriggerEvent
+   offlinePVlabel_     = iConfig.getParameter<TagList>( "offlinePVlabel"     ) ; //offlinePrimaryVertices
+   offlinePVBSlabel_   = iConfig.getParameter<TagList>( "offlinePVBSlabel"   ) ; //offlinePrimaryVerticesWithBS
+   offlineBSlabel_     = iConfig.getParameter<TagList>( "offlineBSlabel"     ) ; //offlineBeamSpot
+   tracklabel_         = iConfig.getParameter<TagList>( "tracklabel"         ) ; //generalTracks
+   dcslabel_           = iConfig.getParameter<TagList>( "dcslabel"           ) ; //scalersRawToDigi
+   genevtlabel_        = iConfig.getParameter<TagList>( "genevtlabel"        ) ; //generator
+   gtdigilabel_        = iConfig.getParameter<TagList>( "gtdigilabel"        ) ; //gtDigis
+   rhocorrectionlabel_ = iConfig.getParameter<TagList>( "rhocorrectionlabel" ) ; // For PU correction
+   sigmaLabel_         = iConfig.getParameter<TagList>( "sigmaLabel"         ) ; // For PU correction
+   puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
 
-   pfToken_             = ( consumes<pat::PackedCandidateCollection>( iConfig.getParameter<edm::InputTag>( "pfCands" ) ) );
 
    // Add 2012 EID simple-cut-based
-   conversionsInputTag_    = iConfig.getParameter<edm::InputTag>( "conversionsInputTag" );
-   rhoIsoInputTag          = iConfig.getParameter<edm::InputTag>( "rhoIsoInputTag" );
-   isoValInputTags_        = iConfig.getParameter<std::vector<edm::InputTag> >( "isoValInputTags" );
-   EIDMVAInputTags_        = iConfig.getParameter<std::vector<std::string> >( "EIDMVAInputTags" );
+   conversionsInputTag_ = iConfig.getParameter<edm::InputTag> ( "conversionsInputTag" ) ;
+   rhoIsoInputTag       = iConfig.getParameter<edm::InputTag> ( "rhoIsoInputTag"      ) ;
+   isoValInputTags_     = iConfig.getParameter<TagList>       ( "isoValInputTags"     ) ;
+   EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
-   lepcollections_      = iConfig.getParameter<std::vector<std::string> >( "LepCollections" ); //branch names
-   phocollections_      = iConfig.getParameter<std::vector<std::string> >( "PhoCollections" ); //branch names
-   jetcollections_      = iConfig.getParameter<std::vector<std::string> >( "JetCollections" ); //branch names
-   jettype_             = iConfig.getParameter<std::vector<int> >( "JetType" );
+   lepcollections_      = iConfig.getParameter<StrList>           ( "LepCollections" ) ; //branch names
+   phocollections_      = iConfig.getParameter<StrList>           ( "PhoCollections" ) ; //branch names
+   jetcollections_      = iConfig.getParameter<StrList>           ( "JetCollections" ) ; //branch names
+   jettype_             = iConfig.getParameter<std::vector<int> > ( "JetType"        ) ;
 
-   pairColl_            = iConfig.getUntrackedParameter<int>( "PairCollection", 0 );
-   getElectronID_       = iConfig.getUntrackedParameter<bool>( "ElectronID", true );
-   skipGenInfo_         = iConfig.getUntrackedParameter<bool>( "SkipGenInfo", false );
-   includeL7_           = iConfig.getUntrackedParameter<bool>( "IncludeL7", true );
+   pairColl_            = iConfig.getUntrackedParameter<int>  ( "PairCollection" , 0     ) ;
+   getElectronID_       = iConfig.getUntrackedParameter<bool> ( "ElectronID"     , true  ) ;
+   skipGenInfo_         = iConfig.getUntrackedParameter<bool> ( "SkipGenInfo"    , false ) ;
+   includeL7_           = iConfig.getUntrackedParameter<bool> ( "IncludeL7"      , true  ) ;
 
-   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );
+   SelectionParameters_               = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );
 
    // update for CMSSW_7_2_0
-   reducedEBRecHitCollectionToken_ = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEBRecHitCollection" ) );
-   reducedEERecHitCollectionToken_ = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEERecHitCollection" ) );
+   reducedEBRecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEBRecHitCollection" ) );
+   reducedEERecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEERecHitCollection" ) );
    // update for CMSSW_7_3_1
    // reducedEBRecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEBRecHits"));
    // reducedEERecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEERecHits"));
+   debug_                             = iConfig.getUntrackedParameter<int>( "Debug", 0 );
    
-   debug_ = iConfig.getUntrackedParameter<int>( "Debug", 0 );
 
    isolatorR03.initializeElectronIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
    isolatorR04.initializeElectronIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
@@ -181,11 +113,11 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    // Alternatively (for tests), they can be read from AFS:
    //*
    myMVANonTrig = new EGammaMvaEleEstimator();
-   std::vector<std::string> myManualCatWeigths;
+   StrList  myManualCatWeigths;
    if( EIDMVAInputTags_.size() != 12 ) { cout << "EIDMVAInputTags array size (12) is not correct" << endl; }
    for( int ie = 0; ie < 6; ie++ ) { myManualCatWeigths.push_back( EIDMVAInputTags_[ie].c_str() ); }
 
-   Bool_t manualCat = true;
+   bool manualCat = true;
 
    myMVANonTrig->initialize( "BDT",
                              EGammaMvaEleEstimator::kNonTrig,
@@ -193,8 +125,9 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
                              myManualCatWeigths );
 
    // NOTE: it is better if you copy the MVA weight files locally. See the previous remark
-   std::vector<std::string> myManualCatWeigthsTrig;
-   for( int ie = 0; ie < 6; ie++ ) { myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
+   StrList myManualCatWeigthsTrig;
+   for( int ie = 0; ie < 6; ie++ ) { 
+      myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
 
    myMVATrig = new EGammaMvaEleEstimator();
    myMVATrig->initialize( "BDT",
@@ -202,8 +135,8 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
                           manualCat,
                           myManualCatWeigthsTrig );
 
-   for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { HLTmaplist.insert( pair< std::string, int > ( TriggerBooking[i], i ) ); }
-
+   for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
+      HLTmaplist.insert( pair< std::string, int > ( TriggerBooking[i], i ) ); }
 }
 
 
