@@ -55,7 +55,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    for( it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
       cands.push_back( &*it_gen );
    }
-   CandidateIterator found = cands.begin();
+   found = cands.begin();
    evWeight = 1.0 ;
    iEvent.getByLabel( "generator", genEventInfo );
    if ( genEventInfo.isValid() ) {
@@ -83,7 +83,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       dau1   = dau2   = NULL;
       //--------------------------  Photon decay type flagging  ---------------------------
       if( it_gen->status() == 3 ) { //Book GenInfo for DC table
-         fillGenGeneric()
+         fillGenGeneric();
          if( it_gen->pdgId() == 22 ) {
             // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
             GenInfo.PhotonFlag[GenInfo.Size]    = 0;

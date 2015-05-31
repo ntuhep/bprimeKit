@@ -27,6 +27,7 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/TrackReco/interface/Track.h"
 #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
@@ -77,8 +78,9 @@ private:
    bool fillJetPair   ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillPairInfo  ( int , int );
    bool fillPairGen   ();
-   bool fillGenInfo   ( const edm::Event& , const edm::EventSetup& ) ;
-   bool fiilGenGeneric();
+   bool fillGenInfo   ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillGenGeneric();
+   bool fillEvent     ( const edm::Event&, const edm::EventSetup& ) ;
  
    //-------------------------  NTuple interaction variables  --------------------------
    TTree*                   root                           ;
@@ -123,6 +125,8 @@ private:
 
    //----------------  Information type independent helper variables  -----------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
+   edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
+   std::vector<edm::Handle<double> > sigmaHandle;
 
    //--------------------------------  Vertex related  --------------------------------- 
    double                               Signal_Vz      ;

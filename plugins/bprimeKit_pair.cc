@@ -25,7 +25,7 @@ static const reco::Candidate* gen1;
 static const reco::Candidate* gen2;
 static const reco::Candidate* mon;
 
-bool findAncestor( const reco::Candidate*& , const reco::GenParticle* ) ;
+bool findAncestor( const reco::Candidate* & , const reco::GenParticle* ) ;
 
 bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
@@ -130,10 +130,10 @@ bool bprimeKit::fillPairGen()
 //------------------------------------------------------------------------------ 
 //   Helper function implementation
 //------------------------------------------------------------------------------ 
-bool findAncestor( const reco::Candidate*& gen , const reco::Particle* par ) 
+bool findAncestor( const reco::Candidate*& gen , const reco::GenParticle* par ) 
 {
-   if( par2 == NULL ) return false;
-   while( gen!= NULL && gen->numberofMothers() == 1 && 
+   if( par == NULL ) return false;
+   while( gen!= NULL && gen->numberOfMothers() == 1 && 
           gen->mother(0)->pdgId() == par->pdgId() ){
       gen = gen->mother(0);
    }
