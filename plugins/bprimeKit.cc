@@ -1,55 +1,45 @@
-// -----------------------------------------------------
-// bprimeKit.cc -- b' analysis kit
-// -----------------------------------------------------
-// For CMSSW_3_6_1
-// Lastest updates:
-// Jul 05, 2010 - Add Electron ID by Jacky, Add PFMet by Chiyi
-// May 19, 2010 - Add Muon Iso variables, MCTag, and PF Jet  - by Dmitry Hits & Yeong-jyi Kei
-// Apr 15, 2010 - Update to CMSSW_3_5_6, fix bTag bug  - by Yeong-jyi Lei
-// Sep 24, 2009 - Updates label name, and triggerbook. Add PhotonInfo - by Yeong-jyi Lei
-// Sep 11, 2009 - Updates with CMSSW_3_1_2 - by Kai-Feng Chen
-// May 29, 2009 - Include GenInfo, electron classification, bug fix on vtx - by Yeong-jyi Lei
-// Mar 10, 2009 - Change the trigger table
-// Feb 20, 2009 - Protection added for missing InnerTrack() from muons, adding MC top mass, bug fix on JetInfo.
-// Jan 03, 2009 - Updates according to CMSSW_2_2_3 release (clean 2_2_3 + PhysicsTools/PatAlgos V04-14-15)
-
+/*******************************************************************************
+ *
+ *  Filename    : bprimeKit.cc
+ *  Description : The virtual and explicit functions for the bprimeKit
+ *
+*******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
+//---------------------  ROOT and standard template libraries  ----------------------
+#include <string>
 #include <TFile.h>
 #include <TTree.h>
 
-#include "FWCore/Framework/interface/MakerMacros.h"
+//---------------------------  Specific CMSSW libraries  ----------------------------
+#include "FWCore/Framework/interface/MakerMacros.h"          // For plugin definition
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-
-#include <string>
-
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
 
 
-// Including tool from ggNTuplizer for isolation calculation 
-
-
-#define W_MASS          80.403
-#define Z_MASS          91.1876
-#define MUON_MASS       0.105658
-#define ELECTRON_MASS   0.0005109989
-// uncomment the following line for filling the di-jet pairs
-//#define FILL_DIJET_PAIRS 1
-
+//------------------------------------------------------------------------------ 
+//   Custom enums, typedefs and macros
+//------------------------------------------------------------------------------ 
+//#define FILL_DIJET_PAIRS 1      //Uncomment for jet pair processing
 using namespace reco;
 using namespace pat;
-
 typedef std::vector<edm::InputTag> TagList;
 typedef std::vector<std::string>   StrList;
 
+//------------------------------------------------------------------------------ 
+//   Helper variables
+//------------------------------------------------------------------------------ 
 edm::Service<TFileService> fs;
 TFileDirectory results ;
 
+
+//------------------------------------------------------------------------------ 
+//   bprimeKit methods: constructor and destructor
+//------------------------------------------------------------------------------ 
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
 {
    results = TFileDirectory( fs->mkdir( "results" ) );
-
    muonlabel_          = iConfig.getParameter<TagList>( "muonlabel"          ) ; //"cleanPatMuons"
    eleclabel_          = iConfig.getParameter<TagList>( "eleclabel"          ) ; // "cleanPatElectrons"
    taulabel_           = iConfig.getParameter<TagList>( "taulabel"           ) ; // "selectedPatTausPFlow"
@@ -71,34 +61,36 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    sigmaLabel_         = iConfig.getParameter<TagList>( "sigmaLabel"         ) ; // For PU correction
    puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
 
-
-   // Add 2012 EID simple-cut-based
+   //-----------------------  2012 Election simple-cut-based ID  ----------------------- 
    conversionsInputTag_ = iConfig.getParameter<edm::InputTag> ( "conversionsInputTag" ) ;
    rhoIsoInputTag       = iConfig.getParameter<edm::InputTag> ( "rhoIsoInputTag"      ) ;
    isoValInputTags_     = iConfig.getParameter<TagList>       ( "isoValInputTags"     ) ;
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
+   //-------------------------------  Collection naming  -------------------------------
    lepcollections_      = iConfig.getParameter<StrList>           ( "LepCollections" ) ; //branch names
    phocollections_      = iConfig.getParameter<StrList>           ( "PhoCollections" ) ; //branch names
    jetcollections_      = iConfig.getParameter<StrList>           ( "JetCollections" ) ; //branch names
    jettype_             = iConfig.getParameter<std::vector<int> > ( "JetType"        ) ;
 
+   //---------------------------------  Settings flag  ---------------------------------
    pairColl_            = iConfig.getUntrackedParameter<int>  ( "PairCollection" , 0     ) ;
    getElectronID_       = iConfig.getUntrackedParameter<bool> ( "ElectronID"     , true  ) ;
    skipGenInfo_         = iConfig.getUntrackedParameter<bool> ( "SkipGenInfo"    , false ) ;
    includeL7_           = iConfig.getUntrackedParameter<bool> ( "IncludeL7"      , true  ) ;
+   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );
+   debug_               = iConfig.getUntrackedParameter<int>  ( "Debug"          , 0      );
 
-   SelectionParameters_               = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );
-
+   //-------------------------------  CMSSW_7X updates  --------------------------------
    // update for CMSSW_7_2_0
    reducedEBRecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEBRecHitCollection" ) );
    reducedEERecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEERecHitCollection" ) );
    // update for CMSSW_7_3_1
    // reducedEBRecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEBRecHits"));
    // reducedEERecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEERecHits"));
-   debug_                             = iConfig.getUntrackedParameter<int>( "Debug", 0 );
    
 
+   //----------------------------  Common variables set-up  ----------------------------
    isolatorR03.initializeElectronIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
    isolatorR04.initializeElectronIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
    isolatorR03.setConeSize( 0.3 );
@@ -123,8 +115,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
                              EGammaMvaEleEstimator::kNonTrig,
                              manualCat,
                              myManualCatWeigths );
-
-   // NOTE: it is better if you copy the MVA weight files locally. See the previous remark
    StrList myManualCatWeigthsTrig;
    for( int ie = 0; ie < 6; ie++ ) { 
       myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
@@ -138,12 +128,13 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       HLTmaplist.insert( pair< std::string, int > ( TriggerBooking[i], i ) ); }
 }
-
-
 bprimeKit::~bprimeKit()
-{
-}
+{}
 
+
+//------------------------------------------------------------------------------ 
+//   bprimeKit begin and end processes methods
+//------------------------------------------------------------------------------ 
 void bprimeKit::beginJob()
 {
    root = new TTree( "root", "root" );
@@ -167,30 +158,24 @@ void bprimeKit::beginJob()
    if( pairColl_ >= 0 ) { PairInfo.RegisterTree( root ); }
 
 }
-
 void bprimeKit::endJob()
-{
-}
+{}
 
 
-//-----------------  Method called when starting to process a run  ------------------
-void bprimeKit::beginRun
-( edm::Run const& iRun, edm::EventSetup const& iSetup )
+//------------------------------------------------------------------------------ 
+//   bprimeKit event based analysis methods
+//------------------------------------------------------------------------------ 
+void bprimeKit::beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup )
 {
    std::string processName_ = "HLT";
    bool changed( false );
    hltConfig_.init( iRun, iSetup, processName_, changed );
 }
-
-//-----------------------------  When ending a process  -----------------------------
-void bprimeKit::endRun
-( edm::Run const&, edm::EventSetup const& )
-{
-}
+void bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )
+{}
 
 
-void bprimeKit::analyze
-( const edm::Event& iEvent, const edm::EventSetup& iSetup )
+void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    edm::ESHandle<ParticleDataTable> pdt_;
    iSetup.getData( pdt_ );
@@ -258,47 +243,49 @@ void bprimeKit::analyze
    //------------------------------------------------------------------------------ 
    fillVertex( iEvent , iSetup ) ;
 
-   //=================================================================================
-   // Leptons
-   //=================================================================================
-   for( unsigned icoll = 0; icoll < lepcollections_.size(); icoll++ ) { //loop over collections
+   //------------------------------------------------------------------------------ 
+   //   Leptons
+   //------------------------------------------------------------------------------  
+   for( unsigned icoll = 0; icoll < lepcollections_.size(); icoll++ ) { 
       if( icoll >= MAX_LEPCOLLECTIONS ) { break; }
       if( debug_ > 5 ) { cout << "Fill lepton info, collection " << icoll << " with name " << lepcollections_[icoll] << endl; }
       memset( &LepInfo[icoll], 0x00, sizeof( LepInfo[icoll] ) );
-      //Muons
+      
       fillMuon( iEvent , iSetup , icoll ) ; 
-      //Electrons
       fillElectron( iEvent, iSetup , icoll ) ;
-      //Taus
       fillTau( iEvent , iSetup , icoll ) ;
 
-   }//loop over collections
-
-   //=================================================================================
-   // Photons 
-   //=================================================================================
+   }
+   //------------------------------------------------------------------------------ 
+   //   Photons
+   //------------------------------------------------------------------------------ 
    fillPhoton( iEvent , iSetup );
 
-   //=================================================================================
-   // Jets
-   //=================================================================================
+   //------------------------------------------------------------------------------ 
+   //   Jets
+   //------------------------------------------------------------------------------  
    fillJet( iEvent , iSetup ) ;
 
-   //=================================================================================
-   // Pairs
-   //=================================================================================
+   //------------------------------------------------------------------------------ 
+   //   Pairs
+   //------------------------------------------------------------------------------  
    if( pairColl_ >= 0 ) { fillLepPair( iEvent , iSetup ) ; } 
 #ifdef FILL_DIJET_PAIRS
    fillJetPair( iEvent, iSetup ) ;
 #endif
 
-
+   //------------------------------------------------------------------------------ 
+   //   Generation and Event information
+   //------------------------------------------------------------------------------  
    if( debug_ > 5 ) { cout << "\tFill Gen and Event Info.\n"; }
    memset( &GenInfo, 0x00, sizeof( GenInfo ) );
    memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );
    fillGenInfo( iEvent , iSetup );
    fillEvent  ( iEvent , iSetup );
    
+   //------------------------------------------------------------------------------ 
+   //   Processing debugging messages and file writing
+   //------------------------------------------------------------------------------ 
    if( debug_ > 11 ) {
       for( unsigned i = 0; i < lepcollections_.size(); i++ ) {
          cout << "Lepton Collection " << i << "(" << lepcollections_[i] << "): size " << LepInfo[i].Size << endl;
@@ -329,7 +316,6 @@ void bprimeKit::analyze
          }
       }
    }
-
 }
 //define this as a plug-in
 DEFINE_FWK_MODULE( bprimeKit );

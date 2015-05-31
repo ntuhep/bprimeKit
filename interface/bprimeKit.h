@@ -1,9 +1,21 @@
 /*******************************************************************************
  *
  *  Filename    : bprimeKit.h
+ *  Description : The b' analysis kit
+ *  Details     : Strips the standard CMSSW data format into a standalone 
+ *                ROOT ntuple
+ *  Authors     : May 31, 2015 - Split info mutifile format by Enoch.
+ *                Jul 05, 2010 - Add Electron ID by Jacky, Add PFMet by Chiyi
+ *                May 19, 2010 - Add Muon Iso variables, MCTag, and PF Jet  - by Dmitry Hits & Yeong-jyi Kei
+ *                Apr 15, 2010 - Update to CMSSW_3_5_6, fix bTag bug  - by Yeong-jyi Lei
+ *                Sep 24, 2009 - Updates label name, and triggerbook. Add PhotonInfo - by Yeong-jyi Lei
+ *                Sep 11, 2009 - Updates with CMSSW_3_1_2 - by Kai-Feng Chen
+ *                May 29, 2009 - Include GenInfo, electron classification, bug fix on vtx - by Yeong-jyi Lei
+ *                Mar 10, 2009 - Change the trigger table
+ *                Feb 20, 2009 - Protection added for missing InnerTrack() from muons, adding MC top mass, bug fix on JetInfo.
+ *                Jan 03, 2009 - Updates according to CMSSW_2_2_3 release (clean 2_2_3 + PhysicsTools/PatAlgos V04-14-15)
  *
 *******************************************************************************/
-
 #ifndef __BPRIMEKIT_H__
 #define __BPRIMEKIT_H__
 
@@ -15,7 +27,6 @@
 //------------------------------------------------------------------------------ 
 //   Libraries 
 //------------------------------------------------------------------------------ 
-
 //--------------------------  Standard Template Libraries  --------------------------
 #include <map>
 
@@ -38,7 +49,6 @@
 #include "MyAna/bprimeKit/interface/objectSelector.h"
 
 
-
 //------------------------------------------------------------------------------ 
 //   Global typedefs, enums and macros 
 //------------------------------------------------------------------------------ 
@@ -49,6 +59,10 @@ typedef std::vector< edm::Handle< edm::ValueMap<double> > >             IsoDepos
 #define MAX_JETCOLLECTIONS 3
 #define TurnOffInCMSSW73x true
 #define TurnOnInCMSSW_7_4_1 false
+#define W_MASS          80.403
+#define Z_MASS          91.1876
+#define MUON_MASS       0.105658
+#define ELECTRON_MASS   0.0005109989
 
 
 //------------------------------------------------------------------------------ 
@@ -152,7 +166,6 @@ private:
    // update for CMSSW_7_2_0
    edm::EDGetTokenT<EcalRecHitCollection> reducedEBRecHitCollectionToken_;
    edm::EDGetTokenT<EcalRecHitCollection> reducedEERecHitCollectionToken_;
-
    edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
    
    
@@ -170,9 +183,7 @@ private:
    map < std::string, int >::iterator HLTmaplist_pr;
    HLTConfigProvider hltConfig_;
 
-   bool isData;
-   
-   PFCandidateCollection thePfColl;
+   bool isData;   
 };
 
 #endif /* end of include guard: __BPRIMEKIT_H__ */

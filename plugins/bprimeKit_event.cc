@@ -1,17 +1,27 @@
+/*******************************************************************************
+ *
+ *  Filename    : bprimeKit_event.cc
+ *  Description : Filling in event information
+ *
+*******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
+//------------------------  Event specific CMSSW libraries  -------------------------
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-
-#include "FWCore/Common/interface/TriggerNames.h"
-
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
+//------------------------------------------------------------------------------ 
+//   Custom typedefs and enums
+//------------------------------------------------------------------------------ 
 typedef edm::Handle<std::vector<pat::MET>>    METHandler;
 typedef std::vector<pat::MET>::const_iterator METIterator;
 
+//------------------------------------------------------------------------------ 
+//   Helper static variables and functions
+//------------------------------------------------------------------------------ 
 static METHandler  METHandle;
 static METHandler  pfMETHandle;
 static METHandler  pfMETHandle_TempPlus;
@@ -21,6 +31,9 @@ static edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
 static edm::Handle<TriggerResults> TrgResultsHandle;
 static edm::Handle< L1GlobalTriggerReadoutRecord > gtRecord;
 
+//------------------------------------------------------------------------------ 
+//   bprimeKit method implementation
+//------------------------------------------------------------------------------ 
 bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    //  if(metlabel_.size() > 0) iEvent.getByLabel( metlabel_[0],    METHandle);
@@ -54,8 +67,6 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    }
    }
 
-
-   // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
    int mclep_count[2] = {0, 0};
    if ( EvtInfo.McWMode[0] == 1 || EvtInfo.McWMode[0] == 2 ) { mclep_count[1]++; }
    if ( EvtInfo.McWMode[1] == 1 || EvtInfo.McWMode[1] == 2 ) { mclep_count[0]++; }
@@ -69,7 +80,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       mclep_count[0]++;
       mclep_count[1]++;
    }
-   // McSigTag - 0: others, 1: dilepton (opposite-sign), 2: dilepton (same-sign), 3: trilepton, 4: 4-leptons
+   //------  McSigTag - 0:others, 1:opposite-sing dilepton, 2:same-sign dilepton  ------
+   //---------------------------  3: trilepton, 4: 4-lepton  ---------------------------
    if ( mclep_count[0] == 1 && mclep_count[1] == 1 ) { EvtInfo.McSigTag = 1; }
    if ( mclep_count[0] == 2 && mclep_count[1] == 0 ) { EvtInfo.McSigTag = 2; }
    if ( mclep_count[0] == 0 && mclep_count[1] == 2 ) { EvtInfo.McSigTag = 2; }
@@ -104,28 +116,24 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if( pfMETHandle.isValid() ) {
       if( debug_ > 15 ) { cout << "Get pfMET info\n"; }
       for( it_pfmet = pfMETHandle->begin(); it_pfmet != pfMETHandle->end(); it_pfmet++ ) {
-
-         EvtInfo.PFMET           = it_pfmet->pt();
-         EvtInfo.PFMETPhi        = it_pfmet->phi();
-         EvtInfo.PFRawMET        = it_pfmet->uncorrectedPt();
-         EvtInfo.PFRawMETPhi     = it_pfmet->uncorrectedPhi();
-
-         EvtInfo.PFMETx          = it_pfmet->px(); //Uly 2011-04-04
-         EvtInfo.PFMETy          = it_pfmet->py(); //Uly 2011-04-04
-
-         EvtInfo.PFSumEt         = it_pfmet->sumEt();
-         EvtInfo.PFMETSig        = it_pfmet->mEtSig();  //MET Significance = MET / std::sqrt(SumET)
-         EvtInfo.PFMETRealSig    = it_pfmet->significance();  //real MET significance
-         EvtInfo.PFMETlongitudinal    = it_pfmet->e_longitudinal();  //longitudinal component of the vector sum of energy over all object
-
-         const reco::GenMET* genmet = it_pfmet->genMET();
+         EvtInfo.PFMET              = it_pfmet->pt()             ;
+         EvtInfo.PFMETPhi           = it_pfmet->phi()            ;
+         EvtInfo.PFRawMET           = it_pfmet->uncorrectedPt()  ;
+         EvtInfo.PFRawMETPhi        = it_pfmet->uncorrectedPhi() ;
+         EvtInfo.PFMETx             = it_pfmet->px()             ; //Uly 2011-04-04
+         EvtInfo.PFMETy             = it_pfmet->py()             ; //Uly 2011-04-04
+         EvtInfo.PFSumEt            = it_pfmet->sumEt()          ;
+         EvtInfo.PFMETSig           = it_pfmet->mEtSig()         ; //MET Significance = MET / std::sqrt(SumET)
+         EvtInfo.PFMETRealSig       = it_pfmet->significance()   ; //real MET significance
+         EvtInfo.PFMETlongitudinal  = it_pfmet->e_longitudinal() ; //longitudinal component of the vector sum of energy over all object
+         const reco::GenMET* genmet = it_pfmet->genMET()         ;
          if ( !skipGenInfo_ && genmet != NULL ) {
             EvtInfo.PFGenMET        = genmet->pt();
             EvtInfo.PFGenMETPhi     = genmet->phi();
          }
       }
    }
-
+   //--------------------------  MET correction information  --------------------------- 
    iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus );
    if( pfMETHandle_TempPlus.isValid() )
       for( it_pfmet = pfMETHandle_TempPlus->begin(); it_pfmet != pfMETHandle_TempPlus->end(); it_pfmet++ ) {
@@ -137,8 +145,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_pfmet->pt();
       }
 
+   //----------------------------  Generation information  -----------------------------
    bool with_GenEventInfo = ( genevtlabel_.size() > 0 ) ? iEvent.getByLabel( genevtlabel_[0], GenEventInfoHandle ) : false;
-
    if ( with_GenEventInfo && GenEventInfoHandle->hasPDF() ) {
       EvtInfo.PDFid1   = GenEventInfoHandle->pdf()->id.first;
       EvtInfo.PDFid2   = GenEventInfoHandle->pdf()->id.second;
@@ -149,7 +157,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       EvtInfo.PDFv2    = GenEventInfoHandle->pdf()->xPDF.second;
    }
 
-   // HLT: Booking trigger bits
+   //------------------------  High level trigger information  -------------------------
    bool with_TriggerResults = ( hltlabel_.size() > 0 ) ? iEvent.getByLabel( hltlabel_[0], TrgResultsHandle ) : false;
    if ( with_TriggerResults ) {
       const edm::TriggerNames& TrgNames = iEvent.triggerNames( *TrgResultsHandle );
@@ -190,11 +198,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          //std::cout << "trigger path= " << TrgNames.triggerName(i) << std::endl;
       }
    }
-   ///**********************************************************
-   //   L1 trigger and techincal trigger bits
-   //***********************************************************
+   //------------------  Level 1 trigger and technical trigger bits  -------------------
    if( gtdigilabel_.size() > 0 ) { iEvent.getByLabel( gtdigilabel_[0], gtRecord ); }
-
    if( gtRecord.isValid() ) {
       DecisionWord dWord = gtRecord->decisionWord();
       if ( ! dWord.empty() ) { // if board not there this is zero
@@ -228,17 +233,13 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    //For details see CMS IN-2008/017
    //Currently, if the number of tracks > 10,
    //then 25% of HighPurity tracks have to be present in the event for it to be called good event
-
    int numhighpurity = 0;
    if( !TurnOffInCMSSW73x ){
    if( TrackHandle.isValid() && !TrackHandle.failedToGet() && TrackHandle->size() > 0 ) {
-
       reco::TrackBase::TrackQuality _trackQuality = reco::TrackBase::qualityByName( "highPurity" );
-
       edm::View<reco::Track>::const_iterator itk = tracks.begin();
       edm::View<reco::Track>::const_iterator itk_e = tracks.end();
       for( ; itk != itk_e; ++itk ) {
-         // std::cout << "HighPurity?  " << itk->quality(_trackQuality) << std::endl;
          if( itk->quality( _trackQuality ) ) { numhighpurity++; }
       }
       EvtInfo.NofTracks = TrackHandle->size();
