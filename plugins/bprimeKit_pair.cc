@@ -1,15 +1,31 @@
+/*******************************************************************************
+ *
+ *  Filename    : bprimeKit_pair.cc
+ *  Description : Filling in pair information
+ *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ *  
+ *  Details     :
+ *
+*******************************************************************************/
+
+
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
+//------------------------------------------------------------------------------ 
+//   Helper static variables and functions
+//------------------------------------------------------------------------------ 
 static math::XYZTLorentzVector Sum;
 static const reco::GenParticle* par1;
 static const reco::GenParticle* par2;
 static const reco::Candidate* gen1;
 static const reco::Candidate* gen2;
 static const reco::Candidate* mon;
+
+bool findAncestor( const reco::Candidate*& , const reco::GenParticle* ) ;
 
 bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
@@ -18,36 +34,32 @@ bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& i
 
    if( pairColl_ >= ( int )lepcollections_.size() ) { pairColl_ = 0; } //set to something that should be valid
 
-   for( int index1 = 0          ; index1 < LepInfo[pairColl_].Size ; index1++ ) {
-   for( int index2 = index1 + 1 ; index2 < LepInfo[pairColl_].Size ; index2++ ) {
-
+   for( int index1 = 0          ; index1 < LepInfo[pairColl_].Size ; ++index1 ) {
+   for( int index2 = index1 + 1 ; index2 < LepInfo[pairColl_].Size ; ++index2 ) {
       if ( PairInfo.Size >= MAX_PAIRS ) {
          cout << "ERROR: number of lepton pairs exceeds the size of array." << endl ;
          index1 = index2 = LepInfo[pairColl_].Size;
          break;
       }
-
       Sum = LepInfo[pairColl_].CandRef[index1]->p4() + LepInfo[pairColl_].CandRef[index2]->p4();
+      if( Sum.mag() > 200. ) {continue;}
+      
+      PairInfo.Type [PairInfo.Size] = 1; // 1: ll
+      fillPairInfo( index1 , index2 );
+      if ( !isData && !skipGenInfo_ ) { //mc
+         par1 = par2 = NULL;
+         if ( LepInfo[pairColl_].LeptonType[index1] == 11 ){ 
+            par1 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index1] )->genLepton(); 
+         } else if ( LepInfo[pairColl_].LeptonType[index1] == 13 ){ 
+            par1 = ( ( pat::Muon*     )LepInfo[pairColl_].CandRef[index1] )->genLepton(); }
+         if ( LepInfo[pairColl_].LeptonType[index2] == 11 ){ 
+            par2 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index2] )->genLepton(); 
+         } else if ( LepInfo[pairColl_].LeptonType[index2] == 13 ){ 
+            par2 = ( ( pat::Muon*     )LepInfo[pairColl_].CandRef[index2] )->genLepton(); }
+         fillPairGen();
+      }
+      PairInfo.Size++;
 
-      if ( Sum.mag() < 200. ) { //mag<200
-         PairInfo.Type      [PairInfo.Size] = 1; // 1: ll
-         fillPairInfo( index1 , index2 );
-
-         if ( !isData && !skipGenInfo_ ) { //mc
-            par1 = par2 = NULL;
-            if ( LepInfo[pairColl_].LeptonType[index1] == 11 )
-            { par1 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index1] )->genLepton(); }
-            else if ( LepInfo[pairColl_].LeptonType[index1] == 13 )
-            { par1 = ( ( pat::Muon* )LepInfo[pairColl_].CandRef[index1] )->genLepton(); }
-            if ( LepInfo[pairColl_].LeptonType[index2] == 11 )
-            { par2 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index2] )->genLepton(); }
-            else if ( LepInfo[pairColl_].LeptonType[index2] == 13 )
-            { par2 = ( ( pat::Muon* )LepInfo[pairColl_].CandRef[index2] )->genLepton(); }
-
-            fillPairGen();
-         }//mc
-         PairInfo.Size++;
-      }//mag<200
    }}
    return true;
 }
@@ -60,9 +72,7 @@ bool bprimeKit::fillJetPair( const edm::Event& iEvent , const edm::EventSetup& i
       if ( PairInfo.Size >= MAX_PAIRS ) {
          cerr << "ERROR: number of jet pairs exceeds the size of array." << endl ;
          index1 = index2 = JetInfo[0].Size;
-         break;
-      }
-
+         break; }
       Sum = JetInfo[0].CandRef[index1]->p4() + JetInfo[0].CandRef[index2]->p4();
 
       if ( JetInfo[0].Pt[index1] > 25. && JetInfo[0].Pt[index2] > 25. && Sum.mag() < 200. ) {
@@ -101,16 +111,8 @@ bool bprimeKit::fillPairGen()
    gen1 = par1;
    gen2 = par2;
 
-   while( gen1 != NULL && par1 != NULL && 
-          gen1->numberOfMothers() == 1 &&
-          gen1->mother( 0 )->pdgId() == par1->pdgId() ) {
-      gen1 = gen1->mother( 0 );
-   }
-   while( gen2 != NULL && par2 != NULL && 
-          gen2->numberOfMothers() == 1 &&
-          gen2->mother( 0 )->pdgId() == par2->pdgId() ) {
-      gen2 = gen2->mother( 0 );
-   }
+   findAncestor( gen1 , par1 );
+   findAncestor( gen2 , par2 );
 
    if ( gen1 != NULL && gen1->numberOfMothers() == 1 && 
         gen2 != NULL && gen2->numberOfMothers() == 1 &&
@@ -121,6 +123,19 @@ bool bprimeKit::fillPairGen()
       PairInfo.GenEta   [PairInfo.Size] = mon->eta();
       PairInfo.GenPhi   [PairInfo.Size] = mon->phi();
       PairInfo.GenPdgID [PairInfo.Size] = mon->pdgId();
+   }
+   return true;
+}
+
+//------------------------------------------------------------------------------ 
+//   Helper function implementation
+//------------------------------------------------------------------------------ 
+bool findAncestor( const reco::Candidate*& gen , const reco::Particle* par ) 
+{
+   if( par2 == NULL ) return false;
+   while( gen!= NULL && gen->numberofMothers() == 1 && 
+          gen->mother(0)->pdgId() == par->pdgId() ){
+      gen = gen->mother(0);
    }
    return true;
 }

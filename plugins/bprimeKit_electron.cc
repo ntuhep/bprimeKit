@@ -387,7 +387,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].ElEcalIso04[LepInfo[icoll].Size]  = it_el->dr04EcalRecHitSumEt();
       // iso_sumoet = iso_sum*(40./scEt);
 
-      if ( !isData && !skipGenInfo_ ) { //MC
+      if ( !isData && !skipGenInfo_ ) {
          if( debug_ > 15 ) { cout << "   Getting MC information\n"; }
          const reco::GenParticle* gen = it_el->genLepton(); 
          if ( gen != NULL ) {
@@ -395,8 +395,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             LepInfo[icoll].GenEta       [LepInfo[icoll].Size] = gen->eta();
             LepInfo[icoll].GenPhi       [LepInfo[icoll].Size] = gen->phi();
             LepInfo[icoll].GenPdgID     [LepInfo[icoll].Size] = gen->pdgId();
-
-            LepInfo[icoll].GenMCTag [LepInfo[icoll].Size] = getGenMCTag( gen ) ;
+            LepInfo[icoll].GenMCTag     [LepInfo[icoll].Size] = getGenMCTag( gen ) ;
          }
 
          if( debug_ > 15 ) { cout << "Get GenHandle\n"; }
@@ -410,7 +409,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       }
       LepInfo[icoll].CandRef[LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_el );
       LepInfo[icoll].Size++;
-   }//loop over electrons in collection
+   }
    return true;
 }
 

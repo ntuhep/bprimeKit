@@ -292,7 +292,6 @@ void bprimeKit::analyze
    //  if(metlabel_.size() > 0) iEvent.getByLabel( metlabel_[0],    METHandle);
    if( pfmetlabel_.size() > 0 ) { iEvent.getByLabel( pfmetlabel_[0],  pfMETHandle ); }
 
-   if( !isData && genlabel_.size() > 0 ) { iEvent.getByLabel( genlabel_[0], GenHandle ); }
 
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
    //const reco::VertexCollection* pvCol = VertexHandle.product();

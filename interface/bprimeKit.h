@@ -77,7 +77,8 @@ private:
    bool fillJetPair   ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillPairInfo  ( int , int );
    bool fillPairGen   ();
-   bool fillGenInfo   ( const edm::Event& , const edm::EventSetup& ) ; 
+   bool fillGenInfo   ( const edm::Event& , const edm::EventSetup& ) ;
+   bool fiilGenGeneric();
  
    //-------------------------  NTuple interaction variables  --------------------------
    TTree*                   root                           ;
