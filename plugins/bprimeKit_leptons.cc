@@ -13,22 +13,6 @@
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
-
-//------------------------------------------------------------------------------ 
-//   Global variables for leptons issues  
-//------------------------------------------------------------------------------ 
-
-TauHandlerList       TauHandle;
-ElectronHandlerList  ElectronHandle ;
-MuonHandlerList      MuonHandle;
-TrackHandle          tracks_h       ; // Jacky
-GsfElectronHandle    els_h          ;
-ConversionHandle     conversions_h  ;
-DcsStatusHandle      dcsHandle      ; // Jacky
-edm::Handle<double> rhoIso_h;
-double rhoIso;
-double evt_bField;
-
 //------------------------------------------------------------------------------ 
 //   Static helper variables
 //------------------------------------------------------------------------------
@@ -84,12 +68,12 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
    iEvent.getByLabel( rhoIsoInputTag, rhoIso_h ); 
    if( !TurnOffInCMSSW73x )
    rhoIso = 0;
-   rhoIso = *( rhoIso_h.product() );
+   //rhoIso = *( rhoIso_h.product() );
 
    //iEvent.getByLabel("gsfElectrons", els_h);
    
    //-------------------------  Begin looping over collection  -------------------------
-   for( unsigned icoll = 0; icoll < lepcollections_.size(); icoll++ ) { 
+   for( size_t icoll = 0; icoll < lepcollections_.size(); icoll++ ) { 
       if( icoll >= MAX_LEPCOLLECTIONS ) { break; }
       if( debug_ > 5 ) { cout << "Fill lepton info, collection " << icoll << " with name " << lepcollections_[icoll] << endl; }
       memset( &LepInfo[icoll], 0x00, sizeof( LepInfo[icoll] ) ); 

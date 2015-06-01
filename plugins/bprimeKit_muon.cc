@@ -13,12 +13,6 @@
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
 
 
-//------------------------------------------------------------------------------ 
-//   Helper static variables and functions
-//------------------------------------------------------------------------------ 
-extern MuonHandlerList MuonHandle;
-static MuonIterator    it_mu;
-static GenIterator     it_gen;
 
 //------------------------------------------------------------------------------ 
 //   Begin bprimeKit muon method implementaion
@@ -27,17 +21,17 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
 {
 
    if( MuonHandle.size() <= icoll ) { return false; } 
-   
    if( debug_ > 10 ) { cout << " Muon collection size " << MuonHandle[icoll]->size() << endl; }
 
-   for( it_mu = MuonHandle[icoll]->begin(); it_mu != MuonHandle[icoll]->end(); it_mu++ ) { //loop over muons in collection
+   for( MuonIterator it_mu = MuonHandle[icoll]->begin(); it_mu != MuonHandle[icoll]->end(); it_mu++ ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;//exit(0);
       }
 
       if( debug_ > 11 ) { cout << "  Size " << LepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl; }
-
+   
+      cout <<">>> Muon >>> Getting generic information" << endl; 
       LepInfo[icoll].Index      [LepInfo[icoll].Size] = LepInfo[icoll].Size;
       LepInfo[icoll].LeptonType [LepInfo[icoll].Size] = 13;
       LepInfo[icoll].Charge     [LepInfo[icoll].Size] = it_mu->charge();
@@ -81,6 +75,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
                 http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h?revision=1.7&view=markup
          */
       if ( it_mu->isPFMuon() && it_mu->isPFIsolationValid() ) {
+         cout << ">>> Muon >>> Getting isolation information" << endl;
          LepInfo[icoll].ChargedHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumChargedHadronPt;
          LepInfo[icoll].NeutralHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumNeutralHadronEt;
          LepInfo[icoll].PhotonIsoR03         [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumPhotonEt;
@@ -90,8 +85,9 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          float AEffR03 = MuonEffectiveArea::GetMuonEffectiveArea( MuonEffectiveArea::kMuGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
          double rhoPrime = 0;
 
-         if( !TurnOffInCMSSW73x )
-         rhoPrime = max( ( double ) * ( rhoH[1].product() ), 0.0 );
+         if( !TurnOffInCMSSW73x ){
+         //rhoPrime = max( ( double ) * ( rhoH[1].product() ), 0.0 );
+         }
          
          LepInfo[icoll].IsoRhoCorrR03             [LepInfo[icoll].Size] =
             LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
@@ -110,6 +106,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
 
       // Timing information for distinguishing cosmic ray and prompt muon
       if( it_mu->isTimeValid() ) {
+         cout <<">>> Muon >>> Getting muon type " << endl;
          // number of muon stations used
          LepInfo[icoll].MuontimenDof             [LepInfo[icoll].Size] = it_mu->time().nDof;
          // time of arrival at the IP for the Beta=1 hypothesis
@@ -121,6 +118,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          LepInfo[icoll].Muondirection            [LepInfo[icoll].Size] = it_mu->time().direction();
       }
 
+      cout <<">>> Muon >>> Getting type information" << endl;
       reco::MuonEnergy muEnergy = it_mu->calEnergy();
       LepInfo[icoll].CaloEnergy [LepInfo[icoll].Size] = muEnergy.em + muEnergy.had + muEnergy.ho;
 
@@ -187,20 +185,22 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
       LepInfo[icoll].MuType[LepInfo[icoll].Size] = it_mu->type();
 
       if ( !isData && !skipGenInfo_ ) {
+         cout<< ">>> Muon >>> Getting generation information " << endl;
          const reco::GenParticle* gen = it_mu->genLepton();
          if ( gen != NULL ) {
             LepInfo[icoll].GenPt    [LepInfo[icoll].Size] = gen->pt();
             LepInfo[icoll].GenEta   [LepInfo[icoll].Size] = gen->eta();
             LepInfo[icoll].GenPhi   [LepInfo[icoll].Size] = gen->phi();
             LepInfo[icoll].GenPdgID [LepInfo[icoll].Size] = gen->pdgId();
-
             LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( gen ) ;
          }
       }
-
+      cout << ">>> Muon >>> Getting gneration information part 2" << endl;
       if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && !isData && !skipGenInfo_ ) {
-         for( it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
+         cout << ">>> Muon >>> Entering Loop" << endl;
+         for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
             if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) break;
+            cout <<">>>>>>  Calling functions >>> " << endl;
             LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_mu )  ; 
          }
       }
@@ -210,17 +210,3 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
    return true;
 }
 
-
-int getGenMCTag( int pdgId ) 
-{
-   if     ( abs( pdgId )                    == 23 ) { return 2; }
-   else if( abs( pdgId )                    == 24 ) { return 1; }
-   else if( abs( pdgId )                    == 5  ) { return 3; } // from a b quark
-   else if( ( abs( pdgId ) % 1000 ) / 100   == 5  ) { return 3; } // from a B meson
-   else if( ( abs( pdgId ) % 10000 ) / 1000 == 5  ) { return 3; } // from a bottom baryon
-   else if( abs( pdgId )                    == 4  ) { return 4; } // from a c quark
-   else if( ( abs( pdgId ) % 1000 ) / 100   == 4  ) { return 4; } // from a D meson
-   else if( ( abs( pdgId ) % 10000 ) / 1000 == 4  ) { return 4; } // from a charm baryon
-   else if( abs( pdgId )                    == 15 ) { return 7; } // from tau
-   return 0;
-}

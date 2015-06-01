@@ -67,6 +67,7 @@ typedef std::vector<pat::Electron>     ElectronList        ;
 typedef edm::Handle<ElectronList>      ElectronHandler     ;
 typedef std::vector<ElectronHandler>   ElectronHandlerList ;
 typedef ElectronList::const_iterator   ElectronIterator    ;
+typedef reco::GsfElectronCollection::const_iterator GsfIterator;
 
 typedef std::vector<pat::Muon>         MuonList;
 typedef edm::Handle<MuonList>          MuonHandler;
@@ -88,7 +89,7 @@ typedef edm::Handle<JetList>           JetHandler;
 typedef std::vector<JetHandler>        JetHandlerList;
 typedef JetList::const_iterator        JetIterator;
 
-typedef edm::Handle<reco::TrackCollection>          TrackHandle         ;
+typedef edm::Handle<reco::TrackCollection>          TrackHandler        ;
 typedef edm::Handle<reco::GsfElectronCollection>    GsfElectronHandle   ;
 typedef edm::Handle<reco::ConversionCollection>     ConversionHandle    ;
 typedef edm::Handle<DcsStatusCollection>            DcsStatusHandle     ;
@@ -133,11 +134,11 @@ private:
    bool fillJet       ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillLepPair   ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillJetPair   ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillGenInfo   ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillEvent     ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillGenGeneric();
    bool fillPairInfo  ( int , int );
    bool fillPairGen   ();
-   bool fillGenInfo   ( const edm::Event&, const edm::EventSetup& ) ;
-   bool fillGenGeneric();
-   bool fillEvent     ( const edm::Event&, const edm::EventSetup& ) ;
  
    //-------------------------  NTuple interaction variables  --------------------------
    TTree*                   root                           ;
@@ -183,7 +184,17 @@ private:
    //----------------  Information type independent helper variables  -----------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
    edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
-   std::vector<edm::Handle<double> > sigmaHandle;
+   std::vector<edm::Handle<double> >            sigmaHandle;
+   MuonHandlerList      MuonHandle;
+   TauHandlerList       TauHandle;
+   ElectronHandlerList  ElectronHandle ;
+   TrackHandler          tracks_h       ; // Jacky
+   GsfElectronHandle    els_h          ;
+   ConversionHandle     conversions_h  ;
+   DcsStatusHandle      dcsHandle      ; // Jacky
+   edm::Handle<double> rhoIso_h;
+   double rhoIso;
+   double evt_bField;
 
    //--------------------------------  Vertex related  --------------------------------- 
    double                               Signal_Vz      ;

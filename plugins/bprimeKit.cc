@@ -189,6 +189,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
          sigmaHandle.push_back( edm::Handle<double> () );
          iEvent.getByLabel( sigmaLabel_[il], sigmaHandle[il] );
       }
+   if(!isData && genlabel_.size() > 0 ) iEvent.getByLabel( genlabel_[0], GenHandle);
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
    if( offlinePVBSlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS ); } //Offline primary vertices with Beam Spot constraint //Dmitry
    if( !TurnOffInCMSSW73x )

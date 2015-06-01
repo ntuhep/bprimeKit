@@ -596,7 +596,7 @@ process.bprimeKit = cms.EDAnalyzer(
 
     IncludeL7           = cms.untracked.bool(False),
     SelectionParameters = defaultObjectParameters.clone(),
-    Debug               = cms.untracked.int32(0),
+    Debug               = cms.untracked.int32(100),
 )
 
 process.TFileService = cms.Service("TFileService",

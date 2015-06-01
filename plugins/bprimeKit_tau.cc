@@ -8,26 +8,16 @@
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 
-//------------------------------------------------------------------------------ 
-//   Helper typedefs and enums
-//------------------------------------------------------------------------------ 
-
-//------------------------------------------------------------------------------ 
-//   Helper static variables and functions
-//------------------------------------------------------------------------------ 
-extern TauHandlerList  TauHandle;
-static TauIterator     it_tau;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll ) 
-{
-  
+{ 
    if( TauHandle.size() <= icoll ) {  return false; } 
    if( debug_ > 10 ) { cout << " Tau collection size " << TauHandle[icoll]->size() << endl; }
 
-   for( it_tau = TauHandle[icoll]->begin(); it_tau != TauHandle[icoll]->end(); it_tau++ ) { 
+   for( TauIterator it_tau = TauHandle[icoll]->begin(); it_tau != TauHandle[icoll]->end(); it_tau++ ) { 
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr<< "ERROR: number of leptons exceeds the size of array." << endl;
          break;

@@ -7,6 +7,7 @@
 *******************************************************************************/
 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "DataFormats/Math/interface/deltaR.h"
 
 //------------------------------------------------------------------------------ 
 //   Prototype of all functions, static variables are function specific
@@ -14,7 +15,8 @@
 int getGenMCTag( const reco::GenParticle* );
 int getGenMCTag( GenIterator& , double , double , double ); //Required by the below
 int getGenMCTag( GenIterator& , ElectronIterator& );
-int getGenMCTag( GenIterator& , MuonIterator& ) ; 
+int getGenMCTag( GenIterator& , MuonIterator& ) ;
+
 
 //------------------------------------------------------------------------------ 
 //   Begin implemenation
@@ -24,6 +26,7 @@ int getGenMCTag( GenIterator& , MuonIterator& ) ;
 static const reco::Candidate* genCand ; 
 static int bprimeTag;
 static int returnTag;
+
 int getGenMCTag( const reco::GenParticle* gen )
 {
    genCand    = gen;
@@ -47,6 +50,7 @@ int getGenMCTag( const reco::GenParticle* gen )
    }
    if ( bprimeTag == 1 ) { returnTag += 10; }
    if ( bprimeTag == 2 ) { returnTag += 20; }
+   cout << ">>>>>> getGenMCTag >>> Finish Getting tag " << endl;
    return returnTag;
 }
 
@@ -54,7 +58,9 @@ int getGenMCTag( const reco::GenParticle* gen )
 static double r;
 int getGenMCTag( GenIterator& gen , double pEta , double pPhi , double pPt )
 {
+   cout << ">>>>>> getGenMCTag >>> Iterator: " << &(*gen) << endl;
    r = deltaR<double>( gen->eta(), gen->phi(), pEta, pPhi );
+   cout << ">>>>>> getGenMCTag >>> Finish function call " << &(*gen) << endl;
 
    if( r > 0.5 ) return 0;
    if( fabs( gen->pt() - pPt ) / gen->pt() > 0.5 ) return 0;

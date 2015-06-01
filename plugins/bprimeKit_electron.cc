@@ -18,29 +18,12 @@
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 
 
-typedef reco::GsfElectronCollection::const_iterator GsfIterator         ;
-
-//------------------------------------------------------------------------------ 
-//   Helper static variables and functions
-//------------------------------------------------------------------------------ 
-extern ElectronHandlerList  ElectronHandle ;
-extern TrackHandle          tracks_h       ; // Jacky
-extern GsfElectronHandle    els_h          ;
-extern ConversionHandle     conversions_h  ;
-extern DcsStatusHandle      dcsHandle      ; // Jacky
-extern edm::Handle<double>  rhoIso_h       ;
-extern double rhoIso;
-extern double evt_bField;
-
-static ElectronIterator     it_el          ;
-static GsfIterator          gsfEle         ;
-
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
    if( ElectronHandle.size() <= icoll ) {return false;}
    if( debug_ > 10 ) { cout << " Electron collection size " << ElectronHandle[icoll]->size() << endl; }
    
-   for( it_el = ElectronHandle[icoll]->begin(); it_el != ElectronHandle[icoll]->end(); it_el++ ) {//loop over electrons in collection
+   for( ElectronIterator it_el = ElectronHandle[icoll]->begin(); it_el != ElectronHandle[icoll]->end(); it_el++ ) {//loop over electrons in collection
       if( debug_ > 11 ) { 
          cout << "  Size " << LepInfo[icoll].Size << " el et,eta,phi " 
               << it_el->et() << "," << it_el->superCluster()->eta() << "," 
@@ -91,7 +74,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          // Add 2012 EID (https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification)
          if( !TurnOffInCMSSW73x ){
             size_t nGsfEle = 0 ;
-            for( gsfEle=els_h->begin() ; gsfEle != els_h->end(); ++gsfEle , ++nGsfEle ){
+            for( GsfIterator gsfEle=els_h->begin() ; gsfEle != els_h->end(); ++gsfEle , ++nGsfEle ){
                if ( gsfEle->gsfTrack()->pt() != it_el->gsfTrack()->pt() ) { continue ; }
                reco::GsfElectronRef ele( els_h, nGsfEle );
                const GsfElectronCollection theEGamma = *( els_h.product() );

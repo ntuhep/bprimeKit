@@ -59,12 +59,12 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          //-----------------------  Filling in isolation information  ------------------------
          VertexRef myVtxRef( VertexHandle, 0 ); 
          // TODO
-         if( debug_ > 10 ) { cout << " B4 Photon getIsolation " << endl; }
+         if( debug_ > 10 ) { cout << ">>>Photon>>> B4 Photon getIsolation " << endl; }
          // PhotonisolatorR03.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
          PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationCharged();
          PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
          PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationPhoton();
-         if( debug_ > 10 ) { cout << " Af Photon getIsolation " << endl; }
+         if( debug_ > 10 ) { cout << ">>> Photon >>> Af Photon getIsolation " << endl; }
          // PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle );
          PhotonInfo[icoll].phoPFChIsoDR04 [PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationCharged();
          PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
@@ -73,7 +73,7 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          
          //---------------------------  Generation MC information  ---------------------------
          if ( !isData && !skipGenInfo_ ) { //MC
-            if( debug_ > 15 ) { cout << "Getting MC information\n"; }
+            if( debug_ > 15 ) { cout << ">>> Photon >>> Getting MC information" << endl ; }
             const reco::Candidate* gen = it_pho->genPhoton();
             if ( gen != NULL ) {
                PhotonInfo[icoll].GenPt        [PhotonInfo[icoll].Size] = gen->pt();
