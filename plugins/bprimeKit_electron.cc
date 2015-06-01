@@ -18,17 +18,22 @@
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 
 
+typedef reco::GsfElectronCollection::const_iterator GsfIterator         ;
+
 //------------------------------------------------------------------------------ 
 //   Helper static variables and functions
 //------------------------------------------------------------------------------ 
 extern ElectronHandlerList  ElectronHandle ;
-static ElectronIterator     it_el          ;
-static TrackHandle          tracks_h       ; // Jacky
-static GsfElectronHandle    els_h          ;
-static ConversionHandle     conversions_h  ;
-static DcsStatusHandle      dcsHandle      ; // Jacky
-static GsfIterator          gsfEle         ;
+extern TrackHandle          tracks_h       ; // Jacky
+extern GsfElectronHandle    els_h          ;
+extern ConversionHandle     conversions_h  ;
+extern DcsStatusHandle      dcsHandle      ; // Jacky
+extern edm::Handle<double>  rhoIso_h       ;
+extern double rhoIso;
+extern double evt_bField;
 
+static ElectronIterator     it_el          ;
+static GsfIterator          gsfEle         ;
 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
@@ -122,8 +127,8 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                VertexRef myVtxRef( VertexHandle, ivtx );
 
                if( !TurnOffInCMSSW73x ) {
-                  isolatorR03.fGetIsolation( &*gsfEle, &thePfColl, myVtxRef, VertexHandle );
-                  isolatorR04.fGetIsolation( &*gsfEle, &thePfColl, myVtxRef, VertexHandle );
+               //   isolatorR03.fGetIsolation( &*gsfEle, &thePfColl, myVtxRef, VertexHandle );
+               //   isolatorR04.fGetIsolation( &*gsfEle, &thePfColl, myVtxRef, VertexHandle );
                }
 
                // get particle flow isolation

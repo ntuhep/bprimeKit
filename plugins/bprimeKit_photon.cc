@@ -60,12 +60,12 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          VertexRef myVtxRef( VertexHandle, 0 ); 
          // TODO
          if( debug_ > 10 ) { cout << " B4 Photon getIsolation " << endl; }
-         PhotonisolatorR03.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
+         // PhotonisolatorR03.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
          PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationCharged();
          PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
          PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationPhoton();
          if( debug_ > 10 ) { cout << " Af Photon getIsolation " << endl; }
-         PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle );
+         // PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle );
          PhotonInfo[icoll].phoPFChIsoDR04 [PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationCharged();
          PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
          PhotonInfo[icoll].phoPFPhoIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationPhoton();

@@ -6,7 +6,7 @@
  *
 *******************************************************************************/
 
-#include "MyAna/bprimeKit/interface/bprimeKit_types.h"
+#include "MyAna/bprimeKit/interface/bprimeKit.h"
 
 //------------------------------------------------------------------------------ 
 //   Prototype of all functions, static variables are function specific

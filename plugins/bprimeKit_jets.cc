@@ -5,6 +5,7 @@
  *
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "MyAna/bprimeKit/interface/bprimeKit_util.h"
 
 //-------------------------  Jet specific CMSSW libraries  --------------------------
 #include "DataFormats/PatCandidates/interface/Jet.h"

@@ -10,19 +10,30 @@
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+
+
 //------------------------------------------------------------------------------ 
 //   Global variables for leptons issues  
 //------------------------------------------------------------------------------ 
+
 TauHandlerList       TauHandle;
 ElectronHandlerList  ElectronHandle ;
 MuonHandlerList      MuonHandle;
+TrackHandle          tracks_h       ; // Jacky
+GsfElectronHandle    els_h          ;
+ConversionHandle     conversions_h  ;
+DcsStatusHandle      dcsHandle      ; // Jacky
+edm::Handle<double> rhoIso_h;
+double rhoIso;
+double evt_bField;
 
 //------------------------------------------------------------------------------ 
 //   Static helper variables
 //------------------------------------------------------------------------------
 static const float currentToBFieldScaleFactor = 2.09237036221512717e-04;
-static double evt_bField;
-static current ;
+static double current ;
 static string NonLabel;
 
 bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iSetup ) 
@@ -69,11 +80,10 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
    //------------------------  Setting up isolation parameters  ------------------------
    cout << "Attempting to read rhoiso..." << endl;
    iEvent.getByLabel( conversionsInputTag_, conversions_h );
-   edm::Handle<double> rhoIso_h;
    if( !TurnOffInCMSSW73x )
    iEvent.getByLabel( rhoIsoInputTag, rhoIso_h ); 
-   double rhoIso = 0;
    if( !TurnOffInCMSSW73x )
+   rhoIso = 0;
    rhoIso = *( rhoIso_h.product() );
 
    //iEvent.getByLabel("gsfElectrons", els_h);
@@ -87,7 +97,7 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
       fillElectron( iEvent, iSetup , icoll ) ;
       fillTau( iEvent , iSetup , icoll ) ;
    }
-
+   return true;
 }
 
 

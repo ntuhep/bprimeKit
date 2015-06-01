@@ -38,9 +38,13 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/Scalers/interface/DcsStatus.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
@@ -64,7 +68,7 @@ typedef edm::Handle<ElectronList>      ElectronHandler     ;
 typedef std::vector<ElectronHandler>   ElectronHandlerList ;
 typedef ElectronList::const_iterator   ElectronIterator    ;
 
-typedef std:vector<pat::Muon>          MuonList;
+typedef std::vector<pat::Muon>         MuonList;
 typedef edm::Handle<MuonList>          MuonHandler;
 typedef std::vector<MuonHandler>       MuonHandlerList;
 typedef MuonList::const_iterator       MuonIterator ;
@@ -88,7 +92,6 @@ typedef edm::Handle<reco::TrackCollection>          TrackHandle         ;
 typedef edm::Handle<reco::GsfElectronCollection>    GsfElectronHandle   ;
 typedef edm::Handle<reco::ConversionCollection>     ConversionHandle    ;
 typedef edm::Handle<DcsStatusCollection>            DcsStatusHandle     ;
-typedef reco::GsfElectronCollection::const_iterator GsfIterator         ;
 
 typedef std::vector<reco::GenParticle>::const_iterator GenIterator ; 
 
