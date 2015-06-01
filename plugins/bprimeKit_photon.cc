@@ -13,22 +13,15 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
 //------------------------------------------------------------------------------ 
-//   enums and typedefs 
-//------------------------------------------------------------------------------ 
-typedef std::vector<pat::Photon>   PhotonList; 
-typedef edm::Handle<PhotonList>    PhotonHandle;
-typedef std::vector<PhotonHandle>  PhotonHandleList;
-
-//------------------------------------------------------------------------------ 
 //   Helper static variables and functions 
 //------------------------------------------------------------------------------ 
-static PhotonHandleList           PhoHandle;
-static PhotonList::const_iterator it_pho ;
+static PhotonHandleList  PhoHandle;
+static PhotonIterator    it_pho ;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 
-bool bprimeKit::fillPhoton( const edm::Event& iEvent ,  const edm::EventSetup& iSetup )
+bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    for( unsigned il = 0; il < pholabel_.size(); il++ ) {
       PhoHandle.push_back( PhotonHandle() );

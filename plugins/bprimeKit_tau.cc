@@ -11,30 +11,18 @@
 //------------------------------------------------------------------------------ 
 //   Helper typedefs and enums
 //------------------------------------------------------------------------------ 
-typedef std::vector<pat::Tau>  TauList;
-typedef edm::Handle<TauList>   TauHandler;
-typedef std::vector<TauHandler> TauHandlerList;
-typedef TauList::const_iterator TauIterator;
 
 //------------------------------------------------------------------------------ 
 //   Helper static variables and functions
 //------------------------------------------------------------------------------ 
-static TauHandlerList  TauHandle;
+extern TauHandlerList  TauHandle;
 static TauIterator     it_tau;
-static string          NonLabel;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll ) 
 {
-   NonLabel = "";
-   for( unsigned il = 0; il < taulabel_.size(); il++ ) {
-      if( NonLabel.compare( taulabel_[il].label() ) == 0 ) { continue; }
-      TauHandle.push_back( TauHandler() );
-      iEvent.getByLabel( taulabel_[il], TauHandle[il] );
-      if( debug_ > 10 ) { cout << "leps " << il << " taulabel " << taulabel_[il] << " with " << TauHandle[il]->size() << " entries\n"; }
-   }
   
    if( TauHandle.size() <= icoll ) {  return false; } 
    if( debug_ > 10 ) { cout << " Tau collection size " << TauHandle[icoll]->size() << endl; }

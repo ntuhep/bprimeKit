@@ -245,17 +245,9 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    //------------------------------------------------------------------------------ 
    //   Leptons
-   //------------------------------------------------------------------------------  
-   for( unsigned icoll = 0; icoll < lepcollections_.size(); icoll++ ) { 
-      if( icoll >= MAX_LEPCOLLECTIONS ) { break; }
-      if( debug_ > 5 ) { cout << "Fill lepton info, collection " << icoll << " with name " << lepcollections_[icoll] << endl; }
-      memset( &LepInfo[icoll], 0x00, sizeof( LepInfo[icoll] ) );
-      
-      fillMuon( iEvent , iSetup , icoll ) ; 
-      fillElectron( iEvent, iSetup , icoll ) ;
-      fillTau( iEvent , iSetup , icoll ) ;
-
-   }
+   //------------------------------------------------------------------------------ 
+   fillLepton( iEvent , iSetup ) ;
+   
    //------------------------------------------------------------------------------ 
    //   Photons
    //------------------------------------------------------------------------------ 

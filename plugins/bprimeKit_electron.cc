@@ -19,20 +19,9 @@
 
 
 //------------------------------------------------------------------------------ 
-//   Helper typedef and enums
-//------------------------------------------------------------------------------ 
-typedef edm::Handle<std::vector<pat::Electron>>     ElectronHandler     ;
-typedef std::vector<ElectronHandler>                ElectronHandlerList ;
-typedef edm::Handle<reco::TrackCollection>          TrackHandle         ;
-typedef edm::Handle<reco::GsfElectronCollection>    GsfElectronHandle   ;
-typedef edm::Handle<reco::ConversionCollection>     ConversionHandle    ;
-typedef edm::Handle<DcsStatusCollection>            DcsStatusHandle     ;
-typedef reco::GsfElectronCollection::const_iterator GsfIterator         ;
-
-//------------------------------------------------------------------------------ 
 //   Helper static variables and functions
 //------------------------------------------------------------------------------ 
-static ElectronHandlerList  ElectronHandle ;
+extern ElectronHandlerList  ElectronHandle ;
 static ElectronIterator     it_el          ;
 static TrackHandle          tracks_h       ; // Jacky
 static GsfElectronHandle    els_h          ;
@@ -43,46 +32,6 @@ static GsfIterator          gsfEle         ;
 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
-   //--------------------------  Setting up helper variables  --------------------------
-   for( unsigned il = 0; il < eleclabel_.size(); il++ ) {
-      ElectronHandle.push_back( ElectronHandler() );
-      iEvent.getByLabel( eleclabel_[il], ElectronHandle[il] );
-      if( debug_ > 10 ) { cout << "leps " << il << " electronlabel " << eleclabel_[il] << " with " << ElectronHandle[il]->size() << " entries\n"; }
-   }
-   iEvent.getByLabel( "reducedEgamma", "reducedGedGsfElectronCores", els_h ); //  for CMSSW73x 
-   iEvent.getByLabel( conversionsInputTag_, conversions_h );
-   if( !TurnOffInCMSSW73x )
-      if( tracklabel_.size() > 0 ) { iEvent.getByLabel( tracklabel_[0], tracks_h ); }            //Add by Jacky
-   if( dcslabel_.size() > 0 ) { iEvent.getByLabel( dcslabel_[0], dcsHandle ); }            //refer to ElectroWeakAnalysis/MultiBosons/VgAnalyzerKit.cc (Jacky)
-   
-   //-----------------------------  Magnetic field set-up  -----------------------------
-   // https://twiki.cern.ch/twiki/bin/view/CMS/ConversionBackgroundRejection)
-   double evt_bField;
-   if ( isData ) {
-      if( ( *dcsHandle ).size() != 0 ) {
-         float currentToBFieldScaleFactor = 2.09237036221512717e-04;
-         float current = ( *dcsHandle )[0].magnetCurrent();
-         evt_bField = current * currentToBFieldScaleFactor;
-      } else {
-         evt_bField = 3.80;
-      }
-   } else {
-      ESHandle<MagneticField> magneticField;
-      iSetup.get<IdealMagneticFieldRecord>().get( magneticField );
-      evt_bField = magneticField->inTesla( Surface::GlobalPoint( 0., 0., 0. ) ).z();
-   }
-
-   //------------------------  Setting up isolation parameters  ------------------------
-   cout << "Attempting to read rhoiso..." << endl;
-   iEvent.getByLabel( conversionsInputTag_, conversions_h );
-   edm::Handle<double> rhoIso_h;
-   if( !TurnOffInCMSSW73x )
-   iEvent.getByLabel( rhoIsoInputTag, rhoIso_h ); 
-   double rhoIso = 0;
-   if( !TurnOffInCMSSW73x )
-   rhoIso = *( rhoIso_h.product() );
-
-   //iEvent.getByLabel("gsfElectrons", els_h);
    if( ElectronHandle.size() <= icoll ) {return false;}
    if( debug_ > 10 ) { cout << " Electron collection size " << ElectronHandle[icoll]->size() << endl; }
    

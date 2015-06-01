@@ -38,7 +38,11 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
 #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
@@ -52,8 +56,43 @@
 //------------------------------------------------------------------------------ 
 //   Global typedefs, enums and macros 
 //------------------------------------------------------------------------------ 
-typedef std::vector< edm::Handle< edm::ValueMap<reco::IsoDeposit> > >   IsoDepositMaps;
-typedef std::vector< edm::Handle< edm::ValueMap<double> > >             IsoDepositVals;
+typedef std::vector<edm::Handle<edm::ValueMap<reco::IsoDeposit>>>   IsoDepositMaps;
+typedef std::vector<edm::Handle<edm::ValueMap<double>>>             IsoDepositVals;
+
+typedef std::vector<pat::Electron>     ElectronList        ;
+typedef edm::Handle<ElectronList>      ElectronHandler     ;
+typedef std::vector<ElectronHandler>   ElectronHandlerList ;
+typedef ElectronList::const_iterator   ElectronIterator    ;
+
+typedef std:vector<pat::Muon>          MuonList;
+typedef edm::Handle<MuonList>          MuonHandler;
+typedef std::vector<MuonHandler>       MuonHandlerList;
+typedef MuonList::const_iterator       MuonIterator ;
+
+typedef std::vector<pat::Tau>          TauList;
+typedef edm::Handle<TauList>           TauHandler;
+typedef std::vector<TauHandler>        TauHandlerList;
+typedef TauList::const_iterator        TauIterator;
+
+typedef std::vector<pat::Photon>       PhotonList; 
+typedef edm::Handle<PhotonList>        PhotonHandle;
+typedef std::vector<PhotonHandle>      PhotonHandleList;
+typedef PhotonList::const_iterator     PhotonIterator ;
+
+typedef std::vector<pat::Jet>          JetList;
+typedef edm::Handle<JetList>           JetHandler;
+typedef std::vector<JetHandler>        JetHandlerList;
+typedef JetList::const_iterator        JetIterator;
+
+typedef edm::Handle<reco::TrackCollection>          TrackHandle         ;
+typedef edm::Handle<reco::GsfElectronCollection>    GsfElectronHandle   ;
+typedef edm::Handle<reco::ConversionCollection>     ConversionHandle    ;
+typedef edm::Handle<DcsStatusCollection>            DcsStatusHandle     ;
+typedef reco::GsfElectronCollection::const_iterator GsfIterator         ;
+
+typedef std::vector<reco::GenParticle>::const_iterator GenIterator ; 
+
+
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
 #define MAX_JETCOLLECTIONS 3
@@ -84,6 +123,7 @@ private:
    //-----------------------------  Custom helper methods  -----------------------------
    bool fillVertex    ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillPhoton    ( const edm::Event&, const edm::EventSetup& ) ;
+   bool fillLepton    ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillMuon      ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
    bool fillElectron  ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
    bool fillTau       ( const edm::Event&, const edm::EventSetup& , const size_t ) ;

@@ -14,16 +14,9 @@
 
 
 //------------------------------------------------------------------------------ 
-//   Helper enums and typedefs
-//------------------------------------------------------------------------------ 
-typedef edm::Handle<std::vector<pat::Muon>>       MuonHandler;
-typedef std::vector<MuonHandler>                  MuonHandlerList;
-
-
-//------------------------------------------------------------------------------ 
 //   Helper static variables and functions
 //------------------------------------------------------------------------------ 
-static MuonHandlerList MuonHandle;
+extern MuonHandlerList MuonHandle;
 static MuonIterator    it_mu;
 static GenIterator     it_gen;
 
@@ -32,11 +25,6 @@ static GenIterator     it_gen;
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll )
 {
-   for( unsigned il = 0; il < muonlabel_.size(); il++ ) {
-      MuonHandle.push_back( edm::Handle<std::vector<pat::Muon> >() );
-      iEvent.getByLabel( muonlabel_[il], MuonHandle[il] );
-      if( debug_ > 10 ) { cout << "leps " << il << " muonlabel " << muonlabel_[il] << " with " << MuonHandle[il]->size() << " entries\n"; }
-   }
 
    if( MuonHandle.size() <= icoll ) { return false; } 
    
