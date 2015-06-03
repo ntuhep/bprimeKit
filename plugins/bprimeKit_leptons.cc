@@ -19,11 +19,11 @@
 static const float currentToBFieldScaleFactor = 2.09237036221512717e-04;
 static double current ;
 static string NonLabel;
-static edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
-static edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
-static edm::Handle<edm::ValueMap<bool>> medium_id_decisions;
-static edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
-static edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
+edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
+edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
+edm::Handle<edm::ValueMap<bool>> medium_id_decisions;
+edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
+edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
 
 bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iSetup ) 
 {

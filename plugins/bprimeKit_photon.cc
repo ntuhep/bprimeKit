@@ -8,7 +8,6 @@
 *******************************************************************************/
 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
-#include "MyAna/bprimeKit/interface/GEDPhoIDTools.h"
 //------------------------  Photon specific CMSSW libraries  ------------------------
 #include "DataFormats/PatCandidates/interface/Photon.h"
 

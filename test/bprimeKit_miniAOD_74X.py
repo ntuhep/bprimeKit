@@ -526,12 +526,25 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    SelectEvents = cms.vstring('filterPath')
 #    )
 
+from PhysicsTools.PatAlgos.tools.coreTools import *
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.MiniAOD
+switchOnVIDElectronIdProducer(process, dataFormat)
+my_id_modules = [
+   'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
+   'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
+
+#add them to the VID producer
+for idmod in my_id_modules:
+   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+process.egmGsfElectronIDSequence
+
 #------------------------------------------------------------------------------- 
 # BprimeKit setup 
 #------------------------------------------------------------------------------- 
 resultsFile = 'results_ttbar13TeV.root'
 from MyAna.bprimeKit.ObjectParameters_cfi import *
-
 process.bprimeKit = cms.EDAnalyzer(
     "bprimeKit",
     MCtag                     = cms.untracked.bool(False),
@@ -547,7 +560,7 @@ process.bprimeKit = cms.EDAnalyzer(
     eleLooseIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
     eleMediumIdMap            = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),
     eleTightIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"),
-    eleHEEPIdMap              = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV51")
+    eleHEEPIdMap              = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV51"),
     jetlabel                  = cms.VInputTag('slimmedJets','selectedPatJetsAK8PFCHSPrunedPacked','patJetsCMSTopTagCHSPacked'),
     JetCollections            = cms.vstring('JetInfo','AK8BosonJetInfo','CA8TopJetInfo'),
     JetType                   = cms.vint32(0,2,3),

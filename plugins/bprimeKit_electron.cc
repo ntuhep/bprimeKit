@@ -17,6 +17,11 @@
 #include "EgammaAnalysis/ElectronTools/interface/EGammaCutBasedEleId.h"
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 
+extern edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
+extern edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
+extern edm::Handle<edm::ValueMap<bool>> medium_id_decisions;
+extern edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
+extern edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
@@ -70,11 +75,11 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //LepInfo[icoll].PhotonIso         [LepInfo[icoll].Size] = it_el->photonIso();
 
       //-----------------------  New Isolation information: Enoch  ------------------------
-      bool isPassVeto   = ( *veto_id_decisions   ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassLoose  = ( *loose_id_decisions  ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassMedium = ( *medium_id_decisions ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassTight  = ( *tight_id_decisions  ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassHEEP   = ( *heep_id_decisions   ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
+      bool isPassVeto   = ( *veto_id_decisions   ) [ElectronHandle[icoll]->ptrAt(LepInfo[icoll].Size)];
+      bool isPassLoose  = ( *loose_id_decisions  ) [ElectronHandle[icoll]->ptrAt(LepInfo[icoll].Size)];
+      bool isPassMedium = ( *medium_id_decisions ) [ElectronHandle[icoll]->ptrAt(LepInfo[icoll].Size)];
+      bool isPassTight  = ( *tight_id_decisions  ) [ElectronHandle[icoll]->ptrAt(LepInfo[icoll].Size)];
+      bool isPassHEEP   = ( *heep_id_decisions   ) [ElectronHandle[icoll]->ptrAt(LepInfo[icoll].Size)];
       LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = isPassVeto ;
       LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = isPassLoose ;
       LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = isPassMedium;
