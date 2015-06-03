@@ -207,7 +207,12 @@ private:
 
    std::vector<edm::Handle<double> > rhoH;
   
-   //----------------------------  Electron ID, added 2012  ----------------------------
+   //----------------------------------  Electron ID  ----------------------------------
+   edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
+   edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
+   edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
+   edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
+   edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_; 
    PFIsolationEstimator isolatorR03       ;
    PFIsolationEstimator isolatorR04       ;
    PFIsolationEstimator PhotonisolatorR03 ;

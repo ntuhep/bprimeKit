@@ -16,8 +16,9 @@
 //------------------------------------------------------------------------------ 
 //   Custom typedefs and enums
 //------------------------------------------------------------------------------ 
-typedef edm::Handle<std::vector<pat::MET>>    METHandler;
-typedef std::vector<pat::MET>::const_iterator METIterator;
+typedef std::vector<pat::MET>   METList;
+typedef edm::Handle<METList>    METHandler;
+typedef METList::const_iterator METIterator;
 
 //------------------------------------------------------------------------------ 
 //   Helper static variables and functions
@@ -29,37 +30,26 @@ static METHandler  pfMETHandle_TempDown;
 static METIterator it_pfmet  ; 
 static edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
 static edm::Handle<TriggerResults> TrgResultsHandle;
-static edm::Handle< L1GlobalTriggerReadoutRecord > gtRecord;
+static edm::Handle<L1GlobalTriggerReadoutRecord> gtRecord;
+static std::pair<int,int>  psValueCombo;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   //  if(metlabel_.size() > 0) iEvent.getByLabel( metlabel_[0],    METHandle);
    if( pfmetlabel_.size() > 0 ) { iEvent.getByLabel( pfmetlabel_[0],  pfMETHandle ); }
    const edm::View<reco::Track>& tracks = *TrackHandle;
-   EvtInfo.RunNo  = iEvent.id().run();
-   EvtInfo.EvtNo  = iEvent.id().event();
-   EvtInfo.McFlag = iEvent.isRealData() ? 0 : 1;
-   EvtInfo.BxNo   = iEvent.bunchCrossing();
-   EvtInfo.LumiNo = iEvent.luminosityBlock();
-   EvtInfo.Orbit  = iEvent.orbitNumber();
+   
+   EvtInfo.RunNo    = iEvent.id().run();
+   EvtInfo.EvtNo    = iEvent.id().event();
+   EvtInfo.McFlag   = iEvent.isRealData() ? 0 : 1;
+   EvtInfo.BxNo     = iEvent.bunchCrossing();
+   EvtInfo.LumiNo   = iEvent.luminosityBlock();
+   EvtInfo.Orbit    = iEvent.orbitNumber();
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
-   EvtInfo.ptHat = -1.;
-   /*
-      // only for RECO, thus used GenProducer instead of HepMC with AOD sample
-      // https://cmssdt.cern.ch/SDT/lxr/source/SimDataFormats/GeneratorProducts/src/GenEventInfoProduct.cc
-   if(!isData){
-       edm::Handle<HepMCProduct> evtpthat;
-       iEvent.getByLabel("generator", evtpthat);
-       std::cout<<"not data : evtpthat.isValid() : "<<evtpthat.isValid()<<std::endl;
-       if(evtpthat.isValid()){
-           HepMC::GenEvent * myGenEvent = new HepMC::GenEvent(*(evtpthat->GetEvent()));
-           EvtInfo.ptHat = myGenEvent->event_scale();df
-       }
-   }
-   */
+   EvtInfo.ptHat    = -1.;
+   
    if( !TurnOffInCMSSW73x ){
    for( unsigned int ri_ = 0; ri_ < 2; ri_++ ) {
       if( rhoH[ri_].isValid() ) { EvtInfo.RhoPU[ri_] = *( rhoH[ri_].product() ); }
@@ -73,13 +63,10 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if ( EvtInfo.McWMode[2] == 1 || EvtInfo.McWMode[2] == 2 ) { mclep_count[0]++; }
    if ( EvtInfo.McWMode[3] == 1 || EvtInfo.McWMode[3] == 2 ) { mclep_count[1]++; }
    if ( EvtInfo.McZMode[0] == 1 || EvtInfo.McZMode[0] == 2 ) {
-      mclep_count[0]++;
-      mclep_count[1]++;
-   }
+      mclep_count[0]++; mclep_count[1]++;}
    if ( EvtInfo.McZMode[1] == 1 || EvtInfo.McZMode[1] == 2 ) {
-      mclep_count[0]++;
-      mclep_count[1]++;
-   }
+      mclep_count[0]++; mclep_count[1]++; }
+
    //------  McSigTag - 0:others, 1:opposite-sing dilepton, 2:same-sign dilepton  ------
    //---------------------------  3: trilepton, 4: 4-lepton  ---------------------------
    if ( mclep_count[0] == 1 && mclep_count[1] == 1 ) { EvtInfo.McSigTag = 1; }
@@ -135,15 +122,15 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    }
    //--------------------------  MET correction information  --------------------------- 
    iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus );
-   if( pfMETHandle_TempPlus.isValid() )
+   if( pfMETHandle_TempPlus.isValid() ){
       for( it_pfmet = pfMETHandle_TempPlus->begin(); it_pfmet != pfMETHandle_TempPlus->end(); it_pfmet++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_pfmet->pt();
-      }
+         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_pfmet->pt(); }
+   }
    iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  pfMETHandle_TempDown );
-   if( pfMETHandle_TempDown.isValid() )
+   if( pfMETHandle_TempDown.isValid() ){
       for( it_pfmet = pfMETHandle_TempDown->begin() ; it_pfmet != pfMETHandle_TempDown->end(); it_pfmet++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_pfmet->pt();
-      }
+         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_pfmet->pt(); }
+   }
 
    //----------------------------  Generation information  -----------------------------
    bool with_GenEventInfo = ( genevtlabel_.size() > 0 ) ? iEvent.getByLabel( genevtlabel_[0], GenEventInfoHandle ) : false;
@@ -178,24 +165,16 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          }
       }
       EvtInfo.nHLT = TrgNames.size();
-      std::pair<int, int>  psValueCombo;
-      for( unsigned int i = 0; i < TrgNames.size(); i++ ) {
+      for( size_t i = 0; i < TrgNames.size(); i++ ) {
          EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
          psValueCombo = hltConfig_.prescaleValues( iEvent, iSetup, triggerName_ );
-         // 02/13/2015 : new function for prescale of L1/HLT (http://cmslxr.fnal.gov/source/HLTrigger/HLTcore/plugins/HLTEventAnalyzerAOD.cc)
          EvtInfo.HLTPrescaleFactor[i] = ( int )psValueCombo.second;
-         //std::cout << "TriggerPath= " << TrgNames.triggerName(i) <<" Prescale= "<< psValueCombo.first*psValueCombo.second
-         //    <<" "<< (int)psValueCombo.first<<" "<<(int)psValueCombo.second
-         //    << std::endl;
          HLTmaplist_pr = HLTmaplist.find( TrgNames.triggerName( i ) );
          if( HLTmaplist_pr != HLTmaplist.end() ) {
             EvtInfo.HLTName2enum[i] = HLTmaplist_pr->second ;
          } else {
-            EvtInfo.HLTName2enum[i] = -1;
-         }
-         // Print out Trigger table
-         //std::cout << "trigger path= " << TrgNames.triggerName(i) << std::endl;
+            EvtInfo.HLTName2enum[i] = -1; }
       }
    }
    //------------------  Level 1 trigger and technical trigger bits  -------------------

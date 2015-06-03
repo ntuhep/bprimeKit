@@ -69,6 +69,18 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //LepInfo[icoll].NeutralHadronIso  [LepInfo[icoll].Size] = it_el->neutralHadronIso();
       //LepInfo[icoll].PhotonIso         [LepInfo[icoll].Size] = it_el->photonIso();
 
+      //-----------------------  New Isolation information: Enoch  ------------------------
+      bool isPassVeto   = ( *veto_id_decisions   ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
+      bool isPassLoose  = ( *loose_id_decisions  ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
+      bool isPassMedium = ( *medium_id_decisions ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
+      bool isPassTight  = ( *tight_id_decisions  ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
+      bool isPassHEEP   = ( *heep_id_decisions   ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
+      LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = isPassVeto ;
+      LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = isPassLoose ;
+      LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = isPassMedium;
+      LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = isPassTight;
+      LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = isPassHEEP;
+
       //-------------------------  Getting isolation information  -------------------------
       if( getElectronID_ ) {
          // Add 2012 EID (https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification)
@@ -130,15 +142,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 
                // working points
                // update for CMSSW_7_2_0 (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/src/EGammaCutBasedEleId.cc)
-               bool veto   = EgammaCutBasedEleId::PassWP( EgammaCutBasedEleId::VETO, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget );
-               bool loose  = EgammaCutBasedEleId::PassWP( EgammaCutBasedEleId::LOOSE, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget );
-               bool medium = EgammaCutBasedEleId::PassWP( EgammaCutBasedEleId::MEDIUM, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget );
-               bool tight  = EgammaCutBasedEleId::PassWP( EgammaCutBasedEleId::TIGHT, ele, conversions_h, beamSpot, VertexHandle, iso_ch, iso_em, iso_nh, rhoIso, EATarget );
-
-               LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = veto;
-               LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = loose;
-               LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = medium;
-               LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = tight;
 
                // cuts to match tight trigger requirements
                bool trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, ele );

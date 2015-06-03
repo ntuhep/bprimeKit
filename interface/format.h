@@ -57,23 +57,23 @@ static char leafList[1024];
 //------------------------------------------------------------------------------ 
 class EvtInfoBranches {
 public:
-   int   RunNo;
-   long long int   EvtNo;
-   int   BxNo;
-   int   LumiNo;
-   int   Orbit;
+   int     RunNo  ;
+   size_t  EvtNo  ;
+   int     BxNo   ;
+   int     LumiNo ;
+   int     Orbit  ;
    //--------------------------------  MC information  ---------------------------------
    int   McFlag            ; // MC or not MC, that's the question
    int   McSigTag          ; // MC Signature tag    - 0: others, 1: 2L (opposite-sign), 2: 2L (same-sign), 3: 3L, 4: 4L
-   int   McbprimeMode [2 ] ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
-   int   MctprimeMode [2 ] ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
-   int   McWMode      [4 ] ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
-   int   McZMode      [2 ] ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
-   float McbprimeMass [2 ] ; // mass: b'(bar)
-   float MctprimeMass [2 ] ; // mass: t'(bar)
-   float MctopMass    [2 ] ; // mass: top(bar)
-   float McWMass      [4 ] ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
-   float McZMass      [2 ] ; // mass: Z from b'(bar) or t'(bar)
+   int   McbprimeMode [2] ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
+   int   MctprimeMode [2] ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
+   int   McWMode      [4] ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
+   int   McZMode      [2] ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
+   float McbprimeMass [2] ; // mass: b'(bar)
+   float MctprimeMass [2] ; // mass: t'(bar)
+   float MctopMass    [2] ; // mass: top(bar)
+   float McWMass      [4] ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
+   float McZMass      [2] ; // mass: Z from b'(bar) or t'(bar)
    float McDauPt      [14] ; // Generic MC daughter information
    float McDauEta     [14] ; // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
    float McDauPhi     [14] ;
@@ -348,6 +348,7 @@ public:
    bool EgammaCutBasedEleIdLOOSE               [MAX_LEPTONS] ; // Add by Jacky
    bool EgammaCutBasedEleIdMEDIUM              [MAX_LEPTONS] ; // Add by Jacky
    bool EgammaCutBasedEleIdTIGHT               [MAX_LEPTONS] ; // Add by Jacky
+   bool EgammaCutBasedEleIdHEEP                [MAX_LEPTONS] ;
    float Eldr03HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
    float Eldr03HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
    float Eldr04HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;

@@ -80,6 +80,13 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    includeL7_           = iConfig.getUntrackedParameter<bool> ( "IncludeL7"      , true  ) ;
    SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );
    debug_               = iConfig.getUntrackedParameter<int>  ( "Debug"          , 0      );
+   
+   //----------------------------------  Electron ID  ----------------------------------
+   eleVetoIdMapToken_       = consumes<edm::ValueMap<bool> >( ps.getParameter<edm::InputTag>( "eleVetoIdMap" ) );
+   eleLooseIdMapToken_      = consumes<edm::ValueMap<bool> >( ps.getParameter<edm::InputTag>( "eleLooseIdMap" ) );
+   eleMediumIdMapToken_     = consumes<edm::ValueMap<bool> >( ps.getParameter<edm::InputTag>( "eleMediumIdMap" ) );
+   eleTightIdMapToken_      = consumes<edm::ValueMap<bool> >( ps.getParameter<edm::InputTag>( "eleTightIdMap" ) );
+   eleHEEPIdMapToken_       = consumes<edm::ValueMap<bool> >( ps.getParameter<edm::InputTag>( "eleHEEPIdMap" ) );
 
    //-------------------------------  CMSSW_7X updates  --------------------------------
    // update for CMSSW_7_2_0
@@ -236,9 +243,8 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    //  iEvent.getByLabel("electronGsfTracks",      gsfTrackHandle);  //get gsftracks (Dmitry)
    //  const edm::View<reco::GsfTrack> & gsfTracks = *gsfTrackHandle;
 
+
    // Start to fill the main root branches
-
-
    //------------------------------------------------------------------------------ 
    //   VertexInfo added by Dmitry to help filter out pile up and bad events
    //------------------------------------------------------------------------------ 
@@ -291,14 +297,12 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
          }
       }
    }
-
    if( debug_ > 5 ) { cout << "Fill tree with all information\n"; }
    root->Fill();
    if( debug_ > 10 ) { cout << "Filled event information: Run " << EvtInfo.RunNo << " Event " << EvtInfo.EvtNo << endl; }
-
    if( debug_ > 11 ) {
       root->Show( -1, 999 );
-      for( unsigned i = 0; i < lepcollections_.size(); i++ ) {
+      for( size_t i = 0; i < lepcollections_.size(); i++ ) {
          cout << "After fill, Lepton Collection " << i << "(" << lepcollections_[i] << "): size " << LepInfo[i].Size << endl;
          for( int j = 0; j < LepInfo[i].Size; j++ ){ 
             cout << "  Lep " << j << " type,pt,eta,phi " 

@@ -19,6 +19,11 @@
 static const float currentToBFieldScaleFactor = 2.09237036221512717e-04;
 static double current ;
 static string NonLabel;
+static edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
+static edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
+static edm::Handle<edm::ValueMap<bool>> medium_id_decisions;
+static edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
+static edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
 
 bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iSetup ) 
 {
@@ -45,6 +50,13 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
    if( !TurnOffInCMSSW73x )
       if( tracklabel_.size() > 0 ) { iEvent.getByLabel( tracklabel_[0], tracks_h ); }            //Add by Jacky
    if( dcslabel_.size() > 0 ) { iEvent.getByLabel( dcslabel_[0], dcsHandle ); }            //refer to ElectroWeakAnalysis/MultiBosons/VgAnalyzerKit.cc (Jacky)
+   
+   //----------------------  Setting up electron ID information  -----------------------
+   iEvent.getByToken( eleVetoIdMapToken_ , veto_id_decisions );
+   iEvent.getByToken( eleLooseIdMapToken_ , loose_id_decisions );
+   iEvent.getByToken( eleMediumIdMapToken_, medium_id_decisions );
+   iEvent.getByToken( eleTightIdMapToken_, tight_id_decisions );
+   iEvent.getByToken( eleHEEPIdMapToken_ , heep_id_decisions );
    
    //-----------------------------  Magnetic field set-up  -----------------------------
    // https://twiki.cern.ch/twiki/bin/view/CMS/ConversionBackgroundRejection)

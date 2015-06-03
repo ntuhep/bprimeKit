@@ -543,7 +543,11 @@ process.bprimeKit = cms.EDAnalyzer(
     LepCollections            = cms.vstring('LepInfo'),
     pholabel                  = cms.VInputTag('slimmedPhotons'),
     PhoCollections            = cms.vstring('PhotonInfo'),
-
+    eleVetoIdMap              = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
+    eleLooseIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
+    eleMediumIdMap            = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),
+    eleTightIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"),
+    eleHEEPIdMap              = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV51")
     jetlabel                  = cms.VInputTag('slimmedJets','selectedPatJetsAK8PFCHSPrunedPacked','patJetsCMSTopTagCHSPacked'),
     JetCollections            = cms.vstring('JetInfo','AK8BosonJetInfo','CA8TopJetInfo'),
     JetType                   = cms.vint32(0,2,3),
