@@ -50,7 +50,6 @@ int getGenMCTag( const reco::GenParticle* gen )
    }
    if ( bprimeTag == 1 ) { returnTag += 10; }
    if ( bprimeTag == 2 ) { returnTag += 20; }
-   cout << ">>>>>> getGenMCTag >>> Finish Getting tag " << endl;
    return returnTag;
 }
 
@@ -58,9 +57,7 @@ int getGenMCTag( const reco::GenParticle* gen )
 static double r;
 int getGenMCTag( GenIterator& gen , double pEta , double pPhi , double pPt )
 {
-   cout << ">>>>>> getGenMCTag >>> Iterator: " << &(*gen) << endl;
    r = deltaR<double>( gen->eta(), gen->phi(), pEta, pPhi );
-   cout << ">>>>>> getGenMCTag >>> Finish function call " << &(*gen) << endl;
 
    if( r > 0.5 ) return 0;
    if( fabs( gen->pt() - pPt ) / gen->pt() > 0.5 ) return 0;

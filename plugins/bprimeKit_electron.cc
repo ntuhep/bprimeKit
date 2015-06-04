@@ -20,9 +20,12 @@
 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
-   ElectronHandler elecHandle ; 
+   cout << ">>> Electron" << endl;
+   cout << "\t>>> Setting up parameters" << endl;
+   ElectronHandler elecHandle ;
+   GsfHandler      gsfElecHandle;
    iEvent.getByLabel( eleclabel_[icoll], elecHandle );
-
+   iEvent.getByLabel( eleclabel_[icoll], gsfElecHandle ) ;
    //----------------------  Setting up electron ID information  -----------------------
    edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
    edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
@@ -30,16 +33,17 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
    edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
    cout <<"Getting Electron IDs" << endl;
-   iEvent.getByToken( eleVetoIdMapToken_ , veto_id_decisions );
-   iEvent.getByToken( eleLooseIdMapToken_ , loose_id_decisions );
-   iEvent.getByToken( eleMediumIdMapToken_, medium_id_decisions );
-   iEvent.getByToken( eleTightIdMapToken_, tight_id_decisions );
-   iEvent.getByToken( eleHEEPIdMapToken_ , heep_id_decisions );
+   iEvent.getByToken( eleVetoIdMapToken_   , veto_id_decisions   ) ;
+   iEvent.getByToken( eleLooseIdMapToken_  , loose_id_decisions  ) ;
+   iEvent.getByToken( eleMediumIdMapToken_ , medium_id_decisions ) ;
+   iEvent.getByToken( eleTightIdMapToken_  , tight_id_decisions  ) ;
+   iEvent.getByToken( eleHEEPIdMapToken_   , heep_id_decisions   ) ;
 
-   
-   for( ElectronIterator it_el = elecHandle->begin(); it_el != elecHandle->end(); it_el++ ) {//loop over electrons in collection
+   ElectronIterator elecViewIt = elecHandle->begin();
+   for( size_t i = 0 ; i < gsfElecHandle->size() ; ++i , ++elecViewIt ) {//loop over electrons in collection
+      const auto it_el = gsfElecHandle->ptrAt(i);
       if( debug_ > 11 ) { 
-         cout << "  Size " << LepInfo[icoll].Size << " el et,eta,phi " 
+         cout << "\t>>>Size " << LepInfo[icoll].Size << " el et,eta,phi " 
          << it_el->et() << "," << it_el->superCluster()->eta() << "," 
               << it_el->superCluster()->phi() << endl;
       }
@@ -49,10 +53,10 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       }
 
       //-------------------------  Inserting generic information  -------------------------
+      LepInfo[icoll].LeptonType      [LepInfo[icoll].Size] = 11                                ;
       LepInfo[icoll].Index           [LepInfo[icoll].Size] = LepInfo[icoll].Size               ;
       LepInfo[icoll].isEcalDriven    [LepInfo[icoll].Size] = it_el->ecalDrivenSeed()           ;
       LepInfo[icoll].isTrackerDriven [LepInfo[icoll].Size] = it_el->trackerDrivenSeed()        ;
-      LepInfo[icoll].LeptonType      [LepInfo[icoll].Size] = 11                                ;
       LepInfo[icoll].Charge          [LepInfo[icoll].Size] = it_el->charge()                   ;
       LepInfo[icoll].ChargeGsf       [LepInfo[icoll].Size] = it_el->gsfTrack()->charge()       ;
       LepInfo[icoll].ChargeScPix     [LepInfo[icoll].Size] = it_el->scPixCharge()              ;
@@ -74,34 +78,50 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].HcalIso         [LepInfo[icoll].Size] = it_el->dr03HcalTowerSumEt()       ;
       LepInfo[icoll].HcalDepth1Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth1TowerSumEt() ;
       LepInfo[icoll].HcalDepth2Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth2TowerSumEt() ;
+      LepInfo[icoll].ElEoverP              [LepInfo[icoll].Size] = it_el->eSuperClusterOverP();
+      LepInfo[icoll].EldeltaEta            [LepInfo[icoll].Size] = it_el->deltaEtaSuperClusterTrackAtVtx();
+      LepInfo[icoll].EldeltaPhi            [LepInfo[icoll].Size] = it_el->deltaPhiSuperClusterTrackAtVtx();
+      LepInfo[icoll].ElHadoverEm           [LepInfo[icoll].Size] = it_el->hadronicOverEm();
+      LepInfo[icoll].ElsigmaIetaIeta       [LepInfo[icoll].Size] = it_el->sigmaIetaIeta();
+      LepInfo[icoll].ElscSigmaIetaIeta     [LepInfo[icoll].Size] = it_el->scSigmaIEtaIEta();
+      LepInfo[icoll].ElEnergyErr           [LepInfo[icoll].Size] = it_el->ecalEnergyError();
+      LepInfo[icoll].ElMomentumErr         [LepInfo[icoll].Size] = it_el->trackMomentumError();
+      LepInfo[icoll].ElTrackNLostHits      [LepInfo[icoll].Size] = -1;
+      LepInfo[icoll].ElTrackDz             [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( PrimVtx.position() );
+      LepInfo[icoll].ElTrackDz_BS          [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( beamSpot.position() );
+      LepInfo[icoll].ElTrackD0             [LepInfo[icoll].Size] = it_el->gsfTrack()->d0();
+      LepInfo[icoll].ElTrackDxy_BS         [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( beamSpot.position() );
+      LepInfo[icoll].ElTrackDxy_PV         [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx.position() );
+      LepInfo[icoll].ElTrackDxy_PVBS       [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx_BS.position() );
+      LepInfo[icoll].ElNClusters           [LepInfo[icoll].Size] = it_el->basicClustersSize();
+      LepInfo[icoll].ElClassification      [LepInfo[icoll].Size] = it_el->classification();
+      LepInfo[icoll].ElFBrem               [LepInfo[icoll].Size] = it_el->fbrem();
+      LepInfo[icoll].ElNumberOfBrems       [LepInfo[icoll].Size] = it_el->numberOfBrems();
+      LepInfo[icoll].NumberOfExpectedInnerHits[LepInfo[icoll].Size] = it_el->gsfTrack()->hitPattern().numberOfHits( reco::HitPattern::MISSING_INNER_HITS ); // Add by Jacky
+      LepInfo[icoll].vertexZ               [LepInfo[icoll].Size] = it_el->vertex().z();//Uly 2011-04-04
+      
+      //-----------------------  New Isolation information: Enoch  ------------------------
+      if( getElectronID_ ){
+         cout <<"\t>>> Getting isolation information"<< endl;
+         LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[it_el]);
+         LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[it_el]);
+         LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[it_el]);
+         LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[it_el]);
+         LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[it_el]);
+         LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
+         LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
+         LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
+      }
 
       if( !TurnOffInCMSSW73x )
          if( tracks_h.isValid() && it_el->closestCtfTrackRef().isNonnull() ) //tracks_h may not be exactly right, but should work?
          { LepInfo[icoll].ChargeCtf       [LepInfo[icoll].Size] = it_el->closestCtfTrackRef()->charge(); }
-      //PFIso
-      //LepInfo[icoll].ChargedHadronIso  [LepInfo[icoll].Size] = it_el->chargedHadronIso();
-      //LepInfo[icoll].NeutralHadronIso  [LepInfo[icoll].Size] = it_el->neutralHadronIso();
-      //LepInfo[icoll].PhotonIso         [LepInfo[icoll].Size] = it_el->photonIso();
-
-      //-----------------------  New Isolation information: Enoch  ------------------------
-      cout <<">>> Getting isolation information"<< endl;
-      const auto el = elecHandle->ptrAt( LepInfo[icoll].Size );
-      bool isPassVeto   = ( *veto_id_decisions   ) [el];
-      bool isPassLoose  = ( *loose_id_decisions  ) [el];
-      bool isPassMedium = ( *medium_id_decisions ) [el];
-      bool isPassTight  = ( *tight_id_decisions  ) [el];
-      bool isPassHEEP   = ( *heep_id_decisions   ) [el];
-      LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = isPassVeto ;
-      LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = isPassLoose ;
-      LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = isPassMedium;
-      LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = isPassTight;
-      LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = isPassHEEP;
 
       //-------------------------  Getting isolation information  -------------------------
       if( getElectronID_ ) {
-         // Add 2012 EID (https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaCutBasedIdentification)
          if( !TurnOffInCMSSW73x ){
-            size_t nGsfEle = 0 ;
+//            size_t nGsfEle = 0 ;
+            /*
             for( GsfIterator gsfEle=els_h->begin() ; gsfEle != els_h->end(); ++gsfEle , ++nGsfEle ){
                if ( gsfEle->gsfTrack()->pt() != it_el->gsfTrack()->pt() ) { continue ; }
                reco::GsfElectronRef ele( els_h, nGsfEle );
@@ -142,16 +162,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                //   isolatorR04.fGetIsolation( &*gsfEle, &thePfColl, myVtxRef, VertexHandle );
                }
 
-               // get particle flow isolation
-               // For CMSSW_5_3_11
-               //double iso_ch = it_el->pfIsolationVariables().chargedHadronIso;
-               //double iso_em = it_el->pfIsolationVariables().photonIso;
-               //double iso_nh = it_el->pfIsolationVariables().neutralHadronIso;
-               // For CMSSW_7_2_0
-               // Reference to https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/EgammaCandidates/interface/GsfElectron.h
-               double iso_ch = it_el->pfIsolationVariables().sumChargedHadronPt;
-               double iso_em = it_el->pfIsolationVariables().sumPhotonEt;
-               double iso_nh = it_el->pfIsolationVariables().sumNeutralHadronEt;
 
                ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
                if( isData ) { EATarget = ElectronEffectiveArea::kEleEAData2012; }
@@ -168,14 +178,11 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
 
                //PFIso
-               /*
-                  iso_correct = iso_ch + max(iso_nh + iso_em - rhoPrime * AEff, 0.0) .
-                  Effective area :
-                      http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h?revision=1.3&view=markup
-                  */
-               LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = iso_ch;
-               LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = iso_nh;
-               LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = iso_em;
+               //
+               //   iso_correct = iso_ch + max(iso_nh + iso_em - rhoPrime * AEff, 0.0) .
+               //   Effective area :
+               //       http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h?revision=1.3&view=markup
+               //
                LepInfo[icoll].ChargedHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationCharged();
                LepInfo[icoll].NeutralHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationNeutral();
                LepInfo[icoll].PhotonIsoR03              [LepInfo[icoll].Size] = isolatorR03.getIsolationPhoton();
@@ -204,15 +211,15 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                LepInfo[icoll].ElEcalE                   [LepInfo[icoll].Size] = ele->ecalEnergy();
                LepInfo[icoll].ElhasConv                 [LepInfo[icoll].Size]
                   = ConversionTools::hasMatchedConversion( *ele, conversions_h, beamSpot.position() );
-               /*
-                  hOverE2012 = (hcalDepth1 + hcalDepth2)/ele->superCluster()->energy();
-                  */
+               //
+               //   hOverE2012 = (hcalDepth1 + hcalDepth2)/ele->superCluster()->energy();
+               ///
                LepInfo[icoll].ElhcalOverEcalBc          [LepInfo[icoll].Size] = ele->hcalOverEcalBc();
                LepInfo[icoll].Eldr03HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = ele->dr03HcalDepth1TowerSumEtBc();
                LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = ele->dr03HcalDepth2TowerSumEtBc();
                LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = ele->dr04HcalDepth1TowerSumEtBc();
                LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = ele->dr04HcalDepth2TowerSumEtBc();
-            }
+            }*/
          }
          //simpleEleId status : (Add by Jacky)
          //0: fails
@@ -271,24 +278,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          //                 LepInfo[icoll].eidHyperTight4MC[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight4MC");
       }
 
-      LepInfo[icoll].ElEoverP              [LepInfo[icoll].Size] = it_el->eSuperClusterOverP();
-      LepInfo[icoll].EldeltaEta            [LepInfo[icoll].Size] = it_el->deltaEtaSuperClusterTrackAtVtx();
-      LepInfo[icoll].EldeltaPhi            [LepInfo[icoll].Size] = it_el->deltaPhiSuperClusterTrackAtVtx();
-      LepInfo[icoll].ElHadoverEm           [LepInfo[icoll].Size] = it_el->hadronicOverEm();
-      LepInfo[icoll].ElsigmaIetaIeta       [LepInfo[icoll].Size] = it_el->sigmaIetaIeta();
-      LepInfo[icoll].ElscSigmaIetaIeta     [LepInfo[icoll].Size] = it_el->scSigmaIEtaIEta();
-      LepInfo[icoll].ElEnergyErr           [LepInfo[icoll].Size] = it_el->ecalEnergyError();
-      LepInfo[icoll].ElMomentumErr         [LepInfo[icoll].Size] = it_el->trackMomentumError();
-      //      LepInfo[icoll].ElTrackNHits          [LepInfo[icoll].Size] = it_el->gsfTrack()->recHitsSize();   //CANNOT RUN THIS LINE WITH AODSIM
-      //LepInfo[icoll].ElTrackNLostHits      [LepInfo[icoll].Size] = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfLostHits();
-      // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
-      LepInfo[icoll].ElTrackNLostHits      [LepInfo[icoll].Size] = -1;
-      LepInfo[icoll].ElTrackDz             [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( PrimVtx.position() );
-      LepInfo[icoll].ElTrackDz_BS          [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( beamSpot.position() );
-      LepInfo[icoll].ElTrackD0             [LepInfo[icoll].Size] = it_el->gsfTrack()->d0();
-      LepInfo[icoll].ElTrackDxy_BS         [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( beamSpot.position() );
-      LepInfo[icoll].ElTrackDxy_PV         [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx.position() );
-      LepInfo[icoll].ElTrackDxy_PVBS       [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx_BS.position() );
 
       // Reference from UserCode/MitProd/TreeFiller/src/FillerElectrons.cc
       if( TurnOnInCMSSW_7_4_1 ) {
@@ -302,14 +291,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //   LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
       }
 
-      LepInfo[icoll].ElNClusters           [LepInfo[icoll].Size] = it_el->basicClustersSize();
-      LepInfo[icoll].ElClassification      [LepInfo[icoll].Size] = it_el->classification();
-      LepInfo[icoll].ElFBrem               [LepInfo[icoll].Size] = it_el->fbrem();
-      LepInfo[icoll].ElNumberOfBrems       [LepInfo[icoll].Size] = it_el->numberOfBrems();
-      //LepInfo[icoll].NumberOfExpectedInnerHits[LepInfo[icoll].Size] = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfHits();// Add by Jacky
-      LepInfo[icoll].NumberOfExpectedInnerHits[LepInfo[icoll].Size] = it_el->gsfTrack()->hitPattern().numberOfHits( reco::HitPattern::MISSING_INNER_HITS ); // Add by Jacky
-
-      LepInfo[icoll].vertexZ               [LepInfo[icoll].Size] = it_el->vertex().z();//Uly 2011-04-04
 
       //Conversion rejection (Add by Jacky)
       ConversionFinder convFinder;
@@ -343,9 +324,10 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].ElEcalIso04[LepInfo[icoll].Size]  = it_el->dr04EcalRecHitSumEt();
       // iso_sumoet = iso_sum*(40./scEt);
 
+      
       if ( !isData && !skipGenInfo_ ) {
          if( debug_ > 15 ) { cout << "   Getting MC information\n"; }
-         const reco::GenParticle* gen = it_el->genLepton(); 
+         const reco::GenParticle* gen = elecViewIt->genLepton(); 
          if ( gen != NULL ) {
             LepInfo[icoll].GenPt        [LepInfo[icoll].Size] = gen->pt();
             LepInfo[icoll].GenEta       [LepInfo[icoll].Size] = gen->eta();
@@ -358,7 +340,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && GenHandle.isValid() ) {
             for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end() ; it_gen++ ) {
                if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) break;
-               LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_el )  ;
+               LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , elecViewIt )  ;
             }
          }
          if( debug_ > 15 ) { cout << "   Done getting MC information\n"; }
