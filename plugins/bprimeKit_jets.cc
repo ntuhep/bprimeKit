@@ -43,7 +43,7 @@ static double tracks_y_tot ;
 bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    for( unsigned il = 0; il < jetlabel_.size(); il++ ) {
-      JetHandle.push_back( edm::Handle<std::vector<pat::Jet> >() );
+      JetHandle.push_back( JetHandler() );
       iEvent.getByLabel( jetlabel_[il], JetHandle[il] );
       if( debug_ > 10 ) { cout << "jets " << il << " jetlabel " << jetlabel_[il] << " with " << JetHandle[il]->size() << " entries\n"; }
    }
@@ -62,7 +62,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       fatjetcoll  = ( jettype_[icoll]==2);
       CAjetcoll   = ( jettype_[icoll]==3);
       
-      // For Jet Uncertainty
+      //-----------------------------  For Jet Uncertainty  ------------------------------
       if( pfjetcoll ) {
          sprintf( bufferJECU, "AK5PFchs" );
       } else if( calojetcoll ) {

@@ -3,7 +3,6 @@
  *  Filename    : bprimeKit_vertex.cc
  *  Description : vertex info filling 
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *  
  *
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
@@ -19,8 +18,6 @@ typedef VertexList::const_iterator  VertexListCIT;
 //------------------------------------------------------------------------------ 
 static bool   gotPrimVtx;
 static double PVBS_Pt_Max;
-// TODO Merge generic verticies into functions.
-
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
@@ -112,8 +109,7 @@ bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
          EvtInfo.BeamSpotY = beamSpot.position().y();
          EvtInfo.BeamSpotZ = beamSpot.position().z();
       } else {
-         edm::LogInfo( "MyAnalyzer" )
-               << "No beam spot available from EventSetup \n";
+         edm::LogInfo( "MyAnalyzer" ) << "No beam spot available from EventSetup \n";
       }
    }
    return true;

@@ -50,13 +50,6 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
    EvtInfo.ptHat    = -1.;
    
-   if( !TurnOffInCMSSW73x ){
-   for( unsigned int ri_ = 0; ri_ < 2; ri_++ ) {
-      if( rhoH[ri_].isValid() ) { EvtInfo.RhoPU[ri_] = *( rhoH[ri_].product() ); }
-      if( sigmaHandle[ri_].isValid() ) { EvtInfo.SigmaPU[ri_] = *( sigmaHandle[ri_].product() ); }
-   }
-   }
-
    int mclep_count[2] = {0, 0};
    if ( EvtInfo.McWMode[0] == 1 || EvtInfo.McWMode[0] == 2 ) { mclep_count[1]++; }
    if ( EvtInfo.McWMode[1] == 1 || EvtInfo.McWMode[1] == 2 ) { mclep_count[0]++; }
@@ -77,28 +70,6 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if ( mclep_count[0] == 2 && mclep_count[1] == 2 ) { EvtInfo.McSigTag = 4; }
 
 
-   //   if(METHandle.isValid()) {
-   //     if(debug_>15) cout << "Get MET info\n";
-   //     for( std::vector<pat::MET>::const_iterator it_met = METHandle->begin();
-   //    it_met != METHandle->end(); it_met++ ) {
-   //       EvtInfo.MET        = it_met->pt();
-   //       EvtInfo.METPhi        = it_met->phi();
-   //       EvtInfo.RawMET        = it_met->uncorrectedPt();
-   //       EvtInfo.RawMETPhi     = it_met->uncorrectedPhi();
-   //       EvtInfo.SumEt         = it_met->sumEt();
-   //       EvtInfo.METSig        = it_met->mEtSig();
-   //       EvtInfo.eLong         = it_met->e_longitudinal();
-   //       EvtInfo.MaxHadTower   = it_met->maxEtInHadTowers();
-   //       EvtInfo.MaxEmTower    = it_met->maxEtInEmTowers();
-   //       EvtInfo.FracHad       = it_met->etFractionHadronic();
-   //       EvtInfo.FracEm        = it_met->emEtFraction();
-   //       const reco::GenMET * genmet = it_met->genMET();
-   //       if (genmet!=NULL) {
-   //         EvtInfo.GenMET        = genmet->pt();
-   //         EvtInfo.GenMETPhi     = genmet->phi();
-   //       }
-   //     }
-   //   }
 
    if( pfMETHandle.isValid() ) {
       if( debug_ > 15 ) { cout << "Get pfMET info\n"; }
@@ -198,6 +169,38 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       }
    }
 
+   //------------------------------------------------------------------------------ 
+   //   TODO Under construction
+   //------------------------------------------------------------------------------ 
+   if( !TurnOffInCMSSW73x ){
+   for( unsigned int ri_ = 0; ri_ < 2; ri_++ ) {
+      if( rhoH[ri_].isValid() ) { EvtInfo.RhoPU[ri_] = *( rhoH[ri_].product() ); }
+      if( sigmaHandle[ri_].isValid() ) { EvtInfo.SigmaPU[ri_] = *( sigmaHandle[ri_].product() ); }
+   }
+   }
+   
+   //   if(METHandle.isValid()) {
+   //     if(debug_>15) cout << "Get MET info\n";
+   //     for( std::vector<pat::MET>::const_iterator it_met = METHandle->begin();
+   //    it_met != METHandle->end(); it_met++ ) {
+   //       EvtInfo.MET        = it_met->pt();
+   //       EvtInfo.METPhi        = it_met->phi();
+   //       EvtInfo.RawMET        = it_met->uncorrectedPt();
+   //       EvtInfo.RawMETPhi     = it_met->uncorrectedPhi();
+   //       EvtInfo.SumEt         = it_met->sumEt();
+   //       EvtInfo.METSig        = it_met->mEtSig();
+   //       EvtInfo.eLong         = it_met->e_longitudinal();
+   //       EvtInfo.MaxHadTower   = it_met->maxEtInHadTowers();
+   //       EvtInfo.MaxEmTower    = it_met->maxEtInEmTowers();
+   //       EvtInfo.FracHad       = it_met->etFractionHadronic();
+   //       EvtInfo.FracEm        = it_met->emEtFraction();
+   //       const reco::GenMET * genmet = it_met->genMET();
+   //       if (genmet!=NULL) {
+   //         EvtInfo.GenMET        = genmet->pt();
+   //         EvtInfo.GenMETPhi     = genmet->phi();
+   //       }
+   //     }
+   //   }
    //by Dmitry Hits for filtering the real data
    //*******************************************************************
    //Add the number of tracks and fraction of high purity tracks in the track collection to the EvtInfo

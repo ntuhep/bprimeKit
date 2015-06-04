@@ -26,18 +26,18 @@ bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       if( debug_ > 11 ) { cout << "  Size " << LepInfo[icoll].Size << " tau pt,eta,phi " << it_tau->pt() << "," << it_tau->eta() << "," << it_tau->phi() << endl; }
       
       //------------------------------  Generic information  ------------------------------
-      LepInfo[icoll].Index      [LepInfo[icoll].Size] = LepInfo[icoll].Size;
-      LepInfo[icoll].LeptonType [LepInfo[icoll].Size] = 15;
-      LepInfo[icoll].Charge     [LepInfo[icoll].Size] = it_tau->charge();
-      LepInfo[icoll].Pt         [LepInfo[icoll].Size] = it_tau->pt();
-      LepInfo[icoll].Eta        [LepInfo[icoll].Size] = it_tau->eta();
-      LepInfo[icoll].Phi        [LepInfo[icoll].Size] = it_tau->phi();
-      LepInfo[icoll].TrackIso   [LepInfo[icoll].Size] = it_tau->trackIso();
-      LepInfo[icoll].EcalIso    [LepInfo[icoll].Size] = it_tau->ecalIso();
-      LepInfo[icoll].HcalIso    [LepInfo[icoll].Size] = it_tau->hcalIso();
-      LepInfo[icoll].Px         [LepInfo[icoll].Size] = it_tau->px(); //Uly 2011-04-04
-      LepInfo[icoll].Py         [LepInfo[icoll].Size] = it_tau->py(); //Uly 2011-04-04
-      LepInfo[icoll].Pz         [LepInfo[icoll].Size] = it_tau->pz(); //Uly 2011-04-04
+      LepInfo[icoll].Index      [LepInfo[icoll].Size] = LepInfo[icoll].Size ;
+      LepInfo[icoll].LeptonType [LepInfo[icoll].Size] = 15                  ;
+      LepInfo[icoll].Charge     [LepInfo[icoll].Size] = it_tau->charge()    ;
+      LepInfo[icoll].Pt         [LepInfo[icoll].Size] = it_tau->pt()        ;
+      LepInfo[icoll].Eta        [LepInfo[icoll].Size] = it_tau->eta()       ;
+      LepInfo[icoll].Phi        [LepInfo[icoll].Size] = it_tau->phi()       ;
+      LepInfo[icoll].TrackIso   [LepInfo[icoll].Size] = it_tau->trackIso()  ;
+      LepInfo[icoll].EcalIso    [LepInfo[icoll].Size] = it_tau->ecalIso()   ;
+      LepInfo[icoll].HcalIso    [LepInfo[icoll].Size] = it_tau->hcalIso()   ;
+      LepInfo[icoll].Px         [LepInfo[icoll].Size] = it_tau->px()        ; //Uly 2011-04-04
+      LepInfo[icoll].Py         [LepInfo[icoll].Size] = it_tau->py()        ; //Uly 2011-04-04
+      LepInfo[icoll].Pz         [LepInfo[icoll].Size] = it_tau->pz()        ; //Uly 2011-04-04
       
       //----------------------  Particle flow isolation information  ----------------------
       LepInfo[icoll].ChargedHadronIso  [LepInfo[icoll].Size] = it_tau->chargedHadronIso();
@@ -76,7 +76,6 @@ bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
             LepInfo[icoll].GenPhi       [LepInfo[icoll].Size] = gen->phi();   
             LepInfo[icoll].GenPdgID     [LepInfo[icoll].Size] = gen->pdgId(); 
          }
-
       }
       LepInfo[icoll].CandRef[LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_tau );
       LepInfo[icoll].Size++;

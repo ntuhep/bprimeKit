@@ -82,11 +82,11 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    debug_               = iConfig.getUntrackedParameter<int>  ( "Debug"          , 0      );
    
    //----------------------------------  Electron ID  ----------------------------------
-   eleVetoIdMapToken_       = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleVetoIdMap" ) );
-   eleLooseIdMapToken_      = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleLooseIdMap" ) );
-   eleMediumIdMapToken_     = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleMediumIdMap" ) );
-   eleTightIdMapToken_      = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleTightIdMap" ) );
-   eleHEEPIdMapToken_       = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap" ) );
+   eleVetoIdMapToken_       = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"   )  ) ;
+   eleLooseIdMapToken_      = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"  )  ) ;
+   eleMediumIdMapToken_     = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleMediumIdMap" )  ) ;
+   eleTightIdMapToken_      = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleTightIdMap"  )  ) ;
+   eleHEEPIdMapToken_       = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"   )  ) ;
 
    //-------------------------------  CMSSW_7X updates  --------------------------------
    // update for CMSSW_7_2_0

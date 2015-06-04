@@ -55,6 +55,24 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
                ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
          PhotonInfo[icoll].passelectronveto     [PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
         
+         
+         //---------------------------  Generation MC information  ---------------------------
+         if ( !isData && !skipGenInfo_ ) { //MC
+            if( debug_ > 15 ) { cout << ">>> Photon >>> Getting MC information" << endl ; }
+            const reco::Candidate* gen = it_pho->genPhoton();
+            if ( gen != NULL ) {
+               PhotonInfo[icoll].GenPt        [PhotonInfo[icoll].Size] = gen->pt();
+               PhotonInfo[icoll].GenEta       [PhotonInfo[icoll].Size] = gen->eta();
+               PhotonInfo[icoll].GenPhi       [PhotonInfo[icoll].Size] = gen->phi();
+               PhotonInfo[icoll].GenPdgID     [PhotonInfo[icoll].Size] = gen->pdgId();
+            }
+         }
+
+
+         //------------------------------------------------------------------------------ 
+         //   TODO Debugging
+         //------------------------------------------------------------------------------ 
+         
          //-----------------------  Filling in isolation information  ------------------------
          VertexRef myVtxRef( VertexHandle, 0 ); 
          // TODO
@@ -69,18 +87,6 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
          PhotonInfo[icoll].phoPFPhoIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationPhoton();
          PhotonInfo[icoll].r9             [PhotonInfo[icoll].Size]  = it_pho->r9();
-         
-         //---------------------------  Generation MC information  ---------------------------
-         if ( !isData && !skipGenInfo_ ) { //MC
-            if( debug_ > 15 ) { cout << ">>> Photon >>> Getting MC information" << endl ; }
-            const reco::Candidate* gen = it_pho->genPhoton();
-            if ( gen != NULL ) {
-               PhotonInfo[icoll].GenPt        [PhotonInfo[icoll].Size] = gen->pt();
-               PhotonInfo[icoll].GenEta       [PhotonInfo[icoll].Size] = gen->eta();
-               PhotonInfo[icoll].GenPhi       [PhotonInfo[icoll].Size] = gen->phi();
-               PhotonInfo[icoll].GenPdgID     [PhotonInfo[icoll].Size] = gen->pdgId();
-            }
-         }
          PhotonInfo[icoll].Size++;
       }
    }
