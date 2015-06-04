@@ -18,7 +18,6 @@
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 
-
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
    ElectronHandler elecHandle ; 

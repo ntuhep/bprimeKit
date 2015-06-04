@@ -63,7 +63,7 @@
 typedef std::vector<edm::Handle<edm::ValueMap<reco::IsoDeposit>>>   IsoDepositMaps;
 typedef std::vector<edm::Handle<edm::ValueMap<double>>>             IsoDepositVals;
 
-typedef std::vector<pat::Electron>     ElectronList        ;
+typedef edm::View<pat::Electron>       ElectronList        ;
 typedef edm::Handle<ElectronList>      ElectronHandler     ;
 typedef std::vector<ElectronHandler>   ElectronHandlerList ;
 typedef ElectronList::const_iterator   ElectronIterator    ;
