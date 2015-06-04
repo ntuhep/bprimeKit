@@ -185,9 +185,7 @@ private:
    edm::Handle<reco::GenParticleCollection>     GenHandle;
    edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
    std::vector<edm::Handle<double> >            sigmaHandle;
-   MuonHandlerList      MuonHandle;
    TauHandlerList       TauHandle;
-   ElectronHandlerList  ElectronHandle ;
    TrackHandler          tracks_h       ; // Jacky
    GsfElectronHandle    els_h          ;
    ConversionHandle     conversions_h  ;
@@ -208,11 +206,6 @@ private:
    std::vector<edm::Handle<double> > rhoH;
   
    //----------------------------------  Electron ID  ----------------------------------
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_; 
    PFIsolationEstimator isolatorR03       ;
    PFIsolationEstimator isolatorR04       ;
    PFIsolationEstimator PhotonisolatorR03 ;

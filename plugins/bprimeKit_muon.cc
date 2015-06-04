@@ -19,18 +19,16 @@
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll )
 {
+   MuonHandler muonHandle;
+   iEvent.getByLabel( muonlabel_[il], muonHandle );
 
-   if( MuonHandle.size() <= icoll ) { return false; } 
-   if( debug_ > 10 ) { cout << " Muon collection size " << MuonHandle[icoll]->size() << endl; }
-
-   for( MuonIterator it_mu = MuonHandle[icoll]->begin(); it_mu != MuonHandle[icoll]->end(); it_mu++ ) {
+   if( debug_ > 10 ) { cout << " Muon collection size " << muonHandle->size() << endl; }
+   for( MuonIterator it_mu = muonHandle->begin(); it_mu != muonHandle->end(); it_mu++ ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;//exit(0);
       }
-
-      if( debug_ > 11 ) { cout << "  Size " << LepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl; }
-   
+      if( debug_ > 11 ) { cout << "  Size " << LepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl; }   
       cout <<">>> Muon >>> Getting generic information" << endl; 
       LepInfo[icoll].Index      [LepInfo[icoll].Size] = LepInfo[icoll].Size;
       LepInfo[icoll].LeptonType [LepInfo[icoll].Size] = 13;

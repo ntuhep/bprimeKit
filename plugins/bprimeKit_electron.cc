@@ -16,17 +16,32 @@
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaCutBasedEleId.h"
 #include "DataFormats/Scalers/interface/DcsStatus.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 
 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
-   if( ElectronHandle.size() <= icoll ) {return false;}
-   if( debug_ > 10 ) { cout << " Electron collection size " << ElectronHandle[icoll]->size() << endl; }
+   ElectronHandler elecHandle ; 
+   iEvent.getByLabel( eleclabel_[icoll], elecHandle );
+
+   //----------------------  Setting up electron ID information  -----------------------
+   edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
+   edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
+   edm::Handle<edm::ValueMap<bool>> medium_id_decisions;
+   edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
+   edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
+   cout <<"Getting Electron IDs" << endl;
+   iEvent.getByToken( eleVetoIdMapToken_ , veto_id_decisions );
+   iEvent.getByToken( eleLooseIdMapToken_ , loose_id_decisions );
+   iEvent.getByToken( eleMediumIdMapToken_, medium_id_decisions );
+   iEvent.getByToken( eleTightIdMapToken_, tight_id_decisions );
+   iEvent.getByToken( eleHEEPIdMapToken_ , heep_id_decisions );
+
    
-   for( ElectronIterator it_el = ElectronHandle[icoll]->begin(); it_el != ElectronHandle[icoll]->end(); it_el++ ) {//loop over electrons in collection
+   for( ElectronIterator it_el = elecHandle->begin(); it_el != elecHandle->end(); it_el++ ) {//loop over electrons in collection
       if( debug_ > 11 ) { 
          cout << "  Size " << LepInfo[icoll].Size << " el et,eta,phi " 
-              << it_el->et() << "," << it_el->superCluster()->eta() << "," 
+         << it_el->et() << "," << it_el->superCluster()->eta() << "," 
               << it_el->superCluster()->phi() << endl;
       }
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
@@ -35,31 +50,31 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       }
 
       //-------------------------  Inserting generic information  -------------------------
-      LepInfo[icoll].Index           [LepInfo[icoll].Size] = LepInfo[icoll].Size;
-      LepInfo[icoll].isEcalDriven    [LepInfo[icoll].Size] = it_el->ecalDrivenSeed();
-      LepInfo[icoll].isTrackerDriven [LepInfo[icoll].Size] = it_el->trackerDrivenSeed();
-      LepInfo[icoll].LeptonType      [LepInfo[icoll].Size] = 11;
-      LepInfo[icoll].Charge          [LepInfo[icoll].Size] = it_el->charge();
-      LepInfo[icoll].ChargeGsf       [LepInfo[icoll].Size] = it_el->gsfTrack()->charge();
-      LepInfo[icoll].ChargeScPix     [LepInfo[icoll].Size] = it_el->scPixCharge();
-      LepInfo[icoll].Pt              [LepInfo[icoll].Size] = it_el->pt();
-      LepInfo[icoll].Et              [LepInfo[icoll].Size] = it_el->et(); //Uly 2011-04-04
-      LepInfo[icoll].Eta             [LepInfo[icoll].Size] = it_el->superCluster()->eta(); //Uly 2011-04-04
-      LepInfo[icoll].caloEta         [LepInfo[icoll].Size] = it_el->caloPosition().eta();
-      LepInfo[icoll].Phi             [LepInfo[icoll].Size] = it_el->superCluster()->phi(); //Uly 2011-04-04
-      LepInfo[icoll].Px              [LepInfo[icoll].Size] = it_el->px(); //Uly 2011-04-04
-      LepInfo[icoll].Py              [LepInfo[icoll].Size] = it_el->py(); //Uly 2011-04-04
-      LepInfo[icoll].Pz              [LepInfo[icoll].Size] = it_el->pz(); //Uly 2011-04-04
-      LepInfo[icoll].Energy          [LepInfo[icoll].Size] = it_el->energy(); //Uly 2011-04-04
-      LepInfo[icoll].CaloEnergy      [LepInfo[icoll].Size] = it_el->caloEnergy();
-      LepInfo[icoll].e1x5            [LepInfo[icoll].Size] = it_el->scE1x5();
-      LepInfo[icoll].e2x5Max         [LepInfo[icoll].Size] = it_el->scE2x5Max();
-      LepInfo[icoll].e5x5            [LepInfo[icoll].Size] = it_el->scE5x5();
-      LepInfo[icoll].TrackIso        [LepInfo[icoll].Size] = it_el->dr03TkSumPt();
-      LepInfo[icoll].EcalIso         [LepInfo[icoll].Size] = it_el->dr03EcalRecHitSumEt();
-      LepInfo[icoll].HcalIso         [LepInfo[icoll].Size] = it_el->dr03HcalTowerSumEt();
-      LepInfo[icoll].HcalDepth1Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth1TowerSumEt();
-      LepInfo[icoll].HcalDepth2Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth2TowerSumEt();
+      LepInfo[icoll].Index           [LepInfo[icoll].Size] = LepInfo[icoll].Size               ;
+      LepInfo[icoll].isEcalDriven    [LepInfo[icoll].Size] = it_el->ecalDrivenSeed()           ;
+      LepInfo[icoll].isTrackerDriven [LepInfo[icoll].Size] = it_el->trackerDrivenSeed()        ;
+      LepInfo[icoll].LeptonType      [LepInfo[icoll].Size] = 11                                ;
+      LepInfo[icoll].Charge          [LepInfo[icoll].Size] = it_el->charge()                   ;
+      LepInfo[icoll].ChargeGsf       [LepInfo[icoll].Size] = it_el->gsfTrack()->charge()       ;
+      LepInfo[icoll].ChargeScPix     [LepInfo[icoll].Size] = it_el->scPixCharge()              ;
+      LepInfo[icoll].Pt              [LepInfo[icoll].Size] = it_el->pt()                       ;
+      LepInfo[icoll].Et              [LepInfo[icoll].Size] = it_el->et()                       ; //Uly 2011-04-04
+      LepInfo[icoll].Eta             [LepInfo[icoll].Size] = it_el->superCluster()->eta()      ; //Uly 2011-04-04
+      LepInfo[icoll].caloEta         [LepInfo[icoll].Size] = it_el->caloPosition().eta()       ;
+      LepInfo[icoll].Phi             [LepInfo[icoll].Size] = it_el->superCluster()->phi()      ; //Uly 2011-04-04
+      LepInfo[icoll].Px              [LepInfo[icoll].Size] = it_el->px()                       ; //Uly 2011-04-04
+      LepInfo[icoll].Py              [LepInfo[icoll].Size] = it_el->py()                       ; //Uly 2011-04-04
+      LepInfo[icoll].Pz              [LepInfo[icoll].Size] = it_el->pz()                       ; //Uly 2011-04-04
+      LepInfo[icoll].Energy          [LepInfo[icoll].Size] = it_el->energy()                   ; //Uly 2011-04-04
+      LepInfo[icoll].CaloEnergy      [LepInfo[icoll].Size] = it_el->caloEnergy()               ;
+      LepInfo[icoll].e1x5            [LepInfo[icoll].Size] = it_el->scE1x5()                   ;
+      LepInfo[icoll].e2x5Max         [LepInfo[icoll].Size] = it_el->scE2x5Max()                ;
+      LepInfo[icoll].e5x5            [LepInfo[icoll].Size] = it_el->scE5x5()                   ;
+      LepInfo[icoll].TrackIso        [LepInfo[icoll].Size] = it_el->dr03TkSumPt()              ;
+      LepInfo[icoll].EcalIso         [LepInfo[icoll].Size] = it_el->dr03EcalRecHitSumEt()      ;
+      LepInfo[icoll].HcalIso         [LepInfo[icoll].Size] = it_el->dr03HcalTowerSumEt()       ;
+      LepInfo[icoll].HcalDepth1Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth1TowerSumEt() ;
+      LepInfo[icoll].HcalDepth2Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth2TowerSumEt() ;
 
       if( !TurnOffInCMSSW73x )
          if( tracks_h.isValid() && it_el->closestCtfTrackRef().isNonnull() ) //tracks_h may not be exactly right, but should work?
@@ -70,11 +85,13 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //LepInfo[icoll].PhotonIso         [LepInfo[icoll].Size] = it_el->photonIso();
 
       //-----------------------  New Isolation information: Enoch  ------------------------
-      bool isPassVeto   = ( *veto_id_decisions   ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassLoose  = ( *loose_id_decisions  ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassMedium = ( *medium_id_decisions ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassTight  = ( *tight_id_decisions  ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
-      bool isPassHEEP   = ( *heep_id_decisions   ) [ElectronHandle->ptrAt(LepInfo[icoll].Size)];
+      cout <<">>> Getting isolation information"<< endl;
+      const auto el = elecHandle->ptrAt( LepInfo[icoll].Size );
+      bool isPassVeto   = ( *veto_id_decisions   ) [el];
+      bool isPassLoose  = ( *loose_id_decisions  ) [el];
+      bool isPassMedium = ( *medium_id_decisions ) [el];
+      bool isPassTight  = ( *tight_id_decisions  ) [el];
+      bool isPassHEEP   = ( *heep_id_decisions   ) [el];
       LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = isPassVeto ;
       LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = isPassLoose ;
       LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = isPassMedium;
