@@ -9,12 +9,6 @@
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
 //------------------------------------------------------------------------------ 
-//   Typedef and enums 
-//------------------------------------------------------------------------------ 
-typedef vector<reco::Vertex>  VertexList ;
-typedef VertexList::const_iterator  VertexListCIT;
-
-//------------------------------------------------------------------------------ 
 //   static helper variables and functions
 //------------------------------------------------------------------------------ 
 static bool   gotPrimVtx;
@@ -102,19 +96,5 @@ bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
       }
    }
 
-   //-------------------------------  Getting beam spot  -------------------------------
-   if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
-   if( offlineBSlabel_.size() > 0 ) {
-      iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
-      if ( beamSpotHandle.isValid() ) {
-         beamSpot = *beamSpotHandle.product();
-         EvtInfo.BeamSpotX = beamSpot.position().x();
-         EvtInfo.BeamSpotY = beamSpot.position().y();
-         EvtInfo.BeamSpotZ = beamSpot.position().z();
-      } else {
-         edm::LogInfo( "MyAnalyzer" )
-               << "No beam spot available from EventSetup \n";
-      }
-   }
    return true;
 }

@@ -50,6 +50,21 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
    EvtInfo.ptHat    = -1.;
    
+   //-------------------------------  Getting beam spot  -------------------------------
+   if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
+   if( offlineBSlabel_.size() > 0 ) {
+      iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
+      if ( beamSpotHandle.isValid() ) {
+         beamSpot = *beamSpotHandle.product();
+         EvtInfo.BeamSpotX = beamSpot.position().x();
+         EvtInfo.BeamSpotY = beamSpot.position().y();
+         EvtInfo.BeamSpotZ = beamSpot.position().z();
+      } else {
+         edm::LogInfo( "MyAnalyzer" )
+               << "No beam spot available from EventSetup \n";
+      }
+   }
+
    if( !TurnOffInCMSSW73x ){
    for( unsigned int ri_ = 0; ri_ < 2; ri_++ ) {
       if( rhoH[ri_].isValid() ) { EvtInfo.RhoPU[ri_] = *( rhoH[ri_].product() ); }

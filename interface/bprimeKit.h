@@ -96,7 +96,10 @@ typedef edm::Handle<reco::GsfElectronCollection>    GsfElectronHandle   ;
 typedef edm::Handle<reco::ConversionCollection>     ConversionHandle    ;
 typedef edm::Handle<DcsStatusCollection>            DcsStatusHandle     ;
 
-typedef std::vector<reco::GenParticle>::const_iterator GenIterator ; 
+typedef std::vector<reco::GenParticle>::const_iterator GenIterator ;
+
+typedef std::vector<reco::Vertex>  VertexList;
+typedef VertexList::const_iterator VertexListCIT;
 
 
 #define MAX_LEPCOLLECTIONS 3
@@ -186,7 +189,9 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
    edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
    edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
-
+   edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
+   edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
+   edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
    //----------------  Information type independent helper variables  -----------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
    edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry

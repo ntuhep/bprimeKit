@@ -1,5 +1,5 @@
 /*******************************************************************************
- *
+
  *  Filename    : bprimeKit.cc
  *  Description : The virtual and explicit functions for the bprimeKit
  *
@@ -88,6 +88,9 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    eleTightIdMapToken_      = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleTightIdMap" ) );
    eleHEEPIdMapToken_       = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap" ) );
 
+   phoLooseIdMapToken_        = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
+   phoMediumIdMapToken_       = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
+   phoTightIdMapToken_        = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));
    //-------------------------------  CMSSW_7X updates  --------------------------------
    // update for CMSSW_7_2_0
    reducedEBRecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEBRecHitCollection" ) );

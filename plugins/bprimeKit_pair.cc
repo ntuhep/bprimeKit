@@ -2,9 +2,6 @@
  *
  *  Filename    : bprimeKit_pair.cc
  *  Description : Filling in pair information
- *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *  
- *  Details     :
  *
 *******************************************************************************/
 
@@ -78,7 +75,6 @@ bool bprimeKit::fillJetPair( const edm::Event& iEvent , const edm::EventSetup& i
       if ( JetInfo[0].Pt[index1] > 25. && JetInfo[0].Pt[index2] > 25. && Sum.mag() < 200. ) {
          PairInfo.Type[PairInfo.Size] = 2; // 2: jj
          fillPairInfo( index1 , index2 ) ;
-
          if ( !isData && !skipGenInfo_ ) {
             par1 = NULL;
             par2 = NULL;

@@ -35,6 +35,8 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
       memset( &PhotonInfo[icoll], 0x00, sizeof( PhotonInfo[icoll] ) );
       if( debug_ > 5 ) { cout << "Fill photon info, collection " << icoll << " with name " << phocollections_[icoll] << endl; } 
       if( debug_ > 10 ) { cout << " Photon collection size " << PhoHandle[icoll]->size() << endl; }
+
+
       for( it_pho = PhoHandle[icoll]->begin(); it_pho != PhoHandle[icoll]->end(); it_pho++ ) {//loop over photon in collection
          if( debug_ > 11 ) { cout << "  Size " << PhotonInfo[icoll].Size << " photon pt,eta,phi " << it_pho->pt() << "," << it_pho->eta() << "," << it_pho->phi() << endl; }
          if ( PhotonInfo[icoll].Size >= MAX_PHOTONS ) {

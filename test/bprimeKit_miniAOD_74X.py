@@ -533,16 +533,18 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 dataFormat = DataFormat.MiniAOD
 switchOnVIDElectronIdProducer(process, dataFormat)
+switchOnVIDPhotonIdProducer(process, dataFormat)
 my_id_modules = [
    'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
    'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
-
-#add them to the VID producer
 for idmod in my_id_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
 
+for idmod in my_phoid_modules:
+       setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 process.egmGsfElectronIDSequence
-
+process.egmPhotonIDSequence 
 #------------------------------------------------------------------------------- 
 # BprimeKit setup 
 #------------------------------------------------------------------------------- 
@@ -559,6 +561,9 @@ process.bprimeKit = cms.EDAnalyzer(
     LepCollections            = cms.vstring('LepInfo'),
     pholabel                  = cms.VInputTag('slimmedPhotons'),
     PhoCollections            = cms.vstring('PhotonInfo'),
+    phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"),
+    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"),
     eleVetoIdMap              = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
     eleLooseIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
     eleMediumIdMap            = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),

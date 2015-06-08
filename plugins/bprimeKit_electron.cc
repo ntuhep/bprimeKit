@@ -20,19 +20,19 @@
 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
-   cout << ">>> Electron" << endl;
-   cout << "\t>>> Setting up parameters" << endl;
    ElectronHandler elecHandle ;
    GsfHandler      gsfElecHandle;
-   iEvent.getByLabel( eleclabel_[icoll], elecHandle );
-   iEvent.getByLabel( eleclabel_[icoll], gsfElecHandle ) ;
-   //----------------------  Setting up electron ID information  -----------------------
    edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
    edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
    edm::Handle<edm::ValueMap<bool>> medium_id_decisions;
    edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
    edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
-   cout <<"Getting Electron IDs" << endl;
+
+   cout << ">>> Electron" << endl;
+   cout << "\t>>> Setting up parameters" << endl;
+   iEvent.getByLabel( eleclabel_[icoll], elecHandle );
+   iEvent.getByLabel( eleclabel_[icoll], gsfElecHandle ) ;
+   //----------------------  Setting up electron ID information  -----------------------
    iEvent.getByToken( eleVetoIdMapToken_   , veto_id_decisions   ) ;
    iEvent.getByToken( eleLooseIdMapToken_  , loose_id_decisions  ) ;
    iEvent.getByToken( eleMediumIdMapToken_ , medium_id_decisions ) ;
@@ -44,7 +44,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       const auto it_el = gsfElecHandle->ptrAt(i);
       if( debug_ > 11 ) { 
          cout << "\t>>>Size " << LepInfo[icoll].Size << " el et,eta,phi " 
-         << it_el->et() << "," << it_el->superCluster()->eta() << "," 
+              << it_el->et() << "," << it_el->superCluster()->eta() << "," 
               << it_el->superCluster()->phi() << endl;
       }
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
