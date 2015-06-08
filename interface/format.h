@@ -505,6 +505,7 @@ public:
       BRANCH_ARRAY ( EgammaCutBasedEleIdLOOSE               , B ) ;
       BRANCH_ARRAY ( EgammaCutBasedEleIdMEDIUM              , B ) ;
       BRANCH_ARRAY ( EgammaCutBasedEleIdTIGHT               , B ) ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdHEEP                , B ) ;
       BRANCH_ARRAY ( Eldr03HcalDepth1TowerSumEtBc           , F ) ;
       BRANCH_ARRAY ( Eldr03HcalDepth2TowerSumEtBc           , F ) ;
       BRANCH_ARRAY ( Eldr04HcalDepth1TowerSumEtBc           , F ) ;

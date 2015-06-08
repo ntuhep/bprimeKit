@@ -201,8 +201,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
                if( isData ) { EATarget = ElectronEffectiveArea::kEleEAData2012; }
 
-               // working points
-               // update for CMSSW_7_2_0 (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/src/EGammaCutBasedEleId.cc)
 
                // cuts to match tight trigger requirements
                bool trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, ele );
@@ -212,12 +210,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                bool trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, ele );
                LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
 
-               //PFIso
-               //
-               //   iso_correct = iso_ch + max(iso_nh + iso_em - rhoPrime * AEff, 0.0) .
-               //   Effective area :
-               //       http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/EgammaAnalysis/ElectronTools/interface/ElectronEffectiveArea.h?revision=1.3&view=markup
-               //
                LepInfo[icoll].ChargedHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationCharged();
                LepInfo[icoll].NeutralHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationNeutral();
                LepInfo[icoll].PhotonIsoR03              [LepInfo[icoll].Size] = isolatorR03.getIsolationPhoton();
@@ -256,64 +248,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = ele->dr04HcalDepth2TowerSumEtBc();
             }*/
          }
-         //simpleEleId status : (Add by Jacky)
-         //0: fails
-         //1: passes electron ID only
-         //2: passes electron Isolation only
-         //3: passes electron ID and Isolation only
-         //4: passes conversion rejection
-         //5: passes conversion rejection and ID
-         //6: passes conversion rejection and Isolation
-         //7: passes the whole selection
-         //                 LepInfo[icoll].simpleEleId95relIso   [LepInfo[icoll].Size] = it_el->electronID("simpleEleId95relIso");
-         //                 LepInfo[icoll].simpleEleId90relIso   [LepInfo[icoll].Size] = it_el->electronID("simpleEleId90relIso");
-         //                 LepInfo[icoll].simpleEleId85relIso   [LepInfo[icoll].Size] = it_el->electronID("simpleEleId85relIso");
-         //                 LepInfo[icoll].simpleEleId80relIso   [LepInfo[icoll].Size] = it_el->electronID("simpleEleId80relIso");
-         //                 LepInfo[icoll].simpleEleId70relIso   [LepInfo[icoll].Size] = it_el->electronID("simpleEleId70relIso");
-         //                 LepInfo[icoll].simpleEleId60relIso   [LepInfo[icoll].Size] = it_el->electronID("simpleEleId60relIso");
-         //                 LepInfo[icoll].simpleEleId95cIso     [LepInfo[icoll].Size] = it_el->electronID("simpleEleId95cIso");
-         //                 LepInfo[icoll].simpleEleId90cIso     [LepInfo[icoll].Size] = it_el->electronID("simpleEleId90cIso");
-         //                 LepInfo[icoll].simpleEleId85cIso     [LepInfo[icoll].Size] = it_el->electronID("simpleEleId85cIso");
-         //                 LepInfo[icoll].simpleEleId80cIso     [LepInfo[icoll].Size] = it_el->electronID("simpleEleId80cIso");
-         //                 LepInfo[icoll].simpleEleId70cIso     [LepInfo[icoll].Size] = it_el->electronID("simpleEleId70cIso");
-         //                 LepInfo[icoll].simpleEleId60cIso     [LepInfo[icoll].Size] = it_el->electronID("simpleEleId60cIso");
-
-         /*
-            EID -- CIC
-            0 - no cut passed
-            1 - eID cuts passed
-            2 - iso cuts passed
-            4 - conversion rejection
-            8 - ip cut
-            Below three examples to check eId results:
-            eID+Iso+ConversionRejection+IP -> ((eIDmap[electronRef] &15) == 15)
-            Iso only -> ((eIDmap[electronRef] & 2) == 2)
-            eID+ConversionRejection+IP -> ((eIDmap[electronRef] & 13) == 13)
-          */
-         //CIC without ISO
-         //                 LepInfo[icoll].eidVeryLoose[LepInfo[icoll].Size] = it_el->electronID("eidVeryLoose");
-         //                 LepInfo[icoll].eidLoose[LepInfo[icoll].Size] = it_el->electronID("eidLoose");
-         //                 LepInfo[icoll].eidMedium[LepInfo[icoll].Size] = it_el->electronID("eidMedium");
-         //                 LepInfo[icoll].eidTight[LepInfo[icoll].Size] = it_el->electronID("eidTight");
-         //                 LepInfo[icoll].eidSuperTight[LepInfo[icoll].Size] = it_el->electronID("eidSuperTight");
-         //                 LepInfo[icoll].eidHyperTight1[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight1");
-         //                 LepInfo[icoll].eidHyperTight2[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight2");
-         //                 LepInfo[icoll].eidHyperTight3[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight3");
-         //                 LepInfo[icoll].eidHyperTight4[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight4");
-
-         // CIC with ISO
-         //                 LepInfo[icoll].eidVeryLooseMC[LepInfo[icoll].Size] = it_el->electronID("eidVeryLooseMC");
-         //                 LepInfo[icoll].eidLooseMC[LepInfo[icoll].Size] = it_el->electronID("eidLooseMC");
-         //                 LepInfo[icoll].eidMediumMC[LepInfo[icoll].Size] = it_el->electronID("eidMediumMC");
-         //                 LepInfo[icoll].eidTightMC[LepInfo[icoll].Size] = it_el->electronID("eidTightMC");
-         //                 LepInfo[icoll].eidSuperTightMC[LepInfo[icoll].Size] = it_el->electronID("eidSuperTightMC");
-         //                 LepInfo[icoll].eidHyperTight1MC[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight1MC");
-         //                 LepInfo[icoll].eidHyperTight2MC[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight2MC");
-         //                 LepInfo[icoll].eidHyperTight3MC[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight3MC");
-         //                 LepInfo[icoll].eidHyperTight4MC[LepInfo[icoll].Size] = it_el->electronID("eidHyperTight4MC");
       }
-
-
       // Reference from UserCode/MitProd/TreeFiller/src/FillerElectrons.cc
       if( TurnOnInCMSSW_7_4_1 ) {
       //   const reco::TransientTrack& tt = transientTrackBuilder->build( it_el->gsfTrack() );

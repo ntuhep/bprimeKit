@@ -231,17 +231,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    //    const TransientTrackBuilder* transientTrackBuilder = builder.product();
    }
 
-   //  get ConditionsInRunBlock (Only for RECO)
-   /*
-   edm::Handle<edm::ConditionsInRunBlock> condInRunBlock;
-   iEvent.getByLabel("conditionsInEdm", condInRunBlock);
-
-   const boost::uint16_t beamMomentumVal = condInRunBlock->beamMomentum;
-   const boost::uint32_t lhcFillNumberVal = condInRunBlock->lhcFillNumber;
-
-   std::cout <<"  Beam Momentum = " << beamMomentumVal << " GeV" << std::endl;
-   std::cout <<"  LHC Fill Number = " << lhcFillNumberVal<< std::endl;
-   */
 
    //  iEvent.getByLabel("electronGsfTracks",      gsfTrackHandle);  //get gsftracks (Dmitry)
    //  const edm::View<reco::GsfTrack> & gsfTracks = *gsfTrackHandle;
