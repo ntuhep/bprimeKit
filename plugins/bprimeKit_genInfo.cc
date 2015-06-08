@@ -76,6 +76,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       numberOfMothers   = it_gen->numberOfMothers();
       dauId1 = dauId2 = monId = 0;
       dau1   = dau2   = NULL;
+
       //--------------------------  Photon decay type flagging  ---------------------------
       if( it_gen->status() == 3 || (it_gen->status() == 1 && it_gen->pt() > 20 )){
          cout << ">>> Geninfo >>> Photon type" << endl;
@@ -143,9 +144,24 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
             GenInfo.GrandMo2PdgID[GenInfo.Size]    = ( GenHandle->begin() + iGrandMo2 )->pdgId();
             GenInfo.GrandMo2Status[GenInfo.Size]      = ( GenHandle->begin() + iGrandMo2 )->status(); }
 
+         /*******************************************************************************
+          *
+          *  Note : Photons Flag rules - 
+          *    -1 : unknown or non photon
+          *     0 : prompt photon 
+          *         ( pid=22 && status(3) ) || 
+          *         ( pid(22) && status(3) && M_pid(22) && status M_pid(3) )
+          *     1 : Decay in flight
+          *         ( pid(22) && status(1) && M_status(2) ) 
+          *     2 : ISR photon
+          *          pid(22) && status(1) && M_status(3) && M_pid(<6 || =21) && GM_status(3) && GM_pid(2212)
+          *     3 : FSR photon
+          *          pid(22) && status(1) && M_status(3) && GM_status(3) && GM_pid(!2212)
+          *     
+          *
+         *******************************************************************************/ 
          if( it_gen->status() == 3 ) {
             cout << ">>> GenInfo >>> photon status 3 " << endl;
-            fillGenGeneric();
             if( it_gen->pdgId() == 22 ) {
                // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
                GenInfo.PhotonFlag[GenInfo.Size]    = 0;
@@ -154,24 +170,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          } else if( it_gen->status() == 1 ) {
             if( it_gen->pt() < 20 ) { continue; }
             cout << ">>> GenInfo >>> photon status 1 " << endl;
-            fillGenGeneric();
-            /*
-               Photon Flag Rule :
-               -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
-
-               1). prompt photon :
-                   {pid(22) && status(3)} or
-                   {pid(22) && status(1) && M_pid(22) && M_status(3)}
-
-               2). decay in flight :
-                   pid(22) && status(1) && M_status(2)
-
-               3). ISR :
-                   pid(22) && status(1) && M_status(3) && M_pid(<6 || =21) && GM_status(3) && GM_pid(2212)
-
-               4). FSR :
-                   pid(22) && status(1) && M_status(3) && GM_status(3) && GM_pid(!2212)
-               */
             GenInfo.PhotonFlag[GenInfo.Size]     = -1;
             cout << ">>> GenInfo >>> photon status 1 >>> finding Photon Flag " << endl;
             if( iMo1 != -1 && iMo2 != -1 && it_gen->pdgId() == 22 ) {
@@ -347,10 +345,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       EvtInfo.McDauPhi[i]   = MCDaughters[i]->phi();
       EvtInfo.McDauPdgID[i] = MCDaughters[i]->pdgId();
    }
-   return true;
-}
-bool bprimeKit::fillGenGeneric()
-{
    return true;
 }
 

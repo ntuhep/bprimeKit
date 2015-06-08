@@ -142,7 +142,10 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          LepInfo[icoll].MuNPixelLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().pixelLayersWithMeasurement(); //Uly 2011-04-04
          LepInfo[icoll].MuNTrackLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
 
-         // Reference from UserCode/MitProd/TreeFiller/src/FillerMuons.cc
+         //------------------------------------------------------------------------------ 
+         //   TODO Debugging 
+         //------------------------------------------------------------------------------ 
+         
          if( TurnOnInCMSSW_7_4_1 ) {
          //   const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
          //   reco::Vertex thevtx = pvCol->at( 0 );
@@ -164,8 +167,6 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          LepInfo[icoll].MuRPChits              [LepInfo[icoll].Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonRPCHits();
       }
       if ( ( it_mu->type() & 0x02 ) || ( it_mu->type() & 0x08 ) ) {
-         //LepInfo[icoll].MuNLostOuterHits       [LepInfo[icoll].Size] = it_mu->outerTrack()->hitPattern().numberOfLostHits();
-         // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
          LepInfo[icoll].MuNLostOuterHits       [LepInfo[icoll].Size] = -1;
       }
 
@@ -174,12 +175,6 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
       LepInfo[icoll].MuNChambersMatchesSegment [LepInfo[icoll].Size] = it_mu->numberOfMatches();  // At least 2 Chambers matched with segments
       LepInfo[icoll].MuNMatchedStations        [LepInfo[icoll].Size] = it_mu->numberOfMatchedStations();
 
-      // Muon type bits:
-      // static const unsigned int GlobalMuon     =  1<<1 (0x02);
-      // static const unsigned int TrackerMuon    =  1<<2 (0x04);
-      // static const unsigned int StandAloneMuon =  1<<3 (0x08);
-      // static const unsigned int CaloMuon       =  1<<4 (0x10);
-      // static const unsigned int PFMuon         =  1<<5 (0x20);
       LepInfo[icoll].MuType[LepInfo[icoll].Size] = it_mu->type();
 
       if ( !isData && !skipGenInfo_ ) {

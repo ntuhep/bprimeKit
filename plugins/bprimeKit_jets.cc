@@ -62,7 +62,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       fatjetcoll  = ( jettype_[icoll]==2);
       CAjetcoll   = ( jettype_[icoll]==3);
       
-      // For Jet Uncertainty
+      //-----------------------------  For Jet Uncertainty  ------------------------------
       if( pfjetcoll ) {
          sprintf( bufferJECU, "AK5PFchs" );
       } else if( calojetcoll ) {

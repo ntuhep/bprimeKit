@@ -53,52 +53,60 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       }
 
       //-------------------------  Inserting generic information  -------------------------
-      LepInfo[icoll].LeptonType      [LepInfo[icoll].Size] = 11                                ;
-      LepInfo[icoll].Index           [LepInfo[icoll].Size] = LepInfo[icoll].Size               ;
-      LepInfo[icoll].isEcalDriven    [LepInfo[icoll].Size] = it_el->ecalDrivenSeed()           ;
-      LepInfo[icoll].isTrackerDriven [LepInfo[icoll].Size] = it_el->trackerDrivenSeed()        ;
-      LepInfo[icoll].Charge          [LepInfo[icoll].Size] = it_el->charge()                   ;
-      LepInfo[icoll].ChargeGsf       [LepInfo[icoll].Size] = it_el->gsfTrack()->charge()       ;
-      LepInfo[icoll].ChargeScPix     [LepInfo[icoll].Size] = it_el->scPixCharge()              ;
-      LepInfo[icoll].Pt              [LepInfo[icoll].Size] = it_el->pt()                       ;
-      LepInfo[icoll].Et              [LepInfo[icoll].Size] = it_el->et()                       ; //Uly 2011-04-04
-      LepInfo[icoll].Eta             [LepInfo[icoll].Size] = it_el->superCluster()->eta()      ; //Uly 2011-04-04
-      LepInfo[icoll].caloEta         [LepInfo[icoll].Size] = it_el->caloPosition().eta()       ;
-      LepInfo[icoll].Phi             [LepInfo[icoll].Size] = it_el->superCluster()->phi()      ; //Uly 2011-04-04
-      LepInfo[icoll].Px              [LepInfo[icoll].Size] = it_el->px()                       ; //Uly 2011-04-04
-      LepInfo[icoll].Py              [LepInfo[icoll].Size] = it_el->py()                       ; //Uly 2011-04-04
-      LepInfo[icoll].Pz              [LepInfo[icoll].Size] = it_el->pz()                       ; //Uly 2011-04-04
-      LepInfo[icoll].Energy          [LepInfo[icoll].Size] = it_el->energy()                   ; //Uly 2011-04-04
-      LepInfo[icoll].CaloEnergy      [LepInfo[icoll].Size] = it_el->caloEnergy()               ;
-      LepInfo[icoll].e1x5            [LepInfo[icoll].Size] = it_el->scE1x5()                   ;
-      LepInfo[icoll].e2x5Max         [LepInfo[icoll].Size] = it_el->scE2x5Max()                ;
-      LepInfo[icoll].e5x5            [LepInfo[icoll].Size] = it_el->scE5x5()                   ;
-      LepInfo[icoll].TrackIso        [LepInfo[icoll].Size] = it_el->dr03TkSumPt()              ;
-      LepInfo[icoll].EcalIso         [LepInfo[icoll].Size] = it_el->dr03EcalRecHitSumEt()      ;
-      LepInfo[icoll].HcalIso         [LepInfo[icoll].Size] = it_el->dr03HcalTowerSumEt()       ;
-      LepInfo[icoll].HcalDepth1Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth1TowerSumEt() ;
-      LepInfo[icoll].HcalDepth2Iso   [LepInfo[icoll].Size] = it_el->dr03HcalDepth2TowerSumEt() ;
-      LepInfo[icoll].ElEoverP              [LepInfo[icoll].Size] = it_el->eSuperClusterOverP();
-      LepInfo[icoll].EldeltaEta            [LepInfo[icoll].Size] = it_el->deltaEtaSuperClusterTrackAtVtx();
-      LepInfo[icoll].EldeltaPhi            [LepInfo[icoll].Size] = it_el->deltaPhiSuperClusterTrackAtVtx();
-      LepInfo[icoll].ElHadoverEm           [LepInfo[icoll].Size] = it_el->hadronicOverEm();
-      LepInfo[icoll].ElsigmaIetaIeta       [LepInfo[icoll].Size] = it_el->sigmaIetaIeta();
-      LepInfo[icoll].ElscSigmaIetaIeta     [LepInfo[icoll].Size] = it_el->scSigmaIEtaIEta();
-      LepInfo[icoll].ElEnergyErr           [LepInfo[icoll].Size] = it_el->ecalEnergyError();
-      LepInfo[icoll].ElMomentumErr         [LepInfo[icoll].Size] = it_el->trackMomentumError();
-      LepInfo[icoll].ElTrackNLostHits      [LepInfo[icoll].Size] = -1;
-      LepInfo[icoll].ElTrackDz             [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( PrimVtx.position() );
-      LepInfo[icoll].ElTrackDz_BS          [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( beamSpot.position() );
-      LepInfo[icoll].ElTrackD0             [LepInfo[icoll].Size] = it_el->gsfTrack()->d0();
-      LepInfo[icoll].ElTrackDxy_BS         [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( beamSpot.position() );
-      LepInfo[icoll].ElTrackDxy_PV         [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx.position() );
-      LepInfo[icoll].ElTrackDxy_PVBS       [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx_BS.position() );
-      LepInfo[icoll].ElNClusters           [LepInfo[icoll].Size] = it_el->basicClustersSize();
-      LepInfo[icoll].ElClassification      [LepInfo[icoll].Size] = it_el->classification();
-      LepInfo[icoll].ElFBrem               [LepInfo[icoll].Size] = it_el->fbrem();
-      LepInfo[icoll].ElNumberOfBrems       [LepInfo[icoll].Size] = it_el->numberOfBrems();
-      LepInfo[icoll].NumberOfExpectedInnerHits[LepInfo[icoll].Size] = it_el->gsfTrack()->hitPattern().numberOfHits( reco::HitPattern::MISSING_INNER_HITS ); // Add by Jacky
-      LepInfo[icoll].vertexZ               [LepInfo[icoll].Size] = it_el->vertex().z();//Uly 2011-04-04
+      LepInfo[icoll].LeptonType                [LepInfo[icoll].Size] = 11                                                                                   ;
+      LepInfo[icoll].Index                     [LepInfo[icoll].Size] = LepInfo[icoll].Size                                                                  ;
+      LepInfo[icoll].isEcalDriven              [LepInfo[icoll].Size] = it_el->ecalDrivenSeed()                                                              ;
+      LepInfo[icoll].isTrackerDriven           [LepInfo[icoll].Size] = it_el->trackerDrivenSeed()                                                           ;
+      LepInfo[icoll].Charge                    [LepInfo[icoll].Size] = it_el->charge()                                                                      ;
+      LepInfo[icoll].ChargeGsf                 [LepInfo[icoll].Size] = it_el->gsfTrack()->charge()                                                          ;
+      LepInfo[icoll].ChargeScPix               [LepInfo[icoll].Size] = it_el->scPixCharge()                                                                 ;
+      LepInfo[icoll].Pt                        [LepInfo[icoll].Size] = it_el->pt()                                                                          ;
+      LepInfo[icoll].Et                        [LepInfo[icoll].Size] = it_el->et()                                                                          ; //Uly 2011-04-04
+      LepInfo[icoll].Eta                       [LepInfo[icoll].Size] = it_el->superCluster()->eta()                                                         ; //Uly 2011-04-04
+      LepInfo[icoll].caloEta                   [LepInfo[icoll].Size] = it_el->caloPosition().eta()                                                          ;
+      LepInfo[icoll].Phi                       [LepInfo[icoll].Size] = it_el->superCluster()->phi()                                                         ; //Uly 2011-04-04
+      LepInfo[icoll].Px                        [LepInfo[icoll].Size] = it_el->px()                                                                          ; //Uly 2011-04-04
+      LepInfo[icoll].Py                        [LepInfo[icoll].Size] = it_el->py()                                                                          ; //Uly 2011-04-04
+      LepInfo[icoll].Pz                        [LepInfo[icoll].Size] = it_el->pz()                                                                          ; //Uly 2011-04-04
+      LepInfo[icoll].Energy                    [LepInfo[icoll].Size] = it_el->energy()                                                                      ; //Uly 2011-04-04
+      LepInfo[icoll].CaloEnergy                [LepInfo[icoll].Size] = it_el->caloEnergy()                                                                  ;
+      LepInfo[icoll].e1x5                      [LepInfo[icoll].Size] = it_el->scE1x5()                                                                      ;
+      LepInfo[icoll].e2x5Max                   [LepInfo[icoll].Size] = it_el->scE2x5Max()                                                                   ;
+      LepInfo[icoll].e5x5                      [LepInfo[icoll].Size] = it_el->scE5x5()                                                                      ;
+      LepInfo[icoll].TrackIso                  [LepInfo[icoll].Size] = it_el->dr03TkSumPt()                                                                 ;
+      LepInfo[icoll].EcalIso                   [LepInfo[icoll].Size] = it_el->dr03EcalRecHitSumEt()                                                         ;
+      LepInfo[icoll].HcalIso                   [LepInfo[icoll].Size] = it_el->dr03HcalTowerSumEt()                                                          ;
+      LepInfo[icoll].HcalDepth1Iso             [LepInfo[icoll].Size] = it_el->dr03HcalDepth1TowerSumEt()                                                    ;
+      LepInfo[icoll].HcalDepth2Iso             [LepInfo[icoll].Size] = it_el->dr03HcalDepth2TowerSumEt()                                                    ;
+      LepInfo[icoll].ElEoverP                  [LepInfo[icoll].Size] = it_el->eSuperClusterOverP()                                                          ;
+      LepInfo[icoll].EldeltaEta                [LepInfo[icoll].Size] = it_el->deltaEtaSuperClusterTrackAtVtx()                                              ;
+      LepInfo[icoll].EldeltaPhi                [LepInfo[icoll].Size] = it_el->deltaPhiSuperClusterTrackAtVtx()                                              ;
+      LepInfo[icoll].ElHadoverEm               [LepInfo[icoll].Size] = it_el->hadronicOverEm()                                                              ;
+      LepInfo[icoll].ElsigmaIetaIeta           [LepInfo[icoll].Size] = it_el->sigmaIetaIeta()                                                               ;
+      LepInfo[icoll].ElscSigmaIetaIeta         [LepInfo[icoll].Size] = it_el->scSigmaIEtaIEta()                                                             ;
+      LepInfo[icoll].ElEnergyErr               [LepInfo[icoll].Size] = it_el->ecalEnergyError()                                                             ;
+      LepInfo[icoll].ElMomentumErr             [LepInfo[icoll].Size] = it_el->trackMomentumError()                                                          ;
+      LepInfo[icoll].ElTrackNLostHits          [LepInfo[icoll].Size] = -1                                                                                   ;
+      LepInfo[icoll].ElTrackDz                 [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( PrimVtx.position() )                                          ;
+      LepInfo[icoll].ElTrackDz_BS              [LepInfo[icoll].Size] = it_el->gsfTrack()->dz( beamSpot.position() )                                         ;
+      LepInfo[icoll].ElTrackD0                 [LepInfo[icoll].Size] = it_el->gsfTrack()->d0()                                                              ;
+      LepInfo[icoll].ElTrackDxy_BS             [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( beamSpot.position() )                                        ;
+      LepInfo[icoll].ElTrackDxy_PV             [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx.position() )                                         ;
+      LepInfo[icoll].ElTrackDxy_PVBS           [LepInfo[icoll].Size] = it_el->gsfTrack()->dxy( PrimVtx_BS.position() )                                      ;
+      LepInfo[icoll].ElNClusters               [LepInfo[icoll].Size] = it_el->basicClustersSize()                                                           ;
+      LepInfo[icoll].ElClassification          [LepInfo[icoll].Size] = it_el->classification()                                                              ;
+      LepInfo[icoll].ElFBrem                   [LepInfo[icoll].Size] = it_el->fbrem()                                                                       ;
+      LepInfo[icoll].ElNumberOfBrems           [LepInfo[icoll].Size] = it_el->numberOfBrems()                                                               ;
+      LepInfo[icoll].NumberOfExpectedInnerHits [LepInfo[icoll].Size] = it_el->gsfTrack()->hitPattern().numberOfHits( reco::HitPattern::MISSING_INNER_HITS ) ; // Add by Jacky
+      LepInfo[icoll].vertexZ                   [LepInfo[icoll].Size] = it_el->vertex().z()                                                                  ; //Uly 2011-04-04
+      
+      //---------------------------  For cut based electron ID  ---------------------------
+      float dist_ = ( it_el->convDist() == -9999. ? 9999 : it_el->convDist() );
+      float dcot_ = ( it_el->convDcot() == -9999. ? 9999 : it_el->convDcot() );
+      LepInfo[icoll].dcotdist[LepInfo[icoll].Size] = ( ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) > 0 ? ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) : 0 );
+      LepInfo[icoll].ElseedEoverP[LepInfo[icoll].Size] = it_el->eSeedClusterOverP();
+      LepInfo[icoll].ElHcalIso04[LepInfo[icoll].Size]  = it_el->dr04HcalTowerSumEt();
+      LepInfo[icoll].ElEcalIso04[LepInfo[icoll].Size]  = it_el->dr04EcalRecHitSumEt();
       
       //-----------------------  New Isolation information: Enoch  ------------------------
       if( getElectronID_ ){
@@ -112,7 +120,34 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
          LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
       }
+     
+      //---------------------------  MC Generation information  ---------------------------
+      if ( !isData && !skipGenInfo_ ) {
+         if( debug_ > 15 ) { cout << "   Getting MC information\n"; }
+         const reco::GenParticle* gen = elecViewIt->genLepton(); 
+         if ( gen != NULL ) {
+            LepInfo[icoll].GenPt        [LepInfo[icoll].Size] = gen->pt();
+            LepInfo[icoll].GenEta       [LepInfo[icoll].Size] = gen->eta();
+            LepInfo[icoll].GenPhi       [LepInfo[icoll].Size] = gen->phi();
+            LepInfo[icoll].GenPdgID     [LepInfo[icoll].Size] = gen->pdgId();
+            LepInfo[icoll].GenMCTag     [LepInfo[icoll].Size] = getGenMCTag( gen ) ;
+         }
 
+         if( debug_ > 15 ) { cout << "Get GenHandle\n"; }
+         if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && GenHandle.isValid() ) {
+            for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end() ; it_gen++ ) {
+               if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) break;
+               LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , elecViewIt )  ;
+            }
+         }
+         if( debug_ > 15 ) { cout << "   Done getting MC information\n"; }
+      }
+      
+
+      //------------------------------------------------------------------------------ 
+      //   Debugging
+      //------------------------------------------------------------------------------ 
+      
       if( !TurnOffInCMSSW73x )
          if( tracks_h.isValid() && it_el->closestCtfTrackRef().isNonnull() ) //tracks_h may not be exactly right, but should work?
          { LepInfo[icoll].ChargeCtf       [LepInfo[icoll].Size] = it_el->closestCtfTrackRef()->charge(); }
@@ -314,37 +349,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //LepInfo[icoll].ElhasConv[LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion(*it_el, conversions_h, beamSpot.position());
       //   float mHits = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfHits();
 
-      // For CIC (CutBasedElectronID.cc) First check electron categories from CutBasedElectronID.cc
-      float dist_ = ( it_el->convDist() == -9999. ? 9999 : it_el->convDist() );
-      float dcot_ = ( it_el->convDcot() == -9999. ? 9999 : it_el->convDcot() );
-      LepInfo[icoll].dcotdist[LepInfo[icoll].Size] = ( ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) > 0 ? ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) : 0 );
-      LepInfo[icoll].ElseedEoverP[LepInfo[icoll].Size] = it_el->eSeedClusterOverP();
-      LepInfo[icoll].ElHcalIso04[LepInfo[icoll].Size]  = it_el->dr04HcalTowerSumEt();
-      // ElTrackDxy_PVBS for ip_gsf
-      LepInfo[icoll].ElEcalIso04[LepInfo[icoll].Size]  = it_el->dr04EcalRecHitSumEt();
-      // iso_sumoet = iso_sum*(40./scEt);
-
-      
-      if ( !isData && !skipGenInfo_ ) {
-         if( debug_ > 15 ) { cout << "   Getting MC information\n"; }
-         const reco::GenParticle* gen = elecViewIt->genLepton(); 
-         if ( gen != NULL ) {
-            LepInfo[icoll].GenPt        [LepInfo[icoll].Size] = gen->pt();
-            LepInfo[icoll].GenEta       [LepInfo[icoll].Size] = gen->eta();
-            LepInfo[icoll].GenPhi       [LepInfo[icoll].Size] = gen->phi();
-            LepInfo[icoll].GenPdgID     [LepInfo[icoll].Size] = gen->pdgId();
-            LepInfo[icoll].GenMCTag     [LepInfo[icoll].Size] = getGenMCTag( gen ) ;
-         }
-
-         if( debug_ > 15 ) { cout << "Get GenHandle\n"; }
-         if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && GenHandle.isValid() ) {
-            for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end() ; it_gen++ ) {
-               if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) break;
-               LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , elecViewIt )  ;
-            }
-         }
-         if( debug_ > 15 ) { cout << "   Done getting MC information\n"; }
-      }
       LepInfo[icoll].CandRef[LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_el );
       LepInfo[icoll].Size++;
    }

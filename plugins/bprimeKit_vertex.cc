@@ -3,7 +3,6 @@
  *  Filename    : bprimeKit_vertex.cc
  *  Description : vertex info filling 
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *  
  *
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
@@ -13,8 +12,6 @@
 //------------------------------------------------------------------------------ 
 static bool   gotPrimVtx;
 static double PVBS_Pt_Max;
-// TODO Merge generic verticies into functions.
-
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
