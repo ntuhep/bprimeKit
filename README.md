@@ -27,11 +27,16 @@ please manually change the input and output settings in the python file for you 
 
 ## Adding your own object information
 The data that are extracted into the bprimekit ntuple is defined in the file `interface/format.h`, while the CMSSW methods for extractign the data are implemented in the various `plugins/bprimeKit_*.cc` files. If you need to add additional data for you ntuple needs:
+
 1. Add the data defintion in the public section of the ntuple branch.
 2. Use the MACROS functions defined to properly link the data with the TTree object. 
 3. Add the corresponding code required for extracting the data in the corresponding `plugins/bprimeKit_*.cc` file. 
 
-Here are a few sidenote for additional rule to help with code clarity.
+
+
+## Coding guidelines:
+Here are a few guidelines to help with code clarity when altering the code:
+
 - Try to keep the data grouped by type for functionality. Add sepeartor comments if need be.
 - If helper variables are required for a certain data extraction:
   - If the helper variables are required by multiple Ntuple branches (such as a new end:Handle object), declare them as private data members of the bprimeKit class by the file `interface/bprimeKit.h`.
