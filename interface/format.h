@@ -305,40 +305,40 @@ public:
    float Ip3dPVErr                             [MAX_LEPTONS] ;
    float Ip3dPVSignificance                    [MAX_LEPTONS] ;
    //-------------------------------  Muon information  --------------------------------
-   int   MuontimenDof                          [MAX_LEPTONS] ;
-   float MuontimeAtIpInOut                     [MAX_LEPTONS] ;
-   float MuontimeAtIpOutIn                     [MAX_LEPTONS] ;
-   int   Muondirection                         [MAX_LEPTONS] ;
-   float CaloEnergy                            [MAX_LEPTONS] ;
-   bool isGoodMuonTMOneStationTight            [MAX_LEPTONS] ; // For Soft Muon
-   float innerTracknormalizedChi2              [MAX_LEPTONS] ;   // For Soft Muon
-   float vertexZ                               [MAX_LEPTONS] ; //Uly 2011-04-04
-   bool  isPFMuon                              [MAX_LEPTONS] ;
-   bool  MuIDGlobalMuonPromptTight             [MAX_LEPTONS] ;
-   float MuInnerPtError                        [MAX_LEPTONS] ;
-   float MuGlobalPtError                       [MAX_LEPTONS] ;
-   float MuInnerTrackDz                        [MAX_LEPTONS] ;
-   float MuInnerTrackD0                        [MAX_LEPTONS] ;
-   float MuInnerTrackDxy_BS                    [MAX_LEPTONS] ;
-   float MuInnerTrackDxy_PV                    [MAX_LEPTONS] ;
-   float MuInnerTrackDxy_PVBS                  [MAX_LEPTONS] ;
-   int   MuInnerTrackNHits                     [MAX_LEPTONS] ;
-   int   MuNTrackerHits                        [MAX_LEPTONS] ;
-   float MuGlobalNormalizedChi2                [MAX_LEPTONS] ; // Dmitry
-   float MuCaloCompat                          [MAX_LEPTONS] ;
-   int   MuNChambers                           [MAX_LEPTONS] ;
-   int   MuNChambersMatchesSegment             [MAX_LEPTONS] ;
-   int   MuNMatchedStations                    [MAX_LEPTONS] ;
-   int   MuNPixelLayers                        [MAX_LEPTONS] ;
-   int   MuNPixelLayersWMeasurement            [MAX_LEPTONS] ; //Uly 2011-04-04
-   int   MuNTrackLayersWMeasurement            [MAX_LEPTONS] ;
-   int   MuNLostInnerHits                      [MAX_LEPTONS] ;
-   int   MuNLostOuterHits                      [MAX_LEPTONS] ;
-   int   MuNMuonhits                           [MAX_LEPTONS] ;
-   int   MuDThits                              [MAX_LEPTONS] ;
-   int   MuCSChits                             [MAX_LEPTONS] ;
-   int   MuRPChits                             [MAX_LEPTONS] ;
-   int   MuType                                [MAX_LEPTONS] ;
+   int    MuontimenDof                 [MAX_LEPTONS]  ;
+   float  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
+   float  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
+   int    Muondirection                [MAX_LEPTONS]  ;
+   float  CaloEnergy                   [MAX_LEPTONS]  ;
+   bool   isGoodMuonTMOneStationTight  [MAX_LEPTONS]  ; //   For     Soft        Muon
+   float  innerTracknormalizedChi2     [MAX_LEPTONS]  ;   // For     Soft        Muon
+   float  vertexZ                      [MAX_LEPTONS]  ; //   Uly     2011-04-04
+   bool   isPFMuon                     [MAX_LEPTONS]  ;
+   bool   MuIDGlobalMuonPromptTight    [MAX_LEPTONS]  ;
+   float  MuInnerPtError               [MAX_LEPTONS]  ;
+   float  MuGlobalPtError              [MAX_LEPTONS]  ;
+   float  MuInnerTrackDz               [MAX_LEPTONS]  ;
+   float  MuInnerTrackD0               [MAX_LEPTONS]  ;
+   float  MuInnerTrackDxy_BS           [MAX_LEPTONS]  ;
+   float  MuInnerTrackDxy_PV           [MAX_LEPTONS]  ;
+   float  MuInnerTrackDxy_PVBS         [MAX_LEPTONS]  ;
+   int    MuInnerTrackNHits            [MAX_LEPTONS]  ;
+   int    MuNTrackerHits               [MAX_LEPTONS]  ;
+   float  MuGlobalNormalizedChi2       [MAX_LEPTONS]  ; //   Dmitry
+   float  MuCaloCompat                 [MAX_LEPTONS]  ;
+   int    MuNChambers                  [MAX_LEPTONS]  ;
+   int    MuNChambersMatchesSegment    [MAX_LEPTONS]  ;
+   int    MuNMatchedStations           [MAX_LEPTONS]  ;
+   int    MuNPixelLayers               [MAX_LEPTONS]  ;
+   int    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
+   int    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
+   int    MuNLostInnerHits             [MAX_LEPTONS]  ;
+   int    MuNLostOuterHits             [MAX_LEPTONS]  ;
+   int    MuNMuonhits                  [MAX_LEPTONS]  ;
+   int    MuDThits                     [MAX_LEPTONS]  ;
+   int    MuCSChits                    [MAX_LEPTONS]  ;
+   int    MuRPChits                    [MAX_LEPTONS]  ;
+   int    MuType                       [MAX_LEPTONS]  ;
    //-----------------------------  Electron Information  ------------------------------
    float EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
    float EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
