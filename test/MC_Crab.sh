@@ -17,7 +17,7 @@ fi
 echo -e "\n================= SOURCE CRAB ENVIRONMENT ========================"
 export SCRAM_ARCH=slc6_amd64_gcc491
 source /afs/cern.ch/cms/LCG/LCG-2/UI/cms_ui_env.sh
-cmsenv
+eval `scramv1 runtime -sh`
 scramv1 runtime -sh
 source /cvmfs/cms.cern.ch/crab3/crab.sh
 voms-proxy-init -voms cms -valid 192:0
@@ -29,7 +29,7 @@ for DATA in $(cat $WORKINGPATH/MC_datasets_$1 ) ;  do
    echo $DATALABEL
    cp ./crab.py "crab-$DATALABEL".py
 
-   sed -i "s@CRAB_JOB_NAME@$DATA@" "crab-$DATALABEL".py
+   sed -i "s@CRAB_JOB_NAME@$DATALABEL@" "crab-$DATALABEL".py
    sed -i "s@CRAB_DATA_SET@$DATA@" "crab-$DATALABEL".py
    sed -i "s@CRAB_OUTPUT@CMSSW74X_BPRIMEKIT_MC@" "crab-$DATALABEL".py
 
