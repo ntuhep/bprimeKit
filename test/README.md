@@ -3,10 +3,10 @@
 ## Local production
 If you have already finished the setup procedure described in the directory above, 
 then the local production could be ran simply the commands
-'''
+```
 cmsenv
 cmsRun bprimeKit_miniAOD_74X.py
-'''
+```
 in this directory. Please manually alter the input and output sources.
 
 
