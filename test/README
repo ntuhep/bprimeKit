@@ -1,19 +1,24 @@
-MSSW_3_9_7
+#bprimeKit Ntuple production guide
 
-cd CMSSW_3_9_7/src
+## Local production
+If you have already finished the setup procedure described in the directory above, 
+then the local production could be ran simply the commands
+'''
 cmsenv
+cmsRun bprimeKit_miniAOD_74X.py
+'''
+in this directory. Please manually alter the input and output sources.
 
-addpkg CondFormats/JetMETObjects                        V03-01-21
-addpkg JetMETCorrections/Algorithms                     V02-02-03
-addpkg JetMETCorrections/Configuration                  V03-02-07
-addpkg JetMETCorrections/Modules                        V05-00-17
-addpkg PhysicsTools/PatAlgos                            V08-03-09
-addpkg FWCore/GuiBrowsers                               V00-00-46
 
-cvs co -r  V00-03-19      RecoEgamma/ElectronIdentification
-cvs co -r V00-03-00      ElectroWeakAnalysis/WENu
-cvs co -r CMSSW_3_9_7 PhysicsTools/SelectorUtils
+## CRAB3 Production
+You could alter the existing `crab_MC_Example.py` file and run the command:
+```
+crab submit -c crab_MC_Example.py
+```
 
-cvs co -d MyAna/bprimeKit UserCode/NTUHEP/bprimeKit
-(Refer : https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuidePATReleaseNotes39X )
-
+Alternatively, you could define the required datasets in the file `MC_datasets_` and run the command 
+```
+./MC_Crab.sh [username]
+```
+for an automated submittion.
+DO NOT edit the all-caps parameters in the `crab.py` file. This would break the script.
