@@ -27,10 +27,10 @@ please manually change the input and output settings in the python file for you 
 
 ## Structural overview
 
-  * [`interface`](interface/README.md) The directory defining the classes required for the bprimeKit
-  * [`plugin`](plugins/README.md) Implementation of the methods defined in `interface`
-  * [`python`](python/README.md) defines the extra model configuration python files for processing the data
-  * [`test`](test/README.md) the directory where the operation of bprimeKit is meant to take place
+  * [`interface`](interface/) The directory defining the classes required for the bprimeKit
+  * [`plugin`](plugins/) Implementation of the methods defined in `interface`
+  * [`python`](python/) defines the extra model configuration python files for processing the data
+  * [`test`](test/) the directory where the operation of bprimeKit is meant to take place
   
 
 ## Adding your own object information

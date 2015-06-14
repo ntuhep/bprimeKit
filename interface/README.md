@@ -1,4 +1,4 @@
-# interface directory
+# `interface` directory
 Here is the quick list of the classes and functions define in this directory sorted by files.
 
 ### `format.h`
@@ -7,6 +7,7 @@ All branche classes should have the same structure:
    * All data stored are public, standard C++ datatypes 
    * `RegisterTree( TTree , string )` method: for root file writing setup. 
    * `Register( TTree ,  string )` method: for root file reading setup.
+
 The current defined branches for the bprimeKit ntuple is listed below:
    * `EvtInfoBranches`
    * `LepInfoBranches`
@@ -15,6 +16,7 @@ The current defined branches for the bprimeKit ntuple is listed below:
    * `PhotonInfoBranches`
    * `VertexInfoBranches` 
    * `GenInfoBranches`
+
 For an example of using the branches, see that file: [`proj.cc`](../test/proj.cc)
 
 ### `bprimeKit.h`
@@ -30,9 +32,9 @@ For implementations, read the [`README.md`](../plugins/README.md) in the plugins
 The function currently defined for the bprimeKit is:
 
    * For particle generation information:
+   Read the code in the generation information sector of the files [`bprimeKit_lepton.cc`](plugins/bprimeKit_muon.cc) for example.
       - `int genMCTag( GenParticle* )`: Generates the MC tags.
       - `genMCTag( GenInterator& ,  Particle& )`: Generates the MC tags.
-      Read the code in the generation information sector of the files [`bprimeKit_lepton.cc`](plugins/bprimeKit_muon.cc) for example.
 
 
 ### `TriggerBooking.h`
