@@ -25,6 +25,14 @@ cmsRun bprimeKit_miniAOD_74X.py
 please manually change the input and output settings in the python file for you needs.
 
 
+## Structural overview
+
+  * ntuhep/bprimeKit/interface/README.md The directory defining the classes required for the bprimeKit
+  * `plugin` Implementation of the methods defined in `interface`
+  * `python` defines the extra model configuration python files for processing the data
+  * `test` the directory where the operation of bprimeKit is meant to take place
+  
+
 ## Adding your own object information
 The data that are extracted into the bprimekit ntuple is defined in the file `interface/format.h`, while the CMSSW methods for extractign the data are implemented in the various `plugins/bprimeKit_*.cc` files. If you need to add additional data for you ntuple needs:
 
