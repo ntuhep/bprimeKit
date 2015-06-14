@@ -18,8 +18,9 @@ options.register('maxEvts',
                  'Number of events to process')
 
 options.register('sample',
-		 '/store/mc/Phys14DR/TTJets_MSDecaysCKM_central_Tune4C_13TeV-madgraph-tauola/MINIAODSIM/PU20bx25_PHYS14_25_V1-v1/00000/D2A395C1-C176-E411-BD3F-002590DB05DA.root',
-                 opts.VarParsing.multiplicity.singleton,
+'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
+#'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/70000/1ECE44F9-5F02-E511-9A65-02163E00EA1F.root',
+      opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
                  'Sample to analyze')
 
@@ -99,7 +100,7 @@ process.source = cms.Source("PoolSource",
 process.load("PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff")
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 process.load("Configuration.EventContent.EventContent_cff")
-process.load('Configuration.StandardSequences.Geometry_cff')
+process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
@@ -498,6 +499,8 @@ process.TriggerUserData = cms.EDProducer(
     'TriggerUserData',
     bits      = cms.InputTag("TriggerResults","","HLT"),
     prescales = cms.InputTag("patTrigger"),
+    storePrescales = cms.untracked.bool(True), 
+   hltProcName = cms.untracked.string("HLT"),
     objects   = cms.InputTag("selectedPatTrigger")
     )                                 
 
@@ -526,12 +529,27 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    SelectEvents = cms.vstring('filterPath')
 #    )
 
+from PhysicsTools.PatAlgos.tools.coreTools import *
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.MiniAOD
+switchOnVIDElectronIdProducer(process, dataFormat)
+switchOnVIDPhotonIdProducer(process, dataFormat)
+my_id_modules = [
+   'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
+   'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
+for idmod in my_id_modules:
+   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
+
+for idmod in my_phoid_modules:
+       setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+process.egmGsfElectronIDSequence
+process.egmPhotonIDSequence 
 #------------------------------------------------------------------------------- 
 # BprimeKit setup 
 #------------------------------------------------------------------------------- 
 resultsFile = 'results_ttbar13TeV.root'
 from MyAna.bprimeKit.ObjectParameters_cfi import *
-
 process.bprimeKit = cms.EDAnalyzer(
     "bprimeKit",
     MCtag                     = cms.untracked.bool(False),
@@ -543,7 +561,14 @@ process.bprimeKit = cms.EDAnalyzer(
     LepCollections            = cms.vstring('LepInfo'),
     pholabel                  = cms.VInputTag('slimmedPhotons'),
     PhoCollections            = cms.vstring('PhotonInfo'),
-
+    phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"),
+    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"),
+    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"),
+    eleVetoIdMap              = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
+    eleLooseIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
+    eleMediumIdMap            = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),
+    eleTightIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"),
+    eleHEEPIdMap              = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV51"),
     jetlabel                  = cms.VInputTag('slimmedJets','selectedPatJetsAK8PFCHSPrunedPacked','patJetsCMSTopTagCHSPacked'),
     JetCollections            = cms.vstring('JetInfo','AK8BosonJetInfo','CA8TopJetInfo'),
     JetType                   = cms.vint32(0,2,3),
@@ -596,8 +621,8 @@ process.bprimeKit = cms.EDAnalyzer(
 
     IncludeL7           = cms.untracked.bool(False),
     SelectionParameters = defaultObjectParameters.clone(),
-    Debug               = cms.untracked.int32(0)
-    )
+    Debug               = cms.untracked.int32(100),
+)
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string( resultsFile )

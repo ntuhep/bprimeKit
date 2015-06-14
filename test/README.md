@@ -1,24 +1,25 @@
-#bprimeKit Ntuple production guide
+#`test` Directory
+
+This directory is the main operation directory for bprimeKit ntuple production.
 
 ## Local production
-If you have already finished the setup procedure described in the directory above, 
-then the local production could be ran simply the commands
 ```
 cmsenv
-cmsRun bprimeKit_miniAOD_74X.py
+cmsRun bprimeKit_miniAOD.py
 ```
-in this directory. Please manually alter the input and output sources.
+Should be sufficient to run a local production. please define input and output sources manually 
 
 
-## CRAB3 Production
-You could alter the existing `crab_MC_Example.py` file and run the command:
+## CRAB3 for MC
+Navigate to the `MC_CRAB` directory first and you could either:
+
+1. Alter the existing `crab_example.py` file and run the command:
 ```
 crab submit -c crab_MC_Example.py
 ```
-
-Alternatively, you could define the required datasets in the file `MC_datasets_` and run the command 
+2. Define the required datasets in the file `MC_datasets_` and run the command 
 ```
 ./MC_Crab.sh [username]
 ```
-for an automated submittion.
+for an automated CRAB job submission. 
 DO NOT edit the all-caps parameters in the `crab.py` file. This would break the script.
