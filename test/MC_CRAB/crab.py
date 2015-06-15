@@ -7,7 +7,7 @@ config.General.transferOutputs = True
 config.General.transferLogs = True
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'bprimeKit_miniAOD.py'
+config.JobType.psetName = '../bprimeKit_miniAOD.py'
 config.JobType.inputFiles = [
     '../dataEIDMVA' ] 
 
