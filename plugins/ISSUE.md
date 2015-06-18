@@ -4,6 +4,7 @@
 
    - Isolation information
       - [ ] float RhoPU: Recipe found, but is it used?
+      - [X] float Rho: replaced RhoPU with since RHO value.
       - [ ] float SigmaPU: Not used any more?
    - High level trigger information
       - [ ] Untested
@@ -31,8 +32,8 @@
          - [ ] float Eldr03HcalDepth2TowerSumEtBc
          - [ ] float Eldr04HcalDepth1TowerSumEtBc
          - [ ] float Eldr04HcalDepth2TowerSumEtBc
-         - [ ] float EgammaMVANonTrig
-         - [ ] float EgammaMVATrig
+         - [ ] float EgammaMVANonTrig: AOD only?
+         - [ ] float EgammaMVATrig: AOD only?
          - [ ] bool  EgammaCutBasedEleIdTRIGGERTIGHT
          - [ ] bool  EgammaCutBasedEleIdTRIGGERWP70
          - [ ] float ElEcalE
@@ -46,7 +47,7 @@
          - [ ] float ElConvPoint_z
       - [ ] Missing variables
          - [ ] int   ElTrackNHits: No longer Used?
-         - [ ] int ChargeCtf: No longer used?
+         - [ ] int   ChargeCtf: No longer used?
          - [ ] float ElSharedHitsFraction: No longer used?
          - [ ] float dR_gsf_ctfTrack
          - [ ] float dPt_gsf_ctfTrack
@@ -56,18 +57,7 @@
          - [ ] int TrgID
 
    - Tau information:
-      - [ ] Isolation related:
-         - [ ] float byVLooseCombinedIsolationDeltaBetaCorr
-         - [ ] float byLooseCombinedIsolationDeltaBetaCorr
-         - [ ] float byMediumCombinedIsolationDeltaBetaCorr
-         - [ ] float byTightCombinedIsolationDeltaBetaCorr
-         - [ ] float againstElectronLoose
-         - [ ] float againstElectronMedium
-         - [ ] float againstElectronTight
-         - [ ] float againstElectronMVA
-         - [ ] float againstMuonLoose
-         - [ ] float againstMuonMedium
-         - [ ] float againstMuonTight
+      - [X] Isolation related: New variables used
 
 ## Jet information
    - [ ] General issue

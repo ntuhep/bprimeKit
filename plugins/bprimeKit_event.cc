@@ -21,25 +21,26 @@ typedef edm::Handle<METList>    METHandler;
 typedef METList::const_iterator METIterator;
 
 //------------------------------------------------------------------------------ 
-//   Helper static variables and functions
-//------------------------------------------------------------------------------ 
-static METHandler  METHandle;
-static METHandler  pfMETHandle;
-static METHandler  pfMETHandle_TempPlus;
-static METHandler  pfMETHandle_TempDown;
-static METIterator it_pfmet  ; 
-static edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
-static edm::Handle<TriggerResults> TrgResultsHandle;
-static edm::Handle<L1GlobalTriggerReadoutRecord> gtRecord;
-static std::pair<int,int>  psValueCombo;
-
-//------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   if( pfmetlabel_.size() > 0 ) { iEvent.getByLabel( pfmetlabel_[0],  pfMETHandle ); }
+   //-----------------------------  Variable declaration  ------------------------------
+   METHandler  METHandle;
+   METHandler  pfMETHandle;
+   METHandler  pfMETHandle_TempPlus;
+   METHandler  pfMETHandle_TempDown;
+   METIterator it_pfmet  ; 
+   edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
+   edm::Handle<TriggerResults> TrgResultsHandle;
+   edm::Handle<L1GlobalTriggerReadoutRecord> gtRecord;
+   edm::Handle<double> rhoHandle;
+   std::pair<int,int>  psValueCombo;
    const edm::View<reco::Track>& tracks = *TrackHandle;
+
+   iEvent.getByToken( rhoLabel_ , rhoHandle );
+    
+   if( pfmetlabel_.size() > 0 ) { iEvent.getByLabel( pfmetlabel_[0],  pfMETHandle ); }
    
    EvtInfo.RunNo    = iEvent.id().run();
    EvtInfo.EvtNo    = iEvent.id().event();
@@ -49,6 +50,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.Orbit    = iEvent.orbitNumber();
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
    EvtInfo.ptHat    = -1.;
+   EvtInfo.Rho      = * (rhoHandle.product()) ; 
    
    //-------------------------------  Getting beam spot  -------------------------------
    if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }

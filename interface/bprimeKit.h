@@ -192,6 +192,7 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
    edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
    edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
+   edm::EDGetTokenT<double>               rhoLabel_;
    //----------------  Information type independent helper variables  -----------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
    edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
