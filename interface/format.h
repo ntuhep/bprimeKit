@@ -264,20 +264,12 @@ class LepInfoBranches {
 public:
    int   Size;
    int   Index                                 [MAX_LEPTONS] ;
-   int   isEcalDriven                          [MAX_LEPTONS] ;
-   int   isTrackerDriven                       [MAX_LEPTONS] ;
    int   LeptonType                            [MAX_LEPTONS] ;
    int   Charge                                [MAX_LEPTONS] ;
-   int   ChargeCtf                             [MAX_LEPTONS] ;
-   int   ChargeScPix                           [MAX_LEPTONS] ;
    float Pt                                    [MAX_LEPTONS] ;
    float Et                                    [MAX_LEPTONS] ;
    float Eta                                   [MAX_LEPTONS] ;
-   float caloEta                               [MAX_LEPTONS] ;
    float Phi                                   [MAX_LEPTONS] ;
-   float e1x5                                  [MAX_LEPTONS] ;
-   float e2x5Max                               [MAX_LEPTONS] ;
-   float e5x5                                  [MAX_LEPTONS] ;
    float Px                                    [MAX_LEPTONS] ; //Uly 2011-04-04
    float Py                                    [MAX_LEPTONS] ; //Uly 2011-04-04
    float Pz                                    [MAX_LEPTONS] ; //Uly 2011-04-04
@@ -285,8 +277,6 @@ public:
    float TrackIso                              [MAX_LEPTONS] ;
    float EcalIso                               [MAX_LEPTONS] ;
    float HcalIso                               [MAX_LEPTONS] ;
-   float HcalDepth1Iso                         [MAX_LEPTONS] ;
-   float HcalDepth2Iso                         [MAX_LEPTONS] ;
    float ChargedHadronIso                      [MAX_LEPTONS] ;
    float NeutralHadronIso                      [MAX_LEPTONS] ;
    float PhotonIso                             [MAX_LEPTONS] ;
@@ -303,17 +293,33 @@ public:
    float Ip3dPV                                [MAX_LEPTONS] ;
    float Ip3dPVErr                             [MAX_LEPTONS] ;
    float Ip3dPVSignificance                    [MAX_LEPTONS] ;
-   //-------------------------------  Muon information  --------------------------------
+   
+   //------------------------------------------------------------------------------ 
+   //   Muon Information
+   //------------------------------------------------------------------------------
+   //------------------------------  General Information  ------------------------------
+   float  CaloEnergy                   [MAX_LEPTONS]  ;
+   bool   isGoodMuonTMOneStationTight  [MAX_LEPTONS]  ; //   For     Soft        Muon
+   bool   isPFMuon                     [MAX_LEPTONS]  ;
+   bool   MuIDGlobalMuonPromptTight    [MAX_LEPTONS]  ;
+   float  MuGlobalNormalizedChi2       [MAX_LEPTONS]  ; //   Dmitry
+   float  MuCaloCompat                 [MAX_LEPTONS]  ;
+   int    MuNChambers                  [MAX_LEPTONS]  ;
+   int    MuNChambersMatchesSegment    [MAX_LEPTONS]  ;
+   int    MuNMatchedStations           [MAX_LEPTONS]  ;
+   int    MuNLostOuterHits             [MAX_LEPTONS]  ;
+   int    MuNMuonhits                  [MAX_LEPTONS]  ;
+   int    MuDThits                     [MAX_LEPTONS]  ;
+   int    MuCSChits                    [MAX_LEPTONS]  ;
+   int    MuRPChits                    [MAX_LEPTONS]  ;
+   int    MuType                       [MAX_LEPTONS]  ; 
+   //--------------------------------  Cosmic Ray filter --------------------------
    int    MuontimenDof                 [MAX_LEPTONS]  ;
    float  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
    float  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
    int    Muondirection                [MAX_LEPTONS]  ;
-   float  CaloEnergy                   [MAX_LEPTONS]  ;
-   bool   isGoodMuonTMOneStationTight  [MAX_LEPTONS]  ; //   For     Soft        Muon
+   //----------------------------  Inner Muon Information  -----------------------------
    float  innerTracknormalizedChi2     [MAX_LEPTONS]  ;   // For     Soft        Muon
-   float  vertexZ                      [MAX_LEPTONS]  ; //   Uly     2011-04-04
-   bool   isPFMuon                     [MAX_LEPTONS]  ;
-   bool   MuIDGlobalMuonPromptTight    [MAX_LEPTONS]  ;
    float  MuInnerPtError               [MAX_LEPTONS]  ;
    float  MuGlobalPtError              [MAX_LEPTONS]  ;
    float  MuInnerTrackDz               [MAX_LEPTONS]  ;
@@ -323,23 +329,26 @@ public:
    float  MuInnerTrackDxy_PVBS         [MAX_LEPTONS]  ;
    int    MuInnerTrackNHits            [MAX_LEPTONS]  ;
    int    MuNTrackerHits               [MAX_LEPTONS]  ;
-   float  MuGlobalNormalizedChi2       [MAX_LEPTONS]  ; //   Dmitry
-   float  MuCaloCompat                 [MAX_LEPTONS]  ;
-   int    MuNChambers                  [MAX_LEPTONS]  ;
-   int    MuNChambersMatchesSegment    [MAX_LEPTONS]  ;
-   int    MuNMatchedStations           [MAX_LEPTONS]  ;
+   int    MuNLostInnerHits             [MAX_LEPTONS]  ;
+   float  vertexZ                      [MAX_LEPTONS]  ; //   Uly     2011-04-04
    int    MuNPixelLayers               [MAX_LEPTONS]  ;
    int    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
    int    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
-   int    MuNLostInnerHits             [MAX_LEPTONS]  ;
-   int    MuNLostOuterHits             [MAX_LEPTONS]  ;
-   int    MuNMuonhits                  [MAX_LEPTONS]  ;
-   int    MuDThits                     [MAX_LEPTONS]  ;
-   int    MuCSChits                    [MAX_LEPTONS]  ;
-   int    MuRPChits                    [MAX_LEPTONS]  ;
-   int    MuType                       [MAX_LEPTONS]  ;
-   //-----------------------------  Electron Information  ------------------------------
+
+   //------------------------------------------------------------------------------ 
+   //   Electron Information
+   //------------------------------------------------------------------------------  
    int   ChargeGsf                             [MAX_LEPTONS] ;
+   int   ChargeCtf                             [MAX_LEPTONS] ;
+   int   ChargeScPix                           [MAX_LEPTONS] ;
+   int   isEcalDriven                          [MAX_LEPTONS] ;
+   int   isTrackerDriven                       [MAX_LEPTONS] ;
+   float caloEta                               [MAX_LEPTONS] ;
+   float e1x5                                  [MAX_LEPTONS] ;
+   float e2x5Max                               [MAX_LEPTONS] ;
+   float e5x5                                  [MAX_LEPTONS] ;
+   float HcalDepth1Iso                         [MAX_LEPTONS] ;
+   float HcalDepth2Iso                         [MAX_LEPTONS] ;
    float EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
    float EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
    bool EgammaCutBasedEleIdTRIGGERTIGHT        [MAX_LEPTONS] ; // Add by Jacky
@@ -363,11 +372,12 @@ public:
    float ElscSigmaIetaIeta                     [MAX_LEPTONS] ;  // Jacky
    float ElEnergyErr                           [MAX_LEPTONS] ;
    float ElMomentumErr                         [MAX_LEPTONS] ;
-   int   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
    float ElSharedHitsFraction                  [MAX_LEPTONS] ; //Dmitry
    float dR_gsf_ctfTrack                       [MAX_LEPTONS] ; //Dmitry
    float dPt_gsf_ctfTrack                      [MAX_LEPTONS] ; //Dmitry
    bool  ElhasConv                             [MAX_LEPTONS] ;
+   //-------------------------------  Track information  -------------------------------
+   int   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
    float ElTrackNLostHits                      [MAX_LEPTONS] ;  //yjlei
    float ElTrackDz                             [MAX_LEPTONS] ;
    float ElTrackDz_BS                          [MAX_LEPTONS] ;
@@ -379,6 +389,8 @@ public:
    int   ElClassification                      [MAX_LEPTONS] ;
    float ElFBrem                               [MAX_LEPTONS] ;
    int NumberOfExpectedInnerHits               [MAX_LEPTONS] ; // Add by Jacky
+
+   //-----------------------------  Conversion rejection  ------------------------------
    float Eldist                                [MAX_LEPTONS] ; // Add by Jacky
    float Eldcot                                [MAX_LEPTONS] ; // Add by Jacky
    float Elconvradius                          [MAX_LEPTONS] ; // Add by Jacky
@@ -395,7 +407,9 @@ public:
    float TrgPhi                                [MAX_LEPTONS] ;
    int TrgID                                   [MAX_LEPTONS] ;
 
-   //--------------------------------  Tau information  --------------------------------
+   //------------------------------------------------------------------------------ 
+   //   Tau information
+   //------------------------------------------------------------------------------  
    int isPFTau                                 [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
    float decayModeFinding                      [MAX_LEPTONS] ; // YoungKyu 2012-10-31
    float byVLooseCombinedIsolationDeltaBetaCorr[MAX_LEPTONS] ; // YoungKyu 2012-10-31
@@ -746,13 +760,17 @@ public:
    float QGTagsMLP               [MAX_JETS] ;
    float QGTagsLikelihood        [MAX_JETS] ;
    int   NConstituents           [MAX_JETS] ;
+   //-------------------------  Particle flow jet information  -------------------------
    int   NCH                     [MAX_JETS] ;
    float CEF                     [MAX_JETS] ;
    float NHF                     [MAX_JETS] ;
    float NEF                     [MAX_JETS] ;
    float CHF                     [MAX_JETS] ;
+
    float JVAlpha                 [MAX_JETS] ;
    float JVBeta                  [MAX_JETS] ;
+   
+   //--------------------------  Jet Correction information  ---------------------------
    float PtCorrRaw               [MAX_JETS] ;
    float PtCorrL2                [MAX_JETS] ;
    float PtCorrL3                [MAX_JETS] ;
@@ -775,6 +793,8 @@ public:
    float SoftMuonByIP3dBJetTags  [MAX_JETS] ;
    float SoftMuonByPtBJetTags    [MAX_JETS] ;
    float DoubleSVHighEffBJetTags [MAX_JETS] ; //// Added by DM
+
+   //----------------------------  Generation information  -----------------------------
    float GenJetPt                [MAX_JETS] ;
    float GenJetEta               [MAX_JETS] ;
    float GenJetPhi               [MAX_JETS] ;
@@ -784,9 +804,10 @@ public:
    int   GenPdgID                [MAX_JETS] ;
    int   GenFlavor               [MAX_JETS] ;
    int   GenMCTag                [MAX_JETS] ; // 0: unknown, 1: decay from W, 2: decay from Z, (+10) from b', (+20) from t'
+
+   //------------------------------  Subjet information  -------------------------------
    int NSubjets                  [MAX_JETS] ;
    int SubjetsIdxStart           [MAX_JETS] ;
-   // Vector for writing
    std::vector<float> SubjetMass_w               ;
    std::vector<float> SubjetPt_w                 ;
    std::vector<float> SubjetEt_w                 ;
