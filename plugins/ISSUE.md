@@ -12,10 +12,9 @@
 
 
 ## Lepton information
-   | ------- | ------- | ---------|
-   |         | variable | status | 
-
-  [  ] int   ChargeCtf  :                          
+   |  resolved       | variable | status |
+   | ----------- | ---------- | ---------|
+   | [  ] | int   ChargeCtf  | No longer used? |                          
 
    int   isEcalDriven                       
    int   isTrackerDriven                    
