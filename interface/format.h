@@ -268,7 +268,6 @@ public:
    int   isTrackerDriven                       [MAX_LEPTONS] ;
    int   LeptonType                            [MAX_LEPTONS] ;
    int   Charge                                [MAX_LEPTONS] ;
-   int   ChargeGsf                             [MAX_LEPTONS] ;
    int   ChargeCtf                             [MAX_LEPTONS] ;
    int   ChargeScPix                           [MAX_LEPTONS] ;
    float Pt                                    [MAX_LEPTONS] ;
@@ -340,6 +339,7 @@ public:
    int    MuRPChits                    [MAX_LEPTONS]  ;
    int    MuType                       [MAX_LEPTONS]  ;
    //-----------------------------  Electron Information  ------------------------------
+   int   ChargeGsf                             [MAX_LEPTONS] ;
    float EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
    float EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
    bool EgammaCutBasedEleIdTRIGGERTIGHT        [MAX_LEPTONS] ; // Add by Jacky
