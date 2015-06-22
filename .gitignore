@@ -1,5 +1,7 @@
 python/*.pyc
 python/__init__.*
 
+test/Production_Data_DCSONLY_CMSSW52X_AOD/ 
+test/Production_MC_CMSSW52X_AOD/
 
 *.txt

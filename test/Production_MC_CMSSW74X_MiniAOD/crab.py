@@ -17,7 +17,7 @@ config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 1
 config.Data.totalUnits  = config.Data.unitsPerJob * 1
-config.Data.outLFNDirBase = '/store/user/%s/CRAB_OUTPUT' % (getUsernameFromSiteDB())
+config.Data.outLFNDirBase = '/store/user/%s/CMSSW_74X_BPRIMEKIT' % (getUsernameFromSiteDB())
 #config.Data.publication = True
 #config.Data.publishDataName = 'CRAB3_tutorial_May2015_MC_analysis'
 

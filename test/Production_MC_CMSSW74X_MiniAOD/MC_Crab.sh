@@ -31,7 +31,6 @@ for DATA in $(cat $WORKINGPATH/MC_datasets_$1 ) ;  do
 
    sed -i "s@CRAB_JOB_NAME@$DATALABEL@" "crab-$DATALABEL".py
    sed -i "s@CRAB_DATA_SET@$DATA@" "crab-$DATALABEL".py
-   sed -i "s@CRAB_OUTPUT@CMSSW74X_BPRIMEKIT_MC@" "crab-$DATALABEL".py
 
    crab submit -c "crab-$DATALABEL".py
 done
