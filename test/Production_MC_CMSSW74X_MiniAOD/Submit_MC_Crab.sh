@@ -5,7 +5,7 @@ WORKINGPATH=`pwd`
 
 if [ "$1" == "" ] ; then 
    echo "Please input your afs ID like : "
-   echo "./SUBMIT_MC_Summer12.csh [afs ID]"
+   echo "./Submit_MC_Crab.sh  [afs ID]"
    exit -1
 fi
 
