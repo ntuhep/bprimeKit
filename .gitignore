@@ -1,2 +1,5 @@
 python/*.pyc
 python/__init__.*
+
+
+*.txt
