@@ -26,6 +26,7 @@ bool findAncestor( const reco::Candidate* & , const reco::GenParticle* ) ;
 
 bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
+
    if( debug_ > 5 ) { cout << "\tFill Pair Info."; }
    memset( &PairInfo, 0x00, sizeof( PairInfo ) );
 

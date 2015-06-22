@@ -28,20 +28,20 @@ typedef edm::Handle<GenEventInfoProduct>                 GenInfoHandle;
 
 bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   static const reco::Candidate* MCDaughters[14];
-   static const reco::Candidate* dau1;
-   static const reco::Candidate* dau2;
-   static PileupHandle           PUInfo;
-   static PileupIterator         PVI;
-   static GenInfoHandle          genEventInfo;
-   static CandidateList          cands;
-   static CandidateIterator      found;
-   static CandidateIterator      mother1 , mother2;
-   static int iMo1, iMo2, iDa1, iDa2;
-   static int iGrandMo1, iGrandMo2, NMo, NDa;
-   static int pdgId , dauId1 , dauId2 , monId ; 
-   static int numberOfDaughters , numberOfMothers;
-   static double evWeight;
+   const reco::Candidate* MCDaughters[14];
+   const reco::Candidate* dau1;
+   const reco::Candidate* dau2;
+   PileupHandle           PUInfo;
+   PileupIterator         PVI;
+   GenInfoHandle          genEventInfo;
+   CandidateList          cands;
+   CandidateIterator      found;
+   CandidateIterator      mother1 , mother2;
+   int iMo1, iMo2, iDa1, iDa2;
+   int iGrandMo1, iGrandMo2, NMo, NDa;
+   int pdgId , dauId1 , dauId2 , monId ; 
+   int numberOfDaughters , numberOfMothers;
+   double evWeight;
 
    //-------------------------------------  Setup  ------------------------------------- 
    for( int i = 0; i < 14; i++ ) { MCDaughters[i] = NULL; }

@@ -20,28 +20,30 @@
 
 
 
-static JetHandlerList     JetHandle;  //PFJets
-static JetIterator        it_jet   ;
-static edm::Handle<edm::ValueMap<float> >  QGTagsHandleMLP;
-static edm::Handle<edm::ValueMap<float> >  QGTagsHandleLikelihood;
-static bool pfjetcoll  ;
-static bool calojetcoll;
-static bool fatjetcoll ;
-static bool CAjetcoll  ;
-static edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-static bool jetID;
-static pat::strbitset ret ;
-static JetCorrectionUncertainty* jecUnc;
-static char bufferJECU[32];
-static edm::ParameterSet* PS_Jets;
-
-static double tracks_x    ; 
-static double tracks_y     ;
-static double tracks_x_tot ;
-static double tracks_y_tot ;
 
 bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
+	 JetHandlerList     JetHandle;  //PFJets
+	 JetIterator        it_jet   ;
+	 edm::Handle<edm::ValueMap<float> >  QGTagsHandleMLP;
+	 edm::Handle<edm::ValueMap<float> >  QGTagsHandleLikelihood;
+	 bool pfjetcoll  ;
+	 bool calojetcoll;
+	 bool fatjetcoll ;
+	 bool CAjetcoll  ;
+	 edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+	 bool jetID;
+	 pat::strbitset ret ;
+	 JetCorrectionUncertainty* jecUnc;
+	 char bufferJECU[32];
+	 edm::ParameterSet* PS_Jets;
+
+	 double tracks_x    ; 
+	 double tracks_y     ;
+	 double tracks_x_tot ;
+	 double tracks_y_tot ;
+
+
    for( unsigned il = 0; il < jetlabel_.size(); il++ ) {
       JetHandle.push_back( JetHandler() );
       iEvent.getByLabel( jetlabel_[il], JetHandle[il] );

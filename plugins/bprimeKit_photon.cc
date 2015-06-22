@@ -14,14 +14,15 @@
 //------------------------------------------------------------------------------ 
 //   Helper static variables and functions 
 //------------------------------------------------------------------------------ 
-static PhotonHandleList  PhoHandle;
-static PhotonIterator    it_pho ;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
+   PhotonHandleList  PhoHandle;
+   PhotonIterator    it_pho ;
+   
    for( unsigned il = 0; il < pholabel_.size(); il++ ) {
       PhoHandle.push_back( PhotonHandle() );
       iEvent.getByLabel( pholabel_[il], PhoHandle[il] );

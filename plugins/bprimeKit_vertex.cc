@@ -10,8 +10,6 @@
 //------------------------------------------------------------------------------ 
 //   static helper variables and functions
 //------------------------------------------------------------------------------ 
-static bool   gotPrimVtx;
-static double PVBS_Pt_Max;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
@@ -19,6 +17,9 @@ static double PVBS_Pt_Max;
 
 bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
+   bool   gotPrimVtx;
+   double PVBS_Pt_Max;
+      
    if( debug_ > 5 ) { cout << "\tFill Vertex Info.\n"; }
    memset( &VertexInfo, 0x00, sizeof( VertexInfo ) );
    

@@ -16,12 +16,13 @@
 //------------------------------------------------------------------------------ 
 //   Static helper variables
 //------------------------------------------------------------------------------
-static const float currentToBFieldScaleFactor = 2.09237036221512717e-04;
-static double current ;
-static string NonLabel;
 
 bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iSetup ) 
 {
+	 const float currentToBFieldScaleFactor = 2.09237036221512717e-04;
+	 double current ;
+	 string NonLabel;
+
    //--------------------------  Setting up helper variables  --------------------------
    cout << "Getting lepton Handlers" << endl;
    NonLabel = "";

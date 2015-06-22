@@ -46,7 +46,6 @@ bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       LepInfo[icoll].isPFTau           [LepInfo[icoll].Size] = it_tau->isPFTau();    // YoungKyu 2012-10-16
       //LepInfo[icoll].signalCharge         [LepInfo[icoll].Size] = it_tau->signalCharge();    // YoungKyu 2012-11-08
       //hpsPFTau ID
-      LepInfo[icoll].decayModeFinding[LepInfo[icoll].Size] = it_tau->tauID( "decayModeFinding" ); // YoungKyu 2012-10-31
 
       //------------------------------  Tau ID information  -------------------------------
       LepInfo[icoll].DiscriminationByDecayModeFinding           [LepInfo[icoll].Size] =it_tau->tauID ( "decayModeFinding"                            );

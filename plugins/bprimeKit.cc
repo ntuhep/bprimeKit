@@ -91,6 +91,8 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    phoLooseIdMapToken_        = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
    phoMediumIdMapToken_       = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
    phoTightIdMapToken_        = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));
+   
+   rhoLabel_ = consumes<double> (iConfig.getParameter<InputTag>("rhoLabel"));
    //-------------------------------  CMSSW_7X updates  --------------------------------
    // update for CMSSW_7_2_0
    reducedEBRecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEBRecHitCollection" ) );

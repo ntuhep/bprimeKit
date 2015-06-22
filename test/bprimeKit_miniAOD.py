@@ -561,6 +561,7 @@ process.bprimeKit = cms.EDAnalyzer(
     LepCollections            = cms.vstring('LepInfo'),
     pholabel                  = cms.VInputTag('slimmedPhotons'),
     PhoCollections            = cms.vstring('PhotonInfo'),
+    rhoLabel = cms.InputTag("fixedGridRhoFastjetAll"),
     phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"),
     phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"),
     phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"),
