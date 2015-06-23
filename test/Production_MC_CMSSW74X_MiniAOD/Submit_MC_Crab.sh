@@ -23,14 +23,14 @@ source /cvmfs/cms.cern.ch/crab3/crab.sh
 voms-proxy-init -voms cms -valid 192:0
 
 
+mkdir config_files
 echo -e "\n================= Begin scanning MC data sets defined in MC_datasets_$1 ===================="
-for DATA in $(cat $WORKINGPATH/MC_datasets_$1 ) ;  do
+for DATA in $( cat $WORKINGPATH/MC_datasets_$1 ) ;  do
    DATALABEL=`echo $DATA | awk -F "/" '{print $2"_"$3 }'`
    echo $DATALABEL
-   cp ./crab.py "crab-$DATALABEL".py
-
-   sed -i "s@CRAB_JOB_NAME@$DATALABEL@" "crab-$DATALABEL".py
-   sed -i "s@CRAB_DATA_SET@$DATA@" "crab-$DATALABEL".py
+   cp ./crab.py                          config_files/"crab-$DATALABEL".py
+   sed -i "s@CRAB_JOB_NAME@$DATALABEL@"  config_files/"crab-$DATALABEL".py
+   sed -i "s@CRAB_DATA_SET@$DATA@"       config_files/"crab-$DATALABEL".py
 
    crab submit -c "crab-$DATALABEL".py
 done
