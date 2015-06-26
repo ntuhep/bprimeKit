@@ -147,7 +147,7 @@ public:
       BRANCH_OBJ( BeamSpotX                                 , F );
       BRANCH_OBJ( BeamSpotY                                 , F );
       BRANCH_OBJ( BeamSpotZ                                 , F );
-      BRANCH_OBJ( nBX                                       , F );
+      BRANCH_OBJ( nBX                                       , I );
       BRANCH_OBJ( PFMET                                     , F );
       BRANCH_OBJ( PFMETType1CorrectedPFMetUnclusteredEnUp   , F );
       BRANCH_OBJ( PFMETType1CorrectedPFMetUnclusteredEnDown , F );
@@ -162,9 +162,9 @@ public:
       BRANCH_OBJ( PFGenMETPhi                               , F );
       BRANCH_OBJ( PFMETx                                    , F );
       BRANCH_OBJ( PFMETy                                    , F );
-      BRANCH_OBJ( TrgCount                                  , F );
-      BRANCH_OBJ( nTrgBook                                  , F );
-      BRANCH_OBJ( nHLT                                      , F );
+      BRANCH_OBJ( TrgCount                                  , I );
+      BRANCH_OBJ( nTrgBook                                  , I );
+      BRANCH_OBJ( nHLT                                      , I );
       BRANCH_OBJ( HighPurityFraction                        , F );
       BRANCH_OBJ( NofTracks                                 , F );
       BRANCH_OBJ( ptHat                                     , F );
