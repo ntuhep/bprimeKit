@@ -23,25 +23,25 @@
 
 bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-	 JetHandlerList     JetHandle;  //PFJets
-	 JetIterator        it_jet   ;
-	 edm::Handle<edm::ValueMap<float> >  QGTagsHandleMLP;
-	 edm::Handle<edm::ValueMap<float> >  QGTagsHandleLikelihood;
-	 bool pfjetcoll  ;
-	 bool calojetcoll;
-	 bool fatjetcoll ;
-	 bool CAjetcoll  ;
-	 edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-	 bool jetID;
-	 pat::strbitset ret ;
-	 JetCorrectionUncertainty* jecUnc;
-	 char bufferJECU[32];
-	 edm::ParameterSet* PS_Jets;
+	JetHandlerList     JetHandle;  //PFJets
+	JetIterator        it_jet   ;
+	edm::Handle<edm::ValueMap<float> >  QGTagsHandleMLP;
+	edm::Handle<edm::ValueMap<float> >  QGTagsHandleLikelihood;
+	bool pfjetcoll  ;
+	bool calojetcoll;
+	bool fatjetcoll ;
+	bool CAjetcoll  ;
+	edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+	bool jetID;
+	pat::strbitset ret ;
+	JetCorrectionUncertainty* jecUnc;
+	char bufferJECU[32];
+	edm::ParameterSet* PS_Jets;
 
-	 double tracks_x    ; 
-	 double tracks_y     ;
-	 double tracks_x_tot ;
-	 double tracks_y_tot ;
+	double tracks_x    ; 
+	double tracks_y     ;
+	double tracks_x_tot ;
+	double tracks_y_tot ;
 
 
    for( unsigned il = 0; il < jetlabel_.size(); il++ ) {
