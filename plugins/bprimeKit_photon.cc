@@ -26,7 +26,7 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
    edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap;
    edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap;
    edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap;
-   if(runphoIDVID_){
+   if(getPhotonID_){
       iEvent.getByToken( phoLooseIdMapToken_             , loose_id_decisions           );
       iEvent.getByToken( phoMediumIdMapToken_            , medium_id_decisions          );
       iEvent.getByToken( phoTightIdMapToken_             , tight_id_decisions           );
@@ -72,14 +72,16 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          PhotonInfo[icoll].passelectronveto     [PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
         
          //-----------------------  Filling in isolation information  ------------------------ 
-         PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = (*phoChargedIsolationMap)[it_pho] ; 
-         PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = (*phoPhotonIsolationMap)[it_pho] ; 
-         PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = (*phoNeutralHadronIsolationMap)[it_pho] ;
-         PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = (*loose_id_decisions)[it_pho];
-         PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = (*medium_id_decisions)[it_pho];
-         PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = (*tight_id_decisions)[it_pho];
-         PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[it_pho];
-        
+         if( getPhotonID_ ) {
+            const auto pho = PhoHandle[icoll]->ptrAt( PhotonInfo[icoll].Size );
+            PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = (*phoChargedIsolationMap)[pho] ; 
+            PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = (*phoPhotonIsolationMap)[pho] ; 
+            PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = (*phoNeutralHadronIsolationMap)[pho] ;
+            PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = (*loose_id_decisions)[pho];
+            PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = (*medium_id_decisions)[pho];
+            PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = (*tight_id_decisions)[pho];
+            PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[pho];
+         } 
 
          //---------------------------  Generation MC information  ---------------------------
          if ( !isData && !skipGenInfo_ ) { //MC

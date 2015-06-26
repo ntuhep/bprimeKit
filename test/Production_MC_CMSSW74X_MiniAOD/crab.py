@@ -2,12 +2,12 @@ from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 config = config()
 
 config.General.requestName = 'CRAB_JOB_NAME'
-config.General.workArea = 'bprime_crab_projects'
+config.General.workArea = 'bprimekit_crab'
 config.General.transferOutputs = True
 config.General.transferLogs = True
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = '../bprimeKit_miniAOD.py'
+config.JobType.psetName = 'BPK_PYTHONFILE'
 config.JobType.inputFiles = [
     '../dataEIDMVA' ] 
 

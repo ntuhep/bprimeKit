@@ -80,7 +80,7 @@ typedef edm::Handle<TauList>           TauHandler;
 typedef std::vector<TauHandler>        TauHandlerList;
 typedef TauList::const_iterator        TauIterator;
 
-typedef std::vector<pat::Photon>       PhotonList; 
+typedef edm::View<pat::Photon>         PhotonList; 
 typedef edm::Handle<PhotonList>        PhotonHandle;
 typedef std::vector<PhotonHandle>      PhotonHandleList;
 typedef PhotonList::const_iterator     PhotonIterator ;
@@ -245,6 +245,7 @@ private:
    
    int pairColl_;//which lepton collection to use for pairs
    bool getElectronID_;
+   bool getPhotonID_ ;
    bool skipGenInfo_;
    bool includeL7_;
 

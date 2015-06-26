@@ -76,6 +76,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    //---------------------------------  Settings flag  ---------------------------------
    pairColl_            = iConfig.getUntrackedParameter<int>  ( "PairCollection" , 0     ) ;
    getElectronID_       = iConfig.getUntrackedParameter<bool> ( "ElectronID"     , true  ) ;
+   getPhotonID_         = iConfig.getUntrackedParameter<bool> ( "PhotonID"       , true  ) ;
    skipGenInfo_         = iConfig.getUntrackedParameter<bool> ( "SkipGenInfo"    , false ) ;
    includeL7_           = iConfig.getUntrackedParameter<bool> ( "IncludeL7"      , true  ) ;
    SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );

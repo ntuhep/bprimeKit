@@ -26,13 +26,21 @@ voms-proxy-init -voms cms -valid 192:0
 mkdir config_files
 echo -e "\n================= Begin scanning MC data sets defined in MC_datasets_$1 ===================="
 for DATA in $( cat $WORKINGPATH/MC_datasets_$1 ) ;  do
-   DATALABEL=`echo $DATA | awk -F "/" '{print $2"_"$3 }'`
+   DATALABEL=`echo $DATA | awk -F "/" '{print $2"_"$3 }' | cut -c 15 `
    echo $DATALABEL
-   cp ./crab.py                          config_files/"crab-$DATALABEL".py
-   sed -i "s@CRAB_JOB_NAME@$DATALABEL@"  config_files/"crab-$DATALABEL".py
-   sed -i "s@CRAB_DATA_SET@$DATA@"       config_files/"crab-$DATALABEL".py
 
-   crab submit -c "crab-$DATALABEL".py
+   BPK_PYTHONFILE=config_files/"bprimeKit-$DATALABEL".py
+   CRAB_FILE=config_files/"crab-$DATALABEL".py
+   OUTPUT_FILE="results-$DATALABEL".root
+   cp ../bprimeKit_miniAOD.py                       $BPK_PYTHONFILE
+   sed -i "s@results.root@$OUTPUT_FILE@" $BPK_PYTHONFILE
+
+   cp ./crab.py                          $CRAB_FILE 
+   sed -i "s@CRAB_JOB_NAME@$DATALABEL@"  $CRAB_FILE
+   sed -i "s@CRAB_DATA_SET@$DATA@"       $CRAB_FILE 
+   sed -i "s@BPK_PYTHONFILE@$BPK_PYTHONFILE" $CRAB_FILE
+
+   # crab submit -c "crab-$DATALABEL".py
 done
 
 

@@ -19,6 +19,7 @@ log*
 
 test/Production_MC_CMSSW74X_MiniAOD/config_files
 test/Production_MC_CMSSW74X_MiniAOD/MC_datasets_yichen
+python/__init__.py
 
 
 # Specific file inclusion 

@@ -548,7 +548,7 @@ process.egmPhotonIDSequence
 #------------------------------------------------------------------------------- 
 # BprimeKit setup 
 #------------------------------------------------------------------------------- 
-resultsFile = 'results_ttbar13TeV.root'
+resultsFile = 'results.root'
 from MyAna.bprimeKit.ObjectParameters_cfi import *
 process.bprimeKit = cms.EDAnalyzer(
     "bprimeKit",
