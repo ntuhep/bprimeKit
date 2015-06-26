@@ -58,22 +58,22 @@ static char leafList[1024];
 class EvtInfoBranches {
 public:
    int     RunNo  ;
-   size_t  EvtNo  ;
+   long long int  EvtNo  ;
    int     BxNo   ;
    int     LumiNo ;
    int     Orbit  ;
    //--------------------------------  MC information  ---------------------------------
    int   McFlag            ; // MC or not MC, that's the question
    int   McSigTag          ; // MC Signature tag    - 0: others, 1: 2L (opposite-sign), 2: 2L (same-sign), 3: 3L, 4: 4L
-   int   McbprimeMode [2] ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
-   int   MctprimeMode [2] ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
-   int   McWMode      [4] ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
-   int   McZMode      [2] ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
-   float McbprimeMass [2] ; // mass: b'(bar)
-   float MctprimeMass [2] ; // mass: t'(bar)
-   float MctopMass    [2] ; // mass: top(bar)
-   float McWMass      [4] ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
-   float McZMass      [2] ; // mass: Z from b'(bar) or t'(bar)
+   int   McbprimeMode [2]  ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
+   int   MctprimeMode [2]  ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
+   int   McWMode      [4]  ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
+   int   McZMode      [2]  ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
+   float McbprimeMass [2]  ; // mass: b'(bar)
+   float MctprimeMass [2]  ; // mass: t'(bar)
+   float MctopMass    [2]  ; // mass: top(bar)
+   float McWMass      [4]  ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
+   float McZMass      [2]  ; // mass: Z from b'(bar) or t'(bar)
    float McDauPt      [14] ; // Generic MC daughter information
    float McDauEta     [14] ; // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
    float McDauPhi     [14] ;
@@ -129,16 +129,16 @@ public:
    int   TT[64]                      ; // Techical trigger bits
 
 
-   void RegisterTree( TTree* root                           , std::string name = "EvtInfo" ) {
-      BRANCH_OBJ( RunNo                                     , F );
+   void RegisterTree( TTree* root, std::string name = "EvtInfo" ) {
+      BRANCH_OBJ( RunNo                                     , I );
       BRANCH_OBJ( EvtNo                                     , L );
-      BRANCH_OBJ( BxNo                                      , F );
-      BRANCH_OBJ( LumiNo                                    , F );
-      BRANCH_OBJ( Orbit                                     , F );
-      BRANCH_OBJ( McFlag                                    , F );
-      BRANCH_OBJ( McSigTag                                  , F );
-      BRANCH_OBJ( PDFid1                                    , F );
-      BRANCH_OBJ( PDFid2                                    , F );
+      BRANCH_OBJ( BxNo                                      , I );
+      BRANCH_OBJ( LumiNo                                    , I );
+      BRANCH_OBJ( Orbit                                     , I );
+      BRANCH_OBJ( McFlag                                    , I );
+      BRANCH_OBJ( McSigTag                                  , I );
+      BRANCH_OBJ( PDFid1                                    , I );
+      BRANCH_OBJ( PDFid2                                    , I );
       BRANCH_OBJ( PDFx1                                     , F );
       BRANCH_OBJ( PDFx2                                     , F );
       BRANCH_OBJ( PDFscale                                  , F );
@@ -172,7 +172,7 @@ public:
       BRANCH_FIX_ARRAY( nPU                                 , MAX_BX                           , I ) ;
       BRANCH_FIX_ARRAY( BXPU                                , MAX_BX                           , I ) ;
       BRANCH_FIX_ARRAY( TrueIT                              , MAX_BX                           , F ) ;
-      BRANCH_FIX_ARRAY( TrgBook                             , N_TRIGGER_BOOKINGS               , B ) ;
+      BRANCH_FIX_ARRAY( TrgBook                             , N_TRIGGER_BOOKINGS               , C ) ;
       BRANCH_FIX_ARRAY( HLTPrescaleFactor                   , 512                              , I ) ;
       BRANCH_FIX_ARRAY( HLTName2enum                        , 512                              , I ) ;
       BRANCH_FIX_ARRAY( HLTbits                             , N_TRIGGER_BOOKINGS               , O ) ;
@@ -518,11 +518,11 @@ public:
       BRANCH_ARRAY ( Py                                          , F )   ;
       BRANCH_ARRAY ( Pz                                          , F )   ;
       BRANCH_ARRAY ( Energy                                      , F )   ;
-      BRANCH_ARRAY ( isGoodMuonTMOneStationTight                 , B )   ;
+      BRANCH_ARRAY ( isGoodMuonTMOneStationTight                 , C )   ;
       BRANCH_ARRAY ( innerTracknormalizedChi2                    , F )   ;
       BRANCH_ARRAY ( vertexZ                                     , F )   ;
-      BRANCH_ARRAY ( isPFMuon                                    , B )   ;
-      BRANCH_ARRAY ( MuIDGlobalMuonPromptTight                   , B )   ;
+      BRANCH_ARRAY ( isPFMuon                                    , C )   ;
+      BRANCH_ARRAY ( MuIDGlobalMuonPromptTight                   , C )   ;
       BRANCH_ARRAY ( MuInnerPtError                              , F )   ;
       BRANCH_ARRAY ( MuGlobalPtError                             , F )   ;
       BRANCH_ARRAY ( MuInnerTrackDz                              , F )   ;
@@ -549,13 +549,13 @@ public:
       BRANCH_ARRAY ( MuType                                      , I )   ;
       BRANCH_ARRAY ( EgammaMVANonTrig                            , F )   ;
       BRANCH_ARRAY ( EgammaMVATrig                               , F )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdTRIGGERTIGHT             , B )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdTRIGGERWP70              , B )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdVETO                     , B )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdLOOSE                    , B )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdMEDIUM                   , B )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdTIGHT                    , B )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdHEEP                     , B )   ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdTRIGGERTIGHT             , C )   ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdTRIGGERWP70              , C )   ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdVETO                     , C )   ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdLOOSE                    , C )   ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdMEDIUM                   , C )   ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdTIGHT                    , C )   ;
+      BRANCH_ARRAY ( EgammaCutBasedEleIdHEEP                     , C )   ;
       BRANCH_ARRAY ( Eldr03HcalDepth1TowerSumEtBc                , F )   ;
       BRANCH_ARRAY ( Eldr03HcalDepth2TowerSumEtBc                , F )   ;
       BRANCH_ARRAY ( Eldr04HcalDepth1TowerSumEtBc                , F )   ;
@@ -574,7 +574,7 @@ public:
       BRANCH_ARRAY ( ElSharedHitsFraction                        , F )   ;
       BRANCH_ARRAY ( dR_gsf_ctfTrack                             , F )   ;
       BRANCH_ARRAY ( dPt_gsf_ctfTrack                            , F )   ;
-      BRANCH_ARRAY ( ElhasConv                                   , B )   ;
+      BRANCH_ARRAY ( ElhasConv                                   , C )   ;
       BRANCH_ARRAY ( ElTrackNLostHits                            , F )   ;
       BRANCH_ARRAY ( ElTrackDz                                   , F )   ;
       BRANCH_ARRAY ( ElTrackDz_BS                                , F )   ;
@@ -607,50 +607,50 @@ public:
       BRANCH_ARRAY ( TrgPhi                                      , F )   ;
       BRANCH_ARRAY ( TrgID                                       , I )   ;
       BRANCH_ARRAY ( isPFTau                                     , I )   ;
-      BRANCH_ARRAY ( DiscriminationByDecayModeFinding            , B )   ;
-      BRANCH_ARRAY ( DiscriminationByDecayModeFindingNewDMs      , B )   ;
-      BRANCH_ARRAY ( ByLooseElectronRejection                    , B )   ;
-      BRANCH_ARRAY ( ByMediumElectronRejection                   , B )   ;
-      BRANCH_ARRAY ( ByTightElectronRejection                    , B )   ;
-      BRANCH_ARRAY ( ByMVA5LooseElectronRejection                , B )   ;
-      BRANCH_ARRAY ( ByMVA5MediumElectronRejection               , B )   ;
-      BRANCH_ARRAY ( ByMVA5TightElectronRejection                , B )   ;
-      BRANCH_ARRAY ( ByMVA5VTightElectronRejection               , B )   ;
-      BRANCH_ARRAY ( ByLooseMuonRejection3                       , B )   ;
-      BRANCH_ARRAY ( ByTightMuonRejection3                       , B )   ;
-      BRANCH_ARRAY ( ByMVALooseMuonRejection                     , B )   ;
-      BRANCH_ARRAY ( ByMVAMediumMuonRejection                    , B )   ;
-      BRANCH_ARRAY ( ByMVATightMuonRejection                     , B )   ;
-      BRANCH_ARRAY ( ByLooseCombinedIsolationDeltaBetaCorr3Hits  , B )   ;
-      BRANCH_ARRAY ( ByMediumCombinedIsolationDeltaBetaCorr3Hits , B )   ;
-      BRANCH_ARRAY ( ByTightCombinedIsolationDeltaBetaCorr3Hits  , B )   ;
+      BRANCH_ARRAY ( DiscriminationByDecayModeFinding            , C )   ;
+      BRANCH_ARRAY ( DiscriminationByDecayModeFindingNewDMs      , C )   ;
+      BRANCH_ARRAY ( ByLooseElectronRejection                    , C )   ;
+      BRANCH_ARRAY ( ByMediumElectronRejection                   , C )   ;
+      BRANCH_ARRAY ( ByTightElectronRejection                    , C )   ;
+      BRANCH_ARRAY ( ByMVA5LooseElectronRejection                , C )   ;
+      BRANCH_ARRAY ( ByMVA5MediumElectronRejection               , C )   ;
+      BRANCH_ARRAY ( ByMVA5TightElectronRejection                , C )   ;
+      BRANCH_ARRAY ( ByMVA5VTightElectronRejection               , C )   ;
+      BRANCH_ARRAY ( ByLooseMuonRejection3                       , C )   ;
+      BRANCH_ARRAY ( ByTightMuonRejection3                       , C )   ;
+      BRANCH_ARRAY ( ByMVALooseMuonRejection                     , C )   ;
+      BRANCH_ARRAY ( ByMVAMediumMuonRejection                    , C )   ;
+      BRANCH_ARRAY ( ByMVATightMuonRejection                     , C )   ;
+      BRANCH_ARRAY ( ByLooseCombinedIsolationDeltaBetaCorr3Hits  , C )   ;
+      BRANCH_ARRAY ( ByMediumCombinedIsolationDeltaBetaCorr3Hits , C )   ;
+      BRANCH_ARRAY ( ByTightCombinedIsolationDeltaBetaCorr3Hits  , C )   ;
       BRANCH_ARRAY ( CombinedIsolationDeltaBetaCorrRaw3Hits      , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3newDMwoLT              , B )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3newDMwoLT               , B )   ;
-      BRANCH_ARRAY ( ByMediumIsolationMVA3newDMwoLT              , B )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3newDMwoLT               , B )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3newDMwoLT              , B )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3newDMwoLT             , B )   ;
+      BRANCH_ARRAY ( ByVLooseIsolationMVA3newDMwoLT              , C )   ;
+      BRANCH_ARRAY ( ByLooseIsolationMVA3newDMwoLT               , C )   ;
+      BRANCH_ARRAY ( ByMediumIsolationMVA3newDMwoLT              , C )   ;
+      BRANCH_ARRAY ( ByTightIsolationMVA3newDMwoLT               , C )   ;
+      BRANCH_ARRAY ( ByVTightIsolationMVA3newDMwoLT              , C )   ;
+      BRANCH_ARRAY ( ByVVTightIsolationMVA3newDMwoLT             , C )   ;
       BRANCH_ARRAY ( ByIsolationMVA3newDMwoLTraw                 , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3oldDMwLT               , B )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3oldDMwLT                , B )   ;
-      BRANCH_ARRAY ( ByMediumIsolationMVA3oldDMwLT               , B )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3oldDMwLT                , B )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3oldDMwLT               , B )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3oldDMwLT              , B )   ;
+      BRANCH_ARRAY ( ByVLooseIsolationMVA3oldDMwLT               , C )   ;
+      BRANCH_ARRAY ( ByLooseIsolationMVA3oldDMwLT                , C )   ;
+      BRANCH_ARRAY ( ByMediumIsolationMVA3oldDMwLT               , C )   ;
+      BRANCH_ARRAY ( ByTightIsolationMVA3oldDMwLT                , C )   ;
+      BRANCH_ARRAY ( ByVTightIsolationMVA3oldDMwLT               , C )   ;
+      BRANCH_ARRAY ( ByVVTightIsolationMVA3oldDMwLT              , C )   ;
       BRANCH_ARRAY ( ByIsolationMVA3oldDMwLTraw                  , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3oldDMwoLT              , B )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3oldDMwoLT               , B )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3oldDMwoLT               , B )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3oldDMwoLT              , B )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3oldDMwoLT             , B )   ;
+      BRANCH_ARRAY ( ByVLooseIsolationMVA3oldDMwoLT              , C )   ;
+      BRANCH_ARRAY ( ByLooseIsolationMVA3oldDMwoLT               , C )   ;
+      BRANCH_ARRAY ( ByTightIsolationMVA3oldDMwoLT               , C )   ;
+      BRANCH_ARRAY ( ByVTightIsolationMVA3oldDMwoLT              , C )   ;
+      BRANCH_ARRAY ( ByVVTightIsolationMVA3oldDMwoLT             , C )   ;
       BRANCH_ARRAY ( ByIsolationMVA3oldDMwoLTraw                 , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3newDMwLT               , B )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3newDMwLT                , B )   ;
-      BRANCH_ARRAY ( ByMediumIsolationMVA3newDMwLT               , B )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3newDMwLT                , B )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3newDMwLT               , B )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3newDMwLT              , B )   ;
+      BRANCH_ARRAY ( ByVLooseIsolationMVA3newDMwLT               , C )   ;
+      BRANCH_ARRAY ( ByLooseIsolationMVA3newDMwLT                , C )   ;
+      BRANCH_ARRAY ( ByMediumIsolationMVA3newDMwLT               , C )   ;
+      BRANCH_ARRAY ( ByTightIsolationMVA3newDMwLT                , C )   ;
+      BRANCH_ARRAY ( ByVTightIsolationMVA3newDMwLT               , C )   ;
+      BRANCH_ARRAY ( ByVVTightIsolationMVA3newDMwLT              , C )   ;
       BRANCH_ARRAY ( ByIsolationMVA3newDMwLTraw                  , F )   ;
    }
 
@@ -1177,11 +1177,11 @@ public:
       BRANCH_ARRAY( phoPFNeuIso          , F ) ;
       BRANCH_ARRAY( phoPFPhoIso          , F ) ;
       BRANCH_ARRAY( phoIDMVA             , F ) ; 
-      BRANCH_ARRAY( phoPassLoose         , B ) ; 
-      BRANCH_ARRAY( phoPassMedium        , B ) ; 
-      BRANCH_ARRAY( phoPassTight         , B ) ;
+      BRANCH_ARRAY( phoPassLoose         , C ) ; 
+      BRANCH_ARRAY( phoPassMedium        , C ) ; 
+      BRANCH_ARRAY( phoPassTight         , C ) ;
       BRANCH_ARRAY( r9                   , F ) ;
-      BRANCH_ARRAY( passelectronveto     , B ) ;
+      BRANCH_ARRAY( passelectronveto     , C ) ;
       BRANCH_ARRAY( EcalIso              , F ) ;
       BRANCH_ARRAY( HcalIso              , F ) ;
       BRANCH_ARRAY( TrackIso             , F ) ;
@@ -1236,9 +1236,9 @@ public:
 
    void RegisterTree( TTree* root , std::string name = "VertexInfo" ) {
       BRANCH_OBJ( Size , I );
-      BRANCH_ARRAY(   isValid        , I  ) ;  
-      BRANCH_ARRAY(   isFake         , B ) ;  
-      BRANCH_ARRAY(   Type           , I  ) ; 
+      BRANCH_ARRAY(   isValid        , I ) ;  
+      BRANCH_ARRAY(   isFake         , C ) ;  
+      BRANCH_ARRAY(   Type           , I ) ; 
       BRANCH_ARRAY(   Ndof           , F ) ;
       BRANCH_ARRAY(   NormalizedChi2 , F ) ;
       BRANCH_ARRAY(   Pt_Sum         , F ) ;

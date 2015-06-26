@@ -39,9 +39,8 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    iEvent.getByToken( eleHEEPIdMapToken_    , heep_id_decisions   ) ;
    iEvent.getByToken( eleMVAValuesMapToken_ , eleMVAValues        ) ;
 
-   ElectronIterator elecViewIt = elecHandle->begin();
-   for( size_t i = 0 ; i < gsfElecHandle->size() ; ++i , ++elecViewIt ) {//loop over electrons in collection
-      const auto it_el = gsfElecHandle->ptrAt(i);
+   ElectronIterator it_el = elecHandle->begin();
+   for( size_t i = 0 ; i < elecHandle->size() ; ++i , ++it_el ) {//loop over electrons in collection
       if( debug_ > 11 ) { 
          cout << "\t>>>Size " << LepInfo[icoll].Size << " el et,eta,phi " 
               << it_el->et() << "," << it_el->superCluster()->eta() << "," 
@@ -110,13 +109,15 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       
       //-----------------------  New Isolation information: Enoch  ------------------------
       if( getElectronID_ ){
+         const auto el = gsfElecHandle->ptrAt( i );
          cout <<"\t>>> Getting isolation information"<< endl;
-         LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[it_el]);
-         LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[it_el]);
-         LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[it_el]);
-         LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[it_el]);
-         LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[it_el]);
-         LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Size] = (*eleMVAValues)[it_el];
+         LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[el]);
+         LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[el]);
+         LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[el]);
+         LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[el]);
+         LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[el]); 
+         cout << "\t>>> Getting new Isolation information" << endl;
+         LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Size] = (*eleMVAValues)[el];
          LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
          LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
@@ -125,7 +126,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //---------------------------  MC Generation information  ---------------------------
       if ( !isData && !skipGenInfo_ ) {
          if( debug_ > 15 ) { cout << "   Getting MC information\n"; }
-         const reco::GenParticle* gen = elecViewIt->genLepton(); 
+         const reco::GenParticle* gen = it_el->genLepton(); 
          if ( gen != NULL ) {
             LepInfo[icoll].GenPt        [LepInfo[icoll].Size] = gen->pt();
             LepInfo[icoll].GenEta       [LepInfo[icoll].Size] = gen->eta();
@@ -138,7 +139,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && GenHandle.isValid() ) {
             for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end() ; it_gen++ ) {
                if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) break;
-               LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , elecViewIt )  ;
+               LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_el )  ;
             }
          }
          if( debug_ > 15 ) { cout << "   Done getting MC information\n"; }

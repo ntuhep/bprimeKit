@@ -44,7 +44,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    eleclabel_          = iConfig.getParameter<TagList>( "eleclabel"          ) ; // "cleanPatElectrons"
    taulabel_           = iConfig.getParameter<TagList>( "taulabel"           ) ; // "selectedPatTausPFlow"
    pholabel_           = iConfig.getParameter<TagList>( "pholabel"           ) ;
-// jetlabel_           = iConfig.getParameter<TagList>( "jetlabel"           ) ; // "cleanPatJets"
+   jetlabel_           = iConfig.getParameter<TagList>( "jetlabel"           ) ; // "cleanPatJets"
    metlabel_           = iConfig.getParameter<TagList>( "metlabel"           ) ; //"patMETs"
    pfmetlabel_         = iConfig.getParameter<TagList>( "pfmetlabel"         ) ; //"pfpatMETs"
    genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"

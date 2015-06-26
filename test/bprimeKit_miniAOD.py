@@ -580,8 +580,8 @@ process.bprimeKit = cms.EDAnalyzer(
     eleMVAValuesMap = cms.InputTag( "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Phys14NonTrigValues"   ) , 
     
     
-    jetlabel                  = cms.VInputTag('slimmedJets','selectedPatJetsAK8PFCHSPrunedPacked','patJetsCMSTopTagCHSPacked'),
-    JetCollections            = cms.vstring('JetInfo','AK8BosonJetInfo','CA8TopJetInfo'),
+    jetlabel                  = cms.VInputTag('slimmedJets' ),
+    JetCollections            = cms.vstring('JetInfo' ) ,
     JetType                   = cms.vint32(0,2,3),
 
     #jetlabel                 = cms.VInputTag('selectedPatJets','goodPatJetsCA8PrunedPFPacked','goodPatJetsCATopTagPFPacked'),
@@ -632,7 +632,7 @@ process.bprimeKit = cms.EDAnalyzer(
 
     IncludeL7           = cms.untracked.bool(False),
     SelectionParameters = defaultObjectParameters.clone(),
-    Debug               = cms.untracked.int32(0),
+    Debug               = cms.untracked.int32(100),
 )
 
 process.TFileService = cms.Service("TFileService",

@@ -50,13 +50,18 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       if( debug_ > 10 ) { cout << "jets " << il << " jetlabel " << jetlabel_[il] << " with " << JetHandle[il]->size() << " entries\n"; }
    }
 
+   if( debug_ > 10 ) {cout <<"Getting Q taggers" << endl;}
    iEvent.getByLabel( "QGTagger", "qgMLP", QGTagsHandleMLP );
    iEvent.getByLabel( "QGTagger", "qgLikelihood", QGTagsHandleLikelihood );
+   
+   
+   if( debug_ > 10 ) {cout <<"Begin looping" << endl;}
 
    for( unsigned icoll = 0; icoll < jetcollections_.size(); icoll++ ) { //loop over collections
-      if( icoll >= MAX_JETCOLLECTIONS ) { break; }
-      if( JetHandle.size() <= icoll ) {  continue ; }
+      if( icoll >= MAX_JETCOLLECTIONS ) { cerr << "To many jets!!"; break; }
+      if( JetHandle.size() <= icoll ) {  cerr << "Size to large!"; continue ; }
       if( debug_ > 10 ) { cout << "Fill jet info, collection " << icoll << " with name " << jetcollections_[icoll] << endl; }
+
       memset( &JetInfo[icoll], 0x00, sizeof( JetInfo[icoll] ) );
 
       pfjetcoll   = ( jettype_[icoll] == 0 );
