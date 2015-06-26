@@ -5,15 +5,15 @@ The bprimeKit aims to strip the miniAOD format used by CMSSW into a standalone R
 ## Setup and running
 Below is the standard setup for the brpimeKit running under CMSSW_7_4_2 
 ```
-cmsrel CMSSW_7_4_2
-cd CMSSW_7_4_2/src
+cmsrel CMSSW_7_4_5_patch1
+cd CMSSW_7_4_5_patch1/src
 cmsenv 
 
-git cms-merge-topic ikrav:egm_id_74X_v0
+git cms-merge-topic ikrav:egm_id_74X_v2
 git clone https://github.com/cmsb2g/B2GAnaFW Analysis/B2GAnaFW 
 git clone https://github.com/ETHZ/sixie-Muon-MuonAnalysisTools.git UserCode/sixie/Muon/MuonAnalysisTools
 git clone https://github.com/amarini/QuarkGluonTagger.git
-git clone https://github.com/ntuhep/bprimeKit.git -b CMSSW_7_4_X MyAna/bprimeKit
+git clone https://github.com/ntuhep/bprimeKit.git MyAna/bprimeKit
 
 scram b -j 10
 ```

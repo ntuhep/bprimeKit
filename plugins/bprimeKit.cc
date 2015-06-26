@@ -82,15 +82,21 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    debug_               = iConfig.getUntrackedParameter<int>  ( "Debug"          , 0      );
    
    //----------------------------------  Electron ID  ----------------------------------
-   eleVetoIdMapToken_       = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"   )  ) ;
-   eleLooseIdMapToken_      = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"  )  ) ;
-   eleMediumIdMapToken_     = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleMediumIdMap" )  ) ;
-   eleTightIdMapToken_      = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleTightIdMap"  )  ) ;
-   eleHEEPIdMapToken_       = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"   )  ) ;
-
-   phoLooseIdMapToken_        = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoLooseIdMap"));
-   phoMediumIdMapToken_       = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoMediumIdMap"));
-   phoTightIdMapToken_        = consumes<edm::ValueMap<bool> >(iConfig.getParameter<edm::InputTag>("phoTightIdMap"));
+   eleVetoIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
+   eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
+   eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
+   eleTightIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
+   eleHEEPIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
+   eleMVAValuesMapToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "eleMVAValuesMap" )) ;
+   
+   //--------------------------  Photon ID from VID framwork  --------------------------
+   phoLooseIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoLooseIdMap"             )) ;
+   phoMediumIdMapToken_            = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoMediumIdMap"            )) ;
+   phoTightIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoTightIdMap"             )) ;
+   phoMVAValuesMapToken_           = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoMVAValuesMap"           )) ;
+   phoChargedIsolationToken_       = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoChargedIsolation"       )) ;
+   phoNeutralHadronIsolationToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoNeutralHadronIsolation" )) ;
+   phoPhotonIsolationToken_        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
    
    rhoLabel_ = consumes<double> (iConfig.getParameter<InputTag>("rhoLabel"));
    //-------------------------------  CMSSW_7X updates  --------------------------------

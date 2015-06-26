@@ -353,13 +353,13 @@ public:
    float HcalDepth2Iso                         [MAX_LEPTONS] ;
    float EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
    float EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
-   bool EgammaCutBasedEleIdTRIGGERTIGHT        [MAX_LEPTONS] ; // Add by Jacky
-   bool EgammaCutBasedEleIdTRIGGERWP70         [MAX_LEPTONS] ; // Add by Jacky
-   bool EgammaCutBasedEleIdVETO                [MAX_LEPTONS] ; // Add by Jacky
-   bool EgammaCutBasedEleIdLOOSE               [MAX_LEPTONS] ; // Add by Jacky
-   bool EgammaCutBasedEleIdMEDIUM              [MAX_LEPTONS] ; // Add by Jacky
-   bool EgammaCutBasedEleIdTIGHT               [MAX_LEPTONS] ; // Add by Jacky
-   bool EgammaCutBasedEleIdHEEP                [MAX_LEPTONS] ;
+   bool  EgammaCutBasedEleIdTRIGGERTIGHT       [MAX_LEPTONS] ; // Add by Jacky
+   bool  EgammaCutBasedEleIdTRIGGERWP70        [MAX_LEPTONS] ; // Add by Jacky
+   bool  EgammaCutBasedEleIdVETO               [MAX_LEPTONS] ; // Add by Jacky
+   bool  EgammaCutBasedEleIdLOOSE              [MAX_LEPTONS] ; // Add by Jacky
+   bool  EgammaCutBasedEleIdMEDIUM             [MAX_LEPTONS] ; // Add by Jacky
+   bool  EgammaCutBasedEleIdTIGHT              [MAX_LEPTONS] ; // Add by Jacky
+   bool  EgammaCutBasedEleIdHEEP               [MAX_LEPTONS] ;
    float Eldr03HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
    float Eldr03HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
    float Eldr04HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
@@ -1147,12 +1147,13 @@ public:
    float SigmaIetaIeta        [MAX_PHOTONS] ;
    float hadTowOverEm         [MAX_PHOTONS] ;
    float hcalIsoConeDR04_2012 [MAX_PHOTONS] ;
-   float phoPFChIsoDR03       [MAX_PHOTONS] ;
-   float phoPFNeuIsoDR03      [MAX_PHOTONS] ;
-   float phoPFPhoIsoDR03      [MAX_PHOTONS] ;
-   float phoPFChIsoDR04       [MAX_PHOTONS] ;
-   float phoPFNeuIsoDR04      [MAX_PHOTONS] ;
-   float phoPFPhoIsoDR04      [MAX_PHOTONS] ;
+   float phoPFChIso           [MAX_PHOTONS] ;
+   float phoPFNeuIso          [MAX_PHOTONS] ;
+   float phoPFPhoIso          [MAX_PHOTONS] ;
+   float phoIDMVA             [MAX_PHOTONS] ; 
+   bool  phoPassLoose         [MAX_PHOTONS] ;
+   bool  phoPassMedium        [MAX_PHOTONS] ;
+   bool  phoPassTight         [MAX_PHOTONS] ;
    float r9                   [MAX_PHOTONS] ;
    bool  passelectronveto     [MAX_PHOTONS] ;
    float  EcalIso             [MAX_PHOTONS] ;
@@ -1172,12 +1173,13 @@ public:
       BRANCH_ARRAY( SigmaIetaIeta        , F ) ;
       BRANCH_ARRAY( hadTowOverEm         , F ) ;
       BRANCH_ARRAY( hcalIsoConeDR04_2012 , F ) ;
-      BRANCH_ARRAY( phoPFChIsoDR03       , F ) ;
-      BRANCH_ARRAY( phoPFNeuIsoDR03      , F ) ;
-      BRANCH_ARRAY( phoPFPhoIsoDR03      , F ) ;
-      BRANCH_ARRAY( phoPFChIsoDR04       , F ) ;
-      BRANCH_ARRAY( phoPFNeuIsoDR04      , F ) ;
-      BRANCH_ARRAY( phoPFPhoIsoDR04      , F ) ;
+      BRANCH_ARRAY( phoPFChIso           , F ) ;
+      BRANCH_ARRAY( phoPFNeuIso          , F ) ;
+      BRANCH_ARRAY( phoPFPhoIso          , F ) ;
+      BRANCH_ARRAY( phoIDMVA             , F ) ; 
+      BRANCH_ARRAY( phoPassLoose         , B ) ; 
+      BRANCH_ARRAY( phoPassMedium        , B ) ; 
+      BRANCH_ARRAY( phoPassTight         , B ) ;
       BRANCH_ARRAY( r9                   , F ) ;
       BRANCH_ARRAY( passelectronveto     , B ) ;
       BRANCH_ARRAY( EcalIso              , F ) ;
@@ -1190,7 +1192,7 @@ public:
    }
 
    void Register( TTree* root, std::string name = "PhotonInfo" ) {
-      SET_BRANCH_OBJ    ( Size                 ) ;
+      SET_BRANCH_OBJ  ( Size                 ) ;
       SET_BRANCH_ARRAY( Pt                   ) ;
       SET_BRANCH_ARRAY( Eta                  ) ;
       SET_BRANCH_ARRAY( Phi                  ) ;
@@ -1198,12 +1200,13 @@ public:
       SET_BRANCH_ARRAY( SigmaIetaIeta        ) ;
       SET_BRANCH_ARRAY( hadTowOverEm         ) ;
       SET_BRANCH_ARRAY( hcalIsoConeDR04_2012 ) ;
-      SET_BRANCH_ARRAY( phoPFChIsoDR03       ) ;
-      SET_BRANCH_ARRAY( phoPFNeuIsoDR03      ) ;
-      SET_BRANCH_ARRAY( phoPFPhoIsoDR03      ) ;
-      SET_BRANCH_ARRAY( phoPFChIsoDR04       ) ;
-      SET_BRANCH_ARRAY( phoPFNeuIsoDR04      ) ;
-      SET_BRANCH_ARRAY( phoPFPhoIsoDR04      ) ;
+      SET_BRANCH_ARRAY( phoPFChIso           ) ;
+      SET_BRANCH_ARRAY( phoPFNeuIso          ) ;
+      SET_BRANCH_ARRAY( phoPFPhoIso          ) ;
+      SET_BRANCH_ARRAY( phoIDMVA             ) ; 
+      SET_BRANCH_ARRAY( phoPassLoose         ) ; 
+      SET_BRANCH_ARRAY( phoPassMedium        ) ; 
+      SET_BRANCH_ARRAY( phoPassTight         ) ; 
       SET_BRANCH_ARRAY( r9                   ) ;
       SET_BRANCH_ARRAY( passelectronveto     ) ;
       SET_BRANCH_ARRAY( EcalIso              ) ;

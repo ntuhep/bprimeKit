@@ -561,15 +561,25 @@ process.bprimeKit = cms.EDAnalyzer(
     LepCollections            = cms.vstring('LepInfo'),
     pholabel                  = cms.VInputTag('slimmedPhotons'),
     PhoCollections            = cms.vstring('PhotonInfo'),
-    rhoLabel = cms.InputTag("fixedGridRhoFastjetAll"),
-    phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"),
-    phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"),
-    phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"),
-    eleVetoIdMap              = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"),
-    eleLooseIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"),
-    eleMediumIdMap            = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"),
-    eleTightIdMap             = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"),
-    eleHEEPIdMap              = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV51"),
+    rhoLabel                  = cms.InputTag("fixedGridRhoFastjetAll"),
+   
+    #----------------------------------  Photon IDs  -----------------------------------
+    phoLooseIdMap             = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"     ) ,
+    phoMediumIdMap            = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"    ) ,
+    phoTightIdMap             = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"     ) ,
+    phoMVAValuesMap           = cms.InputTag( "photonMVAValueMapProducer:PhotonMVAEstimatorRun2Spring15NonTrigValues" ) ,
+    phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
+    phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
+    phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
+    #---------------------------------  Electron IDs  ----------------------------------
+    eleVetoIdMap    = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"   ) ,
+    eleLooseIdMap   = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"  ) ,
+    eleMediumIdMap  = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium" ) ,
+    eleTightIdMap   = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"  ) ,
+    eleHEEPIdMap    = cms.InputTag( "egmGsfElectronIDs:heepElectronID-HEEPV51"                                  ) ,
+    eleMVAValuesMap = cms.InputTag( "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Phys14NonTrigValues"   ) , 
+    
+    
     jetlabel                  = cms.VInputTag('slimmedJets','selectedPatJetsAK8PFCHSPrunedPacked','patJetsCMSTopTagCHSPacked'),
     JetCollections            = cms.vstring('JetInfo','AK8BosonJetInfo','CA8TopJetInfo'),
     JetType                   = cms.vint32(0,2,3),
@@ -622,7 +632,7 @@ process.bprimeKit = cms.EDAnalyzer(
 
     IncludeL7           = cms.untracked.bool(False),
     SelectionParameters = defaultObjectParameters.clone(),
-    Debug               = cms.untracked.int32(100),
+    Debug               = cms.untracked.int32(0),
 )
 
 process.TFileService = cms.Service("TFileService",

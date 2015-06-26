@@ -12,16 +12,29 @@
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
 //------------------------------------------------------------------------------ 
-//   Helper static variables and functions 
-//------------------------------------------------------------------------------ 
-
-//------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
    PhotonHandleList  PhoHandle;
    PhotonIterator    it_pho ;
+   
+   edm::Handle<edm::ValueMap<bool> >  loose_id_decisions;
+   edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
+   edm::Handle<edm::ValueMap<bool> >  tight_id_decisions;
+   edm::Handle<edm::ValueMap<float> > mvaValues;
+   edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap;
+   edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap;
+   edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap;
+   if(runphoIDVID_){
+      iEvent.getByToken( phoLooseIdMapToken_             , loose_id_decisions           );
+      iEvent.getByToken( phoMediumIdMapToken_            , medium_id_decisions          );
+      iEvent.getByToken( phoTightIdMapToken_             , tight_id_decisions           );
+      iEvent.getByToken( phoMVAValuesMapToken_           , mvaValues                    );
+      iEvent.getByToken( phoChargedIsolationToken_       , phoChargedIsolationMap       );
+      iEvent.getByToken( phoNeutralHadronIsolationToken_ , phoNeutralHadronIsolationMap );
+      iEvent.getByToken( phoPhotonIsolationToken_        , phoPhotonIsolationMap        );
+   }
    
    for( unsigned il = 0; il < pholabel_.size(); il++ ) {
       PhoHandle.push_back( PhotonHandle() );
@@ -58,7 +71,16 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
                ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
          PhotonInfo[icoll].passelectronveto     [PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
         
-         
+         //-----------------------  Filling in isolation information  ------------------------ 
+         PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = (*phoChargedIsolationMap)[it_pho] ; 
+         PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = (*phoPhotonIsolationMap)[it_pho] ; 
+         PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = (*phoNeutralHadronIsolationMap)[it_pho] ;
+         PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = (*loose_id_decisions)[it_pho];
+         PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = (*medium_id_decisions)[it_pho];
+         PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = (*tight_id_decisions)[it_pho];
+         PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[it_pho];
+        
+
          //---------------------------  Generation MC information  ---------------------------
          if ( !isData && !skipGenInfo_ ) { //MC
             if( debug_ > 15 ) { cout << ">>> Photon >>> Getting MC information" << endl ; }
@@ -71,24 +93,6 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             }
          }
 
-
-         //------------------------------------------------------------------------------ 
-         //   TODO Debugging
-         //------------------------------------------------------------------------------ 
-         
-         //-----------------------  Filling in isolation information  ------------------------
-         VertexRef myVtxRef( VertexHandle, 0 ); 
-         // TODO
-         if( debug_ > 10 ) { cout << ">>>Photon>>> B4 Photon getIsolation " << endl; }
-         // PhotonisolatorR03.fGetIsolation(&*it_pho, &thePfColl, myVtxRef, VertexHandle);
-         PhotonInfo[icoll].phoPFChIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationCharged();
-         PhotonInfo[icoll].phoPFNeuIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationNeutral();
-         PhotonInfo[icoll].phoPFPhoIsoDR03[PhotonInfo[icoll].Size]  = PhotonisolatorR03.getIsolationPhoton();
-         if( debug_ > 10 ) { cout << ">>> Photon >>> Af Photon getIsolation " << endl; }
-         // PhotonisolatorR04.fGetIsolation( &*it_pho, &thePfColl, myVtxRef, VertexHandle );
-         PhotonInfo[icoll].phoPFChIsoDR04 [PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationCharged();
-         PhotonInfo[icoll].phoPFNeuIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationNeutral();
-         PhotonInfo[icoll].phoPFPhoIsoDR04[PhotonInfo[icoll].Size]  = PhotonisolatorR04.getIsolationPhoton();
          PhotonInfo[icoll].r9             [PhotonInfo[icoll].Size]  = it_pho->r9();
          PhotonInfo[icoll].Size++;
       }

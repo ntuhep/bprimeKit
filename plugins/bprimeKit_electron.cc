@@ -22,22 +22,22 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 {
    ElectronHandler elecHandle ;
    GsfHandler      gsfElecHandle;
-   edm::Handle<edm::ValueMap<bool>> veto_id_decisions;
-   edm::Handle<edm::ValueMap<bool>> loose_id_decisions;
-   edm::Handle<edm::ValueMap<bool>> medium_id_decisions;
-   edm::Handle<edm::ValueMap<bool>> tight_id_decisions;
-   edm::Handle<edm::ValueMap<bool>> heep_id_decisions;
+   edm::Handle<edm::ValueMap<bool>>  veto_id_decisions;
+   edm::Handle<edm::ValueMap<bool>>  loose_id_decisions;
+   edm::Handle<edm::ValueMap<bool>>  medium_id_decisions;
+   edm::Handle<edm::ValueMap<bool>>  tight_id_decisions;
+   edm::Handle<edm::ValueMap<bool>>  heep_id_decisions;
+   edm::Handle<edm::ValueMap<float>> eleMVAValues;
 
-   cout << ">>> Electron" << endl;
-   cout << "\t>>> Setting up parameters" << endl;
    iEvent.getByLabel( eleclabel_[icoll], elecHandle );
    iEvent.getByLabel( eleclabel_[icoll], gsfElecHandle ) ;
    //----------------------  Setting up electron ID information  -----------------------
-   iEvent.getByToken( eleVetoIdMapToken_   , veto_id_decisions   ) ;
-   iEvent.getByToken( eleLooseIdMapToken_  , loose_id_decisions  ) ;
-   iEvent.getByToken( eleMediumIdMapToken_ , medium_id_decisions ) ;
-   iEvent.getByToken( eleTightIdMapToken_  , tight_id_decisions  ) ;
-   iEvent.getByToken( eleHEEPIdMapToken_   , heep_id_decisions   ) ;
+   iEvent.getByToken( eleVetoIdMapToken_    , veto_id_decisions   ) ;
+   iEvent.getByToken( eleLooseIdMapToken_   , loose_id_decisions  ) ;
+   iEvent.getByToken( eleMediumIdMapToken_  , medium_id_decisions ) ;
+   iEvent.getByToken( eleTightIdMapToken_   , tight_id_decisions  ) ;
+   iEvent.getByToken( eleHEEPIdMapToken_    , heep_id_decisions   ) ;
+   iEvent.getByToken( eleMVAValuesMapToken_ , eleMVAValues        ) ;
 
    ElectronIterator elecViewIt = elecHandle->begin();
    for( size_t i = 0 ; i < gsfElecHandle->size() ; ++i , ++elecViewIt ) {//loop over electrons in collection
@@ -116,6 +116,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[it_el]);
          LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[it_el]);
          LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[it_el]);
+         LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Isze] = (*eleMVAValues)[it_el];
          LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
          LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;

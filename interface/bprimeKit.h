@@ -63,13 +63,12 @@
 typedef std::vector<edm::Handle<edm::ValueMap<reco::IsoDeposit>>>   IsoDepositMaps;
 typedef std::vector<edm::Handle<edm::ValueMap<double>>>             IsoDepositVals;
 
-typedef std::vector<pat::Electron>       ElectronList        ;
+typedef std::vector<pat::Electron>     ElectronList        ;
 typedef edm::Handle<ElectronList>      ElectronHandler     ;
-typedef std::vector<ElectronHandler>   ElectronHandlerList ;
 typedef ElectronList::const_iterator   ElectronIterator    ;
-typedef edm::View<reco::GsfElectron>   GsfList ;
-typedef edm::Handle<GsfList>           GsfHandler;
-typedef GsfList::const_iterator        GsfIterator;
+typedef edm::View<reco::GsfElectron>   GsfList             ;
+typedef edm::Handle<GsfList>           GsfHandler          ;
+typedef GsfList::const_iterator        GsfIterator         ;
 
 typedef std::vector<pat::Muon>         MuonList;
 typedef edm::Handle<MuonList>          MuonHandler;
@@ -184,14 +183,25 @@ private:
    edm::InputTag               conversionsInputTag_ ;
    edm::InputTag               rhoIsoInputTag       ;
    std::vector<edm::InputTag>  isoValInputTags_     ;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
-   edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
+
+   //----------------------------  Photon isolation tokens  ----------------------------
+   edm::EDGetTokenT<edm::ValueMap<bool> >  phoLooseIdMapToken_             ;
+   edm::EDGetTokenT<edm::ValueMap<bool> >  phoMediumIdMapToken_            ;
+   edm::EDGetTokenT<edm::ValueMap<bool> >  phoTightIdMapToken_             ;
+   edm::EDGetTokenT<edm::ValueMap<float> > phoMVAValuesMapToken_           ;
+   edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_       ;
+   edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_ ;
+   edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_        ;
+   edm::EDGetTokenT<edm::ValueMap<float> > phoWorstChargedIsolationToken_  ;
+
+   //---------------------------  Electron Isolation tokens  ---------------------------
+   edm::EDGetTokenT<edm::ValueMap<bool> >  eleVetoIdMapToken_    ;
+   edm::EDGetTokenT<edm::ValueMap<bool> >  eleLooseIdMapToken_   ;
+   edm::EDGetTokenT<edm::ValueMap<bool> >  eleMediumIdMapToken_  ;
+   edm::EDGetTokenT<edm::ValueMap<bool> >  eleTightIdMapToken_   ;
+   edm::EDGetTokenT<edm::ValueMap<bool> >  eleHEEPIdMapToken_    ;
+   edm::EDGetTokenT<edm::ValueMap<float> > eleMVAValuesMapToken_ ;
+   
    edm::EDGetTokenT<double>               rhoLabel_;
    //----------------  Information type independent helper variables  -----------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;

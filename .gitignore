@@ -1,10 +1,27 @@
+# General C++ exclusion 
+*.o
+*.so
 
-# Untracking directories and specific files
-test/Production_MC_CMSSW74X_MiniAOD/MC_datasets_*
-test/Production_MC_CMSSW74X_MiniAOD/config_files
-python/__init__.*
-
-
-# Untracking compile files 
+# General Python exclusion 
 *.pyc
-*.txt
+
+# Swap files 
+*.swp 
+
+# General data file exclusions
+*.txt 
+*.root
+*.log
+log*
+
+# Specific file exclusion 
+# [relative/path/to/file]
+
+test/Production_MC_CMSSW74X_MiniAOD/config_files
+test/Production_MC_CMSSW74X_MiniAOD/MC_datasets_yichen
+
+
+# Specific file inclusion 
+# ![relative/path/to/file]
+
+
