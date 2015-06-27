@@ -15,7 +15,7 @@ config.Data.inputDataset = 'CRAB_DATA_SET'
 
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 1
+config.Data.unitsPerJob = 5
 # config.Data.totalUnits  =  50 ## Disabled to run all
 config.Data.outLFNDirBase = '/store/user/%s/CMSSW_74X_BPRIMEKIT_TESTING_2' % (getUsernameFromSiteDB())
 #config.Data.publication = True
