@@ -12,13 +12,14 @@ import FWCore.ParameterSet.VarParsing as opts
 options = opts.VarParsing ('analysis')
 
 options.register('maxEvts',
-                 -1,# default value: process all events
+                 50,# default value: process all events
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.int,
                  'Number of events to process')
 
 options.register('sample',
-'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
+ 'file:/store/georgi/2015/input/miniAOD/TprimeTprime_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/0CA15594-AA13-E511-905F-02163E015283.root',
+#'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
 #'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/70000/1ECE44F9-5F02-E511-9A65-02163E00EA1F.root',
       opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
@@ -140,49 +141,47 @@ process.ak8GenJetsNoNuPruned = ak4GenJets.clone(
 )
 
 ## Select charged hadron subtracted packed PF candidates
-process.pfCHS = cms.EDFilter("CandPtrSelector", 
-        src = cms.InputTag("packedPFCandidates"), 
-        cut = cms.string("fromPV"))
+process.pfCHS = cms.EDFilter(
+   "CandPtrSelector", 
+   src = cms.InputTag("packedPFCandidates"), 
+   cut = cms.string("fromPV")
+)
+
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
-## Fat PFJets
 from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJets
 
 
 process.ak8PFJetsCHS = ak4PFJets.clone(
-    rParam = cms.double(0.8),
-    src = cms.InputTag("pfCHS"),
+    rParam        = cms.double(0.8),
+    src           = cms.InputTag("pfCHS"),
     doAreaFastjet = cms.bool(True),
-    jetPtMin = cms.double(100.)
+    jetPtMin      = cms.double(100.)
 )
 
 
-process.ak8PFJetsCHSConstituents = cms.EDFilter("MiniAODJetConstituentSelector",
-                                        src = cms.InputTag("ak8PFJetsCHS"),
-                                        cut = cms.string("pt > 100.0")
-                                        )
+process.ak8PFJetsCHSConstituents = cms.EDFilter(
+   "MiniAODJetConstituentSelector",
+   src = cms.InputTag("ak8PFJetsCHS"),
+   cut = cms.string("pt > 100.0")
+)
+
 ## Pruned fat PFJets (two jet collections are produced, fat jets and subjets)
 from RecoJets.JetProducers.ak5PFJetsPruned_cfi import ak5PFJetsPruned
 process.ak8PFJetsCHSPruned = ak5PFJetsPruned.clone(
-    rParam = cms.double(0.8)                      ,
-    src = cms.InputTag("ak8PFJetsCHSConstituents" , "constituents") ,
-    doAreaFastjet = cms.bool(True)                ,
-    writeCompound = cms.bool(True)                ,
-    jetCollInstanceName=cms.string("SubJets")     ,
-    jetPtMin = cms.double(100.)
+    rParam                 = cms.double(0.8) ,
+    src                    = cms.InputTag("ak8PFJetsCHSConstituents" , "constituents") ,
+    doAreaFastjet          = cms.bool(True)  ,
+    writeCompound          = cms.bool(True)  ,
+    jetCollInstanceName    = cms.string("SubJets")     ,
+    jetPtMin               = cms.double(100.)
 )
-
 
 
 ## b-tag discriminators
 bTagDiscriminators = [
-    'pfTrackCountingHighEffBJetTags',
-    'pfTrackCountingHighPurBJetTags',
-    'pfJetProbabilityBJetTags',
-    'pfJetBProbabilityBJetTags',
-    'pfSimpleSecondaryVertexHighEffBJetTags',
-    'pfSimpleSecondaryVertexHighPurBJetTags',
-    'pfCombinedSecondaryVertexBJetTags',
-    'pfCombinedInclusiveSecondaryVertexV2BJetTags'
+   'pfJetProbabilityBJetTags',
+   'pfCombinedMVABJetTags',
+   'pfCombinedInclusiveSecondaryVertexV2BJetTags' 
 ]
 
 from PhysicsTools.PatAlgos.tools.jetTools import *
@@ -529,33 +528,39 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    SelectEvents = cms.vstring('filterPath')
 #    )
 
+#------------------------------------------------------------------------------- 
+#   Egamma ID pre-requisites
+#-------------------------------------------------------------------------------
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+
 dataFormat = DataFormat.MiniAOD
 switchOnVIDElectronIdProducer(process, dataFormat)
 switchOnVIDPhotonIdProducer(process, dataFormat)
+
 my_id_modules = [
    'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
    'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
 for idmod in my_id_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
 
+my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
 for idmod in my_phoid_modules:
-       setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
 process.egmGsfElectronIDSequence
 process.egmPhotonIDSequence 
+
 #------------------------------------------------------------------------------- 
 # Loading bprimeKit setup in python/bprimeKit_cfi.py 
 #------------------------------------------------------------------------------- 
-process.load("MyAna.bprimeKit.bprimeKit_cfi")
 
 resultsFile = 'results.root'
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string( resultsFile )
     )
 
-
+process.load("MyAna.bprimeKit.bprimeKit_cfi")
 
 
 #process.fullPath = cms.Schedule(
@@ -563,7 +568,6 @@ process.TFileService = cms.Service("TFileService",
 #    )
 
 process.endPath = cms.EndPath(process.bprimeKit)
-#process.endPath = cms.EndPath(process.edmNtuplesOut)
 
 
 #open('B2GEntupleFileDump.py','w').write(process.dumpPython())

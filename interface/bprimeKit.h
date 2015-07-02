@@ -141,8 +141,8 @@ private:
    bool fillGenInfo   ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillEvent     ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillGenGeneric();
-   bool fillPairInfo  ( int , int );
-   bool fillPairGen   ();
+   bool fillPairInfo  ( const int , const int , math::XYZTLorentzVector& );
+   bool fillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
 
    //-------------------------  NTuple interaction variables  --------------------------
    TTree*                   root                           ;

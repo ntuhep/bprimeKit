@@ -868,7 +868,6 @@ public:
    float NHF                     [MAX_JETS] ;
    float NEF                     [MAX_JETS] ;
    float CHF                     [MAX_JETS] ;
-
    float JVAlpha                 [MAX_JETS] ;
    float JVBeta                  [MAX_JETS] ;
    
@@ -881,20 +880,8 @@ public:
    float PtCorrL7c               [MAX_JETS] ;
    float PtCorrL7b               [MAX_JETS] ;
    float JetBProbBJetTags        [MAX_JETS] ;
-   float JetProbBJetTags         [MAX_JETS] ;
-   float TrackCountHiPurBJetTags [MAX_JETS] ;
-   float TrackCountHiEffBJetTags [MAX_JETS] ;
-   float SimpleSVBJetTags        [MAX_JETS] ;  //for 35X sample //Add by Chiyi
-   float SimpleSVHEBJetTags      [MAX_JETS] ;  //for 36X sample //Add by Chiyi
-   float SimpleSVHPBJetTags      [MAX_JETS] ;  //for 36X sample //Add by Chiyi
    float CombinedSVBJetTags      [MAX_JETS] ;
    float CombinedSVMVABJetTags   [MAX_JETS] ;
-   float SoftElecByIP3dBJetTags  [MAX_JETS] ;
-   float SoftElecByPtBJetTags    [MAX_JETS] ;
-   float SoftMuonBJetTags        [MAX_JETS] ;
-   float SoftMuonByIP3dBJetTags  [MAX_JETS] ;
-   float SoftMuonByPtBJetTags    [MAX_JETS] ;
-   float DoubleSVHighEffBJetTags [MAX_JETS] ; //// Added by DM
 
    //----------------------------  Generation information  -----------------------------
    float GenJetPt                [MAX_JETS] ;
@@ -960,20 +947,8 @@ public:
       BRANCH_ARRAY( PtCorrL7c               , F   ) ;
       BRANCH_ARRAY( PtCorrL7b               , F   ) ;
       BRANCH_ARRAY( JetBProbBJetTags        , F   ) ;
-      BRANCH_ARRAY( JetProbBJetTags         , F   ) ;
-      BRANCH_ARRAY( TrackCountHiPurBJetTags , F   ) ;
-      BRANCH_ARRAY( TrackCountHiEffBJetTags , F   ) ;
-      BRANCH_ARRAY( SimpleSVBJetTags        , F   ) ;
-      BRANCH_ARRAY( SimpleSVHEBJetTags      , F   ) ;
-      BRANCH_ARRAY( SimpleSVHPBJetTags      , F   ) ;
       BRANCH_ARRAY( CombinedSVBJetTags      , F   ) ;
       BRANCH_ARRAY( CombinedSVMVABJetTags   , F   ) ;
-      BRANCH_ARRAY( SoftElecByIP3dBJetTags  , F   ) ;
-      BRANCH_ARRAY( SoftElecByPtBJetTags    , F   ) ;
-      BRANCH_ARRAY( SoftMuonBJetTags        , F   ) ;
-      BRANCH_ARRAY( SoftMuonByIP3dBJetTags  , F   ) ;
-      BRANCH_ARRAY( SoftMuonByPtBJetTags    , F   ) ;
-      BRANCH_ARRAY( DoubleSVHighEffBJetTags , F   ) ;
       BRANCH_ARRAY( GenJetPt                , F   ) ;
       BRANCH_ARRAY( GenJetEta               , F   ) ;
       BRANCH_ARRAY( GenJetPhi               , F   ) ;
@@ -1031,23 +1006,8 @@ public:
       SET_BRANCH_ARRAY( PtCorrL7c                ) ;
       SET_BRANCH_ARRAY( PtCorrL7b                ) ;
       SET_BRANCH_ARRAY( JetBProbBJetTags         ) ;
-      SET_BRANCH_ARRAY( JetProbBJetTags          ) ;
-      SET_BRANCH_ARRAY( TrackCountHiPurBJetTags  ) ;
-      SET_BRANCH_ARRAY( TrackCountHiEffBJetTags  ) ;
-      // SET_BRANCH_ARRAY( ImpactParaMVABJetTags ) ;
-      SET_BRANCH_ARRAY( SimpleSVBJetTags         ) ;
-      SET_BRANCH_ARRAY( SimpleSVHEBJetTags       ) ;
-      SET_BRANCH_ARRAY( SimpleSVHPBJetTags       ) ;
       SET_BRANCH_ARRAY( CombinedSVBJetTags       ) ;
       SET_BRANCH_ARRAY( CombinedSVMVABJetTags    ) ;
-      SET_BRANCH_ARRAY( SoftElecByIP3dBJetTags   ) ;
-      SET_BRANCH_ARRAY( SoftElecByPtBJetTags     ) ;
-      SET_BRANCH_ARRAY( SoftMuonBJetTags         ) ;
-      SET_BRANCH_ARRAY( SoftMuonByIP3dBJetTags   ) ;
-      SET_BRANCH_ARRAY( SoftMuonByPtBJetTags     ) ;
-      SET_BRANCH_ARRAY( DoubleSVHighEffBJetTags  ) ;
-      // SET_BRANCH_ARRAY( JetLRval              ) ;
-      // SET_BRANCH_ARRAY( JetProb               ) ;
       SET_BRANCH_ARRAY( GenJetPt                 ) ;
       SET_BRANCH_ARRAY( GenJetEta                ) ;
       SET_BRANCH_ARRAY( GenJetPhi                ) ;

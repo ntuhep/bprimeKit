@@ -13,19 +13,20 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
 //------------------------------------------------------------------------------ 
-//   Helper static variables and functions
+//   Helper functions
 //------------------------------------------------------------------------------ 
-static math::XYZTLorentzVector Sum;
-static const reco::GenParticle* par1;
-static const reco::GenParticle* par2;
-static const reco::Candidate* gen1;
-static const reco::Candidate* gen2;
-static const reco::Candidate* mon;
-
 bool findAncestor( const reco::Candidate* & , const reco::GenParticle* ) ;
+
+
+//------------------------------------------------------------------------------ 
+//   Beging method implementation
+//------------------------------------------------------------------------------ 
 
 bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
+   math::XYZTLorentzVector sum;
+   const reco::GenParticle* par1;
+   const reco::GenParticle* par2;
 
    if( debug_ > 5 ) { cout << "\tFill Pair Info."; }
    memset( &PairInfo, 0x00, sizeof( PairInfo ) );
@@ -39,11 +40,11 @@ bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& i
          index1 = index2 = LepInfo[pairColl_].Size;
          break;
       }
-      Sum = LepInfo[pairColl_].CandRef[index1]->p4() + LepInfo[pairColl_].CandRef[index2]->p4();
-      if( Sum.mag() > 200. ) {continue;}
+      sum = LepInfo[pairColl_].CandRef[index1]->p4() + LepInfo[pairColl_].CandRef[index2]->p4();
+      if( sum.mag() > 200. ) {continue;}
       
       PairInfo.Type [PairInfo.Size] = 1; // 1: ll
-      fillPairInfo( index1 , index2 );
+      fillPairInfo( index1 , index2 , sum );
       if ( !isData && !skipGenInfo_ ) { //mc
          par1 = par2 = NULL;
          if ( LepInfo[pairColl_].LeptonType[index1] == 11 ){ 
@@ -54,16 +55,19 @@ bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& i
             par2 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index2] )->genLepton(); 
          } else if ( LepInfo[pairColl_].LeptonType[index2] == 13 ){ 
             par2 = ( ( pat::Muon*     )LepInfo[pairColl_].CandRef[index2] )->genLepton(); }
-         fillPairGen();
+         fillPairGen( par1 , par2 );
       }
       PairInfo.Size++;
-
    }}
    return true;
 }
 
 bool bprimeKit::fillJetPair( const edm::Event& iEvent , const edm::EventSetup& iSetup ) 
 {
+   math::XYZTLorentzVector sum;
+   const reco::GenParticle* par1;
+   const reco::GenParticle* par2;
+   
    for( int index1 = 0          ; index1 < JetInfo[0].Size ; index1++ ) {
    for( int index2 = index1 + 1 ; index2 < JetInfo[0].Size ; index2++ ) {
 
@@ -71,17 +75,17 @@ bool bprimeKit::fillJetPair( const edm::Event& iEvent , const edm::EventSetup& i
          cerr << "ERROR: number of jet pairs exceeds the size of array." << endl ;
          index1 = index2 = JetInfo[0].Size;
          break; }
-      Sum = JetInfo[0].CandRef[index1]->p4() + JetInfo[0].CandRef[index2]->p4();
+      sum = JetInfo[0].CandRef[index1]->p4() + JetInfo[0].CandRef[index2]->p4();
 
-      if ( JetInfo[0].Pt[index1] > 25. && JetInfo[0].Pt[index2] > 25. && Sum.mag() < 200. ) {
+      if ( JetInfo[0].Pt[index1] > 25. && JetInfo[0].Pt[index2] > 25. && sum.mag() < 200. ) {
          PairInfo.Type[PairInfo.Size] = 2; // 2: jj
-         fillPairInfo( index1 , index2 ) ;
+         fillPairInfo( index1 , index2, sum ) ;
          if ( !isData && !skipGenInfo_ ) {
             par1 = NULL;
             par2 = NULL;
             par1 = ( ( pat::Jet* )JetInfo[0].CandRef[index1] )->genParton();
             par2 = ( ( pat::Jet* )JetInfo[0].CandRef[index2] )->genParton();
-            fillPairGen();
+            fillPairGen( par1 , par2 );
          }
          PairInfo.Size++;
       }
@@ -90,20 +94,24 @@ bool bprimeKit::fillJetPair( const edm::Event& iEvent , const edm::EventSetup& i
 }
 
 
-bool bprimeKit::fillPairInfo( int index1 , int index2 )
+bool bprimeKit::fillPairInfo( const int index1 , const int index2 , math::XYZTLorentzVector& sum )
 {
    PairInfo.Index     [PairInfo.Size] = PairInfo.Size;
    PairInfo.Obj1Index [PairInfo.Size] = index1;
    PairInfo.Obj2Index [PairInfo.Size] = index2;
-   PairInfo.Mass      [PairInfo.Size] = Sum.mag();
-   PairInfo.Pt        [PairInfo.Size] = Sum.Pt();
-   PairInfo.Eta       [PairInfo.Size] = Sum.Eta();
-   PairInfo.Phi       [PairInfo.Size] = Sum.Phi();
+   PairInfo.Mass      [PairInfo.Size] = sum.mag();
+   PairInfo.Pt        [PairInfo.Size] = sum.Pt();
+   PairInfo.Eta       [PairInfo.Size] = sum.Eta();
+   PairInfo.Phi       [PairInfo.Size] = sum.Phi();
    return true;
 }
 
-bool bprimeKit::fillPairGen()
+bool bprimeKit::fillPairGen( const reco::GenParticle* par1, const reco::GenParticle* par2 )
 {
+   const reco::Candidate* gen1;
+   const reco::Candidate* gen2;
+   const reco::Candidate* mon;
+   
    if( par1 == NULL || par2 == NULL ) return false;
    gen1 = par1;
    gen2 = par2;

@@ -64,10 +64,10 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
       memset( &JetInfo[icoll], 0x00, sizeof( JetInfo[icoll] ) );
 
-      pfjetcoll   = ( jettype_[icoll] == 0 );
-      calojetcoll = ( jettype_[icoll]==1);
-      fatjetcoll  = ( jettype_[icoll]==2);
-      CAjetcoll   = ( jettype_[icoll]==3);
+      pfjetcoll   = ( jettype_[icoll] == 0 ) ;
+      calojetcoll = ( jettype_[icoll] == 1 ) ;
+      fatjetcoll  = ( jettype_[icoll] == 2 ) ;
+      CAjetcoll   = ( jettype_[icoll] == 3 ) ;
       
       //-----------------------------  For Jet Uncertainty  ------------------------------
       if( pfjetcoll ) {
@@ -113,7 +113,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          }
          JetInfo[icoll].QGTagsMLP         [JetInfo[icoll].Size] = -999;
          JetInfo[icoll].QGTagsLikelihood  [JetInfo[icoll].Size] = -1;
-         if( jetcollections_.at( icoll ) == "PFJetInfo" ) {
+         if( jetcollections_.at( icoll ) == "JetInfo" ) {
             int ijet = it_jet - JetHandle[icoll]->begin();
             edm::RefToBase<reco::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll], ijet ) );
             if ( QGTagsHandleMLP.isValid() ) {
@@ -153,9 +153,8 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                JetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
                JetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
                JetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
-               JetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "combinedSecondaryVertexBJetTags" ) );
                JetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->correctedP4( 0 ).pt() );
-
+               JetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
                /*
                double subjet0Bdisc = subjet->bDiscriminator("combinedSecondaryVertexBJetTags");
                std::cout<<"bDiscriminator(combinedSecondaryVertexBJetTags) : "<<
@@ -250,26 +249,10 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             JetInfo[icoll].PtCorrL7c   [JetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "charm" ).pt(); // L7(c-jet)
             JetInfo[icoll].PtCorrL7b   [JetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "bottom" ).pt(); // L7(b-jet)
          }
-
-         JetInfo[icoll].JetBProbBJetTags        [JetInfo[icoll].Size] = it_jet->bDiscriminator( "jetBProbabilityBJetTags" );
-         JetInfo[icoll].JetProbBJetTags         [JetInfo[icoll].Size] = it_jet->bDiscriminator( "jetProbabilityBJetTags" );
-         JetInfo[icoll].TrackCountHiPurBJetTags [JetInfo[icoll].Size] = it_jet->bDiscriminator( "trackCountingHighPurBJetTags" );
-         JetInfo[icoll].TrackCountHiEffBJetTags [JetInfo[icoll].Size] = it_jet->bDiscriminator( "trackCountingHighEffBJetTags" );
-         //JetInfo[icoll].ImpactParaMVABJetTags   [JetInfo[icoll].Size] = it_jet->bDiscriminator("impactParameterMVABJetTags"); //remove by Chiyi
-         JetInfo[icoll].SimpleSVBJetTags        [JetInfo[icoll].Size] = it_jet->bDiscriminator( "simpleSecondaryVertexBJetTags" );
-         JetInfo[icoll].SimpleSVBJetTags        [JetInfo[icoll].Size] = it_jet->bDiscriminator( "simpleSecondaryVertexBJetTags" ); //for 35X sample
-         JetInfo[icoll].SimpleSVHEBJetTags      [JetInfo[icoll].Size] = it_jet->bDiscriminator( "simpleSecondaryVertexHighEffBJetTags" ); //for 36X
-         JetInfo[icoll].SimpleSVHPBJetTags      [JetInfo[icoll].Size] = it_jet->bDiscriminator( "simpleSecondaryVertexHighPurBJetTags" ); //for 36X
-         JetInfo[icoll].CombinedSVBJetTags      [JetInfo[icoll].Size] = it_jet->bDiscriminator( "combinedSecondaryVertexBJetTags" );
-         JetInfo[icoll].CombinedSVMVABJetTags   [JetInfo[icoll].Size] = it_jet->bDiscriminator( "combinedSecondaryVertexMVABJetTags" );
-         JetInfo[icoll].SoftElecByIP3dBJetTags  [JetInfo[icoll].Size] = it_jet->bDiscriminator( "softElectronByIP3dBJetTags" );
-         JetInfo[icoll].SoftElecByPtBJetTags    [JetInfo[icoll].Size] = it_jet->bDiscriminator( "softElectronByPtBJetTags" );
-         JetInfo[icoll].SoftMuonBJetTags        [JetInfo[icoll].Size] = it_jet->bDiscriminator( "softMuonBJetTags" );
-         JetInfo[icoll].SoftMuonByIP3dBJetTags  [JetInfo[icoll].Size] = it_jet->bDiscriminator( "softMuonByIP3dBJetTags" );
-         JetInfo[icoll].SoftMuonByPtBJetTags    [JetInfo[icoll].Size] = it_jet->bDiscriminator( "softMuonByPtBJetTags" );
-         JetInfo[icoll].DoubleSVHighEffBJetTags [JetInfo[icoll].Size] = it_jet->bDiscriminator( "doubleSecondaryVertexHighEffBJetTags" ); //// Added by DM
-         //std::cout<<jetlabel_[icoll]<<" JetInfo["<<icoll<<"].CombinedSVMVABJetTags : "<<JetInfo[icoll].CombinedSVMVABJetTags[JetInfo[icoll].Size]<<std::endl;
-         //std::cout<<jetlabel_[icoll]<<" JetInfo["<<icoll<<"].DoubleSVHighEffBJetTags : "<<JetInfo[icoll].DoubleSVHighEffBJetTags[JetInfo[icoll].Size]<<std::endl;
+         
+         JetInfo[icoll].JetBProbBJetTags        [JetInfo[icoll].Size] = it_jet->bDiscriminator( "pfJetProbabilityBJetTags"                     ) ;
+         JetInfo[icoll].CombinedSVBJetTags      [JetInfo[icoll].Size] = it_jet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) ;
+         JetInfo[icoll].CombinedSVMVABJetTags   [JetInfo[icoll].Size] = it_jet->bDiscriminator( "pfCombinedMVABJetTags"                        ) ;
 
          //
          // DM: access double secondary vertex info
