@@ -45,19 +45,19 @@
          - [ ] float ElConvPoint_x
          - [ ] float ElConvPoint_y
          - [ ] float ElConvPoint_z
-      - [ ] Missing variables
-         - [ ] int   ElTrackNHits: No longer Used?
-         - [ ] int   ChargeCtf: No longer used?
-         - [ ] float ElSharedHitsFraction: No longer used?
+      - [ ] Unimplemented variables.
+         - [ ] int   ElTrackNHits: 
+         - [ ] int   ChargeCtf: 
+         - [ ] float ElSharedHitsFraction
          - [ ] float dR_gsf_ctfTrack
          - [ ] float dPt_gsf_ctfTrack
          - [ ] float TrgPt
          - [ ] float TrgEta
          - [ ] float TrgPhi
-         - [ ] int TrgID
+         - [ ] int   TrgID
 
    - Tau information:
-      - [X] Isolation related: New variables used
+      - [X] Isolation related: New Identification variables used
 
 ## Jet information
    - [ ] General issue
@@ -70,7 +70,7 @@
 ## Photon information 
    - [ ] General information
       - [ ] Particle flow information
-      - [ ] Add additional isolation information?
+      - [X] Added identification?
 
    - [ ] Isolation information 
       - [ ] float phoPFChIsoDR03
