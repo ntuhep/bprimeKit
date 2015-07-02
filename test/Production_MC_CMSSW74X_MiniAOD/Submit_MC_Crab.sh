@@ -38,7 +38,7 @@ for DATA in $( cat $MASTER_DIR/MC_datasets_$USER ) ;  do
    sed -i "s@CRAB_DATA_SET@$DATA@"            $CRAB_FILE 
    sed -i "s@BPK_PYTHONFILE@$BPK_PYTHONFILE@" $CRAB_FILE
 
-   # crab submit -c $CRAB_FILE
+   crab submit -c $CRAB_FILE
 done
 
 
