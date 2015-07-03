@@ -2,7 +2,6 @@
  *
  *  Filename    : format.h
  *  Description : The branch format for the bprimeKit nTuple
- *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
 #ifndef __BPRIMEKIT_FORMAT_H__
@@ -23,1303 +22,1236 @@
 #define MAX_BX             128
 #define N_TRIGGER_BOOKINGS 5842 
 
+class LepInfoBranches { public: 
 //------------------------------------------------------------------------------ 
-//   Macros functions for analysis cleaner code 
+//   List of variables used by Lepton info branches
+//------------------------------------------------------------------------------ 
+   
+int   Size;
+int   Index                                 [MAX_LEPTONS] ;
+int   LeptonType                            [MAX_LEPTONS] ;
+int   Charge                                [MAX_LEPTONS] ;
+float Pt                                    [MAX_LEPTONS] ;
+float Et                                    [MAX_LEPTONS] ;
+float Eta                                   [MAX_LEPTONS] ;
+float Phi                                   [MAX_LEPTONS] ;
+float Px                                    [MAX_LEPTONS] ; //Uly 2011-04-04
+float Py                                    [MAX_LEPTONS] ; //Uly 2011-04-04
+float Pz                                    [MAX_LEPTONS] ; //Uly 2011-04-04
+float Energy                                [MAX_LEPTONS] ; //Uly 2011-04-04
+float TrackIso                              [MAX_LEPTONS] ;
+float EcalIso                               [MAX_LEPTONS] ;
+float HcalIso                               [MAX_LEPTONS] ;
+float ChargedHadronIso                      [MAX_LEPTONS] ;
+float NeutralHadronIso                      [MAX_LEPTONS] ;
+float PhotonIso                             [MAX_LEPTONS] ;
+float ChargedHadronIsoR03                   [MAX_LEPTONS] ;
+float NeutralHadronIsoR03                   [MAX_LEPTONS] ;
+float PhotonIsoR03                          [MAX_LEPTONS] ;
+float sumPUPtR03                            [MAX_LEPTONS] ;
+float IsoRhoCorrR03                         [MAX_LEPTONS] ;
+float ChargedHadronIsoR04                   [MAX_LEPTONS] ;
+float NeutralHadronIsoR04                   [MAX_LEPTONS] ;
+float PhotonIsoR04                          [MAX_LEPTONS] ;
+float sumPUPtR04                            [MAX_LEPTONS] ;
+float IsoRhoCorrR04                         [MAX_LEPTONS] ;
+float Ip3dPV                                [MAX_LEPTONS] ;
+float Ip3dPVErr                             [MAX_LEPTONS] ;
+float Ip3dPVSignificance                    [MAX_LEPTONS] ;
+
+//------------------------------------------------------------------------------ 
+//   Muon Information
 //------------------------------------------------------------------------------
-static char branchName[1024];
-static char leafList[1024];
-#define  BRANCH_OBJ( DATA , TYPE )  \
-   sprintf( branchName , "%s.%s" , name.c_str() , #DATA ) ; \
-   sprintf( leafList   , "%s.%s/%s" , name.c_str() , #DATA , #TYPE ); \
-   root->Branch( branchName , (void*)&DATA  , leafList );
-
-#define BRANCH_ARRAY( DATA , TYPE ) \
-   sprintf( branchName , "%s.%s" , name.c_str() , #DATA ) ; \
-   sprintf( leafList   , "%s.%s[%s.Size]/%s" , name.c_str() , #DATA , name.c_str() , #TYPE ); \
-   root->Branch( branchName , (void*)DATA  , leafList );
-
-#define BRANCH_FIX_ARRAY( DATA , SIZE , TYPE ) \
-   sprintf( branchName , "%s.%s" , name.c_str() , #DATA ) ; \
-   sprintf( leafList   , "%s.%s[%d]/%s" , name.c_str() , #DATA , SIZE , #TYPE ); \
-   root->Branch( branchName , (void*)DATA  , leafList );
-
-#define SET_BRANCH_ARRAY( DATA ) \
-   sprintf( branchName , "%s.%s" , name.c_str() , #DATA ) ; \
-   root->SetBranchAddress( branchName ,  DATA );
-
-#define SET_BRANCH_OBJ( DATA ) \
-   sprintf( branchName , "%s.%s" , name.c_str() , #DATA ) ; \
-   root->SetBranchAddress( branchName , & DATA );
-
+//------------------------------  General Information  ------------------------------
+float  CaloEnergy                   [MAX_LEPTONS]  ;
+bool   isGoodMuonTMOneStationTight  [MAX_LEPTONS]  ; //   For     Soft        Muon
+bool   isPFMuon                     [MAX_LEPTONS]  ;
+bool   MuIDGlobalMuonPromptTight    [MAX_LEPTONS]  ;
+float  MuGlobalNormalizedChi2       [MAX_LEPTONS]  ; //   Dmitry
+float  MuCaloCompat                 [MAX_LEPTONS]  ;
+int    MuNChambers                  [MAX_LEPTONS]  ;
+int    MuNChambersMatchesSegment    [MAX_LEPTONS]  ;
+int    MuNMatchedStations           [MAX_LEPTONS]  ;
+int    MuNLostOuterHits             [MAX_LEPTONS]  ;
+int    MuNMuonhits                  [MAX_LEPTONS]  ;
+int    MuDThits                     [MAX_LEPTONS]  ;
+int    MuCSChits                    [MAX_LEPTONS]  ;
+int    MuRPChits                    [MAX_LEPTONS]  ;
+int    MuType                       [MAX_LEPTONS]  ; 
+//--------------------------------  Cosmic Ray filter --------------------------
+int    MuontimenDof                 [MAX_LEPTONS]  ;
+float  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
+float  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
+int    Muondirection                [MAX_LEPTONS]  ;
+//----------------------------  Inner Muon Information  -----------------------------
+float  innerTracknormalizedChi2     [MAX_LEPTONS]  ;   // For     Soft        Muon
+float  MuInnerPtError               [MAX_LEPTONS]  ;
+float  MuGlobalPtError              [MAX_LEPTONS]  ;
+float  MuInnerTrackDz               [MAX_LEPTONS]  ;
+float  MuInnerTrackD0               [MAX_LEPTONS]  ;
+float  MuInnerTrackDxy_BS           [MAX_LEPTONS]  ;
+float  MuInnerTrackDxy_PV           [MAX_LEPTONS]  ;
+float  MuInnerTrackDxy_PVBS         [MAX_LEPTONS]  ;
+int    MuInnerTrackNHits            [MAX_LEPTONS]  ;
+int    MuNTrackerHits               [MAX_LEPTONS]  ;
+int    MuNLostInnerHits             [MAX_LEPTONS]  ;
+float  vertexZ                      [MAX_LEPTONS]  ; //   Uly     2011-04-04
+int    MuNPixelLayers               [MAX_LEPTONS]  ;
+int    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
+int    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
 
 //------------------------------------------------------------------------------ 
-//   Begin class definition
+//   Electron Information
+//------------------------------------------------------------------------------  
+int   ChargeGsf                             [MAX_LEPTONS] ;
+int   ChargeCtf                             [MAX_LEPTONS] ;
+int   ChargeScPix                           [MAX_LEPTONS] ;
+int   isEcalDriven                          [MAX_LEPTONS] ;
+int   isTrackerDriven                       [MAX_LEPTONS] ;
+float caloEta                               [MAX_LEPTONS] ;
+float e1x5                                  [MAX_LEPTONS] ;
+float e2x5Max                               [MAX_LEPTONS] ;
+float e5x5                                  [MAX_LEPTONS] ;
+float HcalDepth1Iso                         [MAX_LEPTONS] ;
+float HcalDepth2Iso                         [MAX_LEPTONS] ;
+float EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
+float EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
+bool  EgammaCutBasedEleIdTRIGGERTIGHT       [MAX_LEPTONS] ; // Add by Jacky
+bool  EgammaCutBasedEleIdTRIGGERWP70        [MAX_LEPTONS] ; // Add by Jacky
+bool  EgammaCutBasedEleIdVETO               [MAX_LEPTONS] ; // Add by Jacky
+bool  EgammaCutBasedEleIdLOOSE              [MAX_LEPTONS] ; // Add by Jacky
+bool  EgammaCutBasedEleIdMEDIUM             [MAX_LEPTONS] ; // Add by Jacky
+bool  EgammaCutBasedEleIdTIGHT              [MAX_LEPTONS] ; // Add by Jacky
+bool  EgammaCutBasedEleIdHEEP               [MAX_LEPTONS] ;
+float Eldr03HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
+float Eldr03HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
+float Eldr04HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
+float Eldr04HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
+float ElhcalOverEcalBc                      [MAX_LEPTONS] ;
+float ElEcalE                               [MAX_LEPTONS] ;
+float ElEoverP                              [MAX_LEPTONS] ;
+float EldeltaEta                            [MAX_LEPTONS] ;
+float EldeltaPhi                            [MAX_LEPTONS] ;
+float ElHadoverEm                           [MAX_LEPTONS] ;
+float ElsigmaIetaIeta                       [MAX_LEPTONS] ; // Jacky
+float ElscSigmaIetaIeta                     [MAX_LEPTONS] ;  // Jacky
+float ElEnergyErr                           [MAX_LEPTONS] ;
+float ElMomentumErr                         [MAX_LEPTONS] ;
+float ElSharedHitsFraction                  [MAX_LEPTONS] ; //Dmitry
+float dR_gsf_ctfTrack                       [MAX_LEPTONS] ; //Dmitry
+float dPt_gsf_ctfTrack                      [MAX_LEPTONS] ; //Dmitry
+bool  ElhasConv                             [MAX_LEPTONS] ;
+//-------------------------------  Track information  -------------------------------
+int   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
+float ElTrackNLostHits                      [MAX_LEPTONS] ;  //yjlei
+float ElTrackDz                             [MAX_LEPTONS] ;
+float ElTrackDz_BS                          [MAX_LEPTONS] ;
+float ElTrackD0                             [MAX_LEPTONS] ;
+float ElTrackDxy_BS                         [MAX_LEPTONS] ;
+float ElTrackDxy_PV                         [MAX_LEPTONS] ;
+float ElTrackDxy_PVBS                       [MAX_LEPTONS] ; //yjlei
+int   ElNClusters                           [MAX_LEPTONS] ;
+int   ElClassification                      [MAX_LEPTONS] ;
+float ElFBrem                               [MAX_LEPTONS] ;
+int NumberOfExpectedInnerHits               [MAX_LEPTONS] ; // Add by Jacky
+
+//-----------------------------  Conversion rejection  ------------------------------
+float Eldist                                [MAX_LEPTONS] ; // Add by Jacky
+float Eldcot                                [MAX_LEPTONS] ; // Add by Jacky
+float Elconvradius                          [MAX_LEPTONS] ; // Add by Jacky
+float ElConvPoint_x                         [MAX_LEPTONS] ; // Add by Jacky
+float ElConvPoint_y                         [MAX_LEPTONS] ; // Add by Jacky
+float ElConvPoint_z                         [MAX_LEPTONS] ; // Add by Jacky
+float dcotdist                              [MAX_LEPTONS] ;
+float ElseedEoverP                          [MAX_LEPTONS] ;
+float ElEcalIso04                           [MAX_LEPTONS] ;
+float ElHcalIso04                           [MAX_LEPTONS] ;
+int   ElNumberOfBrems                       [MAX_LEPTONS] ;
+float TrgPt                                 [MAX_LEPTONS] ;
+float TrgEta                                [MAX_LEPTONS] ;
+float TrgPhi                                [MAX_LEPTONS] ;
+int TrgID                                   [MAX_LEPTONS] ;
+
 //------------------------------------------------------------------------------ 
-class EvtInfoBranches {
-public:
-   int     RunNo  ;
-   size_t  EvtNo  ;
-   int     BxNo   ;
-   int     LumiNo ;
-   int     Orbit  ;
-   //--------------------------------  MC information  ---------------------------------
-   int   McFlag            ; // MC or not MC, that's the question
-   int   McSigTag          ; // MC Signature tag    - 0: others, 1: 2L (opposite-sign), 2: 2L (same-sign), 3: 3L, 4: 4L
-   int   McbprimeMode [2]  ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
-   int   MctprimeMode [2]  ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
-   int   McWMode      [4]  ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
-   int   McZMode      [2]  ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
-   float McbprimeMass [2]  ; // mass: b'(bar)
-   float MctprimeMass [2]  ; // mass: t'(bar)
-   float MctopMass    [2]  ; // mass: top(bar)
-   float McWMass      [4]  ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
-   float McZMass      [2]  ; // mass: Z from b'(bar) or t'(bar)
-   float McDauPt      [14] ; // Generic MC daughter information
-   float McDauEta     [14] ; // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
-   float McDauPhi     [14] ;
-   int   McDauPdgID   [14] ;
-   //-----------------------------  Isolation information  -----------------------------
-   float Rho       ;
-   float RhoPU  [2];       // [electron,muon]
-   float SigmaPU[2];      // [electron,muon]
-   //-----------------------------------  Beam spot  -----------------------------------
-   float BeamSpotX;
-   float BeamSpotY;
-   float BeamSpotZ;
-   //--------------------------------  PU information  ---------------------------------
-   int   nBX            ;
-   int   nPU    [MAX_BX];
-   int   BXPU   [MAX_BX];
-   float TrueIT [MAX_BX];
-   //--------------------------------  PDF information  --------------------------------
-   int   PDFid1   ;
-   int   PDFid2   ;
-   float PDFx1    ;
-   float PDFx2    ;
-   float PDFscale ;
-   float PDFv1    ;
-   float PDFv2    ;
-   //---------------------------  partilce flow information  ---------------------------
-   float PFMET                                     ;
-   float PFMETType1CorrectedPFMetUnclusteredEnUp   ;
-   float PFMETType1CorrectedPFMetUnclusteredEnDown ;
-   float PFMETPhi                                  ;
-   float PFRawMET                                  ;
-   float PFRawMETPhi                               ;
-   float PFSumEt                                   ;
-   float PFMETSig                                  ;
-   float PFMETlongitudinal                         ;
-   float PFMETRealSig                              ;
-   float PFGenMET                                  ;
-   float PFGenMETPhi                               ;
-   float PFMETx                                    ; //Uly 2011-04-04
-   float PFMETy                                    ; //Uly 2011-04-04
-   //------------------------------  Tirgger information  ------------------------------
-   int   TrgCount                    ; // No. of fired booking bits
-   int   nTrgBook                    ;
-   char  TrgBook[N_TRIGGER_BOOKINGS] ; // Trigger bits, reserved up to 120 entries
-   int   nHLT                        ;
-   float HighPurityFraction          ; //Added by Dmitry to help filter out bad events
-   int   NofTracks                   ; //Added by Dmitry to help filter out bad events
-   float ptHat                       ;
-   int   HLTPrescaleFactor[512]      ;
-   int   HLTName2enum[512]           ;
-   bool  HLTbits[N_TRIGGER_BOOKINGS] ;
-   int   L1[128]                     ; // L1 trigger bits
-   int   TT[64]                      ; // Techical trigger bits
+//   Tau information
+//------------------------------------------------------------------------------  
+int   isPFTau                                      [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
+bool   DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
+bool   DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
+bool   ByLooseElectronRejection                    [MAX_LEPTONS] ;
+bool   ByMediumElectronRejection                   [MAX_LEPTONS] ;
+bool   ByTightElectronRejection                    [MAX_LEPTONS] ;
+bool   ByMVA5LooseElectronRejection                [MAX_LEPTONS] ;
+bool   ByMVA5MediumElectronRejection               [MAX_LEPTONS] ;
+bool   ByMVA5TightElectronRejection                [MAX_LEPTONS] ;
+bool   ByMVA5VTightElectronRejection               [MAX_LEPTONS] ;
+bool   ByLooseMuonRejection3                       [MAX_LEPTONS] ;
+bool   ByTightMuonRejection3                       [MAX_LEPTONS] ;
+bool   ByMVALooseMuonRejection                     [MAX_LEPTONS] ;
+bool   ByMVAMediumMuonRejection                    [MAX_LEPTONS] ;
+bool   ByMVATightMuonRejection                     [MAX_LEPTONS] ;
+bool   ByLooseCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
+bool   ByMediumCombinedIsolationDeltaBetaCorr3Hits [MAX_LEPTONS] ;
+bool   ByTightCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
+float   CombinedIsolationDeltaBetaCorrRaw3Hits     [MAX_LEPTONS] ;
+bool   ByVLooseIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
+bool   ByLooseIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
+bool   ByMediumIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
+bool   ByTightIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
+bool   ByVTightIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
+bool   ByVVTightIsolationMVA3newDMwoLT             [MAX_LEPTONS] ;
+float   ByIsolationMVA3newDMwoLTraw                [MAX_LEPTONS] ;
+bool   ByVLooseIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
+bool   ByLooseIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
+bool   ByMediumIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
+bool   ByTightIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
+bool   ByVTightIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
+bool   ByVVTightIsolationMVA3oldDMwLT              [MAX_LEPTONS] ;
+float   ByIsolationMVA3oldDMwLTraw                 [MAX_LEPTONS] ;
+bool   ByVLooseIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
+bool   ByLooseIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
+bool   ByTightIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
+bool   ByVTightIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
+bool   ByVVTightIsolationMVA3oldDMwoLT             [MAX_LEPTONS] ;
+float   ByIsolationMVA3oldDMwoLTraw                [MAX_LEPTONS] ;
+bool   ByVLooseIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
+bool   ByLooseIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
+bool   ByMediumIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
+bool   ByTightIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
+bool   ByVTightIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
+bool   ByVVTightIsolationMVA3newDMwLT              [MAX_LEPTONS] ;
+float   ByIsolationMVA3newDMwLTraw                 [MAX_LEPTONS] ;
 
-
-   void RegisterTree( TTree* root, std::string name = "EvtInfo" ) {
-      BRANCH_OBJ( RunNo                                     , I );
-      BRANCH_OBJ( EvtNo                                     , L );
-      BRANCH_OBJ( BxNo                                      , I );
-      BRANCH_OBJ( LumiNo                                    , I );
-      BRANCH_OBJ( Orbit                                     , I );
-      BRANCH_OBJ( McFlag                                    , I );
-      BRANCH_OBJ( McSigTag                                  , I );
-      BRANCH_OBJ( PDFid1                                    , I );
-      BRANCH_OBJ( PDFid2                                    , I );
-      BRANCH_OBJ( PDFx1                                     , F );
-      BRANCH_OBJ( PDFx2                                     , F );
-      BRANCH_OBJ( PDFscale                                  , F );
-      BRANCH_OBJ( PDFv1                                     , F );
-      BRANCH_OBJ( PDFv2                                     , F );
-      BRANCH_OBJ( BeamSpotX                                 , F );
-      BRANCH_OBJ( BeamSpotY                                 , F );
-      BRANCH_OBJ( BeamSpotZ                                 , F );
-      BRANCH_OBJ( nBX                                       , I );
-      BRANCH_OBJ( PFMET                                     , F );
-      BRANCH_OBJ( PFMETType1CorrectedPFMetUnclusteredEnUp   , F );
-      BRANCH_OBJ( PFMETType1CorrectedPFMetUnclusteredEnDown , F );
-      BRANCH_OBJ( PFMETPhi                                  , F );
-      BRANCH_OBJ( PFRawMET                                  , F );
-      BRANCH_OBJ( PFRawMETPhi                               , F );
-      BRANCH_OBJ( PFSumEt                                   , F );
-      BRANCH_OBJ( PFMETSig                                  , F );
-      BRANCH_OBJ( PFMETlongitudinal                         , F );
-      BRANCH_OBJ( PFMETRealSig                              , F );
-      BRANCH_OBJ( PFGenMET                                  , F );
-      BRANCH_OBJ( PFGenMETPhi                               , F );
-      BRANCH_OBJ( PFMETx                                    , F );
-      BRANCH_OBJ( PFMETy                                    , F );
-      BRANCH_OBJ( TrgCount                                  , I );
-      BRANCH_OBJ( nTrgBook                                  , I );
-      BRANCH_OBJ( nHLT                                      , I );
-      BRANCH_OBJ( HighPurityFraction                        , F );
-      BRANCH_OBJ( NofTracks                                 , F );
-      BRANCH_OBJ( ptHat                                     , F );
-      BRANCH_OBJ( Rho                                       , F ) ;
-      BRANCH_FIX_ARRAY( nPU                                 , MAX_BX                           , I ) ;
-      BRANCH_FIX_ARRAY( BXPU                                , MAX_BX                           , I ) ;
-      BRANCH_FIX_ARRAY( TrueIT                              , MAX_BX                           , F ) ;
-      BRANCH_FIX_ARRAY( TrgBook                             , N_TRIGGER_BOOKINGS               , C ) ;
-      BRANCH_FIX_ARRAY( HLTPrescaleFactor                   , 512                              , I ) ;
-      BRANCH_FIX_ARRAY( HLTName2enum                        , 512                              , I ) ;
-      BRANCH_FIX_ARRAY( HLTbits                             , N_TRIGGER_BOOKINGS               , O ) ;
-      BRANCH_FIX_ARRAY( L1                                  , 128                              , I ) ;
-      BRANCH_FIX_ARRAY( TT                                  , 64                               , I ) ;
-      BRANCH_FIX_ARRAY( McbprimeMode                        , 2                                , I ) ;
-      BRANCH_FIX_ARRAY( MctprimeMode                        , 2                                , I ) ;
-      BRANCH_FIX_ARRAY( McWMode                             , 4                                , I ) ;
-      BRANCH_FIX_ARRAY( McZMode                             , 2                                , I ) ;
-      BRANCH_FIX_ARRAY( McbprimeMass                        , 2                                , F ) ;
-      BRANCH_FIX_ARRAY( MctprimeMass                        , 2                                , F ) ;
-      BRANCH_FIX_ARRAY( MctopMass                           , 2                                , F ) ;
-      BRANCH_FIX_ARRAY( McWMass                             , 4                                , F ) ;
-      BRANCH_FIX_ARRAY( McZMass                             , 2                                , F ) ;
-      BRANCH_FIX_ARRAY( McDauPt                             , 14                               , F ) ;
-      BRANCH_FIX_ARRAY( McDauEta                            , 14                               , F ) ;
-      BRANCH_FIX_ARRAY( McDauPhi                            , 14                               , F ) ;
-      BRANCH_FIX_ARRAY( RhoPU                               , 2                                , F ) ;
-      BRANCH_FIX_ARRAY( SigmaPU                             , 2                                , F ) ;
-      BRANCH_FIX_ARRAY( McDauPdgID                          , 14                               , I ) ;
-   }
-
-   void Register( TTree* root , std::string name="EvtInfo") {
-      SET_BRANCH_OBJ( RunNo                                     );
-      SET_BRANCH_OBJ( EvtNo                                     );
-      SET_BRANCH_OBJ( BxNo                                      );
-      SET_BRANCH_OBJ( LumiNo                                    );
-      SET_BRANCH_OBJ( Orbit                                     );
-      SET_BRANCH_OBJ( McFlag                                    );
-      SET_BRANCH_OBJ( McSigTag                                  );
-      SET_BRANCH_OBJ( PDFid1                                    );
-      SET_BRANCH_OBJ( PDFid2                                    );
-      SET_BRANCH_OBJ( PDFx1                                     );
-      SET_BRANCH_OBJ( PDFx2                                     );
-      SET_BRANCH_OBJ( PDFscale                                  );
-      SET_BRANCH_OBJ( PDFv1                                     );
-      SET_BRANCH_OBJ( PDFv2                                     );
-      SET_BRANCH_OBJ( BeamSpotX                                 );
-      SET_BRANCH_OBJ( BeamSpotY                                 );
-      SET_BRANCH_OBJ( BeamSpotZ                                 );
-      SET_BRANCH_OBJ( PFMET                                     );
-      SET_BRANCH_OBJ( PFMETType1CorrectedPFMetUnclusteredEnUp   );
-      SET_BRANCH_OBJ( PFMETType1CorrectedPFMetUnclusteredEnDown );
-      SET_BRANCH_OBJ( PFMETPhi                                  );
-      SET_BRANCH_OBJ( PFRawMET                                  );
-      SET_BRANCH_OBJ( PFRawMETPhi                               );
-      SET_BRANCH_OBJ( PFSumEt                                   );
-      SET_BRANCH_OBJ( PFMETSig                                  );
-      SET_BRANCH_OBJ( PFMETlongitudinal                         );
-      SET_BRANCH_OBJ( PFMETRealSig                              );
-      SET_BRANCH_OBJ( PFGenMET                                  );
-      SET_BRANCH_OBJ( PFGenMETPhi                               );
-      SET_BRANCH_OBJ( PFMETx                                    ); //Uly 2011-04-04
-      SET_BRANCH_OBJ( PFMETy                                    ); //Uly 2011-04-04
-      SET_BRANCH_OBJ( TrgCount                                  );
-      SET_BRANCH_OBJ( nTrgBook                                  );
-      SET_BRANCH_OBJ( HighPurityFraction                        );
-      SET_BRANCH_OBJ( NofTracks                                 );
-      SET_BRANCH_OBJ( nHLT                                      );
-      SET_BRANCH_OBJ( nBX                                       );
-      SET_BRANCH_OBJ( ptHat                                     );
-      SET_BRANCH_ARRAY( HLTbits                                 );
-      SET_BRANCH_ARRAY( TrgBook                                 );
-      SET_BRANCH_ARRAY( HLTPrescaleFactor                       );
-      SET_BRANCH_ARRAY( HLTName2enum                            );
-      SET_BRANCH_ARRAY( RhoPU                                   );
-      SET_BRANCH_ARRAY( SigmaPU                                 );
-      SET_BRANCH_ARRAY( L1                                      );
-      SET_BRANCH_ARRAY( TT                                      );
-      SET_BRANCH_ARRAY( nPU                                     );
-      SET_BRANCH_ARRAY( BXPU                                    );
-      SET_BRANCH_ARRAY( TrueIT                                  );
-      SET_BRANCH_ARRAY( McbprimeMode                            );
-      SET_BRANCH_ARRAY( MctprimeMode                            );
-      SET_BRANCH_ARRAY( McWMode                                 );
-      SET_BRANCH_ARRAY( McZMode                                 );
-      SET_BRANCH_ARRAY( McbprimeMass                            );
-      SET_BRANCH_ARRAY( MctprimeMass                            );
-      SET_BRANCH_ARRAY( MctopMass                               );
-      SET_BRANCH_ARRAY( McWMass                                 );
-      SET_BRANCH_ARRAY( McZMass                                 );
-      SET_BRANCH_ARRAY( McDauPt                                 );
-      SET_BRANCH_ARRAY( McDauEta                                );
-      SET_BRANCH_ARRAY( McDauPhi                                );
-      SET_BRANCH_ARRAY( McDauPdgID                              );
-   }
-};
-
-
-class LepInfoBranches {
-public:
-   int   Size;
-   int   Index                                 [MAX_LEPTONS] ;
-   int   LeptonType                            [MAX_LEPTONS] ;
-   int   Charge                                [MAX_LEPTONS] ;
-   float Pt                                    [MAX_LEPTONS] ;
-   float Et                                    [MAX_LEPTONS] ;
-   float Eta                                   [MAX_LEPTONS] ;
-   float Phi                                   [MAX_LEPTONS] ;
-   float Px                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   float Py                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   float Pz                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   float Energy                                [MAX_LEPTONS] ; //Uly 2011-04-04
-   float TrackIso                              [MAX_LEPTONS] ;
-   float EcalIso                               [MAX_LEPTONS] ;
-   float HcalIso                               [MAX_LEPTONS] ;
-   float ChargedHadronIso                      [MAX_LEPTONS] ;
-   float NeutralHadronIso                      [MAX_LEPTONS] ;
-   float PhotonIso                             [MAX_LEPTONS] ;
-   float ChargedHadronIsoR03                   [MAX_LEPTONS] ;
-   float NeutralHadronIsoR03                   [MAX_LEPTONS] ;
-   float PhotonIsoR03                          [MAX_LEPTONS] ;
-   float sumPUPtR03                            [MAX_LEPTONS] ;
-   float IsoRhoCorrR03                         [MAX_LEPTONS] ;
-   float ChargedHadronIsoR04                   [MAX_LEPTONS] ;
-   float NeutralHadronIsoR04                   [MAX_LEPTONS] ;
-   float PhotonIsoR04                          [MAX_LEPTONS] ;
-   float sumPUPtR04                            [MAX_LEPTONS] ;
-   float IsoRhoCorrR04                         [MAX_LEPTONS] ;
-   float Ip3dPV                                [MAX_LEPTONS] ;
-   float Ip3dPVErr                             [MAX_LEPTONS] ;
-   float Ip3dPVSignificance                    [MAX_LEPTONS] ;
-   
-   //------------------------------------------------------------------------------ 
-   //   Muon Information
-   //------------------------------------------------------------------------------
-   //------------------------------  General Information  ------------------------------
-   float  CaloEnergy                   [MAX_LEPTONS]  ;
-   bool   isGoodMuonTMOneStationTight  [MAX_LEPTONS]  ; //   For     Soft        Muon
-   bool   isPFMuon                     [MAX_LEPTONS]  ;
-   bool   MuIDGlobalMuonPromptTight    [MAX_LEPTONS]  ;
-   float  MuGlobalNormalizedChi2       [MAX_LEPTONS]  ; //   Dmitry
-   float  MuCaloCompat                 [MAX_LEPTONS]  ;
-   int    MuNChambers                  [MAX_LEPTONS]  ;
-   int    MuNChambersMatchesSegment    [MAX_LEPTONS]  ;
-   int    MuNMatchedStations           [MAX_LEPTONS]  ;
-   int    MuNLostOuterHits             [MAX_LEPTONS]  ;
-   int    MuNMuonhits                  [MAX_LEPTONS]  ;
-   int    MuDThits                     [MAX_LEPTONS]  ;
-   int    MuCSChits                    [MAX_LEPTONS]  ;
-   int    MuRPChits                    [MAX_LEPTONS]  ;
-   int    MuType                       [MAX_LEPTONS]  ; 
-   //--------------------------------  Cosmic Ray filter --------------------------
-   int    MuontimenDof                 [MAX_LEPTONS]  ;
-   float  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
-   float  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
-   int    Muondirection                [MAX_LEPTONS]  ;
-   //----------------------------  Inner Muon Information  -----------------------------
-   float  innerTracknormalizedChi2     [MAX_LEPTONS]  ;   // For     Soft        Muon
-   float  MuInnerPtError               [MAX_LEPTONS]  ;
-   float  MuGlobalPtError              [MAX_LEPTONS]  ;
-   float  MuInnerTrackDz               [MAX_LEPTONS]  ;
-   float  MuInnerTrackD0               [MAX_LEPTONS]  ;
-   float  MuInnerTrackDxy_BS           [MAX_LEPTONS]  ;
-   float  MuInnerTrackDxy_PV           [MAX_LEPTONS]  ;
-   float  MuInnerTrackDxy_PVBS         [MAX_LEPTONS]  ;
-   int    MuInnerTrackNHits            [MAX_LEPTONS]  ;
-   int    MuNTrackerHits               [MAX_LEPTONS]  ;
-   int    MuNLostInnerHits             [MAX_LEPTONS]  ;
-   float  vertexZ                      [MAX_LEPTONS]  ; //   Uly     2011-04-04
-   int    MuNPixelLayers               [MAX_LEPTONS]  ;
-   int    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
-   int    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
-
-   //------------------------------------------------------------------------------ 
-   //   Electron Information
-   //------------------------------------------------------------------------------  
-   int   ChargeGsf                             [MAX_LEPTONS] ;
-   int   ChargeCtf                             [MAX_LEPTONS] ;
-   int   ChargeScPix                           [MAX_LEPTONS] ;
-   int   isEcalDriven                          [MAX_LEPTONS] ;
-   int   isTrackerDriven                       [MAX_LEPTONS] ;
-   float caloEta                               [MAX_LEPTONS] ;
-   float e1x5                                  [MAX_LEPTONS] ;
-   float e2x5Max                               [MAX_LEPTONS] ;
-   float e5x5                                  [MAX_LEPTONS] ;
-   float HcalDepth1Iso                         [MAX_LEPTONS] ;
-   float HcalDepth2Iso                         [MAX_LEPTONS] ;
-   float EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
-   float EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdTRIGGERTIGHT       [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdTRIGGERWP70        [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdVETO               [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdLOOSE              [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdMEDIUM             [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdTIGHT              [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdHEEP               [MAX_LEPTONS] ;
-   float Eldr03HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
-   float Eldr03HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
-   float Eldr04HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
-   float Eldr04HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
-   float ElhcalOverEcalBc                      [MAX_LEPTONS] ;
-   float ElEcalE                               [MAX_LEPTONS] ;
-   float ElEoverP                              [MAX_LEPTONS] ;
-   float EldeltaEta                            [MAX_LEPTONS] ;
-   float EldeltaPhi                            [MAX_LEPTONS] ;
-   float ElHadoverEm                           [MAX_LEPTONS] ;
-   float ElsigmaIetaIeta                       [MAX_LEPTONS] ; // Jacky
-   float ElscSigmaIetaIeta                     [MAX_LEPTONS] ;  // Jacky
-   float ElEnergyErr                           [MAX_LEPTONS] ;
-   float ElMomentumErr                         [MAX_LEPTONS] ;
-   float ElSharedHitsFraction                  [MAX_LEPTONS] ; //Dmitry
-   float dR_gsf_ctfTrack                       [MAX_LEPTONS] ; //Dmitry
-   float dPt_gsf_ctfTrack                      [MAX_LEPTONS] ; //Dmitry
-   bool  ElhasConv                             [MAX_LEPTONS] ;
-   //-------------------------------  Track information  -------------------------------
-   int   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
-   float ElTrackNLostHits                      [MAX_LEPTONS] ;  //yjlei
-   float ElTrackDz                             [MAX_LEPTONS] ;
-   float ElTrackDz_BS                          [MAX_LEPTONS] ;
-   float ElTrackD0                             [MAX_LEPTONS] ;
-   float ElTrackDxy_BS                         [MAX_LEPTONS] ;
-   float ElTrackDxy_PV                         [MAX_LEPTONS] ;
-   float ElTrackDxy_PVBS                       [MAX_LEPTONS] ; //yjlei
-   int   ElNClusters                           [MAX_LEPTONS] ;
-   int   ElClassification                      [MAX_LEPTONS] ;
-   float ElFBrem                               [MAX_LEPTONS] ;
-   int NumberOfExpectedInnerHits               [MAX_LEPTONS] ; // Add by Jacky
-
-   //-----------------------------  Conversion rejection  ------------------------------
-   float Eldist                                [MAX_LEPTONS] ; // Add by Jacky
-   float Eldcot                                [MAX_LEPTONS] ; // Add by Jacky
-   float Elconvradius                          [MAX_LEPTONS] ; // Add by Jacky
-   float ElConvPoint_x                         [MAX_LEPTONS] ; // Add by Jacky
-   float ElConvPoint_y                         [MAX_LEPTONS] ; // Add by Jacky
-   float ElConvPoint_z                         [MAX_LEPTONS] ; // Add by Jacky
-   float dcotdist                              [MAX_LEPTONS] ;
-   float ElseedEoverP                          [MAX_LEPTONS] ;
-   float ElEcalIso04                           [MAX_LEPTONS] ;
-   float ElHcalIso04                           [MAX_LEPTONS] ;
-   int   ElNumberOfBrems                       [MAX_LEPTONS] ;
-   float TrgPt                                 [MAX_LEPTONS] ;
-   float TrgEta                                [MAX_LEPTONS] ;
-   float TrgPhi                                [MAX_LEPTONS] ;
-   int TrgID                                   [MAX_LEPTONS] ;
-
-   //------------------------------------------------------------------------------ 
-   //   Tau information
-   //------------------------------------------------------------------------------  
-   int   isPFTau                                      [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
-   bool   DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
-   bool   DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
-   bool   ByLooseElectronRejection                    [MAX_LEPTONS] ;
-   bool   ByMediumElectronRejection                   [MAX_LEPTONS] ;
-   bool   ByTightElectronRejection                    [MAX_LEPTONS] ;
-   bool   ByMVA5LooseElectronRejection                [MAX_LEPTONS] ;
-   bool   ByMVA5MediumElectronRejection               [MAX_LEPTONS] ;
-   bool   ByMVA5TightElectronRejection                [MAX_LEPTONS] ;
-   bool   ByMVA5VTightElectronRejection               [MAX_LEPTONS] ;
-   bool   ByLooseMuonRejection3                       [MAX_LEPTONS] ;
-   bool   ByTightMuonRejection3                       [MAX_LEPTONS] ;
-   bool   ByMVALooseMuonRejection                     [MAX_LEPTONS] ;
-   bool   ByMVAMediumMuonRejection                    [MAX_LEPTONS] ;
-   bool   ByMVATightMuonRejection                     [MAX_LEPTONS] ;
-   bool   ByLooseCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-   bool   ByMediumCombinedIsolationDeltaBetaCorr3Hits [MAX_LEPTONS] ;
-   bool   ByTightCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-   float   CombinedIsolationDeltaBetaCorrRaw3Hits     [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
-   bool   ByMediumIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3newDMwoLT             [MAX_LEPTONS] ;
-   float   ByIsolationMVA3newDMwoLTraw                [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
-   bool   ByMediumIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3oldDMwLT              [MAX_LEPTONS] ;
-   float   ByIsolationMVA3oldDMwLTraw                 [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3oldDMwoLT             [MAX_LEPTONS] ;
-   float   ByIsolationMVA3oldDMwoLTraw                [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
-   bool   ByMediumIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3newDMwLT              [MAX_LEPTONS] ;
-   float   ByIsolationMVA3newDMwLTraw                 [MAX_LEPTONS] ;
-   
-   //-------------------------------  GenMG information  -------------------------------
-   float GenPt                                 [MAX_LEPTONS] ;
-   float GenEta                                [MAX_LEPTONS] ;
-   float GenPhi                                [MAX_LEPTONS] ;
-   int   GenPdgID                              [MAX_LEPTONS] ;
-   int   GenMCTag                              [MAX_LEPTONS] ;
+//-------------------------------  GenMG information  -------------------------------
+float GenPt                                 [MAX_LEPTONS] ;
+float GenEta                                [MAX_LEPTONS] ;
+float GenPhi                                [MAX_LEPTONS] ;
+int   GenPdgID                              [MAX_LEPTONS] ;
+int   GenMCTag                              [MAX_LEPTONS] ;
 #ifdef __BPRIMEKIT__
    reco::Candidate* CandRef[MAX_LEPTONS]; // backward pointer to the PAT objects
 #endif
 
-   void RegisterTree( TTree* root, std::string name = "LepInfo" ) {
-      BRANCH_OBJ( Size                                           , I )   ;
-      BRANCH_ARRAY ( Index                                       , I )   ;
-      BRANCH_ARRAY ( isEcalDriven                                , I )   ;
-      BRANCH_ARRAY ( isTrackerDriven                             , I )   ;
-      BRANCH_ARRAY ( LeptonType                                  , I )   ;
-      BRANCH_ARRAY ( Charge                                      , I )   ;
-      BRANCH_ARRAY ( ChargeGsf                                   , I )   ;
-      BRANCH_ARRAY ( ChargeCtf                                   , I )   ;
-      BRANCH_ARRAY ( ChargeScPix                                 , I )   ;
-      BRANCH_ARRAY ( Pt                                          , F )   ;
-      BRANCH_ARRAY ( Et                                          , F )   ;
-      BRANCH_ARRAY ( Eta                                         , F )   ;
-      BRANCH_ARRAY ( caloEta                                     , F )   ;
-      //BRANCH_ARRAY ( r9                                        , //F ) ;
-      BRANCH_ARRAY ( Phi                                         , F )   ;
-      BRANCH_ARRAY ( TrackIso                                    , F )   ;
-      BRANCH_ARRAY ( EcalIso                                     , F )   ;
-      BRANCH_ARRAY ( HcalIso                                     , F )   ;
-      BRANCH_ARRAY ( HcalDepth1Iso                               , F )   ;
-      BRANCH_ARRAY ( HcalDepth2Iso                               , F )   ;
-      BRANCH_ARRAY ( ChargedHadronIso                            , F )   ;
-      BRANCH_ARRAY ( NeutralHadronIso                            , F )   ;
-      BRANCH_ARRAY ( PhotonIso                                   , F )   ;
-      BRANCH_ARRAY ( ChargedHadronIsoR03                         , F )   ;
-      BRANCH_ARRAY ( NeutralHadronIsoR03                         , F )   ;
-      BRANCH_ARRAY ( PhotonIsoR03                                , F )   ;
-      BRANCH_ARRAY ( sumPUPtR03                                  , F )   ;
-      BRANCH_ARRAY ( IsoRhoCorrR03                               , F )   ;
-      BRANCH_ARRAY ( ChargedHadronIsoR04                         , F )   ;
-      BRANCH_ARRAY ( NeutralHadronIsoR04                         , F )   ;
-      BRANCH_ARRAY ( PhotonIsoR04                                , F )   ;
-      BRANCH_ARRAY ( sumPUPtR04                                  , F )   ;
-      BRANCH_ARRAY ( IsoRhoCorrR04                               , F )   ;
-      BRANCH_ARRAY ( Ip3dPV                                      , F )   ;
-      BRANCH_ARRAY ( Ip3dPVErr                                   , F )   ;
-      BRANCH_ARRAY ( Ip3dPVSignificance                          , F )   ;
-      BRANCH_ARRAY ( MuontimenDof                                , I )   ;
-      BRANCH_ARRAY ( MuontimeAtIpInOut                           , F )   ;
-      BRANCH_ARRAY ( MuontimeAtIpOutIn                           , F )   ;
-      BRANCH_ARRAY ( Muondirection                               , I )   ;
-      BRANCH_ARRAY ( CaloEnergy                                  , F )   ;
-      BRANCH_ARRAY ( e1x5                                        , F )   ;
-      BRANCH_ARRAY ( e2x5Max                                     , F )   ;
-      BRANCH_ARRAY ( e5x5                                        , F )   ;
-      BRANCH_ARRAY ( Px                                          , F )   ;
-      BRANCH_ARRAY ( Py                                          , F )   ;
-      BRANCH_ARRAY ( Pz                                          , F )   ;
-      BRANCH_ARRAY ( Energy                                      , F )   ;
-      BRANCH_ARRAY ( isGoodMuonTMOneStationTight                 , C )   ;
-      BRANCH_ARRAY ( innerTracknormalizedChi2                    , F )   ;
-      BRANCH_ARRAY ( vertexZ                                     , F )   ;
-      BRANCH_ARRAY ( isPFMuon                                    , C )   ;
-      BRANCH_ARRAY ( MuIDGlobalMuonPromptTight                   , C )   ;
-      BRANCH_ARRAY ( MuInnerPtError                              , F )   ;
-      BRANCH_ARRAY ( MuGlobalPtError                             , F )   ;
-      BRANCH_ARRAY ( MuInnerTrackDz                              , F )   ;
-      BRANCH_ARRAY ( MuInnerTrackD0                              , F )   ;
-      BRANCH_ARRAY ( MuInnerTrackDxy_BS                          , F )   ;
-      BRANCH_ARRAY ( MuInnerTrackDxy_PV                          , F )   ;
-      BRANCH_ARRAY ( MuInnerTrackDxy_PVBS                        , F )   ;
-      BRANCH_ARRAY ( MuInnerTrackNHits                           , I )   ;
-      BRANCH_ARRAY ( MuNTrackerHits                              , I )   ;
-      BRANCH_ARRAY ( MuGlobalNormalizedChi2                      , F )   ;
-      BRANCH_ARRAY ( MuCaloCompat                                , F )   ;
-      BRANCH_ARRAY ( MuNChambers                                 , I )   ;
-      BRANCH_ARRAY ( MuNChambersMatchesSegment                   , I )   ;
-      BRANCH_ARRAY ( MuNMatchedStations                          , I )   ;
-      BRANCH_ARRAY ( MuNPixelLayers                              , I )   ;
-      BRANCH_ARRAY ( MuNPixelLayersWMeasurement                  , I )   ;
-      BRANCH_ARRAY ( MuNTrackLayersWMeasurement                  , I )   ;
-      BRANCH_ARRAY ( MuNLostInnerHits                            , I )   ;
-      BRANCH_ARRAY ( MuNLostOuterHits                            , I )   ;
-      BRANCH_ARRAY ( MuNMuonhits                                 , I )   ;
-      BRANCH_ARRAY ( MuDThits                                    , I )   ;
-      BRANCH_ARRAY ( MuCSChits                                   , I )   ;
-      BRANCH_ARRAY ( MuRPChits                                   , I )   ;
-      BRANCH_ARRAY ( MuType                                      , I )   ;
-      BRANCH_ARRAY ( EgammaMVANonTrig                            , F )   ;
-      BRANCH_ARRAY ( EgammaMVATrig                               , F )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdTRIGGERTIGHT             , C )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdTRIGGERWP70              , C )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdVETO                     , C )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdLOOSE                    , C )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdMEDIUM                   , C )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdTIGHT                    , C )   ;
-      BRANCH_ARRAY ( EgammaCutBasedEleIdHEEP                     , C )   ;
-      BRANCH_ARRAY ( Eldr03HcalDepth1TowerSumEtBc                , F )   ;
-      BRANCH_ARRAY ( Eldr03HcalDepth2TowerSumEtBc                , F )   ;
-      BRANCH_ARRAY ( Eldr04HcalDepth1TowerSumEtBc                , F )   ;
-      BRANCH_ARRAY ( Eldr04HcalDepth2TowerSumEtBc                , F )   ;
-      BRANCH_ARRAY ( ElhcalOverEcalBc                            , F )   ;
-      BRANCH_ARRAY ( ElEcalE                                     , F )   ;
-      BRANCH_ARRAY ( ElEoverP                                    , F )   ;
-      BRANCH_ARRAY ( EldeltaEta                                  , F )   ;
-      BRANCH_ARRAY ( EldeltaPhi                                  , F )   ;
-      BRANCH_ARRAY ( ElHadoverEm                                 , F )   ;
-      BRANCH_ARRAY ( ElsigmaIetaIeta                             , F )   ;
-      BRANCH_ARRAY ( ElscSigmaIetaIeta                           , F )   ;
-      BRANCH_ARRAY ( ElEnergyErr                                 , F )   ;
-      BRANCH_ARRAY ( ElMomentumErr                               , F )   ;
-      BRANCH_ARRAY ( ElTrackNHits                                , I )   ;
-      BRANCH_ARRAY ( ElSharedHitsFraction                        , F )   ;
-      BRANCH_ARRAY ( dR_gsf_ctfTrack                             , F )   ;
-      BRANCH_ARRAY ( dPt_gsf_ctfTrack                            , F )   ;
-      BRANCH_ARRAY ( ElhasConv                                   , C )   ;
-      BRANCH_ARRAY ( ElTrackNLostHits                            , F )   ;
-      BRANCH_ARRAY ( ElTrackDz                                   , F )   ;
-      BRANCH_ARRAY ( ElTrackDz_BS                                , F )   ;
-      BRANCH_ARRAY ( ElTrackD0                                   , F )   ;
-      BRANCH_ARRAY ( ElTrackDxy_BS                               , F )   ;
-      BRANCH_ARRAY ( ElTrackDxy_PV                               , F )   ;
-      BRANCH_ARRAY ( ElTrackDxy_PVBS                             , F )   ;
-      BRANCH_ARRAY ( ElNClusters                                 , I )   ;
-      BRANCH_ARRAY ( ElClassification                            , I )   ;
-      BRANCH_ARRAY ( ElFBrem                                     , F )   ;
-      BRANCH_ARRAY ( NumberOfExpectedInnerHits                   , I )   ;
-      BRANCH_ARRAY ( Eldist                                      , F )   ;
-      BRANCH_ARRAY ( Eldcot                                      , F )   ;
-      BRANCH_ARRAY ( Elconvradius                                , F )   ;
-      BRANCH_ARRAY ( ElConvPoint_x                               , F )   ;
-      BRANCH_ARRAY ( ElConvPoint_y                               , F )   ;
-      BRANCH_ARRAY ( ElConvPoint_z                               , F )   ;
-      BRANCH_ARRAY ( dcotdist                                    , F )   ;
-      BRANCH_ARRAY ( ElseedEoverP                                , F )   ;
-      BRANCH_ARRAY ( ElEcalIso04                                 , F )   ;
-      BRANCH_ARRAY ( ElHcalIso04                                 , F )   ;
-      BRANCH_ARRAY ( ElNumberOfBrems                             , I )   ;
-      BRANCH_ARRAY ( GenPt                                       , F )   ;
-      BRANCH_ARRAY ( GenEta                                      , F )   ;
-      BRANCH_ARRAY ( GenPhi                                      , F )   ;
-      BRANCH_ARRAY ( GenPdgID                                    , I )   ;
-      BRANCH_ARRAY ( GenMCTag                                    , I )   ;
-      BRANCH_ARRAY ( TrgPt                                       , F )   ;
-      BRANCH_ARRAY ( TrgEta                                      , F )   ;
-      BRANCH_ARRAY ( TrgPhi                                      , F )   ;
-      BRANCH_ARRAY ( TrgID                                       , I )   ;
-      BRANCH_ARRAY ( isPFTau                                     , I )   ;
-      BRANCH_ARRAY ( DiscriminationByDecayModeFinding            , C )   ;
-      BRANCH_ARRAY ( DiscriminationByDecayModeFindingNewDMs      , C )   ;
-      BRANCH_ARRAY ( ByLooseElectronRejection                    , C )   ;
-      BRANCH_ARRAY ( ByMediumElectronRejection                   , C )   ;
-      BRANCH_ARRAY ( ByTightElectronRejection                    , C )   ;
-      BRANCH_ARRAY ( ByMVA5LooseElectronRejection                , C )   ;
-      BRANCH_ARRAY ( ByMVA5MediumElectronRejection               , C )   ;
-      BRANCH_ARRAY ( ByMVA5TightElectronRejection                , C )   ;
-      BRANCH_ARRAY ( ByMVA5VTightElectronRejection               , C )   ;
-      BRANCH_ARRAY ( ByLooseMuonRejection3                       , C )   ;
-      BRANCH_ARRAY ( ByTightMuonRejection3                       , C )   ;
-      BRANCH_ARRAY ( ByMVALooseMuonRejection                     , C )   ;
-      BRANCH_ARRAY ( ByMVAMediumMuonRejection                    , C )   ;
-      BRANCH_ARRAY ( ByMVATightMuonRejection                     , C )   ;
-      BRANCH_ARRAY ( ByLooseCombinedIsolationDeltaBetaCorr3Hits  , C )   ;
-      BRANCH_ARRAY ( ByMediumCombinedIsolationDeltaBetaCorr3Hits , C )   ;
-      BRANCH_ARRAY ( ByTightCombinedIsolationDeltaBetaCorr3Hits  , C )   ;
-      BRANCH_ARRAY ( CombinedIsolationDeltaBetaCorrRaw3Hits      , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3newDMwoLT              , C )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3newDMwoLT               , C )   ;
-      BRANCH_ARRAY ( ByMediumIsolationMVA3newDMwoLT              , C )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3newDMwoLT               , C )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3newDMwoLT              , C )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3newDMwoLT             , C )   ;
-      BRANCH_ARRAY ( ByIsolationMVA3newDMwoLTraw                 , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3oldDMwLT               , C )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3oldDMwLT                , C )   ;
-      BRANCH_ARRAY ( ByMediumIsolationMVA3oldDMwLT               , C )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3oldDMwLT                , C )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3oldDMwLT               , C )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3oldDMwLT              , C )   ;
-      BRANCH_ARRAY ( ByIsolationMVA3oldDMwLTraw                  , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3oldDMwoLT              , C )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3oldDMwoLT               , C )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3oldDMwoLT               , C )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3oldDMwoLT              , C )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3oldDMwoLT             , C )   ;
-      BRANCH_ARRAY ( ByIsolationMVA3oldDMwoLTraw                 , F )   ;
-      BRANCH_ARRAY ( ByVLooseIsolationMVA3newDMwLT               , C )   ;
-      BRANCH_ARRAY ( ByLooseIsolationMVA3newDMwLT                , C )   ;
-      BRANCH_ARRAY ( ByMediumIsolationMVA3newDMwLT               , C )   ;
-      BRANCH_ARRAY ( ByTightIsolationMVA3newDMwLT                , C )   ;
-      BRANCH_ARRAY ( ByVTightIsolationMVA3newDMwLT               , C )   ;
-      BRANCH_ARRAY ( ByVVTightIsolationMVA3newDMwLT              , C )   ;
-      BRANCH_ARRAY ( ByIsolationMVA3newDMwLTraw                  , F )   ;
-   }
-
-
-   void Register( TTree* root, std::string name = "LepInfo" ) {
-      SET_BRANCH_OBJ  ( Size                                   ) ; 
-      SET_BRANCH_ARRAY( Index                                  ) ;
-      SET_BRANCH_ARRAY( isEcalDriven                           ) ;
-      SET_BRANCH_ARRAY( isTrackerDriven                        ) ;
-      SET_BRANCH_ARRAY( LeptonType                             ) ;
-      SET_BRANCH_ARRAY( Charge                                 ) ;
-      SET_BRANCH_ARRAY( ChargeGsf                              ) ;
-      SET_BRANCH_ARRAY( ChargeCtf                              ) ;
-      SET_BRANCH_ARRAY( ChargeScPix                            ) ;
-      SET_BRANCH_ARRAY( Pt                                     ) ;
-      SET_BRANCH_ARRAY( Et                                     ) ;
-      SET_BRANCH_ARRAY( Eta                                    ) ;
-      SET_BRANCH_ARRAY( caloEta                                ) ;
-      //SET_BRANCH_ARRAY( r9                                   ) ;
-      SET_BRANCH_ARRAY( Phi                                    ) ;
-      SET_BRANCH_ARRAY( TrackIso                               ) ;
-      SET_BRANCH_ARRAY( EcalIso                                ) ;
-      SET_BRANCH_ARRAY( HcalIso                                ) ;
-      SET_BRANCH_ARRAY( HcalDepth1Iso                          ) ;
-      SET_BRANCH_ARRAY( HcalDepth2Iso                          ) ;
-      SET_BRANCH_ARRAY( ChargedHadronIso                       ) ;
-      SET_BRANCH_ARRAY( NeutralHadronIso                       ) ;
-      SET_BRANCH_ARRAY( PhotonIso                              ) ;
-      SET_BRANCH_ARRAY( ChargedHadronIsoR03                    ) ;
-      SET_BRANCH_ARRAY( NeutralHadronIsoR03                    ) ;
-      SET_BRANCH_ARRAY( PhotonIsoR03                           ) ;
-      SET_BRANCH_ARRAY( sumPUPtR03                             ) ;
-      SET_BRANCH_ARRAY( IsoRhoCorrR03                          ) ;
-      SET_BRANCH_ARRAY( ChargedHadronIsoR04                    ) ;
-      SET_BRANCH_ARRAY( NeutralHadronIsoR04                    ) ;
-      SET_BRANCH_ARRAY( PhotonIsoR04                           ) ;
-      SET_BRANCH_ARRAY( sumPUPtR04                             ) ;
-      SET_BRANCH_ARRAY( IsoRhoCorrR04                          ) ;
-      SET_BRANCH_ARRAY( Ip3dPV                                 ) ;
-      SET_BRANCH_ARRAY( Ip3dPVErr                              ) ;
-      SET_BRANCH_ARRAY( Ip3dPVSignificance                     ) ;
-      SET_BRANCH_ARRAY( MuontimenDof                           ) ;
-      SET_BRANCH_ARRAY( MuontimeAtIpInOut                      ) ;
-      SET_BRANCH_ARRAY( MuontimeAtIpOutIn                      ) ;
-      SET_BRANCH_ARRAY( Muondirection                          ) ;
-      SET_BRANCH_ARRAY( CaloEnergy                             ) ;
-      SET_BRANCH_ARRAY( e1x5                                   ) ;
-      SET_BRANCH_ARRAY( e2x5Max                                ) ;
-      SET_BRANCH_ARRAY( e5x5                                   ) ;
-      SET_BRANCH_ARRAY( Px                                     ) ;
-      SET_BRANCH_ARRAY( Py                                     ) ;
-      SET_BRANCH_ARRAY( Pz                                     ) ;
-      SET_BRANCH_ARRAY( Energy                                 ) ;
-      SET_BRANCH_ARRAY( isGoodMuonTMOneStationTight            ) ;
-      SET_BRANCH_ARRAY( innerTracknormalizedChi2               ) ;
-      SET_BRANCH_ARRAY( vertexZ                                ) ;
-      SET_BRANCH_ARRAY( isPFMuon                               ) ;
-      SET_BRANCH_ARRAY( MuIDGlobalMuonPromptTight              ) ;
-      SET_BRANCH_ARRAY( MuInnerPtError                         ) ;
-      SET_BRANCH_ARRAY( MuGlobalPtError                        ) ;
-      SET_BRANCH_ARRAY( MuInnerTrackDz                         ) ;
-      SET_BRANCH_ARRAY( MuInnerTrackD0                         ) ;
-      SET_BRANCH_ARRAY( MuInnerTrackDxy_BS                     ) ;
-      SET_BRANCH_ARRAY( MuInnerTrackDxy_PV                     ) ;
-      SET_BRANCH_ARRAY( MuInnerTrackDxy_PVBS                   ) ;
-      SET_BRANCH_ARRAY( MuInnerTrackNHits                      ) ;
-      SET_BRANCH_ARRAY( MuNTrackerHits                         ) ;
-      SET_BRANCH_ARRAY( MuGlobalNormalizedChi2                 ) ;
-      SET_BRANCH_ARRAY( MuCaloCompat                           ) ;
-      SET_BRANCH_ARRAY( MuNChambers                            ) ;
-      SET_BRANCH_ARRAY( MuNChambersMatchesSegment              ) ;
-      SET_BRANCH_ARRAY( MuNMatchedStations                     ) ;
-      SET_BRANCH_ARRAY( MuNPixelLayers                         ) ;
-      SET_BRANCH_ARRAY( MuNPixelLayersWMeasurement             ) ;
-      SET_BRANCH_ARRAY( MuNTrackLayersWMeasurement             ) ;
-      SET_BRANCH_ARRAY( MuNLostInnerHits                       ) ;
-      SET_BRANCH_ARRAY( MuNLostOuterHits                       ) ;
-      SET_BRANCH_ARRAY( MuNMuonhits                            ) ;
-      SET_BRANCH_ARRAY( MuDThits                               ) ;
-      SET_BRANCH_ARRAY( MuCSChits                              ) ;
-      SET_BRANCH_ARRAY( MuRPChits                              ) ;
-      SET_BRANCH_ARRAY( MuType                                 ) ;
-      SET_BRANCH_ARRAY( EgammaMVANonTrig                       ) ;
-      SET_BRANCH_ARRAY( EgammaMVATrig                          ) ;
-      SET_BRANCH_ARRAY( EgammaCutBasedEleIdTRIGGERTIGHT        ) ;
-      SET_BRANCH_ARRAY( EgammaCutBasedEleIdTRIGGERWP70         ) ;
-      SET_BRANCH_ARRAY( EgammaCutBasedEleIdVETO                ) ;
-      SET_BRANCH_ARRAY( EgammaCutBasedEleIdLOOSE               ) ;
-      SET_BRANCH_ARRAY( EgammaCutBasedEleIdMEDIUM              ) ;
-      SET_BRANCH_ARRAY( EgammaCutBasedEleIdTIGHT               ) ;
-      SET_BRANCH_ARRAY( Eldr03HcalDepth1TowerSumEtBc           ) ;
-      SET_BRANCH_ARRAY( Eldr03HcalDepth2TowerSumEtBc           ) ;
-      SET_BRANCH_ARRAY( Eldr04HcalDepth1TowerSumEtBc           ) ;
-      SET_BRANCH_ARRAY( Eldr04HcalDepth2TowerSumEtBc           ) ;
-      SET_BRANCH_ARRAY( ElhcalOverEcalBc                       ) ;
-      SET_BRANCH_ARRAY( ElEcalE                                ) ;
-      SET_BRANCH_ARRAY( ElEoverP                               ) ;
-      SET_BRANCH_ARRAY( EldeltaEta                             ) ;
-      SET_BRANCH_ARRAY( EldeltaPhi                             ) ;
-      SET_BRANCH_ARRAY( ElHadoverEm                            ) ;
-      SET_BRANCH_ARRAY( ElsigmaIetaIeta                        ) ;
-      SET_BRANCH_ARRAY( ElscSigmaIetaIeta                      ) ;
-      SET_BRANCH_ARRAY( ElEnergyErr                            ) ;
-      SET_BRANCH_ARRAY( ElMomentumErr                          ) ;
-      SET_BRANCH_ARRAY( ElTrackNHits                           ) ;
-      SET_BRANCH_ARRAY( ElSharedHitsFraction                   ) ;
-      SET_BRANCH_ARRAY( dR_gsf_ctfTrack                        ) ;
-      SET_BRANCH_ARRAY( dPt_gsf_ctfTrack                       ) ;
-      SET_BRANCH_ARRAY( ElhasConv                              ) ;
-      SET_BRANCH_ARRAY( ElTrackNLostHits                       ) ;
-      SET_BRANCH_ARRAY( ElTrackDz                              ) ;
-      SET_BRANCH_ARRAY( ElTrackDz_BS                           ) ;
-      SET_BRANCH_ARRAY( ElTrackD0                              ) ;
-      SET_BRANCH_ARRAY( ElTrackDxy_BS                          ) ;
-      SET_BRANCH_ARRAY( ElTrackDxy_PV                          ) ;
-      SET_BRANCH_ARRAY( ElTrackDxy_PVBS                        ) ;
-      SET_BRANCH_ARRAY( ElNClusters                            ) ;
-      SET_BRANCH_ARRAY( ElClassification                       ) ;
-      SET_BRANCH_ARRAY( ElFBrem                                ) ;
-      SET_BRANCH_ARRAY( NumberOfExpectedInnerHits              ) ;
-      SET_BRANCH_ARRAY( Eldist                                 ) ;
-      SET_BRANCH_ARRAY( Eldcot                                 ) ;
-      SET_BRANCH_ARRAY( Elconvradius                           ) ;
-      SET_BRANCH_ARRAY( ElConvPoint_x                          ) ;
-      SET_BRANCH_ARRAY( ElConvPoint_y                          ) ;
-      SET_BRANCH_ARRAY( ElConvPoint_z                          ) ;
-      SET_BRANCH_ARRAY( dcotdist                               ) ;
-      SET_BRANCH_ARRAY( ElseedEoverP                           ) ;
-      SET_BRANCH_ARRAY( ElEcalIso04                            ) ;
-      SET_BRANCH_ARRAY( ElHcalIso04                            ) ;
-      SET_BRANCH_ARRAY( ElNumberOfBrems                        ) ;
-      SET_BRANCH_ARRAY( GenPt                                  ) ;
-      SET_BRANCH_ARRAY( GenEta                                 ) ;
-      SET_BRANCH_ARRAY( GenPhi                                 ) ;
-      SET_BRANCH_ARRAY( GenPdgID                               ) ;
-      SET_BRANCH_ARRAY( GenMCTag                               ) ;
-      SET_BRANCH_ARRAY( TrgPt                                  ) ;
-      SET_BRANCH_ARRAY( TrgEta                                 ) ;
-      SET_BRANCH_ARRAY( TrgPhi                                 ) ;
-      SET_BRANCH_ARRAY( TrgID                                  ) ;
-      SET_BRANCH_ARRAY( isPFTau                                ) ;
-      SET_BRANCH_ARRAY( DiscriminationByDecayModeFinding           )   ;
-      SET_BRANCH_ARRAY( DiscriminationByDecayModeFindingNewDMs     )   ;
-      SET_BRANCH_ARRAY( ByLooseElectronRejection                   )   ;
-      SET_BRANCH_ARRAY( ByMediumElectronRejection                  )   ;
-      SET_BRANCH_ARRAY( ByTightElectronRejection                   )   ;
-      SET_BRANCH_ARRAY( ByMVA5LooseElectronRejection               )   ;
-      SET_BRANCH_ARRAY( ByMVA5MediumElectronRejection              )   ;
-      SET_BRANCH_ARRAY( ByMVA5TightElectronRejection               )   ;
-      SET_BRANCH_ARRAY( ByMVA5VTightElectronRejection              )   ;
-      SET_BRANCH_ARRAY( ByLooseMuonRejection3                      )   ;
-      SET_BRANCH_ARRAY( ByTightMuonRejection3                      )   ;
-      SET_BRANCH_ARRAY( ByMVALooseMuonRejection                    )   ;
-      SET_BRANCH_ARRAY( ByMVAMediumMuonRejection                   )   ;
-      SET_BRANCH_ARRAY( ByMVATightMuonRejection                    )   ;
-      SET_BRANCH_ARRAY( ByLooseCombinedIsolationDeltaBetaCorr3Hits )   ;
-      SET_BRANCH_ARRAY( ByMediumCombinedIsolationDeltaBetaCorr3Hits)   ;
-      SET_BRANCH_ARRAY( ByTightCombinedIsolationDeltaBetaCorr3Hits )   ;
-      SET_BRANCH_ARRAY( CombinedIsolationDeltaBetaCorrRaw3Hits     )   ;
-      SET_BRANCH_ARRAY( ByVLooseIsolationMVA3newDMwoLT             )   ;
-      SET_BRANCH_ARRAY( ByLooseIsolationMVA3newDMwoLT              )   ;
-      SET_BRANCH_ARRAY( ByMediumIsolationMVA3newDMwoLT             )   ;
-      SET_BRANCH_ARRAY( ByTightIsolationMVA3newDMwoLT              )   ;
-      SET_BRANCH_ARRAY( ByVTightIsolationMVA3newDMwoLT             )   ;
-      SET_BRANCH_ARRAY( ByVVTightIsolationMVA3newDMwoLT            )   ;
-      SET_BRANCH_ARRAY( ByIsolationMVA3newDMwoLTraw                )   ;
-      SET_BRANCH_ARRAY( ByVLooseIsolationMVA3oldDMwLT              )   ;
-      SET_BRANCH_ARRAY( ByLooseIsolationMVA3oldDMwLT               )   ;
-      SET_BRANCH_ARRAY( ByMediumIsolationMVA3oldDMwLT              )   ;
-      SET_BRANCH_ARRAY( ByTightIsolationMVA3oldDMwLT               )   ;
-      SET_BRANCH_ARRAY( ByVTightIsolationMVA3oldDMwLT              )   ;
-      SET_BRANCH_ARRAY( ByVVTightIsolationMVA3oldDMwLT             )   ;
-      SET_BRANCH_ARRAY( ByIsolationMVA3oldDMwLTraw                 )   ;
-      SET_BRANCH_ARRAY( ByVLooseIsolationMVA3oldDMwoLT             )   ;
-      SET_BRANCH_ARRAY( ByLooseIsolationMVA3oldDMwoLT              )   ;
-      SET_BRANCH_ARRAY( ByTightIsolationMVA3oldDMwoLT              )   ;
-      SET_BRANCH_ARRAY( ByVTightIsolationMVA3oldDMwoLT             )   ;
-      SET_BRANCH_ARRAY( ByVVTightIsolationMVA3oldDMwoLT            )   ;
-      SET_BRANCH_ARRAY( ByIsolationMVA3oldDMwoLTraw                )   ;
-      SET_BRANCH_ARRAY( ByVLooseIsolationMVA3newDMwLT              )   ;
-      SET_BRANCH_ARRAY( ByLooseIsolationMVA3newDMwLT               )   ;
-      SET_BRANCH_ARRAY( ByMediumIsolationMVA3newDMwLT              )   ;
-      SET_BRANCH_ARRAY( ByTightIsolationMVA3newDMwLT               )   ;
-      SET_BRANCH_ARRAY( ByVTightIsolationMVA3newDMwLT              )   ;
-      SET_BRANCH_ARRAY( ByVVTightIsolationMVA3newDMwLT             )   ;
-      SET_BRANCH_ARRAY( ByIsolationMVA3newDMwLTraw                 )   ;
-   }
+void RegisterTree( TTree* root , std::string name="LepInfo" ) { 
+root->Branch( (name+".Size").c_str() , &Size ) ;
+root->Branch( (name+".Index").c_str() , Index , (name+".Index["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".LeptonType").c_str() , LeptonType , (name+".LeptonType["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Charge").c_str() , Charge , (name+".Charge["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Pt").c_str() , Pt , (name+".Pt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Et").c_str() , Et , (name+".Et["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eta").c_str() , Eta , (name+".Eta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Phi").c_str() , Phi , (name+".Phi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Px").c_str() , Px , (name+".Px["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Py").c_str() , Py , (name+".Py["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Pz").c_str() , Pz , (name+".Pz["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Energy").c_str() , Energy , (name+".Energy["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".TrackIso").c_str() , TrackIso , (name+".TrackIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".EcalIso").c_str() , EcalIso , (name+".EcalIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".HcalIso").c_str() , HcalIso , (name+".HcalIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ChargedHadronIso").c_str() , ChargedHadronIso , (name+".ChargedHadronIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NeutralHadronIso").c_str() , NeutralHadronIso , (name+".NeutralHadronIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PhotonIso").c_str() , PhotonIso , (name+".PhotonIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ChargedHadronIsoR03").c_str() , ChargedHadronIsoR03 , (name+".ChargedHadronIsoR03["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NeutralHadronIsoR03").c_str() , NeutralHadronIsoR03 , (name+".NeutralHadronIsoR03["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PhotonIsoR03").c_str() , PhotonIsoR03 , (name+".PhotonIsoR03["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".sumPUPtR03").c_str() , sumPUPtR03 , (name+".sumPUPtR03["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".IsoRhoCorrR03").c_str() , IsoRhoCorrR03 , (name+".IsoRhoCorrR03["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ChargedHadronIsoR04").c_str() , ChargedHadronIsoR04 , (name+".ChargedHadronIsoR04["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NeutralHadronIsoR04").c_str() , NeutralHadronIsoR04 , (name+".NeutralHadronIsoR04["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PhotonIsoR04").c_str() , PhotonIsoR04 , (name+".PhotonIsoR04["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".sumPUPtR04").c_str() , sumPUPtR04 , (name+".sumPUPtR04["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".IsoRhoCorrR04").c_str() , IsoRhoCorrR04 , (name+".IsoRhoCorrR04["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Ip3dPV").c_str() , Ip3dPV , (name+".Ip3dPV["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Ip3dPVErr").c_str() , Ip3dPVErr , (name+".Ip3dPVErr["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Ip3dPVSignificance").c_str() , Ip3dPVSignificance , (name+".Ip3dPVSignificance["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".CaloEnergy").c_str() , CaloEnergy , (name+".CaloEnergy["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".isGoodMuonTMOneStationTight").c_str() , isGoodMuonTMOneStationTight , (name+".isGoodMuonTMOneStationTight["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".isPFMuon").c_str() , isPFMuon , (name+".isPFMuon["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".MuIDGlobalMuonPromptTight").c_str() , MuIDGlobalMuonPromptTight , (name+".MuIDGlobalMuonPromptTight["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".MuGlobalNormalizedChi2").c_str() , MuGlobalNormalizedChi2 , (name+".MuGlobalNormalizedChi2["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuCaloCompat").c_str() , MuCaloCompat , (name+".MuCaloCompat["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuNChambers").c_str() , MuNChambers , (name+".MuNChambers["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNChambersMatchesSegment").c_str() , MuNChambersMatchesSegment , (name+".MuNChambersMatchesSegment["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNMatchedStations").c_str() , MuNMatchedStations , (name+".MuNMatchedStations["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNLostOuterHits").c_str() , MuNLostOuterHits , (name+".MuNLostOuterHits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNMuonhits").c_str() , MuNMuonhits , (name+".MuNMuonhits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuDThits").c_str() , MuDThits , (name+".MuDThits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuCSChits").c_str() , MuCSChits , (name+".MuCSChits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuRPChits").c_str() , MuRPChits , (name+".MuRPChits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuType").c_str() , MuType , (name+".MuType["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuontimenDof").c_str() , MuontimenDof , (name+".MuontimenDof["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuontimeAtIpInOut").c_str() , MuontimeAtIpInOut , (name+".MuontimeAtIpInOut["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuontimeAtIpOutIn").c_str() , MuontimeAtIpOutIn , (name+".MuontimeAtIpOutIn["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Muondirection").c_str() , Muondirection , (name+".Muondirection["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".innerTracknormalizedChi2").c_str() , innerTracknormalizedChi2 , (name+".innerTracknormalizedChi2["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuInnerPtError").c_str() , MuInnerPtError , (name+".MuInnerPtError["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuGlobalPtError").c_str() , MuGlobalPtError , (name+".MuGlobalPtError["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuInnerTrackDz").c_str() , MuInnerTrackDz , (name+".MuInnerTrackDz["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuInnerTrackD0").c_str() , MuInnerTrackD0 , (name+".MuInnerTrackD0["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuInnerTrackDxy_BS").c_str() , MuInnerTrackDxy_BS , (name+".MuInnerTrackDxy_BS["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuInnerTrackDxy_PV").c_str() , MuInnerTrackDxy_PV , (name+".MuInnerTrackDxy_PV["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuInnerTrackDxy_PVBS").c_str() , MuInnerTrackDxy_PVBS , (name+".MuInnerTrackDxy_PVBS["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuInnerTrackNHits").c_str() , MuInnerTrackNHits , (name+".MuInnerTrackNHits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNTrackerHits").c_str() , MuNTrackerHits , (name+".MuNTrackerHits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNLostInnerHits").c_str() , MuNLostInnerHits , (name+".MuNLostInnerHits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".vertexZ").c_str() , vertexZ , (name+".vertexZ["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".MuNPixelLayers").c_str() , MuNPixelLayers , (name+".MuNPixelLayers["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNPixelLayersWMeasurement").c_str() , MuNPixelLayersWMeasurement , (name+".MuNPixelLayersWMeasurement["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".MuNTrackLayersWMeasurement").c_str() , MuNTrackLayersWMeasurement , (name+".MuNTrackLayersWMeasurement["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".ChargeGsf").c_str() , ChargeGsf , (name+".ChargeGsf["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".ChargeCtf").c_str() , ChargeCtf , (name+".ChargeCtf["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".ChargeScPix").c_str() , ChargeScPix , (name+".ChargeScPix["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".isEcalDriven").c_str() , isEcalDriven , (name+".isEcalDriven["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".isTrackerDriven").c_str() , isTrackerDriven , (name+".isTrackerDriven["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".caloEta").c_str() , caloEta , (name+".caloEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".e1x5").c_str() , e1x5 , (name+".e1x5["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".e2x5Max").c_str() , e2x5Max , (name+".e2x5Max["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".e5x5").c_str() , e5x5 , (name+".e5x5["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".HcalDepth1Iso").c_str() , HcalDepth1Iso , (name+".HcalDepth1Iso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".HcalDepth2Iso").c_str() , HcalDepth2Iso , (name+".HcalDepth2Iso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".EgammaMVANonTrig").c_str() , EgammaMVANonTrig , (name+".EgammaMVANonTrig["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".EgammaMVATrig").c_str() , EgammaMVATrig , (name+".EgammaMVATrig["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".EgammaCutBasedEleIdTRIGGERTIGHT").c_str() , EgammaCutBasedEleIdTRIGGERTIGHT , (name+".EgammaCutBasedEleIdTRIGGERTIGHT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".EgammaCutBasedEleIdTRIGGERWP70").c_str() , EgammaCutBasedEleIdTRIGGERWP70 , (name+".EgammaCutBasedEleIdTRIGGERWP70["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".EgammaCutBasedEleIdVETO").c_str() , EgammaCutBasedEleIdVETO , (name+".EgammaCutBasedEleIdVETO["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".EgammaCutBasedEleIdLOOSE").c_str() , EgammaCutBasedEleIdLOOSE , (name+".EgammaCutBasedEleIdLOOSE["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".EgammaCutBasedEleIdMEDIUM").c_str() , EgammaCutBasedEleIdMEDIUM , (name+".EgammaCutBasedEleIdMEDIUM["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".EgammaCutBasedEleIdTIGHT").c_str() , EgammaCutBasedEleIdTIGHT , (name+".EgammaCutBasedEleIdTIGHT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".EgammaCutBasedEleIdHEEP").c_str() , EgammaCutBasedEleIdHEEP , (name+".EgammaCutBasedEleIdHEEP["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".Eldr03HcalDepth1TowerSumEtBc").c_str() , Eldr03HcalDepth1TowerSumEtBc , (name+".Eldr03HcalDepth1TowerSumEtBc["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eldr03HcalDepth2TowerSumEtBc").c_str() , Eldr03HcalDepth2TowerSumEtBc , (name+".Eldr03HcalDepth2TowerSumEtBc["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eldr04HcalDepth1TowerSumEtBc").c_str() , Eldr04HcalDepth1TowerSumEtBc , (name+".Eldr04HcalDepth1TowerSumEtBc["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eldr04HcalDepth2TowerSumEtBc").c_str() , Eldr04HcalDepth2TowerSumEtBc , (name+".Eldr04HcalDepth2TowerSumEtBc["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElhcalOverEcalBc").c_str() , ElhcalOverEcalBc , (name+".ElhcalOverEcalBc["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElEcalE").c_str() , ElEcalE , (name+".ElEcalE["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElEoverP").c_str() , ElEoverP , (name+".ElEoverP["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".EldeltaEta").c_str() , EldeltaEta , (name+".EldeltaEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".EldeltaPhi").c_str() , EldeltaPhi , (name+".EldeltaPhi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElHadoverEm").c_str() , ElHadoverEm , (name+".ElHadoverEm["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElsigmaIetaIeta").c_str() , ElsigmaIetaIeta , (name+".ElsigmaIetaIeta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElscSigmaIetaIeta").c_str() , ElscSigmaIetaIeta , (name+".ElscSigmaIetaIeta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElEnergyErr").c_str() , ElEnergyErr , (name+".ElEnergyErr["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElMomentumErr").c_str() , ElMomentumErr , (name+".ElMomentumErr["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElSharedHitsFraction").c_str() , ElSharedHitsFraction , (name+".ElSharedHitsFraction["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".dR_gsf_ctfTrack").c_str() , dR_gsf_ctfTrack , (name+".dR_gsf_ctfTrack["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".dPt_gsf_ctfTrack").c_str() , dPt_gsf_ctfTrack , (name+".dPt_gsf_ctfTrack["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElhasConv").c_str() , ElhasConv , (name+".ElhasConv["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ElTrackNHits").c_str() , ElTrackNHits , (name+".ElTrackNHits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".ElTrackNLostHits").c_str() , ElTrackNLostHits , (name+".ElTrackNLostHits["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElTrackDz").c_str() , ElTrackDz , (name+".ElTrackDz["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElTrackDz_BS").c_str() , ElTrackDz_BS , (name+".ElTrackDz_BS["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElTrackD0").c_str() , ElTrackD0 , (name+".ElTrackD0["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElTrackDxy_BS").c_str() , ElTrackDxy_BS , (name+".ElTrackDxy_BS["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElTrackDxy_PV").c_str() , ElTrackDxy_PV , (name+".ElTrackDxy_PV["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElTrackDxy_PVBS").c_str() , ElTrackDxy_PVBS , (name+".ElTrackDxy_PVBS["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElNClusters").c_str() , ElNClusters , (name+".ElNClusters["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".ElClassification").c_str() , ElClassification , (name+".ElClassification["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".ElFBrem").c_str() , ElFBrem , (name+".ElFBrem["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NumberOfExpectedInnerHits").c_str() , NumberOfExpectedInnerHits , (name+".NumberOfExpectedInnerHits["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Eldist").c_str() , Eldist , (name+".Eldist["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eldcot").c_str() , Eldcot , (name+".Eldcot["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Elconvradius").c_str() , Elconvradius , (name+".Elconvradius["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElConvPoint_x").c_str() , ElConvPoint_x , (name+".ElConvPoint_x["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElConvPoint_y").c_str() , ElConvPoint_y , (name+".ElConvPoint_y["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElConvPoint_z").c_str() , ElConvPoint_z , (name+".ElConvPoint_z["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".dcotdist").c_str() , dcotdist , (name+".dcotdist["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElseedEoverP").c_str() , ElseedEoverP , (name+".ElseedEoverP["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElEcalIso04").c_str() , ElEcalIso04 , (name+".ElEcalIso04["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElHcalIso04").c_str() , ElHcalIso04 , (name+".ElHcalIso04["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ElNumberOfBrems").c_str() , ElNumberOfBrems , (name+".ElNumberOfBrems["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".TrgPt").c_str() , TrgPt , (name+".TrgPt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".TrgEta").c_str() , TrgEta , (name+".TrgEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".TrgPhi").c_str() , TrgPhi , (name+".TrgPhi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".TrgID").c_str() , TrgID , (name+".TrgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".isPFTau").c_str() , isPFTau , (name+".isPFTau["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".DiscriminationByDecayModeFinding").c_str() , DiscriminationByDecayModeFinding , (name+".DiscriminationByDecayModeFinding["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".DiscriminationByDecayModeFindingNewDMs").c_str() , DiscriminationByDecayModeFindingNewDMs , (name+".DiscriminationByDecayModeFindingNewDMs["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByLooseElectronRejection").c_str() , ByLooseElectronRejection , (name+".ByLooseElectronRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMediumElectronRejection").c_str() , ByMediumElectronRejection , (name+".ByMediumElectronRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByTightElectronRejection").c_str() , ByTightElectronRejection , (name+".ByTightElectronRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMVA5LooseElectronRejection").c_str() , ByMVA5LooseElectronRejection , (name+".ByMVA5LooseElectronRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMVA5MediumElectronRejection").c_str() , ByMVA5MediumElectronRejection , (name+".ByMVA5MediumElectronRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMVA5TightElectronRejection").c_str() , ByMVA5TightElectronRejection , (name+".ByMVA5TightElectronRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMVA5VTightElectronRejection").c_str() , ByMVA5VTightElectronRejection , (name+".ByMVA5VTightElectronRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByLooseMuonRejection3").c_str() , ByLooseMuonRejection3 , (name+".ByLooseMuonRejection3["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByTightMuonRejection3").c_str() , ByTightMuonRejection3 , (name+".ByTightMuonRejection3["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMVALooseMuonRejection").c_str() , ByMVALooseMuonRejection , (name+".ByMVALooseMuonRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMVAMediumMuonRejection").c_str() , ByMVAMediumMuonRejection , (name+".ByMVAMediumMuonRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMVATightMuonRejection").c_str() , ByMVATightMuonRejection , (name+".ByMVATightMuonRejection["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByLooseCombinedIsolationDeltaBetaCorr3Hits").c_str() , ByLooseCombinedIsolationDeltaBetaCorr3Hits , (name+".ByLooseCombinedIsolationDeltaBetaCorr3Hits["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMediumCombinedIsolationDeltaBetaCorr3Hits").c_str() , ByMediumCombinedIsolationDeltaBetaCorr3Hits , (name+".ByMediumCombinedIsolationDeltaBetaCorr3Hits["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByTightCombinedIsolationDeltaBetaCorr3Hits").c_str() , ByTightCombinedIsolationDeltaBetaCorr3Hits , (name+".ByTightCombinedIsolationDeltaBetaCorr3Hits["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".CombinedIsolationDeltaBetaCorrRaw3Hits").c_str() , CombinedIsolationDeltaBetaCorrRaw3Hits , (name+".CombinedIsolationDeltaBetaCorrRaw3Hits["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ByVLooseIsolationMVA3newDMwoLT").c_str() , ByVLooseIsolationMVA3newDMwoLT , (name+".ByVLooseIsolationMVA3newDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByLooseIsolationMVA3newDMwoLT").c_str() , ByLooseIsolationMVA3newDMwoLT , (name+".ByLooseIsolationMVA3newDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMediumIsolationMVA3newDMwoLT").c_str() , ByMediumIsolationMVA3newDMwoLT , (name+".ByMediumIsolationMVA3newDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByTightIsolationMVA3newDMwoLT").c_str() , ByTightIsolationMVA3newDMwoLT , (name+".ByTightIsolationMVA3newDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVTightIsolationMVA3newDMwoLT").c_str() , ByVTightIsolationMVA3newDMwoLT , (name+".ByVTightIsolationMVA3newDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVVTightIsolationMVA3newDMwoLT").c_str() , ByVVTightIsolationMVA3newDMwoLT , (name+".ByVVTightIsolationMVA3newDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByIsolationMVA3newDMwoLTraw").c_str() , ByIsolationMVA3newDMwoLTraw , (name+".ByIsolationMVA3newDMwoLTraw["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ByVLooseIsolationMVA3oldDMwLT").c_str() , ByVLooseIsolationMVA3oldDMwLT , (name+".ByVLooseIsolationMVA3oldDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByLooseIsolationMVA3oldDMwLT").c_str() , ByLooseIsolationMVA3oldDMwLT , (name+".ByLooseIsolationMVA3oldDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMediumIsolationMVA3oldDMwLT").c_str() , ByMediumIsolationMVA3oldDMwLT , (name+".ByMediumIsolationMVA3oldDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByTightIsolationMVA3oldDMwLT").c_str() , ByTightIsolationMVA3oldDMwLT , (name+".ByTightIsolationMVA3oldDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVTightIsolationMVA3oldDMwLT").c_str() , ByVTightIsolationMVA3oldDMwLT , (name+".ByVTightIsolationMVA3oldDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVVTightIsolationMVA3oldDMwLT").c_str() , ByVVTightIsolationMVA3oldDMwLT , (name+".ByVVTightIsolationMVA3oldDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByIsolationMVA3oldDMwLTraw").c_str() , ByIsolationMVA3oldDMwLTraw , (name+".ByIsolationMVA3oldDMwLTraw["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ByVLooseIsolationMVA3oldDMwoLT").c_str() , ByVLooseIsolationMVA3oldDMwoLT , (name+".ByVLooseIsolationMVA3oldDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByLooseIsolationMVA3oldDMwoLT").c_str() , ByLooseIsolationMVA3oldDMwoLT , (name+".ByLooseIsolationMVA3oldDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByTightIsolationMVA3oldDMwoLT").c_str() , ByTightIsolationMVA3oldDMwoLT , (name+".ByTightIsolationMVA3oldDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVTightIsolationMVA3oldDMwoLT").c_str() , ByVTightIsolationMVA3oldDMwoLT , (name+".ByVTightIsolationMVA3oldDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVVTightIsolationMVA3oldDMwoLT").c_str() , ByVVTightIsolationMVA3oldDMwoLT , (name+".ByVVTightIsolationMVA3oldDMwoLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByIsolationMVA3oldDMwoLTraw").c_str() , ByIsolationMVA3oldDMwoLTraw , (name+".ByIsolationMVA3oldDMwoLTraw["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".ByVLooseIsolationMVA3newDMwLT").c_str() , ByVLooseIsolationMVA3newDMwLT , (name+".ByVLooseIsolationMVA3newDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByLooseIsolationMVA3newDMwLT").c_str() , ByLooseIsolationMVA3newDMwLT , (name+".ByLooseIsolationMVA3newDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByMediumIsolationMVA3newDMwLT").c_str() , ByMediumIsolationMVA3newDMwLT , (name+".ByMediumIsolationMVA3newDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByTightIsolationMVA3newDMwLT").c_str() , ByTightIsolationMVA3newDMwLT , (name+".ByTightIsolationMVA3newDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVTightIsolationMVA3newDMwLT").c_str() , ByVTightIsolationMVA3newDMwLT , (name+".ByVTightIsolationMVA3newDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByVVTightIsolationMVA3newDMwLT").c_str() , ByVVTightIsolationMVA3newDMwLT , (name+".ByVVTightIsolationMVA3newDMwLT["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".ByIsolationMVA3newDMwLTraw").c_str() , ByIsolationMVA3newDMwLTraw , (name+".ByIsolationMVA3newDMwLTraw["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPt").c_str() , GenPt , (name+".GenPt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenEta").c_str() , GenEta , (name+".GenEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPhi").c_str() , GenPhi , (name+".GenPhi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPdgID").c_str() , GenPdgID , (name+".GenPdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GenMCTag").c_str() , GenMCTag , (name+".GenMCTag["+name+".Size]/I").c_str() ) ;
+}
+void Register( TTree* root , std::string name="LepInfo" ) { 
+root->SetBranchAddress( (name+".Size").c_str() , &Size ) ;
+root->SetBranchAddress( (name+".Index").c_str() , Index ) ;
+root->SetBranchAddress( (name+".LeptonType").c_str() , LeptonType ) ;
+root->SetBranchAddress( (name+".Charge").c_str() , Charge ) ;
+root->SetBranchAddress( (name+".Pt").c_str() , Pt ) ;
+root->SetBranchAddress( (name+".Et").c_str() , Et ) ;
+root->SetBranchAddress( (name+".Eta").c_str() , Eta ) ;
+root->SetBranchAddress( (name+".Phi").c_str() , Phi ) ;
+root->SetBranchAddress( (name+".Px").c_str() , Px ) ;
+root->SetBranchAddress( (name+".Py").c_str() , Py ) ;
+root->SetBranchAddress( (name+".Pz").c_str() , Pz ) ;
+root->SetBranchAddress( (name+".Energy").c_str() , Energy ) ;
+root->SetBranchAddress( (name+".TrackIso").c_str() , TrackIso ) ;
+root->SetBranchAddress( (name+".EcalIso").c_str() , EcalIso ) ;
+root->SetBranchAddress( (name+".HcalIso").c_str() , HcalIso ) ;
+root->SetBranchAddress( (name+".ChargedHadronIso").c_str() , ChargedHadronIso ) ;
+root->SetBranchAddress( (name+".NeutralHadronIso").c_str() , NeutralHadronIso ) ;
+root->SetBranchAddress( (name+".PhotonIso").c_str() , PhotonIso ) ;
+root->SetBranchAddress( (name+".ChargedHadronIsoR03").c_str() , ChargedHadronIsoR03 ) ;
+root->SetBranchAddress( (name+".NeutralHadronIsoR03").c_str() , NeutralHadronIsoR03 ) ;
+root->SetBranchAddress( (name+".PhotonIsoR03").c_str() , PhotonIsoR03 ) ;
+root->SetBranchAddress( (name+".sumPUPtR03").c_str() , sumPUPtR03 ) ;
+root->SetBranchAddress( (name+".IsoRhoCorrR03").c_str() , IsoRhoCorrR03 ) ;
+root->SetBranchAddress( (name+".ChargedHadronIsoR04").c_str() , ChargedHadronIsoR04 ) ;
+root->SetBranchAddress( (name+".NeutralHadronIsoR04").c_str() , NeutralHadronIsoR04 ) ;
+root->SetBranchAddress( (name+".PhotonIsoR04").c_str() , PhotonIsoR04 ) ;
+root->SetBranchAddress( (name+".sumPUPtR04").c_str() , sumPUPtR04 ) ;
+root->SetBranchAddress( (name+".IsoRhoCorrR04").c_str() , IsoRhoCorrR04 ) ;
+root->SetBranchAddress( (name+".Ip3dPV").c_str() , Ip3dPV ) ;
+root->SetBranchAddress( (name+".Ip3dPVErr").c_str() , Ip3dPVErr ) ;
+root->SetBranchAddress( (name+".Ip3dPVSignificance").c_str() , Ip3dPVSignificance ) ;
+root->SetBranchAddress( (name+".CaloEnergy").c_str() , CaloEnergy ) ;
+root->SetBranchAddress( (name+".isGoodMuonTMOneStationTight").c_str() , isGoodMuonTMOneStationTight ) ;
+root->SetBranchAddress( (name+".isPFMuon").c_str() , isPFMuon ) ;
+root->SetBranchAddress( (name+".MuIDGlobalMuonPromptTight").c_str() , MuIDGlobalMuonPromptTight ) ;
+root->SetBranchAddress( (name+".MuGlobalNormalizedChi2").c_str() , MuGlobalNormalizedChi2 ) ;
+root->SetBranchAddress( (name+".MuCaloCompat").c_str() , MuCaloCompat ) ;
+root->SetBranchAddress( (name+".MuNChambers").c_str() , MuNChambers ) ;
+root->SetBranchAddress( (name+".MuNChambersMatchesSegment").c_str() , MuNChambersMatchesSegment ) ;
+root->SetBranchAddress( (name+".MuNMatchedStations").c_str() , MuNMatchedStations ) ;
+root->SetBranchAddress( (name+".MuNLostOuterHits").c_str() , MuNLostOuterHits ) ;
+root->SetBranchAddress( (name+".MuNMuonhits").c_str() , MuNMuonhits ) ;
+root->SetBranchAddress( (name+".MuDThits").c_str() , MuDThits ) ;
+root->SetBranchAddress( (name+".MuCSChits").c_str() , MuCSChits ) ;
+root->SetBranchAddress( (name+".MuRPChits").c_str() , MuRPChits ) ;
+root->SetBranchAddress( (name+".MuType").c_str() , MuType ) ;
+root->SetBranchAddress( (name+".MuontimenDof").c_str() , MuontimenDof ) ;
+root->SetBranchAddress( (name+".MuontimeAtIpInOut").c_str() , MuontimeAtIpInOut ) ;
+root->SetBranchAddress( (name+".MuontimeAtIpOutIn").c_str() , MuontimeAtIpOutIn ) ;
+root->SetBranchAddress( (name+".Muondirection").c_str() , Muondirection ) ;
+root->SetBranchAddress( (name+".innerTracknormalizedChi2").c_str() , innerTracknormalizedChi2 ) ;
+root->SetBranchAddress( (name+".MuInnerPtError").c_str() , MuInnerPtError ) ;
+root->SetBranchAddress( (name+".MuGlobalPtError").c_str() , MuGlobalPtError ) ;
+root->SetBranchAddress( (name+".MuInnerTrackDz").c_str() , MuInnerTrackDz ) ;
+root->SetBranchAddress( (name+".MuInnerTrackD0").c_str() , MuInnerTrackD0 ) ;
+root->SetBranchAddress( (name+".MuInnerTrackDxy_BS").c_str() , MuInnerTrackDxy_BS ) ;
+root->SetBranchAddress( (name+".MuInnerTrackDxy_PV").c_str() , MuInnerTrackDxy_PV ) ;
+root->SetBranchAddress( (name+".MuInnerTrackDxy_PVBS").c_str() , MuInnerTrackDxy_PVBS ) ;
+root->SetBranchAddress( (name+".MuInnerTrackNHits").c_str() , MuInnerTrackNHits ) ;
+root->SetBranchAddress( (name+".MuNTrackerHits").c_str() , MuNTrackerHits ) ;
+root->SetBranchAddress( (name+".MuNLostInnerHits").c_str() , MuNLostInnerHits ) ;
+root->SetBranchAddress( (name+".vertexZ").c_str() , vertexZ ) ;
+root->SetBranchAddress( (name+".MuNPixelLayers").c_str() , MuNPixelLayers ) ;
+root->SetBranchAddress( (name+".MuNPixelLayersWMeasurement").c_str() , MuNPixelLayersWMeasurement ) ;
+root->SetBranchAddress( (name+".MuNTrackLayersWMeasurement").c_str() , MuNTrackLayersWMeasurement ) ;
+root->SetBranchAddress( (name+".ChargeGsf").c_str() , ChargeGsf ) ;
+root->SetBranchAddress( (name+".ChargeCtf").c_str() , ChargeCtf ) ;
+root->SetBranchAddress( (name+".ChargeScPix").c_str() , ChargeScPix ) ;
+root->SetBranchAddress( (name+".isEcalDriven").c_str() , isEcalDriven ) ;
+root->SetBranchAddress( (name+".isTrackerDriven").c_str() , isTrackerDriven ) ;
+root->SetBranchAddress( (name+".caloEta").c_str() , caloEta ) ;
+root->SetBranchAddress( (name+".e1x5").c_str() , e1x5 ) ;
+root->SetBranchAddress( (name+".e2x5Max").c_str() , e2x5Max ) ;
+root->SetBranchAddress( (name+".e5x5").c_str() , e5x5 ) ;
+root->SetBranchAddress( (name+".HcalDepth1Iso").c_str() , HcalDepth1Iso ) ;
+root->SetBranchAddress( (name+".HcalDepth2Iso").c_str() , HcalDepth2Iso ) ;
+root->SetBranchAddress( (name+".EgammaMVANonTrig").c_str() , EgammaMVANonTrig ) ;
+root->SetBranchAddress( (name+".EgammaMVATrig").c_str() , EgammaMVATrig ) ;
+root->SetBranchAddress( (name+".EgammaCutBasedEleIdTRIGGERTIGHT").c_str() , EgammaCutBasedEleIdTRIGGERTIGHT ) ;
+root->SetBranchAddress( (name+".EgammaCutBasedEleIdTRIGGERWP70").c_str() , EgammaCutBasedEleIdTRIGGERWP70 ) ;
+root->SetBranchAddress( (name+".EgammaCutBasedEleIdVETO").c_str() , EgammaCutBasedEleIdVETO ) ;
+root->SetBranchAddress( (name+".EgammaCutBasedEleIdLOOSE").c_str() , EgammaCutBasedEleIdLOOSE ) ;
+root->SetBranchAddress( (name+".EgammaCutBasedEleIdMEDIUM").c_str() , EgammaCutBasedEleIdMEDIUM ) ;
+root->SetBranchAddress( (name+".EgammaCutBasedEleIdTIGHT").c_str() , EgammaCutBasedEleIdTIGHT ) ;
+root->SetBranchAddress( (name+".EgammaCutBasedEleIdHEEP").c_str() , EgammaCutBasedEleIdHEEP ) ;
+root->SetBranchAddress( (name+".Eldr03HcalDepth1TowerSumEtBc").c_str() , Eldr03HcalDepth1TowerSumEtBc ) ;
+root->SetBranchAddress( (name+".Eldr03HcalDepth2TowerSumEtBc").c_str() , Eldr03HcalDepth2TowerSumEtBc ) ;
+root->SetBranchAddress( (name+".Eldr04HcalDepth1TowerSumEtBc").c_str() , Eldr04HcalDepth1TowerSumEtBc ) ;
+root->SetBranchAddress( (name+".Eldr04HcalDepth2TowerSumEtBc").c_str() , Eldr04HcalDepth2TowerSumEtBc ) ;
+root->SetBranchAddress( (name+".ElhcalOverEcalBc").c_str() , ElhcalOverEcalBc ) ;
+root->SetBranchAddress( (name+".ElEcalE").c_str() , ElEcalE ) ;
+root->SetBranchAddress( (name+".ElEoverP").c_str() , ElEoverP ) ;
+root->SetBranchAddress( (name+".EldeltaEta").c_str() , EldeltaEta ) ;
+root->SetBranchAddress( (name+".EldeltaPhi").c_str() , EldeltaPhi ) ;
+root->SetBranchAddress( (name+".ElHadoverEm").c_str() , ElHadoverEm ) ;
+root->SetBranchAddress( (name+".ElsigmaIetaIeta").c_str() , ElsigmaIetaIeta ) ;
+root->SetBranchAddress( (name+".ElscSigmaIetaIeta").c_str() , ElscSigmaIetaIeta ) ;
+root->SetBranchAddress( (name+".ElEnergyErr").c_str() , ElEnergyErr ) ;
+root->SetBranchAddress( (name+".ElMomentumErr").c_str() , ElMomentumErr ) ;
+root->SetBranchAddress( (name+".ElSharedHitsFraction").c_str() , ElSharedHitsFraction ) ;
+root->SetBranchAddress( (name+".dR_gsf_ctfTrack").c_str() , dR_gsf_ctfTrack ) ;
+root->SetBranchAddress( (name+".dPt_gsf_ctfTrack").c_str() , dPt_gsf_ctfTrack ) ;
+root->SetBranchAddress( (name+".ElhasConv").c_str() , ElhasConv ) ;
+root->SetBranchAddress( (name+".ElTrackNHits").c_str() , ElTrackNHits ) ;
+root->SetBranchAddress( (name+".ElTrackNLostHits").c_str() , ElTrackNLostHits ) ;
+root->SetBranchAddress( (name+".ElTrackDz").c_str() , ElTrackDz ) ;
+root->SetBranchAddress( (name+".ElTrackDz_BS").c_str() , ElTrackDz_BS ) ;
+root->SetBranchAddress( (name+".ElTrackD0").c_str() , ElTrackD0 ) ;
+root->SetBranchAddress( (name+".ElTrackDxy_BS").c_str() , ElTrackDxy_BS ) ;
+root->SetBranchAddress( (name+".ElTrackDxy_PV").c_str() , ElTrackDxy_PV ) ;
+root->SetBranchAddress( (name+".ElTrackDxy_PVBS").c_str() , ElTrackDxy_PVBS ) ;
+root->SetBranchAddress( (name+".ElNClusters").c_str() , ElNClusters ) ;
+root->SetBranchAddress( (name+".ElClassification").c_str() , ElClassification ) ;
+root->SetBranchAddress( (name+".ElFBrem").c_str() , ElFBrem ) ;
+root->SetBranchAddress( (name+".NumberOfExpectedInnerHits").c_str() , NumberOfExpectedInnerHits ) ;
+root->SetBranchAddress( (name+".Eldist").c_str() , Eldist ) ;
+root->SetBranchAddress( (name+".Eldcot").c_str() , Eldcot ) ;
+root->SetBranchAddress( (name+".Elconvradius").c_str() , Elconvradius ) ;
+root->SetBranchAddress( (name+".ElConvPoint_x").c_str() , ElConvPoint_x ) ;
+root->SetBranchAddress( (name+".ElConvPoint_y").c_str() , ElConvPoint_y ) ;
+root->SetBranchAddress( (name+".ElConvPoint_z").c_str() , ElConvPoint_z ) ;
+root->SetBranchAddress( (name+".dcotdist").c_str() , dcotdist ) ;
+root->SetBranchAddress( (name+".ElseedEoverP").c_str() , ElseedEoverP ) ;
+root->SetBranchAddress( (name+".ElEcalIso04").c_str() , ElEcalIso04 ) ;
+root->SetBranchAddress( (name+".ElHcalIso04").c_str() , ElHcalIso04 ) ;
+root->SetBranchAddress( (name+".ElNumberOfBrems").c_str() , ElNumberOfBrems ) ;
+root->SetBranchAddress( (name+".TrgPt").c_str() , TrgPt ) ;
+root->SetBranchAddress( (name+".TrgEta").c_str() , TrgEta ) ;
+root->SetBranchAddress( (name+".TrgPhi").c_str() , TrgPhi ) ;
+root->SetBranchAddress( (name+".TrgID").c_str() , TrgID ) ;
+root->SetBranchAddress( (name+".isPFTau").c_str() , isPFTau ) ;
+root->SetBranchAddress( (name+".DiscriminationByDecayModeFinding").c_str() , DiscriminationByDecayModeFinding ) ;
+root->SetBranchAddress( (name+".DiscriminationByDecayModeFindingNewDMs").c_str() , DiscriminationByDecayModeFindingNewDMs ) ;
+root->SetBranchAddress( (name+".ByLooseElectronRejection").c_str() , ByLooseElectronRejection ) ;
+root->SetBranchAddress( (name+".ByMediumElectronRejection").c_str() , ByMediumElectronRejection ) ;
+root->SetBranchAddress( (name+".ByTightElectronRejection").c_str() , ByTightElectronRejection ) ;
+root->SetBranchAddress( (name+".ByMVA5LooseElectronRejection").c_str() , ByMVA5LooseElectronRejection ) ;
+root->SetBranchAddress( (name+".ByMVA5MediumElectronRejection").c_str() , ByMVA5MediumElectronRejection ) ;
+root->SetBranchAddress( (name+".ByMVA5TightElectronRejection").c_str() , ByMVA5TightElectronRejection ) ;
+root->SetBranchAddress( (name+".ByMVA5VTightElectronRejection").c_str() , ByMVA5VTightElectronRejection ) ;
+root->SetBranchAddress( (name+".ByLooseMuonRejection3").c_str() , ByLooseMuonRejection3 ) ;
+root->SetBranchAddress( (name+".ByTightMuonRejection3").c_str() , ByTightMuonRejection3 ) ;
+root->SetBranchAddress( (name+".ByMVALooseMuonRejection").c_str() , ByMVALooseMuonRejection ) ;
+root->SetBranchAddress( (name+".ByMVAMediumMuonRejection").c_str() , ByMVAMediumMuonRejection ) ;
+root->SetBranchAddress( (name+".ByMVATightMuonRejection").c_str() , ByMVATightMuonRejection ) ;
+root->SetBranchAddress( (name+".ByLooseCombinedIsolationDeltaBetaCorr3Hits").c_str() , ByLooseCombinedIsolationDeltaBetaCorr3Hits ) ;
+root->SetBranchAddress( (name+".ByMediumCombinedIsolationDeltaBetaCorr3Hits").c_str() , ByMediumCombinedIsolationDeltaBetaCorr3Hits ) ;
+root->SetBranchAddress( (name+".ByTightCombinedIsolationDeltaBetaCorr3Hits").c_str() , ByTightCombinedIsolationDeltaBetaCorr3Hits ) ;
+root->SetBranchAddress( (name+".CombinedIsolationDeltaBetaCorrRaw3Hits").c_str() , CombinedIsolationDeltaBetaCorrRaw3Hits ) ;
+root->SetBranchAddress( (name+".ByVLooseIsolationMVA3newDMwoLT").c_str() , ByVLooseIsolationMVA3newDMwoLT ) ;
+root->SetBranchAddress( (name+".ByLooseIsolationMVA3newDMwoLT").c_str() , ByLooseIsolationMVA3newDMwoLT ) ;
+root->SetBranchAddress( (name+".ByMediumIsolationMVA3newDMwoLT").c_str() , ByMediumIsolationMVA3newDMwoLT ) ;
+root->SetBranchAddress( (name+".ByTightIsolationMVA3newDMwoLT").c_str() , ByTightIsolationMVA3newDMwoLT ) ;
+root->SetBranchAddress( (name+".ByVTightIsolationMVA3newDMwoLT").c_str() , ByVTightIsolationMVA3newDMwoLT ) ;
+root->SetBranchAddress( (name+".ByVVTightIsolationMVA3newDMwoLT").c_str() , ByVVTightIsolationMVA3newDMwoLT ) ;
+root->SetBranchAddress( (name+".ByIsolationMVA3newDMwoLTraw").c_str() , ByIsolationMVA3newDMwoLTraw ) ;
+root->SetBranchAddress( (name+".ByVLooseIsolationMVA3oldDMwLT").c_str() , ByVLooseIsolationMVA3oldDMwLT ) ;
+root->SetBranchAddress( (name+".ByLooseIsolationMVA3oldDMwLT").c_str() , ByLooseIsolationMVA3oldDMwLT ) ;
+root->SetBranchAddress( (name+".ByMediumIsolationMVA3oldDMwLT").c_str() , ByMediumIsolationMVA3oldDMwLT ) ;
+root->SetBranchAddress( (name+".ByTightIsolationMVA3oldDMwLT").c_str() , ByTightIsolationMVA3oldDMwLT ) ;
+root->SetBranchAddress( (name+".ByVTightIsolationMVA3oldDMwLT").c_str() , ByVTightIsolationMVA3oldDMwLT ) ;
+root->SetBranchAddress( (name+".ByVVTightIsolationMVA3oldDMwLT").c_str() , ByVVTightIsolationMVA3oldDMwLT ) ;
+root->SetBranchAddress( (name+".ByIsolationMVA3oldDMwLTraw").c_str() , ByIsolationMVA3oldDMwLTraw ) ;
+root->SetBranchAddress( (name+".ByVLooseIsolationMVA3oldDMwoLT").c_str() , ByVLooseIsolationMVA3oldDMwoLT ) ;
+root->SetBranchAddress( (name+".ByLooseIsolationMVA3oldDMwoLT").c_str() , ByLooseIsolationMVA3oldDMwoLT ) ;
+root->SetBranchAddress( (name+".ByTightIsolationMVA3oldDMwoLT").c_str() , ByTightIsolationMVA3oldDMwoLT ) ;
+root->SetBranchAddress( (name+".ByVTightIsolationMVA3oldDMwoLT").c_str() , ByVTightIsolationMVA3oldDMwoLT ) ;
+root->SetBranchAddress( (name+".ByVVTightIsolationMVA3oldDMwoLT").c_str() , ByVVTightIsolationMVA3oldDMwoLT ) ;
+root->SetBranchAddress( (name+".ByIsolationMVA3oldDMwoLTraw").c_str() , ByIsolationMVA3oldDMwoLTraw ) ;
+root->SetBranchAddress( (name+".ByVLooseIsolationMVA3newDMwLT").c_str() , ByVLooseIsolationMVA3newDMwLT ) ;
+root->SetBranchAddress( (name+".ByLooseIsolationMVA3newDMwLT").c_str() , ByLooseIsolationMVA3newDMwLT ) ;
+root->SetBranchAddress( (name+".ByMediumIsolationMVA3newDMwLT").c_str() , ByMediumIsolationMVA3newDMwLT ) ;
+root->SetBranchAddress( (name+".ByTightIsolationMVA3newDMwLT").c_str() , ByTightIsolationMVA3newDMwLT ) ;
+root->SetBranchAddress( (name+".ByVTightIsolationMVA3newDMwLT").c_str() , ByVTightIsolationMVA3newDMwLT ) ;
+root->SetBranchAddress( (name+".ByVVTightIsolationMVA3newDMwLT").c_str() , ByVVTightIsolationMVA3newDMwLT ) ;
+root->SetBranchAddress( (name+".ByIsolationMVA3newDMwLTraw").c_str() , ByIsolationMVA3newDMwLTraw ) ;
+root->SetBranchAddress( (name+".GenPt").c_str() , GenPt ) ;
+root->SetBranchAddress( (name+".GenEta").c_str() , GenEta ) ;
+root->SetBranchAddress( (name+".GenPhi").c_str() , GenPhi ) ;
+root->SetBranchAddress( (name+".GenPdgID").c_str() , GenPdgID ) ;
+root->SetBranchAddress( (name+".GenMCTag").c_str() , GenMCTag ) ;
+}
 };
+class EvtInfoBranches { public: 
+int     RunNo  ;
+size_t  EvtNo  ;
+int     BxNo   ;
+int     LumiNo ;
+int     Orbit  ;
+//--------------------------------  MC information  ---------------------------------
+int   McFlag            ; // MC or not MC, that's the question
+int   McSigTag          ; // MC Signature tag    - 0: others, 1: 2L (opposite-sign), 2: 2L (same-sign), 3: 3L, 4: 4L
+int   McbprimeMode [2]  ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
+int   MctprimeMode [2]  ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
+int   McWMode      [4]  ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
+int   McZMode      [2]  ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
+float McbprimeMass [2]  ; // mass: b'(bar)
+float MctprimeMass [2]  ; // mass: t'(bar)
+float MctopMass    [2]  ; // mass: top(bar)
+float McWMass      [4]  ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
+float McZMass      [2]  ; // mass: Z from b'(bar) or t'(bar)
+float McDauPt      [14] ; // Generic MC daughter information
+float McDauEta     [14] ; // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
+float McDauPhi     [14] ;
+int   McDauPdgID   [14] ;
+//-----------------------------  Isolation information  -----------------------------
+float Rho       ;
+float RhoPU  [2];       // [electron,muon]
+float SigmaPU[2];      // [electron,muon]
+//-----------------------------------  Beam spot  -----------------------------------
+float BeamSpotX;
+float BeamSpotY;
+float BeamSpotZ;
+//--------------------------------  PU information  ---------------------------------
+int   nBX            ;
+int   nPU    [MAX_BX];
+int   BXPU   [MAX_BX];
+float TrueIT [MAX_BX];
+//--------------------------------  PDF information  --------------------------------
+int   PDFid1   ;
+int   PDFid2   ;
+float PDFx1    ;
+float PDFx2    ;
+float PDFscale ;
+float PDFv1    ;
+float PDFv2    ;
+//---------------------------  partilce flow information  ---------------------------
+float PFMET                                     ;
+float PFMETType1CorrectedPFMetUnclusteredEnUp   ;
+float PFMETType1CorrectedPFMetUnclusteredEnDown ;
+float PFMETPhi                                  ;
+float PFRawMET                                  ;
+float PFRawMETPhi                               ;
+float PFSumEt                                   ;
+float PFMETSig                                  ;
+float PFMETlongitudinal                         ;
+float PFMETRealSig                              ;
+float PFGenMET                                  ;
+float PFGenMETPhi                               ;
+float PFMETx                                    ; //Uly 2011-04-04
+float PFMETy                                    ; //Uly 2011-04-04
+//------------------------------  Tirgger information  ------------------------------
+int   TrgCount                    ; // No. of fired booking bits
+int   nTrgBook                    ;
+char  TrgBook[N_TRIGGER_BOOKINGS] ; // Trigger bits, reserved up to 120 entries
+int   nHLT                        ;
+float HighPurityFraction          ; //Added by Dmitry to help filter out bad events
+int   NofTracks                   ; //Added by Dmitry to help filter out bad events
+float ptHat                       ;
+int   HLTPrescaleFactor[512]      ;
+int   HLTName2enum[512]           ;
+bool  HLTbits[N_TRIGGER_BOOKINGS] ;
+int   L1[128]                     ; // L1 trigger bits
+int   TT[64]                      ; // Techical trigger bits
 
+void RegisterTree( TTree* root , std::string name="EvtInfo" ) { 
+root->Branch( (name+".RunNo").c_str() , &RunNo ) ;
+root->Branch( (name+".EvtNo").c_str() , &EvtNo ) ;
+root->Branch( (name+".BxNo").c_str() , &BxNo ) ;
+root->Branch( (name+".LumiNo").c_str() , &LumiNo ) ;
+root->Branch( (name+".Orbit").c_str() , &Orbit ) ;
+root->Branch( (name+".McFlag").c_str() , &McFlag ) ;
+root->Branch( (name+".McSigTag").c_str() , &McSigTag ) ;
+root->Branch( (name+".McbprimeMode").c_str() , McbprimeMode , (name+".McbprimeMode[2]/I").c_str() ) ;
+root->Branch( (name+".MctprimeMode").c_str() , MctprimeMode , (name+".MctprimeMode[2]/I").c_str() ) ;
+root->Branch( (name+".McWMode").c_str() , McWMode , (name+".McWMode[4]/I").c_str() ) ;
+root->Branch( (name+".McZMode").c_str() , McZMode , (name+".McZMode[2]/I").c_str() ) ;
+root->Branch( (name+".McbprimeMass").c_str() , McbprimeMass , (name+".McbprimeMass[2]/F").c_str() ) ;
+root->Branch( (name+".MctprimeMass").c_str() , MctprimeMass , (name+".MctprimeMass[2]/F").c_str() ) ;
+root->Branch( (name+".MctopMass").c_str() , MctopMass , (name+".MctopMass[2]/F").c_str() ) ;
+root->Branch( (name+".McWMass").c_str() , McWMass , (name+".McWMass[4]/F").c_str() ) ;
+root->Branch( (name+".McZMass").c_str() , McZMass , (name+".McZMass[2]/F").c_str() ) ;
+root->Branch( (name+".McDauPt").c_str() , McDauPt , (name+".McDauPt[14]/F").c_str() ) ;
+root->Branch( (name+".McDauEta").c_str() , McDauEta , (name+".McDauEta[14]/F").c_str() ) ;
+root->Branch( (name+".McDauPhi").c_str() , McDauPhi , (name+".McDauPhi[14]/F").c_str() ) ;
+root->Branch( (name+".McDauPdgID").c_str() , McDauPdgID , (name+".McDauPdgID[14]/I").c_str() ) ;
+root->Branch( (name+".Rho").c_str() , &Rho ) ;
+root->Branch( (name+".RhoPU").c_str() , RhoPU , (name+".RhoPU[2]/F").c_str() ) ;
+root->Branch( (name+".SigmaPU").c_str() , SigmaPU , (name+".SigmaPU[2]/F").c_str() ) ;
+root->Branch( (name+".BeamSpotX").c_str() , &BeamSpotX ) ;
+root->Branch( (name+".BeamSpotY").c_str() , &BeamSpotY ) ;
+root->Branch( (name+".BeamSpotZ").c_str() , &BeamSpotZ ) ;
+root->Branch( (name+".nBX").c_str() , &nBX ) ;
+root->Branch( (name+".nPU").c_str() , nPU , (name+".nPU["+name+".]/I").c_str() ) ;
+root->Branch( (name+".BXPU").c_str() , BXPU , (name+".BXPU["+name+".]/I").c_str() ) ;
+root->Branch( (name+".TrueIT").c_str() , TrueIT , (name+".TrueIT["+name+".]/F").c_str() ) ;
+root->Branch( (name+".PDFid1").c_str() , &PDFid1 ) ;
+root->Branch( (name+".PDFid2").c_str() , &PDFid2 ) ;
+root->Branch( (name+".PDFx1").c_str() , &PDFx1 ) ;
+root->Branch( (name+".PDFx2").c_str() , &PDFx2 ) ;
+root->Branch( (name+".PDFscale").c_str() , &PDFscale ) ;
+root->Branch( (name+".PDFv1").c_str() , &PDFv1 ) ;
+root->Branch( (name+".PDFv2").c_str() , &PDFv2 ) ;
+root->Branch( (name+".PFMET").c_str() , &PFMET ) ;
+root->Branch( (name+".PFMETType1CorrectedPFMetUnclusteredEnUp").c_str() , &PFMETType1CorrectedPFMetUnclusteredEnUp ) ;
+root->Branch( (name+".PFMETType1CorrectedPFMetUnclusteredEnDown").c_str() , &PFMETType1CorrectedPFMetUnclusteredEnDown ) ;
+root->Branch( (name+".PFMETPhi").c_str() , &PFMETPhi ) ;
+root->Branch( (name+".PFRawMET").c_str() , &PFRawMET ) ;
+root->Branch( (name+".PFRawMETPhi").c_str() , &PFRawMETPhi ) ;
+root->Branch( (name+".PFSumEt").c_str() , &PFSumEt ) ;
+root->Branch( (name+".PFMETSig").c_str() , &PFMETSig ) ;
+root->Branch( (name+".PFMETlongitudinal").c_str() , &PFMETlongitudinal ) ;
+root->Branch( (name+".PFMETRealSig").c_str() , &PFMETRealSig ) ;
+root->Branch( (name+".PFGenMET").c_str() , &PFGenMET ) ;
+root->Branch( (name+".PFGenMETPhi").c_str() , &PFGenMETPhi ) ;
+root->Branch( (name+".PFMETx").c_str() , &PFMETx ) ;
+root->Branch( (name+".PFMETy").c_str() , &PFMETy ) ;
+root->Branch( (name+".TrgCount").c_str() , &TrgCount ) ;
+root->Branch( (name+".nTrgBook").c_str() , &nTrgBook ) ;
+root->Branch( (name+".TrgBook").c_str() , TrgBook , (name+".TrgBook["+name+".nTrgBook]/C").c_str() ) ;
+root->Branch( (name+".nHLT").c_str() , &nHLT ) ;
+root->Branch( (name+".HighPurityFraction").c_str() , &HighPurityFraction ) ;
+root->Branch( (name+".NofTracks").c_str() , &NofTracks ) ;
+root->Branch( (name+".ptHat").c_str() , &ptHat ) ;
+root->Branch( (name+".HLTPrescaleFactor").c_str() , HLTPrescaleFactor , (name+".HLTPrescaleFactor["+name+".nHLT]/I").c_str() ) ;
+root->Branch( (name+".HLTName2enum").c_str() , HLTName2enum , (name+".HLTName2enum["+name+".nHLT]/I").c_str() ) ;
+root->Branch( (name+".HLTbits").c_str() , HLTbits , (name+".HLTbits["+name+".nHLT]/C").c_str() ) ;
+root->Branch( (name+".L1").c_str() , L1 , (name+".L1[128]/I").c_str() ) ;
+root->Branch( (name+".TT").c_str() , TT , (name+".TT[64]/I").c_str() ) ;
+}
+void Register( TTree* root , std::string name="EvtInfo" ) { 
+root->SetBranchAddress( (name+".RunNo").c_str() , &RunNo ) ;
+root->SetBranchAddress( (name+".EvtNo").c_str() , &EvtNo ) ;
+root->SetBranchAddress( (name+".BxNo").c_str() , &BxNo ) ;
+root->SetBranchAddress( (name+".LumiNo").c_str() , &LumiNo ) ;
+root->SetBranchAddress( (name+".Orbit").c_str() , &Orbit ) ;
+root->SetBranchAddress( (name+".McFlag").c_str() , &McFlag ) ;
+root->SetBranchAddress( (name+".McSigTag").c_str() , &McSigTag ) ;
+root->SetBranchAddress( (name+".McbprimeMode").c_str() , McbprimeMode ) ;
+root->SetBranchAddress( (name+".MctprimeMode").c_str() , MctprimeMode ) ;
+root->SetBranchAddress( (name+".McWMode").c_str() , McWMode ) ;
+root->SetBranchAddress( (name+".McZMode").c_str() , McZMode ) ;
+root->SetBranchAddress( (name+".McbprimeMass").c_str() , McbprimeMass ) ;
+root->SetBranchAddress( (name+".MctprimeMass").c_str() , MctprimeMass ) ;
+root->SetBranchAddress( (name+".MctopMass").c_str() , MctopMass ) ;
+root->SetBranchAddress( (name+".McWMass").c_str() , McWMass ) ;
+root->SetBranchAddress( (name+".McZMass").c_str() , McZMass ) ;
+root->SetBranchAddress( (name+".McDauPt").c_str() , McDauPt ) ;
+root->SetBranchAddress( (name+".McDauEta").c_str() , McDauEta ) ;
+root->SetBranchAddress( (name+".McDauPhi").c_str() , McDauPhi ) ;
+root->SetBranchAddress( (name+".McDauPdgID").c_str() , McDauPdgID ) ;
+root->SetBranchAddress( (name+".Rho").c_str() , &Rho ) ;
+root->SetBranchAddress( (name+".RhoPU").c_str() , RhoPU ) ;
+root->SetBranchAddress( (name+".SigmaPU").c_str() , SigmaPU ) ;
+root->SetBranchAddress( (name+".BeamSpotX").c_str() , &BeamSpotX ) ;
+root->SetBranchAddress( (name+".BeamSpotY").c_str() , &BeamSpotY ) ;
+root->SetBranchAddress( (name+".BeamSpotZ").c_str() , &BeamSpotZ ) ;
+root->SetBranchAddress( (name+".nBX").c_str() , &nBX ) ;
+root->SetBranchAddress( (name+".nPU").c_str() , nPU ) ;
+root->SetBranchAddress( (name+".BXPU").c_str() , BXPU ) ;
+root->SetBranchAddress( (name+".TrueIT").c_str() , TrueIT ) ;
+root->SetBranchAddress( (name+".PDFid1").c_str() , &PDFid1 ) ;
+root->SetBranchAddress( (name+".PDFid2").c_str() , &PDFid2 ) ;
+root->SetBranchAddress( (name+".PDFx1").c_str() , &PDFx1 ) ;
+root->SetBranchAddress( (name+".PDFx2").c_str() , &PDFx2 ) ;
+root->SetBranchAddress( (name+".PDFscale").c_str() , &PDFscale ) ;
+root->SetBranchAddress( (name+".PDFv1").c_str() , &PDFv1 ) ;
+root->SetBranchAddress( (name+".PDFv2").c_str() , &PDFv2 ) ;
+root->SetBranchAddress( (name+".PFMET").c_str() , &PFMET ) ;
+root->SetBranchAddress( (name+".PFMETType1CorrectedPFMetUnclusteredEnUp").c_str() , &PFMETType1CorrectedPFMetUnclusteredEnUp ) ;
+root->SetBranchAddress( (name+".PFMETType1CorrectedPFMetUnclusteredEnDown").c_str() , &PFMETType1CorrectedPFMetUnclusteredEnDown ) ;
+root->SetBranchAddress( (name+".PFMETPhi").c_str() , &PFMETPhi ) ;
+root->SetBranchAddress( (name+".PFRawMET").c_str() , &PFRawMET ) ;
+root->SetBranchAddress( (name+".PFRawMETPhi").c_str() , &PFRawMETPhi ) ;
+root->SetBranchAddress( (name+".PFSumEt").c_str() , &PFSumEt ) ;
+root->SetBranchAddress( (name+".PFMETSig").c_str() , &PFMETSig ) ;
+root->SetBranchAddress( (name+".PFMETlongitudinal").c_str() , &PFMETlongitudinal ) ;
+root->SetBranchAddress( (name+".PFMETRealSig").c_str() , &PFMETRealSig ) ;
+root->SetBranchAddress( (name+".PFGenMET").c_str() , &PFGenMET ) ;
+root->SetBranchAddress( (name+".PFGenMETPhi").c_str() , &PFGenMETPhi ) ;
+root->SetBranchAddress( (name+".PFMETx").c_str() , &PFMETx ) ;
+root->SetBranchAddress( (name+".PFMETy").c_str() , &PFMETy ) ;
+root->SetBranchAddress( (name+".TrgCount").c_str() , &TrgCount ) ;
+root->SetBranchAddress( (name+".nTrgBook").c_str() , &nTrgBook ) ;
+root->SetBranchAddress( (name+".TrgBook").c_str() , TrgBook ) ;
+root->SetBranchAddress( (name+".nHLT").c_str() , &nHLT ) ;
+root->SetBranchAddress( (name+".HighPurityFraction").c_str() , &HighPurityFraction ) ;
+root->SetBranchAddress( (name+".NofTracks").c_str() , &NofTracks ) ;
+root->SetBranchAddress( (name+".ptHat").c_str() , &ptHat ) ;
+root->SetBranchAddress( (name+".HLTPrescaleFactor").c_str() , HLTPrescaleFactor ) ;
+root->SetBranchAddress( (name+".HLTName2enum").c_str() , HLTName2enum ) ;
+root->SetBranchAddress( (name+".HLTbits").c_str() , HLTbits ) ;
+root->SetBranchAddress( (name+".L1").c_str() , L1 ) ;
+root->SetBranchAddress( (name+".TT").c_str() , TT ) ;
+}
+};
+class JetInfoBranches { public: 
+int   Size;
+int   Index                   [MAX_JETS] ;
+int   NTracks                 [MAX_JETS] ;
+float Et                      [MAX_JETS] ;
+float Pt                      [MAX_JETS] ;
+float Unc                     [MAX_JETS] ;
+float Eta                     [MAX_JETS] ;
+float Phi                     [MAX_JETS] ;
+float Px                      [MAX_JETS] ; //Uly 2011-04-04
+float Py                      [MAX_JETS] ; //Uly 2011-04-04
+float Pz                      [MAX_JETS] ; //Uly 2011-04-04
+float Energy                  [MAX_JETS] ; //Uly 2011-04-04
+float Mass                    [MAX_JETS] ;
+float Area                    [MAX_JETS] ;
+int   JetIDLOOSE              [MAX_JETS] ; //Add by Chiyi
+float JetCharge               [MAX_JETS] ;
+float QGTagsMLP               [MAX_JETS] ;
+float QGTagsLikelihood        [MAX_JETS] ;
+int   NConstituents           [MAX_JETS] ;
+//-------------------------  Particle flow jet information  -------------------------
+int   NCH                     [MAX_JETS] ;
+float CEF                     [MAX_JETS] ;
+float NHF                     [MAX_JETS] ;
+float NEF                     [MAX_JETS] ;
+float CHF                     [MAX_JETS] ;
+float JVAlpha                 [MAX_JETS] ;
+float JVBeta                  [MAX_JETS] ;
 
-class JetInfoBranches {
-public:
-   int   Size;
-   int   Index                   [MAX_JETS] ;
-   int   NTracks                 [MAX_JETS] ;
-   float Et                      [MAX_JETS] ;
-   float Pt                      [MAX_JETS] ;
-   float Unc                     [MAX_JETS] ;
-   float Eta                     [MAX_JETS] ;
-   float Phi                     [MAX_JETS] ;
-   float Px                      [MAX_JETS] ; //Uly 2011-04-04
-   float Py                      [MAX_JETS] ; //Uly 2011-04-04
-   float Pz                      [MAX_JETS] ; //Uly 2011-04-04
-   float Energy                  [MAX_JETS] ; //Uly 2011-04-04
-   float Mass                    [MAX_JETS] ;
-   float Area                    [MAX_JETS] ;
-   int   JetIDLOOSE              [MAX_JETS] ; //Add by Chiyi
-   float JetCharge               [MAX_JETS] ;
-   float QGTagsMLP               [MAX_JETS] ;
-   float QGTagsLikelihood        [MAX_JETS] ;
-   int   NConstituents           [MAX_JETS] ;
-   //-------------------------  Particle flow jet information  -------------------------
-   int   NCH                     [MAX_JETS] ;
-   float CEF                     [MAX_JETS] ;
-   float NHF                     [MAX_JETS] ;
-   float NEF                     [MAX_JETS] ;
-   float CHF                     [MAX_JETS] ;
-   float JVAlpha                 [MAX_JETS] ;
-   float JVBeta                  [MAX_JETS] ;
-   
-   //--------------------------  Jet Correction information  ---------------------------
-   float PtCorrRaw               [MAX_JETS] ;
-   float PtCorrL2                [MAX_JETS] ;
-   float PtCorrL3                [MAX_JETS] ;
-   float PtCorrL7g               [MAX_JETS] ;
-   float PtCorrL7uds             [MAX_JETS] ;
-   float PtCorrL7c               [MAX_JETS] ;
-   float PtCorrL7b               [MAX_JETS] ;
-   float JetBProbBJetTags        [MAX_JETS] ;
-   float CombinedSVBJetTags      [MAX_JETS] ;
-   float CombinedSVMVABJetTags   [MAX_JETS] ;
+//--------------------------  Jet Correction information  ---------------------------
+float PtCorrRaw               [MAX_JETS] ;
+float PtCorrL2                [MAX_JETS] ;
+float PtCorrL3                [MAX_JETS] ;
+float PtCorrL7g               [MAX_JETS] ;
+float PtCorrL7uds             [MAX_JETS] ;
+float PtCorrL7c               [MAX_JETS] ;
+float PtCorrL7b               [MAX_JETS] ;
+float JetBProbBJetTags        [MAX_JETS] ;
+float CombinedSVBJetTags      [MAX_JETS] ;
+float CombinedSVMVABJetTags   [MAX_JETS] ;
 
-   //----------------------------  Generation information  -----------------------------
-   float GenJetPt                [MAX_JETS] ;
-   float GenJetEta               [MAX_JETS] ;
-   float GenJetPhi               [MAX_JETS] ;
-   float GenPt                   [MAX_JETS] ;
-   float GenEta                  [MAX_JETS] ;
-   float GenPhi                  [MAX_JETS] ;
-   int   GenPdgID                [MAX_JETS] ;
-   int   GenFlavor               [MAX_JETS] ;
-   int   GenMCTag                [MAX_JETS] ; // 0: unknown, 1: decay from W, 2: decay from Z, (+10) from b', (+20) from t'
+//----------------------------  Generation information  -----------------------------
+float GenJetPt                [MAX_JETS] ;
+float GenJetEta               [MAX_JETS] ;
+float GenJetPhi               [MAX_JETS] ;
+float GenPt                   [MAX_JETS] ;
+float GenEta                  [MAX_JETS] ;
+float GenPhi                  [MAX_JETS] ;
+int   GenPdgID                [MAX_JETS] ;
+int   GenFlavor               [MAX_JETS] ;
+int   GenMCTag                [MAX_JETS] ; // 0: unknown, 1: decay from W, 2: decay from Z, (+10) from b', (+20) from t'
 
-   //------------------------------  Subjet information  -------------------------------
-   int NSubjets                  [MAX_JETS] ;
-   int SubjetsIdxStart           [MAX_JETS] ;
-   std::vector<float> SubjetMass_w               ;
-   std::vector<float> SubjetPt_w                 ;
-   std::vector<float> SubjetEt_w                 ;
-   std::vector<float> SubjetEta_w                ;
-   std::vector<float> SubjetPhi_w                ;
-   std::vector<float> SubjetCombinedSVBJetTags_w ;
-   std::vector<float> SubjetPtUncorr_w           ;
-   std::vector<float> SubjetArea_w               ;
-   // Vector for reading
-   std::vector<float>* SubjetMass                ;
-   std::vector<float>* SubjetPt                  ;
-   std::vector<float>* SubjetEt                  ;
-   std::vector<float>* SubjetEta                 ;
-   std::vector<float>* SubjetPhi                 ;
-   std::vector<float>* SubjetCombinedSVBJetTags  ;
-   std::vector<float>* SubjetPtUncorr            ;
-   std::vector<float>* SubjetArea                ;
+//------------------------------  Subjet information  -------------------------------
+int NSubjets                  [MAX_JETS] ;
+int SubjetsIdxStart           [MAX_JETS] ;
+std::vector<float> SubjetMass_w               ;
+std::vector<float> SubjetPt_w                 ;
+std::vector<float> SubjetEt_w                 ;
+std::vector<float> SubjetEta_w                ;
+std::vector<float> SubjetPhi_w                ;
+std::vector<float> SubjetCombinedSVBJetTags_w ;
+std::vector<float> SubjetPtUncorr_w           ;
+std::vector<float> SubjetArea_w               ;
+// Vector for reading
+std::vector<float>* SubjetMass                ;
+std::vector<float>* SubjetPt                  ;
+std::vector<float>* SubjetEt                  ;
+std::vector<float>* SubjetEta                 ;
+std::vector<float>* SubjetPhi                 ;
+std::vector<float>* SubjetCombinedSVBJetTags  ;
+std::vector<float>* SubjetPtUncorr            ;
+std::vector<float>* SubjetArea                ;
+
 #ifdef __BPRIMEKIT__
    reco::Candidate* CandRef[MAX_JETS]; // backward pointer to the PAT objects
 #endif
-
-   void RegisterTree( TTree* root, std::string name = "JetInfo" ) {
-      BRANCH_OBJ  ( Size                    , I   ) ;
-      BRANCH_ARRAY( Index                   , I   ) ;
-      BRANCH_ARRAY( NTracks                 , I   ) ;
-      BRANCH_ARRAY( Et                      , F   ) ;
-      BRANCH_ARRAY( Pt                      , F   ) ;
-      BRANCH_ARRAY( Unc                     , F   ) ;
-      BRANCH_ARRAY( Eta                     , F   ) ;
-      BRANCH_ARRAY( Phi                     , F   ) ;
-      BRANCH_ARRAY( JetIDLOOSE              , I   ) ;
-      BRANCH_ARRAY( JetCharge               , F   ) ;
-      BRANCH_ARRAY( QGTagsMLP               , F   ) ;
-      BRANCH_ARRAY( QGTagsLikelihood        , F   ) ;
-      BRANCH_ARRAY( NConstituents           , I   ) ;
-      BRANCH_ARRAY( NCH                     , I   ) ;
-      BRANCH_ARRAY( CEF                     , F   ) ;
-      BRANCH_ARRAY( NHF                     , F   ) ;
-      BRANCH_ARRAY( NEF                     , F   ) ;
-      BRANCH_ARRAY( CHF                     , F   ) ;
-      BRANCH_ARRAY( JVAlpha                 , F   ) ;
-      BRANCH_ARRAY( JVBeta                  , F   ) ;
-      BRANCH_ARRAY( PtCorrRaw               , F   ) ;
-      BRANCH_ARRAY( PtCorrL2                , F   ) ;
-      BRANCH_ARRAY( PtCorrL3                , F   ) ;
-      BRANCH_ARRAY( PtCorrL7g               , F   ) ;
-      BRANCH_ARRAY( PtCorrL7uds             , F   ) ;
-      BRANCH_ARRAY( PtCorrL7c               , F   ) ;
-      BRANCH_ARRAY( PtCorrL7b               , F   ) ;
-      BRANCH_ARRAY( JetBProbBJetTags        , F   ) ;
-      BRANCH_ARRAY( CombinedSVBJetTags      , F   ) ;
-      BRANCH_ARRAY( CombinedSVMVABJetTags   , F   ) ;
-      BRANCH_ARRAY( GenJetPt                , F   ) ;
-      BRANCH_ARRAY( GenJetEta               , F   ) ;
-      BRANCH_ARRAY( GenJetPhi               , F   ) ;
-      BRANCH_ARRAY( GenPt                   , F   ) ;
-      BRANCH_ARRAY( GenEta                  , F   ) ;
-      BRANCH_ARRAY( GenPhi                  , F   ) ;
-      BRANCH_ARRAY( GenPdgID                , I   ) ;
-      BRANCH_ARRAY( GenFlavor               , I   ) ;
-      BRANCH_ARRAY( GenMCTag                , I   ) ;
-      BRANCH_ARRAY( Px                      , F   ) ;
-      BRANCH_ARRAY( Py                      , F   ) ;
-      BRANCH_ARRAY( Pz                      , F   ) ;
-      BRANCH_ARRAY( Energy                  , F   ) ;
-      BRANCH_ARRAY( Mass                    , F   ) ;
-      BRANCH_ARRAY( Area                    , F   ) ;
-      BRANCH_ARRAY( NSubjets                , I   ) ;
-      BRANCH_ARRAY( SubjetsIdxStart         , I   ) ;
-      
-      root->Branch( ( name + ".SubjetMass" ).c_str()               , &SubjetMass_w );
-      root->Branch( ( name + ".SubjetPt" ).c_str()                 , &SubjetPt_w );
-      root->Branch( ( name + ".SubjetEt" ).c_str()                 , &SubjetEt_w );
-      root->Branch( ( name + ".SubjetEta" ).c_str()                , &SubjetEta_w );
-      root->Branch( ( name + ".SubjetPhi" ).c_str()                , &SubjetPhi_w );
-      root->Branch( ( name + ".SubjetCombinedSVBJetTags" ).c_str() , &SubjetCombinedSVBJetTags_w );
-      root->Branch( ( name + ".SubjetPtUncorr" ).c_str()           , &SubjetPtUncorr_w );
-      root->Branch( ( name + ".SubjetArea" ).c_str()               , &SubjetArea_w );
-   }
-
-   void Register( TTree* root, std::string name = "JetInfo" ) {
-      SET_BRANCH_OBJ  ( Size                     ) ;
-      SET_BRANCH_ARRAY( Index                    ) ;
-      SET_BRANCH_ARRAY( NTracks                  ) ;
-      SET_BRANCH_ARRAY( Et                       ) ;
-      SET_BRANCH_ARRAY( Pt                       ) ;
-      SET_BRANCH_ARRAY( Unc                      ) ;
-      SET_BRANCH_ARRAY( Eta                      ) ;
-      SET_BRANCH_ARRAY( Phi                      ) ;
-      SET_BRANCH_ARRAY( JetIDLOOSE               ) ;
-      SET_BRANCH_ARRAY( JetCharge                ) ;
-      SET_BRANCH_ARRAY( QGTagsMLP                ) ;
-      SET_BRANCH_ARRAY( QGTagsLikelihood         ) ;
-      SET_BRANCH_ARRAY( NConstituents            ) ;
-      SET_BRANCH_ARRAY( NCH                      ) ;
-      SET_BRANCH_ARRAY( CEF                      ) ;
-      SET_BRANCH_ARRAY( NHF                      ) ;
-      SET_BRANCH_ARRAY( NEF                      ) ;
-      SET_BRANCH_ARRAY( CHF                      ) ;
-      SET_BRANCH_ARRAY( JVAlpha                  ) ;
-      SET_BRANCH_ARRAY( JVBeta                   ) ;
-      SET_BRANCH_ARRAY( PtCorrRaw                ) ;
-      SET_BRANCH_ARRAY( PtCorrL2                 ) ;
-      SET_BRANCH_ARRAY( PtCorrL3                 ) ;
-      SET_BRANCH_ARRAY( PtCorrL7g                ) ;
-      SET_BRANCH_ARRAY( PtCorrL7uds              ) ;
-      SET_BRANCH_ARRAY( PtCorrL7c                ) ;
-      SET_BRANCH_ARRAY( PtCorrL7b                ) ;
-      SET_BRANCH_ARRAY( JetBProbBJetTags         ) ;
-      SET_BRANCH_ARRAY( CombinedSVBJetTags       ) ;
-      SET_BRANCH_ARRAY( CombinedSVMVABJetTags    ) ;
-      SET_BRANCH_ARRAY( GenJetPt                 ) ;
-      SET_BRANCH_ARRAY( GenJetEta                ) ;
-      SET_BRANCH_ARRAY( GenJetPhi                ) ;
-      SET_BRANCH_ARRAY( GenPt                    ) ;
-      SET_BRANCH_ARRAY( GenEta                   ) ;
-      SET_BRANCH_ARRAY( GenPhi                   ) ;
-      SET_BRANCH_ARRAY( GenPdgID                 ) ;
-      SET_BRANCH_ARRAY( GenFlavor                ) ;
-      SET_BRANCH_ARRAY( GenMCTag                 ) ;
-      SET_BRANCH_ARRAY( Px                       ) ;
-      SET_BRANCH_ARRAY( Py                       ) ;
-      SET_BRANCH_ARRAY( Pz                       ) ;
-      SET_BRANCH_ARRAY( Energy                   ) ;
-      SET_BRANCH_ARRAY( Mass                     ) ;
-      SET_BRANCH_ARRAY( Area                     ) ;
-      SET_BRANCH_ARRAY( NSubjets                 ) ;
-      SET_BRANCH_ARRAY( SubjetsIdxStart          ) ;
-      SET_BRANCH_OBJ( SubjetMass                 ) ;
-      SET_BRANCH_OBJ( SubjetPt                   ) ;
-      SET_BRANCH_OBJ( SubjetEt                   ) ;
-      SET_BRANCH_OBJ( SubjetEta                  ) ;
-      SET_BRANCH_OBJ( SubjetPhi                  ) ;
-      SET_BRANCH_OBJ( SubjetCombinedSVBJetTags   ) ;
-      SET_BRANCH_OBJ( SubjetPtUncorr             ) ;
-      SET_BRANCH_OBJ( SubjetArea                 ) ;
-      SubjetMass               = 0;
-      SubjetPt                 = 0;
-      SubjetEt                 = 0;
-      SubjetEta                = 0;
-      SubjetPhi                = 0;
-      SubjetCombinedSVBJetTags = 0;
-      SubjetPtUncorr           = 0;
-      SubjetArea               = 0;
-   }
+void RegisterTree( TTree* root , std::string name="JetInfo" ) { 
+root->Branch( (name+".Size").c_str() , &Size ) ;
+root->Branch( (name+".Index").c_str() , Index , (name+".Index["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".NTracks").c_str() , NTracks , (name+".NTracks["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Et").c_str() , Et , (name+".Et["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Pt").c_str() , Pt , (name+".Pt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Unc").c_str() , Unc , (name+".Unc["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eta").c_str() , Eta , (name+".Eta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Phi").c_str() , Phi , (name+".Phi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Px").c_str() , Px , (name+".Px["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Py").c_str() , Py , (name+".Py["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Pz").c_str() , Pz , (name+".Pz["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Energy").c_str() , Energy , (name+".Energy["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Mass").c_str() , Mass , (name+".Mass["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Area").c_str() , Area , (name+".Area["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".JetIDLOOSE").c_str() , JetIDLOOSE , (name+".JetIDLOOSE["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".JetCharge").c_str() , JetCharge , (name+".JetCharge["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".QGTagsMLP").c_str() , QGTagsMLP , (name+".QGTagsMLP["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".QGTagsLikelihood").c_str() , QGTagsLikelihood , (name+".QGTagsLikelihood["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NConstituents").c_str() , NConstituents , (name+".NConstituents["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".NCH").c_str() , NCH , (name+".NCH["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".CEF").c_str() , CEF , (name+".CEF["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NHF").c_str() , NHF , (name+".NHF["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NEF").c_str() , NEF , (name+".NEF["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".CHF").c_str() , CHF , (name+".CHF["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".JVAlpha").c_str() , JVAlpha , (name+".JVAlpha["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".JVBeta").c_str() , JVBeta , (name+".JVBeta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PtCorrRaw").c_str() , PtCorrRaw , (name+".PtCorrRaw["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PtCorrL2").c_str() , PtCorrL2 , (name+".PtCorrL2["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PtCorrL3").c_str() , PtCorrL3 , (name+".PtCorrL3["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PtCorrL7g").c_str() , PtCorrL7g , (name+".PtCorrL7g["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PtCorrL7uds").c_str() , PtCorrL7uds , (name+".PtCorrL7uds["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PtCorrL7c").c_str() , PtCorrL7c , (name+".PtCorrL7c["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PtCorrL7b").c_str() , PtCorrL7b , (name+".PtCorrL7b["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".JetBProbBJetTags").c_str() , JetBProbBJetTags , (name+".JetBProbBJetTags["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".CombinedSVBJetTags").c_str() , CombinedSVBJetTags , (name+".CombinedSVBJetTags["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".CombinedSVMVABJetTags").c_str() , CombinedSVMVABJetTags , (name+".CombinedSVMVABJetTags["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenJetPt").c_str() , GenJetPt , (name+".GenJetPt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenJetEta").c_str() , GenJetEta , (name+".GenJetEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenJetPhi").c_str() , GenJetPhi , (name+".GenJetPhi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPt").c_str() , GenPt , (name+".GenPt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenEta").c_str() , GenEta , (name+".GenEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPhi").c_str() , GenPhi , (name+".GenPhi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPdgID").c_str() , GenPdgID , (name+".GenPdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GenFlavor").c_str() , GenFlavor , (name+".GenFlavor["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GenMCTag").c_str() , GenMCTag , (name+".GenMCTag["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".NSubjets").c_str() , NSubjets , (name+".NSubjets["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".SubjetsIdxStart").c_str() , SubjetsIdxStart , (name+".SubjetsIdxStart["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".SubjetMass").c_str() , &SubjetMass_w ) ;
+root->Branch( (name+".SubjetPt").c_str() , &SubjetPt_w ) ;
+root->Branch( (name+".SubjetEt").c_str() , &SubjetEt_w ) ;
+root->Branch( (name+".SubjetEta").c_str() , &SubjetEta_w ) ;
+root->Branch( (name+".SubjetPhi").c_str() , &SubjetPhi_w ) ;
+root->Branch( (name+".SubjetCombinedSVBJetTags").c_str() , &SubjetCombinedSVBJetTags_w ) ;
+root->Branch( (name+".SubjetPtUncorr").c_str() , &SubjetPtUncorr_w ) ;
+root->Branch( (name+".SubjetArea").c_str() , &SubjetArea_w ) ;
+}
+void Register( TTree* root , std::string name="JetInfo" ) { 
+root->SetBranchAddress( (name+".Size").c_str() , &Size ) ;
+root->SetBranchAddress( (name+".Index").c_str() , Index ) ;
+root->SetBranchAddress( (name+".NTracks").c_str() , NTracks ) ;
+root->SetBranchAddress( (name+".Et").c_str() , Et ) ;
+root->SetBranchAddress( (name+".Pt").c_str() , Pt ) ;
+root->SetBranchAddress( (name+".Unc").c_str() , Unc ) ;
+root->SetBranchAddress( (name+".Eta").c_str() , Eta ) ;
+root->SetBranchAddress( (name+".Phi").c_str() , Phi ) ;
+root->SetBranchAddress( (name+".Px").c_str() , Px ) ;
+root->SetBranchAddress( (name+".Py").c_str() , Py ) ;
+root->SetBranchAddress( (name+".Pz").c_str() , Pz ) ;
+root->SetBranchAddress( (name+".Energy").c_str() , Energy ) ;
+root->SetBranchAddress( (name+".Mass").c_str() , Mass ) ;
+root->SetBranchAddress( (name+".Area").c_str() , Area ) ;
+root->SetBranchAddress( (name+".JetIDLOOSE").c_str() , JetIDLOOSE ) ;
+root->SetBranchAddress( (name+".JetCharge").c_str() , JetCharge ) ;
+root->SetBranchAddress( (name+".QGTagsMLP").c_str() , QGTagsMLP ) ;
+root->SetBranchAddress( (name+".QGTagsLikelihood").c_str() , QGTagsLikelihood ) ;
+root->SetBranchAddress( (name+".NConstituents").c_str() , NConstituents ) ;
+root->SetBranchAddress( (name+".NCH").c_str() , NCH ) ;
+root->SetBranchAddress( (name+".CEF").c_str() , CEF ) ;
+root->SetBranchAddress( (name+".NHF").c_str() , NHF ) ;
+root->SetBranchAddress( (name+".NEF").c_str() , NEF ) ;
+root->SetBranchAddress( (name+".CHF").c_str() , CHF ) ;
+root->SetBranchAddress( (name+".JVAlpha").c_str() , JVAlpha ) ;
+root->SetBranchAddress( (name+".JVBeta").c_str() , JVBeta ) ;
+root->SetBranchAddress( (name+".PtCorrRaw").c_str() , PtCorrRaw ) ;
+root->SetBranchAddress( (name+".PtCorrL2").c_str() , PtCorrL2 ) ;
+root->SetBranchAddress( (name+".PtCorrL3").c_str() , PtCorrL3 ) ;
+root->SetBranchAddress( (name+".PtCorrL7g").c_str() , PtCorrL7g ) ;
+root->SetBranchAddress( (name+".PtCorrL7uds").c_str() , PtCorrL7uds ) ;
+root->SetBranchAddress( (name+".PtCorrL7c").c_str() , PtCorrL7c ) ;
+root->SetBranchAddress( (name+".PtCorrL7b").c_str() , PtCorrL7b ) ;
+root->SetBranchAddress( (name+".JetBProbBJetTags").c_str() , JetBProbBJetTags ) ;
+root->SetBranchAddress( (name+".CombinedSVBJetTags").c_str() , CombinedSVBJetTags ) ;
+root->SetBranchAddress( (name+".CombinedSVMVABJetTags").c_str() , CombinedSVMVABJetTags ) ;
+root->SetBranchAddress( (name+".GenJetPt").c_str() , GenJetPt ) ;
+root->SetBranchAddress( (name+".GenJetEta").c_str() , GenJetEta ) ;
+root->SetBranchAddress( (name+".GenJetPhi").c_str() , GenJetPhi ) ;
+root->SetBranchAddress( (name+".GenPt").c_str() , GenPt ) ;
+root->SetBranchAddress( (name+".GenEta").c_str() , GenEta ) ;
+root->SetBranchAddress( (name+".GenPhi").c_str() , GenPhi ) ;
+root->SetBranchAddress( (name+".GenPdgID").c_str() , GenPdgID ) ;
+root->SetBranchAddress( (name+".GenFlavor").c_str() , GenFlavor ) ;
+root->SetBranchAddress( (name+".GenMCTag").c_str() , GenMCTag ) ;
+root->SetBranchAddress( (name+".NSubjets").c_str() , NSubjets ) ;
+root->SetBranchAddress( (name+".SubjetsIdxStart").c_str() , SubjetsIdxStart ) ;
+root->SetBranchAddress( (name+".SubjetMass").c_str() , &SubjetMass ) ;
+SubjetMass = 0 ; 
+root->SetBranchAddress( (name+".SubjetPt").c_str() , &SubjetPt ) ;
+SubjetPt = 0 ; 
+root->SetBranchAddress( (name+".SubjetEt").c_str() , &SubjetEt ) ;
+SubjetEt = 0 ; 
+root->SetBranchAddress( (name+".SubjetEta").c_str() , &SubjetEta ) ;
+SubjetEta = 0 ; 
+root->SetBranchAddress( (name+".SubjetPhi").c_str() , &SubjetPhi ) ;
+SubjetPhi = 0 ; 
+root->SetBranchAddress( (name+".SubjetCombinedSVBJetTags").c_str() , &SubjetCombinedSVBJetTags ) ;
+SubjetCombinedSVBJetTags = 0 ; 
+root->SetBranchAddress( (name+".SubjetPtUncorr").c_str() , &SubjetPtUncorr ) ;
+SubjetPtUncorr = 0 ; 
+root->SetBranchAddress( (name+".SubjetArea").c_str() , &SubjetArea ) ;
+SubjetArea = 0 ; 
+}
 };
+class PairInfoBranches { public: 
+int   Size;
+int   Index     [MAX_PAIRS] ;
+int   Type      [MAX_PAIRS] ; // type of pairing - 1: ll (regardless of charge and flavor!), 2: jj
+int   Obj1Index [MAX_PAIRS] ;
+int   Obj2Index [MAX_PAIRS] ;
+int   GenPdgID  [MAX_PAIRS] ;
+float Mass      [MAX_PAIRS] ;
+float Pt        [MAX_PAIRS] ;
+float Eta       [MAX_PAIRS] ;
+float Phi       [MAX_PAIRS] ;
+float GenMass   [MAX_PAIRS] ;
+float GenPt     [MAX_PAIRS] ;
+float GenEta    [MAX_PAIRS] ;
+float GenPhi    [MAX_PAIRS] ;
 
-
-class PairInfoBranches {
-public:
-   int   Size;
-   int   Index     [MAX_PAIRS] ;
-   int   Type      [MAX_PAIRS] ; // type of pairing - 1: ll (regardless of charge and flavor!), 2: jj
-   int   Obj1Index [MAX_PAIRS] ;
-   int   Obj2Index [MAX_PAIRS] ;
-   int   GenPdgID  [MAX_PAIRS] ;
-   float Mass      [MAX_PAIRS] ;
-   float Pt        [MAX_PAIRS] ;
-   float Eta       [MAX_PAIRS] ;
-   float Phi       [MAX_PAIRS] ;
-   float GenMass   [MAX_PAIRS] ;
-   float GenPt     [MAX_PAIRS] ;
-   float GenEta    [MAX_PAIRS] ;
-   float GenPhi    [MAX_PAIRS] ;
-
-   void RegisterTree ( TTree* root , std::string name = "PairInfo" ) {
-      BRANCH_OBJ     ( Size      , I ) ;
-      BRANCH_ARRAY   ( Index     , I ) ;
-      BRANCH_ARRAY   ( Type      , I ) ;
-      BRANCH_ARRAY   ( Obj1Index , I ) ;
-      BRANCH_ARRAY   ( Obj2Index , I ) ;
-      BRANCH_ARRAY   ( GenPdgID  , I ) ;
-      BRANCH_ARRAY   ( Mass      , F ) ;
-      BRANCH_ARRAY   ( Pt        , F ) ;
-      BRANCH_ARRAY   ( Eta       , F ) ;
-      BRANCH_ARRAY   ( Phi       , F ) ;
-      BRANCH_ARRAY   ( GenMass   , F ) ;
-      BRANCH_ARRAY   ( GenPt     , F ) ;
-      BRANCH_ARRAY   ( GenEta    , F ) ;
-      BRANCH_ARRAY   ( GenPhi    , F ) ;
-   }
-
-   void Register( TTree* root , std::string name = "PairInfo" ) {
-      SET_BRANCH_OBJ( Size ) ;
-      SET_BRANCH_ARRAY( Index       ) ;  
-      SET_BRANCH_ARRAY( Type        ) ;  
-      SET_BRANCH_ARRAY( Obj1Index   ) ;  
-      SET_BRANCH_ARRAY( Obj2Index   ) ;  
-      SET_BRANCH_ARRAY( Mass        ) ;  
-      SET_BRANCH_ARRAY( Pt          ) ;  
-      SET_BRANCH_ARRAY( Eta         ) ;  
-      SET_BRANCH_ARRAY( Phi         ) ;  
-      SET_BRANCH_ARRAY( GenMass     ) ;  
-      SET_BRANCH_ARRAY( GenPt       ) ;  
-      SET_BRANCH_ARRAY( GenEta      ) ;  
-      SET_BRANCH_ARRAY( GenPhi      ) ;  
-      SET_BRANCH_ARRAY( GenPdgID    ) ;  
-   }
+void RegisterTree( TTree* root , std::string name="PairInfo" ) { 
+root->Branch( (name+".Size").c_str() , &Size ) ;
+root->Branch( (name+".Index").c_str() , Index , (name+".Index["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Type").c_str() , Type , (name+".Type["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Obj1Index").c_str() , Obj1Index , (name+".Obj1Index["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Obj2Index").c_str() , Obj2Index , (name+".Obj2Index["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GenPdgID").c_str() , GenPdgID , (name+".GenPdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Mass").c_str() , Mass , (name+".Mass["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Pt").c_str() , Pt , (name+".Pt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eta").c_str() , Eta , (name+".Eta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Phi").c_str() , Phi , (name+".Phi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenMass").c_str() , GenMass , (name+".GenMass["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPt").c_str() , GenPt , (name+".GenPt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenEta").c_str() , GenEta , (name+".GenEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPhi").c_str() , GenPhi , (name+".GenPhi["+name+".Size]/F").c_str() ) ;
+}
+void Register( TTree* root , std::string name="PairInfo" ) { 
+root->SetBranchAddress( (name+".Size").c_str() , &Size ) ;
+root->SetBranchAddress( (name+".Index").c_str() , Index ) ;
+root->SetBranchAddress( (name+".Type").c_str() , Type ) ;
+root->SetBranchAddress( (name+".Obj1Index").c_str() , Obj1Index ) ;
+root->SetBranchAddress( (name+".Obj2Index").c_str() , Obj2Index ) ;
+root->SetBranchAddress( (name+".GenPdgID").c_str() , GenPdgID ) ;
+root->SetBranchAddress( (name+".Mass").c_str() , Mass ) ;
+root->SetBranchAddress( (name+".Pt").c_str() , Pt ) ;
+root->SetBranchAddress( (name+".Eta").c_str() , Eta ) ;
+root->SetBranchAddress( (name+".Phi").c_str() , Phi ) ;
+root->SetBranchAddress( (name+".GenMass").c_str() , GenMass ) ;
+root->SetBranchAddress( (name+".GenPt").c_str() , GenPt ) ;
+root->SetBranchAddress( (name+".GenEta").c_str() , GenEta ) ;
+root->SetBranchAddress( (name+".GenPhi").c_str() , GenPhi ) ;
+}
 };
+class GenInfoBranches { public: 
+int Size;
+float Weight;
+float Pt           [MAX_GENS] ;
+float Eta          [MAX_GENS] ;
+float Phi          [MAX_GENS] ;
+float Mass         [MAX_GENS] ;
+int PdgID          [MAX_GENS] ;
+int PhotonFlag     [MAX_GENS] ;   // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
+int Status         [MAX_GENS] ;
+int nMo            [MAX_GENS] ;
+int nDa            [MAX_GENS] ;
+int Mo1            [MAX_GENS] ;
+int Mo2            [MAX_GENS] ;
+int Da1            [MAX_GENS] ;
+int Da2            [MAX_GENS] ;
+int Mo1PdgID       [MAX_GENS] ;
+int Mo2PdgID       [MAX_GENS] ;
+int Mo1Status      [MAX_GENS] ;
+int Mo2Status      [MAX_GENS] ;
+int Da1PdgID       [MAX_GENS] ;
+int Da2PdgID       [MAX_GENS] ;
+int GrandMo1PdgID  [MAX_GENS] ;
+int GrandMo2PdgID  [MAX_GENS] ;
+int GrandMo1Status [MAX_GENS] ;
+int GrandMo2Status [MAX_GENS] ;
 
-class PhotonInfoBranches {
-public:
-   int   Size;
-   float Pt                   [MAX_PHOTONS] ;
-   float Eta                  [MAX_PHOTONS] ;
-   float Phi                  [MAX_PHOTONS] ;
-   float HoverE               [MAX_PHOTONS] ;
-   float SigmaIetaIeta        [MAX_PHOTONS] ;
-   float hadTowOverEm         [MAX_PHOTONS] ;
-   float hcalIsoConeDR04_2012 [MAX_PHOTONS] ;
-   float phoPFChIso           [MAX_PHOTONS] ;
-   float phoPFNeuIso          [MAX_PHOTONS] ;
-   float phoPFPhoIso          [MAX_PHOTONS] ;
-   float phoIDMVA             [MAX_PHOTONS] ; 
-   bool  phoPassLoose         [MAX_PHOTONS] ;
-   bool  phoPassMedium        [MAX_PHOTONS] ;
-   bool  phoPassTight         [MAX_PHOTONS] ;
-   float r9                   [MAX_PHOTONS] ;
-   bool  passelectronveto     [MAX_PHOTONS] ;
-   float  EcalIso             [MAX_PHOTONS] ;
-   float  HcalIso             [MAX_PHOTONS] ;
-   float  TrackIso            [MAX_PHOTONS] ;
-   float GenPt                [MAX_PHOTONS] ;
-   float GenEta               [MAX_PHOTONS] ;
-   float GenPhi               [MAX_PHOTONS] ;
-   int   GenPdgID             [MAX_PHOTONS] ;
-
-   void RegisterTree( TTree* root, std::string name = "PhotonInfo" ) {
-      BRANCH_OBJ( Size , I  ) ;
-      BRANCH_ARRAY( Pt                   , F ) ;
-      BRANCH_ARRAY( Eta                  , F ) ;
-      BRANCH_ARRAY( Phi                  , F ) ;
-      BRANCH_ARRAY( HoverE               , F ) ;
-      BRANCH_ARRAY( SigmaIetaIeta        , F ) ;
-      BRANCH_ARRAY( hadTowOverEm         , F ) ;
-      BRANCH_ARRAY( hcalIsoConeDR04_2012 , F ) ;
-      BRANCH_ARRAY( phoPFChIso           , F ) ;
-      BRANCH_ARRAY( phoPFNeuIso          , F ) ;
-      BRANCH_ARRAY( phoPFPhoIso          , F ) ;
-      BRANCH_ARRAY( phoIDMVA             , F ) ; 
-      BRANCH_ARRAY( phoPassLoose         , C ) ; 
-      BRANCH_ARRAY( phoPassMedium        , C ) ; 
-      BRANCH_ARRAY( phoPassTight         , C ) ;
-      BRANCH_ARRAY( r9                   , F ) ;
-      BRANCH_ARRAY( passelectronveto     , C ) ;
-      BRANCH_ARRAY( EcalIso              , F ) ;
-      BRANCH_ARRAY( HcalIso              , F ) ;
-      BRANCH_ARRAY( TrackIso             , F ) ;
-      BRANCH_ARRAY( GenPt                , F ) ;
-      BRANCH_ARRAY( GenEta               , F ) ;
-      BRANCH_ARRAY( GenPhi               , F ) ;
-      BRANCH_ARRAY( GenPdgID             , I ) ;
-   }
-
-   void Register( TTree* root, std::string name = "PhotonInfo" ) {
-      SET_BRANCH_OBJ  ( Size                 ) ;
-      SET_BRANCH_ARRAY( Pt                   ) ;
-      SET_BRANCH_ARRAY( Eta                  ) ;
-      SET_BRANCH_ARRAY( Phi                  ) ;
-      SET_BRANCH_ARRAY( HoverE               ) ;
-      SET_BRANCH_ARRAY( SigmaIetaIeta        ) ;
-      SET_BRANCH_ARRAY( hadTowOverEm         ) ;
-      SET_BRANCH_ARRAY( hcalIsoConeDR04_2012 ) ;
-      SET_BRANCH_ARRAY( phoPFChIso           ) ;
-      SET_BRANCH_ARRAY( phoPFNeuIso          ) ;
-      SET_BRANCH_ARRAY( phoPFPhoIso          ) ;
-      SET_BRANCH_ARRAY( phoIDMVA             ) ; 
-      SET_BRANCH_ARRAY( phoPassLoose         ) ; 
-      SET_BRANCH_ARRAY( phoPassMedium        ) ; 
-      SET_BRANCH_ARRAY( phoPassTight         ) ; 
-      SET_BRANCH_ARRAY( r9                   ) ;
-      SET_BRANCH_ARRAY( passelectronveto     ) ;
-      SET_BRANCH_ARRAY( EcalIso              ) ;
-      SET_BRANCH_ARRAY( HcalIso              ) ;
-      SET_BRANCH_ARRAY( TrackIso             ) ;
-      SET_BRANCH_ARRAY( GenPt                ) ;
-      SET_BRANCH_ARRAY( GenEta               ) ;
-      SET_BRANCH_ARRAY( GenPhi               ) ;
-      SET_BRANCH_ARRAY( GenPdgID             ) ;
-   }
+void RegisterTree( TTree* root , std::string name="GenInfo" ) { 
+root->Branch( (name+".Size").c_str() , &Size ) ;
+root->Branch( (name+".Weight").c_str() , &Weight ) ;
+root->Branch( (name+".Pt").c_str() , Pt , (name+".Pt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eta").c_str() , Eta , (name+".Eta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Phi").c_str() , Phi , (name+".Phi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Mass").c_str() , Mass , (name+".Mass["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".PdgID").c_str() , PdgID , (name+".PdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".PhotonFlag").c_str() , PhotonFlag , (name+".PhotonFlag["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Status").c_str() , Status , (name+".Status["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".nMo").c_str() , nMo , (name+".nMo["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".nDa").c_str() , nDa , (name+".nDa["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Mo1").c_str() , Mo1 , (name+".Mo1["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Mo2").c_str() , Mo2 , (name+".Mo2["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Da1").c_str() , Da1 , (name+".Da1["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Da2").c_str() , Da2 , (name+".Da2["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Mo1PdgID").c_str() , Mo1PdgID , (name+".Mo1PdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Mo2PdgID").c_str() , Mo2PdgID , (name+".Mo2PdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Mo1Status").c_str() , Mo1Status , (name+".Mo1Status["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Mo2Status").c_str() , Mo2Status , (name+".Mo2Status["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Da1PdgID").c_str() , Da1PdgID , (name+".Da1PdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Da2PdgID").c_str() , Da2PdgID , (name+".Da2PdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GrandMo1PdgID").c_str() , GrandMo1PdgID , (name+".GrandMo1PdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GrandMo2PdgID").c_str() , GrandMo2PdgID , (name+".GrandMo2PdgID["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GrandMo1Status").c_str() , GrandMo1Status , (name+".GrandMo1Status["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".GrandMo2Status").c_str() , GrandMo2Status , (name+".GrandMo2Status["+name+".Size]/I").c_str() ) ;
+}
+void Register( TTree* root , std::string name="GenInfo" ) { 
+root->SetBranchAddress( (name+".Size").c_str() , &Size ) ;
+root->SetBranchAddress( (name+".Weight").c_str() , &Weight ) ;
+root->SetBranchAddress( (name+".Pt").c_str() , Pt ) ;
+root->SetBranchAddress( (name+".Eta").c_str() , Eta ) ;
+root->SetBranchAddress( (name+".Phi").c_str() , Phi ) ;
+root->SetBranchAddress( (name+".Mass").c_str() , Mass ) ;
+root->SetBranchAddress( (name+".PdgID").c_str() , PdgID ) ;
+root->SetBranchAddress( (name+".PhotonFlag").c_str() , PhotonFlag ) ;
+root->SetBranchAddress( (name+".Status").c_str() , Status ) ;
+root->SetBranchAddress( (name+".nMo").c_str() , nMo ) ;
+root->SetBranchAddress( (name+".nDa").c_str() , nDa ) ;
+root->SetBranchAddress( (name+".Mo1").c_str() , Mo1 ) ;
+root->SetBranchAddress( (name+".Mo2").c_str() , Mo2 ) ;
+root->SetBranchAddress( (name+".Da1").c_str() , Da1 ) ;
+root->SetBranchAddress( (name+".Da2").c_str() , Da2 ) ;
+root->SetBranchAddress( (name+".Mo1PdgID").c_str() , Mo1PdgID ) ;
+root->SetBranchAddress( (name+".Mo2PdgID").c_str() , Mo2PdgID ) ;
+root->SetBranchAddress( (name+".Mo1Status").c_str() , Mo1Status ) ;
+root->SetBranchAddress( (name+".Mo2Status").c_str() , Mo2Status ) ;
+root->SetBranchAddress( (name+".Da1PdgID").c_str() , Da1PdgID ) ;
+root->SetBranchAddress( (name+".Da2PdgID").c_str() , Da2PdgID ) ;
+root->SetBranchAddress( (name+".GrandMo1PdgID").c_str() , GrandMo1PdgID ) ;
+root->SetBranchAddress( (name+".GrandMo2PdgID").c_str() , GrandMo2PdgID ) ;
+root->SetBranchAddress( (name+".GrandMo1Status").c_str() , GrandMo1Status ) ;
+root->SetBranchAddress( (name+".GrandMo2Status").c_str() , GrandMo2Status ) ;
+}
 };
+class PhotonInfoBranches { public: 
+int   Size;
+float Pt                   [MAX_PHOTONS] ;
+float Eta                  [MAX_PHOTONS] ;
+float Phi                  [MAX_PHOTONS] ;
+float HoverE               [MAX_PHOTONS] ;
+float SigmaIetaIeta        [MAX_PHOTONS] ;
+float hadTowOverEm         [MAX_PHOTONS] ;
+float hcalIsoConeDR04_2012 [MAX_PHOTONS] ;
+float phoPFChIso           [MAX_PHOTONS] ;
+float phoPFNeuIso          [MAX_PHOTONS] ;
+float phoPFPhoIso          [MAX_PHOTONS] ;
+float phoIDMVA             [MAX_PHOTONS] ; 
+bool  phoPassLoose         [MAX_PHOTONS] ;
+bool  phoPassMedium        [MAX_PHOTONS] ;
+bool  phoPassTight         [MAX_PHOTONS] ;
+float r9                   [MAX_PHOTONS] ;
+bool  passelectronveto     [MAX_PHOTONS] ;
+float  EcalIso             [MAX_PHOTONS] ;
+float  HcalIso             [MAX_PHOTONS] ;
+float  TrackIso            [MAX_PHOTONS] ;
+float GenPt                [MAX_PHOTONS] ;
+float GenEta               [MAX_PHOTONS] ;
+float GenPhi               [MAX_PHOTONS] ;
+int   GenPdgID             [MAX_PHOTONS] ;
 
-class VertexInfoBranches {
-public:
-   int     Size;
-   int     isValid        [MAX_Vertices] ;
-   bool    isFake         [MAX_Vertices] ; //Uly 2011-04-04
-   int     Type           [MAX_Vertices] ;   //0 - Offline Primary Vertices, 1 - Offline Primary Vertices with beam spot constraint, 2 - Pixel Vertices
-   float   Ndof           [MAX_Vertices] ;
-   float   NormalizedChi2 [MAX_Vertices] ;
-   float   Pt_Sum         [MAX_Vertices] ;
-   float   Pt_Sum2        [MAX_Vertices] ;
-   float   x              [MAX_Vertices] ;
-   float   y              [MAX_Vertices] ;
-   float   z              [MAX_Vertices] ;
-   float   Rho            [MAX_Vertices] ;
-
-   void RegisterTree( TTree* root , std::string name = "VertexInfo" ) {
-      BRANCH_OBJ( Size , I );
-      BRANCH_ARRAY(   isValid        , I ) ;  
-      BRANCH_ARRAY(   isFake         , C ) ;  
-      BRANCH_ARRAY(   Type           , I ) ; 
-      BRANCH_ARRAY(   Ndof           , F ) ;
-      BRANCH_ARRAY(   NormalizedChi2 , F ) ;
-      BRANCH_ARRAY(   Pt_Sum         , F ) ;
-      BRANCH_ARRAY(   Pt_Sum2        , F ) ;
-      BRANCH_ARRAY(   x              , F ) ;
-      BRANCH_ARRAY(   y              , F ) ;
-      BRANCH_ARRAY(   z              , F ) ;
-      BRANCH_ARRAY(   Rho            , F ) ;
-   }
-   void Register( TTree* root , std::string name="VertexInfo") {
-      SET_BRANCH_OBJ( Size );
-      SET_BRANCH_ARRAY( isValid        ) ;
-      SET_BRANCH_ARRAY( isFake         ) ; //Uly 2011-04-04
-      SET_BRANCH_ARRAY( Type           ) ;
-      SET_BRANCH_ARRAY( Ndof           ) ;
-      SET_BRANCH_ARRAY( NormalizedChi2 ) ;
-      SET_BRANCH_ARRAY( Pt_Sum         ) ;
-      SET_BRANCH_ARRAY( Pt_Sum2        ) ;
-      SET_BRANCH_ARRAY( x              ) ;
-      SET_BRANCH_ARRAY( y              ) ;
-      SET_BRANCH_ARRAY( z              ) ;
-      SET_BRANCH_ARRAY( Rho            ) ;
-   }
+void RegisterTree( TTree* root , std::string name="PhotonInfo" ) { 
+root->Branch( (name+".Size").c_str() , &Size ) ;
+root->Branch( (name+".Pt").c_str() , Pt , (name+".Pt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Eta").c_str() , Eta , (name+".Eta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Phi").c_str() , Phi , (name+".Phi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".HoverE").c_str() , HoverE , (name+".HoverE["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".SigmaIetaIeta").c_str() , SigmaIetaIeta , (name+".SigmaIetaIeta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".hadTowOverEm").c_str() , hadTowOverEm , (name+".hadTowOverEm["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".hcalIsoConeDR04_2012").c_str() , hcalIsoConeDR04_2012 , (name+".hcalIsoConeDR04_2012["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".phoPFChIso").c_str() , phoPFChIso , (name+".phoPFChIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".phoPFNeuIso").c_str() , phoPFNeuIso , (name+".phoPFNeuIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".phoPFPhoIso").c_str() , phoPFPhoIso , (name+".phoPFPhoIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".phoIDMVA").c_str() , phoIDMVA , (name+".phoIDMVA["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".phoPassLoose").c_str() , phoPassLoose , (name+".phoPassLoose["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".phoPassMedium").c_str() , phoPassMedium , (name+".phoPassMedium["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".phoPassTight").c_str() , phoPassTight , (name+".phoPassTight["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".r9").c_str() , r9 , (name+".r9["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".passelectronveto").c_str() , passelectronveto , (name+".passelectronveto["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".EcalIso").c_str() , EcalIso , (name+".EcalIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".HcalIso").c_str() , HcalIso , (name+".HcalIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".TrackIso").c_str() , TrackIso , (name+".TrackIso["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPt").c_str() , GenPt , (name+".GenPt["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenEta").c_str() , GenEta , (name+".GenEta["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPhi").c_str() , GenPhi , (name+".GenPhi["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".GenPdgID").c_str() , GenPdgID , (name+".GenPdgID["+name+".Size]/I").c_str() ) ;
+}
+void Register( TTree* root , std::string name="PhotonInfo" ) { 
+root->SetBranchAddress( (name+".Size").c_str() , &Size ) ;
+root->SetBranchAddress( (name+".Pt").c_str() , Pt ) ;
+root->SetBranchAddress( (name+".Eta").c_str() , Eta ) ;
+root->SetBranchAddress( (name+".Phi").c_str() , Phi ) ;
+root->SetBranchAddress( (name+".HoverE").c_str() , HoverE ) ;
+root->SetBranchAddress( (name+".SigmaIetaIeta").c_str() , SigmaIetaIeta ) ;
+root->SetBranchAddress( (name+".hadTowOverEm").c_str() , hadTowOverEm ) ;
+root->SetBranchAddress( (name+".hcalIsoConeDR04_2012").c_str() , hcalIsoConeDR04_2012 ) ;
+root->SetBranchAddress( (name+".phoPFChIso").c_str() , phoPFChIso ) ;
+root->SetBranchAddress( (name+".phoPFNeuIso").c_str() , phoPFNeuIso ) ;
+root->SetBranchAddress( (name+".phoPFPhoIso").c_str() , phoPFPhoIso ) ;
+root->SetBranchAddress( (name+".phoIDMVA").c_str() , phoIDMVA ) ;
+root->SetBranchAddress( (name+".phoPassLoose").c_str() , phoPassLoose ) ;
+root->SetBranchAddress( (name+".phoPassMedium").c_str() , phoPassMedium ) ;
+root->SetBranchAddress( (name+".phoPassTight").c_str() , phoPassTight ) ;
+root->SetBranchAddress( (name+".r9").c_str() , r9 ) ;
+root->SetBranchAddress( (name+".passelectronveto").c_str() , passelectronveto ) ;
+root->SetBranchAddress( (name+".EcalIso").c_str() , EcalIso ) ;
+root->SetBranchAddress( (name+".HcalIso").c_str() , HcalIso ) ;
+root->SetBranchAddress( (name+".TrackIso").c_str() , TrackIso ) ;
+root->SetBranchAddress( (name+".GenPt").c_str() , GenPt ) ;
+root->SetBranchAddress( (name+".GenEta").c_str() , GenEta ) ;
+root->SetBranchAddress( (name+".GenPhi").c_str() , GenPhi ) ;
+root->SetBranchAddress( (name+".GenPdgID").c_str() , GenPdgID ) ;
+}
 };
-
-
-
-class GenInfoBranches {
-public:
-   int Size;
-   float Weight;
-   float Pt           [MAX_GENS] ;
-   float Eta          [MAX_GENS] ;
-   float Phi          [MAX_GENS] ;
-   float Mass         [MAX_GENS] ;
-   int PdgID          [MAX_GENS] ;
-   int PhotonFlag     [MAX_GENS] ;   // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
-   int Status         [MAX_GENS] ;
-   int nMo            [MAX_GENS] ;
-   int nDa            [MAX_GENS] ;
-   int Mo1            [MAX_GENS] ;
-   int Mo2            [MAX_GENS] ;
-   int Da1            [MAX_GENS] ;
-   int Da2            [MAX_GENS] ;
-   int Mo1PdgID       [MAX_GENS] ;
-   int Mo2PdgID       [MAX_GENS] ;
-   int Mo1Status      [MAX_GENS] ;
-   int Mo2Status      [MAX_GENS] ;
-   int Da1PdgID       [MAX_GENS] ;
-   int Da2PdgID       [MAX_GENS] ;
-   int GrandMo1PdgID  [MAX_GENS] ;
-   int GrandMo2PdgID  [MAX_GENS] ;
-   int GrandMo1Status [MAX_GENS] ;
-   int GrandMo2Status [MAX_GENS] ;
-
-   void RegisterTree( TTree* root    , std::string name = "GenInfo" ) {
-      BRANCH_OBJ( Size               , I );
-      BRANCH_OBJ( Weight             , F );
-      BRANCH_ARRAY(    Pt            , F ) ;
-      BRANCH_ARRAY(   Eta            , F ) ;
-      BRANCH_ARRAY(   Phi            , F ) ;
-      BRANCH_ARRAY(   Mass           , F ) ;
-      BRANCH_ARRAY(   PdgID          , I ) ;
-      BRANCH_ARRAY(   PhotonFlag     , I ) ;
-      BRANCH_ARRAY(   Status         , I ) ;
-      BRANCH_ARRAY(   nMo            , I ) ;
-      BRANCH_ARRAY(   nDa            , I ) ;
-      BRANCH_ARRAY(   Mo1            , I ) ;
-      BRANCH_ARRAY(   Mo2            , I ) ;
-      BRANCH_ARRAY(   Da1            , I ) ;
-      BRANCH_ARRAY(   Da2            , I ) ;
-      BRANCH_ARRAY(   Mo1PdgID       , I ) ;
-      BRANCH_ARRAY(   Mo2PdgID       , I ) ;
-      BRANCH_ARRAY(   Mo1Status      , I ) ;
-      BRANCH_ARRAY(   Mo2Status      , I ) ;
-      BRANCH_ARRAY(   Da1PdgID       , I ) ;
-      BRANCH_ARRAY(   Da2PdgID       , I ) ;
-      BRANCH_ARRAY(   GrandMo1PdgID  , I ) ;
-      BRANCH_ARRAY(   GrandMo2PdgID  , I ) ;
-      BRANCH_ARRAY(   GrandMo1Status , I ) ;
-      BRANCH_ARRAY(   GrandMo2Status , I ) ;
-   }
-
-   void Register( TTree* root , std::string name = "GenInfo" ) {
-      SET_BRANCH_OBJ( Size );
-      SET_BRANCH_OBJ( Weight );
-      SET_BRANCH_ARRAY( Pt             ) ;
-      SET_BRANCH_ARRAY( Eta            ) ;
-      SET_BRANCH_ARRAY( Phi            ) ;
-      SET_BRANCH_ARRAY( Mass           ) ;
-      SET_BRANCH_ARRAY( PdgID          ) ;
-      SET_BRANCH_ARRAY( PhotonFlag     ) ;
-      SET_BRANCH_ARRAY( Status         ) ;
-      SET_BRANCH_ARRAY( nMo            ) ;
-      SET_BRANCH_ARRAY( nDa            ) ;
-      SET_BRANCH_ARRAY( Mo1            ) ;
-      SET_BRANCH_ARRAY( Mo2            ) ;
-      SET_BRANCH_ARRAY( Da1            ) ;
-      SET_BRANCH_ARRAY( Da2            ) ;
-      SET_BRANCH_ARRAY( Mo1PdgID       ) ;
-      SET_BRANCH_ARRAY( Mo2PdgID       ) ;
-      SET_BRANCH_ARRAY( Mo1Status      ) ;
-      SET_BRANCH_ARRAY( Mo2Status      ) ;
-      SET_BRANCH_ARRAY( Da1PdgID       ) ;
-      SET_BRANCH_ARRAY( Da1PdgID       ) ;
-      SET_BRANCH_ARRAY( Da2PdgID       ) ;
-      SET_BRANCH_ARRAY( GrandMo1PdgID  ) ;
-      SET_BRANCH_ARRAY( GrandMo2PdgID  ) ;
-      SET_BRANCH_ARRAY( GrandMo1Status ) ;
-      SET_BRANCH_ARRAY( GrandMo2Status ) ;
-   }
-
+class VertexInfoBranches { public: 
+int     Size;
+int     isValid        [MAX_Vertices] ;
+bool    isFake         [MAX_Vertices] ; //Uly 2011-04-04
+int     Type           [MAX_Vertices] ;   //0 - Offline Primary Vertices, 1 - Offline Primary Vertices with beam spot constraint, 2 - Pixel Vertices
+float   Ndof           [MAX_Vertices] ;
+float   NormalizedChi2 [MAX_Vertices] ;
+float   Pt_Sum         [MAX_Vertices] ;
+float   Pt_Sum2        [MAX_Vertices] ;
+float   x              [MAX_Vertices] ;
+float   y              [MAX_Vertices] ;
+float   z              [MAX_Vertices] ;
+float   Rho            [MAX_Vertices] ;
+void RegisterTree( TTree* root , std::string name="VertexInfo" ) { 
+root->Branch( (name+".Size").c_str() , &Size ) ;
+root->Branch( (name+".isValid").c_str() , isValid , (name+".isValid["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".isFake").c_str() , isFake , (name+".isFake["+name+".Size]/C").c_str() ) ;
+root->Branch( (name+".Type").c_str() , Type , (name+".Type["+name+".Size]/I").c_str() ) ;
+root->Branch( (name+".Ndof").c_str() , Ndof , (name+".Ndof["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".NormalizedChi2").c_str() , NormalizedChi2 , (name+".NormalizedChi2["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Pt_Sum").c_str() , Pt_Sum , (name+".Pt_Sum["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Pt_Sum2").c_str() , Pt_Sum2 , (name+".Pt_Sum2["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".x").c_str() , x , (name+".x["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".y").c_str() , y , (name+".y["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".z").c_str() , z , (name+".z["+name+".Size]/F").c_str() ) ;
+root->Branch( (name+".Rho").c_str() , Rho , (name+".Rho["+name+".Size]/F").c_str() ) ;
+}
+void Register( TTree* root , std::string name="VertexInfo" ) { 
+root->SetBranchAddress( (name+".Size").c_str() , &Size ) ;
+root->SetBranchAddress( (name+".isValid").c_str() , isValid ) ;
+root->SetBranchAddress( (name+".isFake").c_str() , isFake ) ;
+root->SetBranchAddress( (name+".Type").c_str() , Type ) ;
+root->SetBranchAddress( (name+".Ndof").c_str() , Ndof ) ;
+root->SetBranchAddress( (name+".NormalizedChi2").c_str() , NormalizedChi2 ) ;
+root->SetBranchAddress( (name+".Pt_Sum").c_str() , Pt_Sum ) ;
+root->SetBranchAddress( (name+".Pt_Sum2").c_str() , Pt_Sum2 ) ;
+root->SetBranchAddress( (name+".x").c_str() , x ) ;
+root->SetBranchAddress( (name+".y").c_str() , y ) ;
+root->SetBranchAddress( (name+".z").c_str() , z ) ;
+root->SetBranchAddress( (name+".Rho").c_str() , Rho ) ;
+}
 };
+#endif // __BPRIMEKIT_FORMAT_H__
 
-//------------------------------------------------------------------------------ 
-//   Un-defining MACROS functions 
-//------------------------------------------------------------------------------ 
-#undef BRANCH_OBJ 
-#undef BRANCH_ARRAY
-#undef BRANCH_FIX_ARRAY
-#undef SET_BRANCH_OBJ 
-#undef SET_BRANCH_ARRAY 
-
-#endif
