@@ -43,7 +43,6 @@ bprimeKit = cms.EDAnalyzer(
    offlinePVlabel            = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
    offlinePVBSlabel          = cms.VInputTag("offlineSlimmedPrimaryVertices"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
    offlineBSlabel            = cms.VInputTag("offlineBeamSpot"),
-   #pixelvtxlabel            = cms.VInputTag("pixelVertices"), #CMSSW73X
    tracklabel                = cms.VInputTag("generalTracks"),# not used in CMSSW73X "generalTracks"),
    pfCands                   = cms.InputTag("packedPFCandidates"),
    dcslabel                  = cms.VInputTag("scalersRawToDigi"),
