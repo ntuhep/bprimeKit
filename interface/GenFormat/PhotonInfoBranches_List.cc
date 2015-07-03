@@ -1,0 +1,25 @@
+int   Size;
+float Pt                   [MAX_PHOTONS] ;
+float Eta                  [MAX_PHOTONS] ;
+float Phi                  [MAX_PHOTONS] ;
+float HoverE               [MAX_PHOTONS] ;
+float SigmaIetaIeta        [MAX_PHOTONS] ;
+float hadTowOverEm         [MAX_PHOTONS] ;
+float hcalIsoConeDR04_2012 [MAX_PHOTONS] ;
+float phoPFChIso           [MAX_PHOTONS] ;
+float phoPFNeuIso          [MAX_PHOTONS] ;
+float phoPFPhoIso          [MAX_PHOTONS] ;
+float phoIDMVA             [MAX_PHOTONS] ; 
+bool  phoPassLoose         [MAX_PHOTONS] ;
+bool  phoPassMedium        [MAX_PHOTONS] ;
+bool  phoPassTight         [MAX_PHOTONS] ;
+float r9                   [MAX_PHOTONS] ;
+bool  passelectronveto     [MAX_PHOTONS] ;
+float  EcalIso             [MAX_PHOTONS] ;
+float  HcalIso             [MAX_PHOTONS] ;
+float  TrackIso            [MAX_PHOTONS] ;
+float GenPt                [MAX_PHOTONS] ;
+float GenEta               [MAX_PHOTONS] ;
+float GenPhi               [MAX_PHOTONS] ;
+int   GenPdgID             [MAX_PHOTONS] ;
+

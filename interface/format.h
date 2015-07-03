@@ -58,7 +58,7 @@ static char leafList[1024];
 class EvtInfoBranches {
 public:
    int     RunNo  ;
-   long long int  EvtNo  ;
+   size_t  EvtNo  ;
    int     BxNo   ;
    int     LumiNo ;
    int     Orbit  ;
