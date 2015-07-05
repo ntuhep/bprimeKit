@@ -123,9 +123,9 @@ public:
       root->Branch( ( name + ".BeamSpotY" ).c_str() , &BeamSpotY , ( name + ".BeamSpotY/F" ).c_str() ) ;
       root->Branch( ( name + ".BeamSpotZ" ).c_str() , &BeamSpotZ , ( name + ".BeamSpotZ/F" ).c_str() ) ;
       root->Branch( ( name + ".nBX" ).c_str() , &nBX , ( name + ".nBX/I" ).c_str() ) ;
-      root->Branch( ( name + ".nPU" ).c_str() , nPU , ( name + ".nPU[" + name + ".]/I" ).c_str() ) ;
-      root->Branch( ( name + ".BXPU" ).c_str() , BXPU , ( name + ".BXPU[" + name + ".]/I" ).c_str() ) ;
-      root->Branch( ( name + ".TrueIT" ).c_str() , TrueIT , ( name + ".TrueIT[" + name + ".]/F" ).c_str() ) ;
+      root->Branch( ( name + ".nPU" ).c_str() , nPU , ( name + ".nPU[" + name + ".nBX]/I" ).c_str() ) ;
+      root->Branch( ( name + ".BXPU" ).c_str() , BXPU , ( name + ".BXPU[" + name + ".nBX]/I" ).c_str() ) ;
+      root->Branch( ( name + ".TrueIT" ).c_str() , TrueIT , ( name + ".TrueIT[" + name + ".nBX]/F" ).c_str() ) ;
       root->Branch( ( name + ".PDFid1" ).c_str() , &PDFid1 , ( name + ".PDFid1/I" ).c_str() ) ;
       root->Branch( ( name + ".PDFid2" ).c_str() , &PDFid2 , ( name + ".PDFid2/I" ).c_str() ) ;
       root->Branch( ( name + ".PDFx1" ).c_str() , &PDFx1 , ( name + ".PDFx1/F" ).c_str() ) ;
