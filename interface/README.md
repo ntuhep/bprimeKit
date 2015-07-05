@@ -19,6 +19,8 @@ The current defined branches for the bprimeKit ntuple is listed below:
 
 For an example of using the branches, see that file: [`proj.cc`](../test/proj.cc)
 
+For a utility to maintain the format.h see the [BprimeKit-Format-Generator](https://github.com/enochnotsocool/BprimeKit-Format-Generator) package.
+
 ### `bprimeKit.h`
 The file [`bprimeKit`](bprimeKit) defines the custom `EDAnalyzer` class that performs the bprimeKit ntuplizing process.
 For the documentation of the method implementations, read the [`README.md`](../plugins/README.md) in the plugins directory.
@@ -32,7 +34,7 @@ For implementations, read the [`README.md`](../plugins/README.md) in the plugins
 The function currently defined for the bprimeKit is:
 
    * For particle generation information:
-   Read the code in the generation information sector of the files [`bprimeKit_lepton.cc`](plugins/bprimeKit_muon.cc) for example.
+   Read the code in the generation information sector of the files [`bprimeKit_lepton.cc`](plugins/bprimeKit_leptons.cc) for example.
       - `int genMCTag( GenParticle* )`: Generates the MC tags.
       - `genMCTag( GenInterator& ,  Particle& )`: Generates the MC tags.
 

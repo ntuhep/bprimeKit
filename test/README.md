@@ -5,12 +5,19 @@ This directory is the main operation directory for bprimeKit ntuple production.
 ## Local production
 ```
 cmsenv
-cmsRun bprimeKit_miniAOD.py
+cmsRun bprimeKit_miniAOD.py <options>
 ```
-Should be sufficient to run a local production. please define input and output sources manually 
+Should be sufficient to run a local production. Please define input and output sources manually 
+
+## Crab production
+```
+source /cvmfs/cms.cern.ch/crab3/crab.sh
+crab submit -c crab_example.py
+```
+Edit the parameters in `crab_example.py` according to your own needs
 
 
-## CRAB3 for MC
+## Central Crab productions
 Navigate to the `MC_CRAB` directory first and you could either:
 
 1. Alter the existing `crab_example.py` file and run the command:

@@ -15,7 +15,7 @@ git clone https://github.com/ETHZ/sixie-Muon-MuonAnalysisTools.git UserCode/sixi
 git clone https://github.com/amarini/QuarkGluonTagger.git
 git clone https://github.com/ntuhep/bprimeKit.git MyAna/bprimeKit
 
-scram b -j 10
+scram b
 ```
 To run the bprimeKit and generate ntuples, under the CMS environment:
 ```

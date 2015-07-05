@@ -1,18 +1,19 @@
-### *****************************************************************************************
-### Usage:
-###
-### cmsRun b2gedmntuples_cfg.py maxEvts=N 
-###
-### Default values for the options are set:
-### maxEvts     = -1
-### *****************************************************************************************
+##**************************************************************************************************
+##
+##    FileName   :  bprimeKit_miniAOD.py
+##    Description:  Configuration file for running bprimeKit ntuple production for miniAOD
+##    Usage      :  cmsRun bprimeKit_miniAOD.py 
+##    options    :  maxEvts=<number>
+##
+##**************************************************************************************************
+
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as opts
 
 options = opts.VarParsing ('analysis')
 
 options.register('maxEvts',
-                 50,# default value: process all events
+                 -1,# default value: process all events
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.int,
                  'Number of events to process')
