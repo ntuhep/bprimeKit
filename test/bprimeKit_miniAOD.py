@@ -180,9 +180,17 @@ process.ak8PFJetsCHSPruned = ak5PFJetsPruned.clone(
 
 ## b-tag discriminators
 bTagDiscriminators = [
-   'pfJetProbabilityBJetTags',
-   'pfCombinedMVABJetTags',
-   'pfCombinedInclusiveSecondaryVertexV2BJetTags' 
+   'combinedSecondaryVertexBJetTags'              ,
+   'pfJetBProbabilityBJetTags'                    ,
+   'pfJetProbabilityBJetTags'                     ,
+   'pfTrackCountingHighPurBJetTags'               ,
+   'pfTrackCountingHighEffBJetTags'               ,
+   'pfSimpleSecondaryVertexHighEffBJetTags'       ,
+   'pfSimpleSecondaryVertexHighPurBJetTags'       ,
+   'pfCombinedSecondaryVertexV2BJetTags'          ,
+   'pfCombinedInclusiveSecondaryVertexV2BJetTags' ,
+   'pfCombinedSecondaryVertexSoftLeptonBJetTags'  ,
+   'pfCombinedMVABJetTags' 
 ]
 
 from PhysicsTools.PatAlgos.tools.jetTools import *
@@ -530,6 +538,13 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    )
 
 #------------------------------------------------------------------------------- 
+#  Q/G Tagger pre-requisites
+#  Reference:https://twiki.cern.ch/twiki/bin/viewauth/CMS/QuarkGluonLikelihood
+#------------------------------------------------------------------------------- 
+process.load('RecoJets.JetProducers.QGTagger_cfi')
+process.QGTagger.srcJets = ('slimmedJets')
+
+#------------------------------------------------------------------------------- 
 #   Egamma ID pre-requisites
 #-------------------------------------------------------------------------------
 from PhysicsTools.PatAlgos.tools.coreTools import *
@@ -549,8 +564,6 @@ my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhot
 for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-process.egmGsfElectronIDSequence
-process.egmPhotonIDSequence 
 
 #------------------------------------------------------------------------------- 
 # Loading bprimeKit setup in python/bprimeKit_cfi.py 
@@ -559,7 +572,7 @@ process.egmPhotonIDSequence
 resultsFile = 'results.root'
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string( resultsFile )
-    )
+)
 
 process.load("MyAna.bprimeKit.bprimeKit_cfi")
 
@@ -568,7 +581,12 @@ process.load("MyAna.bprimeKit.bprimeKit_cfi")
 #    process.analysisPath
 #    )
 
-process.endPath = cms.EndPath(process.bprimeKit)
+process.endPath = cms.Path(
+   process.QGTagger *
+   process.egmGsfElectronIDSequence * 
+   process.egmPhotonIDSequence *
+   process.bprimeKit
+)
 
 
 #open('B2GEntupleFileDump.py','w').write(process.dumpPython())

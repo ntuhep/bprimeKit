@@ -85,7 +85,7 @@ typedef edm::Handle<PhotonList>        PhotonHandle;
 typedef std::vector<PhotonHandle>      PhotonHandleList;
 typedef PhotonList::const_iterator     PhotonIterator ;
 
-typedef std::vector<pat::Jet>          JetList;
+typedef edm::View<pat::Jet>          JetList;
 typedef edm::Handle<JetList>           JetHandler;
 typedef std::vector<JetHandler>        JetHandlerList;
 typedef JetList::const_iterator        JetIterator;
@@ -156,7 +156,6 @@ private:
    std::vector<std::string> lepcollections_                ;
    std::vector<std::string> phocollections_                ;
    std::vector<std::string> jetcollections_                ;
-   std::vector<int>         jettype_                       ; //true for pf jets, false for calo
    
    //-------------------------  Plugin interaction variables  --------------------------
    std::vector<edm::InputTag>  muonlabel_           ;
@@ -184,6 +183,8 @@ private:
    edm::InputTag               rhoIsoInputTag       ;
    std::vector<edm::InputTag>  isoValInputTags_     ;
 
+   //------------------------------  Jet Related tokens  -------------------------------
+   edm::EDGetTokenT<edm::ValueMap<float>>   qgToken_;
    //----------------------------  Photon isolation tokens  ----------------------------
    edm::EDGetTokenT<edm::ValueMap<bool> >  phoLooseIdMapToken_             ;
    edm::EDGetTokenT<edm::ValueMap<bool> >  phoMediumIdMapToken_            ;

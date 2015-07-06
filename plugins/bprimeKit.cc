@@ -71,7 +71,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    lepcollections_      = iConfig.getParameter<StrList>           ( "LepCollections" ) ; //branch names
    phocollections_      = iConfig.getParameter<StrList>           ( "PhoCollections" ) ; //branch names
    jetcollections_      = iConfig.getParameter<StrList>           ( "JetCollections" ) ; //branch names
-   jettype_             = iConfig.getParameter<std::vector<int> > ( "JetType"        ) ;
 
    //---------------------------------  Settings flag  ---------------------------------
    pairColl_            = iConfig.getUntrackedParameter<int>  ( "PairCollection" , 0     ) ;
@@ -82,6 +81,8 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );
    debug_               = iConfig.getUntrackedParameter<int>  ( "Debug"          , 0      );
    
+   //----------------------------------  Jet Related  ----------------------------------
+   qgToken_ = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
    //----------------------------------  Electron ID  ----------------------------------
    eleVetoIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
