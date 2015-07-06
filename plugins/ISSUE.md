@@ -25,7 +25,7 @@
       - [ ] Ip3d informattoin: in inner muon
 
    - Electron information
-      - [ ] Isolation related:
+      - [ ] Isolation related: Should be replaced with pre-computed cuts?
          - [ ] Common isolation information
          - [ ] float ElhcalOverEcalBc
          - [ ] float Eldr03HcalDepth1TowerSumEtBc
@@ -62,17 +62,16 @@
 ## Jet information
    - [ ] General issue
       - [ ] No particle flow information
-      - [ ] AK8BosonJetInfo (selectedPatJetsAK8PFCHSPrunedPacked, not use CA8)
-      - [ ] CA8TopJetInfo (patJetsCMSTopTagCHSPacked)
-      - [ ] QuarkGluonTagger is not up to date.
-      - [ ] bTag isn't ready. 
+      - [ ] QuarkGluonTagger: cannot be used for by `slimmedJetsAK8` collection
+      - [ ] Subjet info extraction.
+      - [X] bTag completed 
 
 ## Photon information 
    - [ ] General information
       - [ ] Particle flow information
       - [X] Added identification?
 
-   - [ ] Isolation information 
+   - [X] Isolation information: No DR03 and DR04 distinctions anymore?
       - [ ] float phoPFChIsoDR03
       - [ ] float phoPFNeuIsoDR03
       - [ ] float phoPFPhoIsoDR03
