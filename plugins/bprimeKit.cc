@@ -22,8 +22,6 @@
 //   Custom enums, typedefs and macros
 //------------------------------------------------------------------------------ 
 //#define FILL_DIJET_PAIRS 1      //Uncomment for jet pair processing
-using namespace reco;
-using namespace pat;
 typedef std::vector<edm::InputTag> TagList;
 typedef std::vector<std::string>   StrList;
 
@@ -40,11 +38,6 @@ TFileDirectory results ;
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
 {
    results = TFileDirectory( fs->mkdir( "results" ) );
-   muonlabel_          = iConfig.getParameter<TagList>( "muonlabel"          ) ; //"cleanPatMuons"
-   eleclabel_          = iConfig.getParameter<TagList>( "eleclabel"          ) ; // "cleanPatElectrons"
-   taulabel_           = iConfig.getParameter<TagList>( "taulabel"           ) ; // "selectedPatTausPFlow"
-   pholabel_           = iConfig.getParameter<TagList>( "pholabel"           ) ;
-   jetlabel_           = iConfig.getParameter<TagList>( "jetlabel"           ) ; // "cleanPatJets"
    metlabel_           = iConfig.getParameter<TagList>( "metlabel"           ) ; //"patMETs"
    pfmetlabel_         = iConfig.getParameter<TagList>( "pfmetlabel"         ) ; //"pfpatMETs"
    genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
@@ -68,22 +61,26 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
    //-------------------------------  Collection naming  -------------------------------
-   lepcollections_      = iConfig.getParameter<StrList>           ( "LepCollections" ) ; //branch names
-   phocollections_      = iConfig.getParameter<StrList>           ( "PhoCollections" ) ; //branch names
-   jetcollections_      = iConfig.getParameter<StrList>           ( "JetCollections" ) ; //branch names
 
    //---------------------------------  Settings flag  ---------------------------------
-   pairColl_            = iConfig.getUntrackedParameter<int>  ( "PairCollection" , 0     ) ;
-   getElectronID_       = iConfig.getUntrackedParameter<bool> ( "ElectronID"     , true  ) ;
-   getPhotonID_         = iConfig.getUntrackedParameter<bool> ( "PhotonID"       , true  ) ;
-   skipGenInfo_         = iConfig.getUntrackedParameter<bool> ( "SkipGenInfo"    , false ) ;
-   includeL7_           = iConfig.getUntrackedParameter<bool> ( "IncludeL7"      , true  ) ;
-   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet>( "SelectionParameters" );
-   debug_               = iConfig.getUntrackedParameter<int>  ( "Debug"          , 0      );
+   pairColl_            = iConfig.getUntrackedParameter<int>      ( "PairCollection" , 0     ) ;
+   getElectronID_       = iConfig.getUntrackedParameter<bool>     ( "ElectronID"     , true  ) ;
+   getPhotonID_         = iConfig.getUntrackedParameter<bool>     ( "PhotonID"       , true  ) ;
+   skipGenInfo_         = iConfig.getUntrackedParameter<bool>     ( "SkipGenInfo"    , false ) ;
+   includeL7_           = iConfig.getUntrackedParameter<bool>     ( "IncludeL7"      , true  ) ;
+   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet> ( "SelectionParameters"    ) ;
+   debug_               = iConfig.getUntrackedParameter<int>      ( "Debug"          , 0     ) ;
    
    //----------------------------------  Jet Related  ----------------------------------
+   jetcollections_      = iConfig.getParameter<StrList>( "JetCollections" ) ; //branch names
+   jetlabel_           = iConfig.getParameter<TagList> ( "jetlabel"       ) ; // "cleanPatJets"
    qgToken_ = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
-   //----------------------------------  Electron ID  ----------------------------------
+   
+   //----- Lepton related information  ----------------------------------------------------------------
+   lepcollections_       = iConfig.getParameter<StrList>( "LepCollections"     ) ; //branch names
+   muonlabel_            = iConfig.getParameter<TagList>( "muonlabel"          ) ; //"cleanPatMuons"
+   eleclabel_            = iConfig.getParameter<TagList>( "eleclabel"          ) ; // "cleanPatElectrons"
+   taulabel_             = iConfig.getParameter<TagList>( "taulabel"           ) ; // "selectedPatTausPFlow"
    eleVetoIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
@@ -91,7 +88,9 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    eleHEEPIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
    eleMVAValuesMapToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "eleMVAValuesMap" )) ;
    
-   //--------------------------  Photon ID from VID framwork  --------------------------
+   //----- Photon related  ----------------------------------------------------------------------------
+   phocollections_                 = iConfig.getParameter<StrList> ( "PhoCollections"     ) ; //branch names
+   pholabel_                       = iConfig.getParameter<TagList> ( "pholabel"           ) ;
    phoLooseIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoLooseIdMap"             )) ;
    phoMediumIdMapToken_            = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoMediumIdMap"            )) ;
    phoTightIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoTightIdMap"             )) ;

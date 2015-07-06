@@ -7,7 +7,7 @@
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 #include "MyAna/bprimeKit/interface/bprimeKit_util.h"
 
-//-------------------------  Jet specific CMSSW libraries  --------------------------
+//----- Jet Specific CMSSW packages  ---------------------------------------------------------------
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
 #include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
@@ -65,7 +65,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       calojetcoll  = ( false ) ;
       CAjetcoll   = ( false ) ;
       
-      //-----------------------------  For Jet Uncertainty  ------------------------------
+      //----- For Jet Uncertainties  ---------------------------------------------------------------------
       if( pfjetcoll ) {
          sprintf( bufferJECU, "AK5PFchs" );
       } else if( calojetcoll ) {
@@ -85,7 +85,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          if ( it_jet->pt() <= 15. ) { continue; } // IMPORTANT: Only book jet with pt>15 GeV.
          if( debug_ > 11 ) { cout << "  Size " << JetInfo[icoll].Size << " jet pt,eta,phi " << it_jet->pt() << "," << it_jet->eta() << "," << it_jet->phi() << endl; }
 
-         //------------------------------  Generic information  ------------------------------
+         //----- Generic Jet Information  -------------------------------------------------------------------
          JetInfo[icoll].Index         [JetInfo[icoll].Size] = JetInfo[icoll].Size               ;
          JetInfo[icoll].NTracks       [JetInfo[icoll].Size] = it_jet->associatedTracks().size() ;
          JetInfo[icoll].Eta           [JetInfo[icoll].Size] = it_jet->eta()                     ;
@@ -101,22 +101,24 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          JetInfo[icoll].Mass          [JetInfo[icoll].Size] = it_jet->mass()                    ;
          JetInfo[icoll].Area          [JetInfo[icoll].Size] = it_jet->jetArea()                 ;
   
+         //----- QG Tagger information  ---------------------------------------------------------------------
+         // TODO additional QG tagger information 
+         if( debug_ > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
+         JetInfo[icoll].QGTagsLikelihood  [JetInfo[icoll].Size] = -1;
+         if( pfjetcoll ) {
+            int ijet = it_jet - JetHandle[icoll]->begin();
+            edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll], ijet ) );
+            JetInfo[icoll].QGTagsLikelihood[JetInfo[icoll].Size] = (*qgHandle)[jetRef];
+         }
+         
          //----------------------------  Uncertainty information  ----------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting Uncertainty..." << endl ;}
          jecUnc->setJetEta( it_jet->eta() );
          jecUnc->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
          if( fabs( it_jet->eta() ) <= 5.0 ) { 
-            JetInfo[icoll].Unc         [JetInfo[icoll].Size] = jecUnc->getUncertainty( true ); 
+            JetInfo[icoll].Unc[JetInfo[icoll].Size] = jecUnc->getUncertainty( true ); 
          }
          
-         if( debug_ > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
-         JetInfo[icoll].QGTagsLikelihood  [JetInfo[icoll].Size] = -1;
-         if( pfjetcoll ) {
-            if( debug_ > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
-            int ijet = it_jet - JetHandle[icoll]->begin();
-            edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll], ijet ) );
-            JetInfo[icoll].QGTagsLikelihood[JetInfo[icoll].Size] = (*qgHandle)[jetRef];
-         }
 
          //---------------------------  Particle flow information  ---------------------------
          if( pfjetcoll ) {
@@ -229,6 +231,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             JetInfo[icoll].PtCorrL7b   [JetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "bottom" ).pt(); // L7(b-jet)
          }
          
+         //----- B Tagging discriminators  ------------------------------------------------------------------
          JetInfo[icoll].combinedSecondaryVertexBJetTags             [JetInfo[icoll].Size] = it_jet->bDiscriminator("combinedSecondaryVertexBJetTags"              );
          JetInfo[icoll].pfJetBProbabilityBJetTags                   [JetInfo[icoll].Size] = it_jet->bDiscriminator("pfJetBProbabilityBJetTags"                    );
          JetInfo[icoll].pfJetProbabilityBJetTags                    [JetInfo[icoll].Size] = it_jet->bDiscriminator("pfJetProbabilityBJetTags"                     );
@@ -256,7 +259,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          //  }}
          //}
          
-         //------------------------------  Generation MC data  -------------------------------
+         //----- Generation MC Data  ------------------------------------------------------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting MC data set ..." << endl ;} 
          if ( !isData && !skipGenInfo_ ) {
             const reco::GenJet* genjet = it_jet->genJet();

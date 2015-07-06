@@ -90,6 +90,24 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 ### Number of maximum events to process
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvts) )
 
+
+#------------------------------------------------------------------------------- 
+#   b tag discriminators 
+#------------------------------------------------------------------------------- 
+bTagDiscriminators = [
+   'combinedSecondaryVertexBJetTags'              ,
+   'pfJetBProbabilityBJetTags'                    ,
+   'pfJetProbabilityBJetTags'                     ,
+   'pfTrackCountingHighPurBJetTags'               ,
+   'pfTrackCountingHighEffBJetTags'               ,
+   'pfSimpleSecondaryVertexHighEffBJetTags'       ,
+   'pfSimpleSecondaryVertexHighPurBJetTags'       ,
+   'pfCombinedSecondaryVertexV2BJetTags'          ,
+   'pfCombinedInclusiveSecondaryVertexV2BJetTags' ,
+   'pfCombinedSecondaryVertexSoftLeptonBJetTags'  ,
+   'pfCombinedMVABJetTags' 
+]
+
 #-------------------------------------------------------------------------------
 #  Input file 
 #-------------------------------------------------------------------------------
@@ -178,20 +196,6 @@ process.ak8PFJetsCHSPruned = ak5PFJetsPruned.clone(
 )
 
 
-## b-tag discriminators
-bTagDiscriminators = [
-   'combinedSecondaryVertexBJetTags'              ,
-   'pfJetBProbabilityBJetTags'                    ,
-   'pfJetProbabilityBJetTags'                     ,
-   'pfTrackCountingHighPurBJetTags'               ,
-   'pfTrackCountingHighEffBJetTags'               ,
-   'pfSimpleSecondaryVertexHighEffBJetTags'       ,
-   'pfSimpleSecondaryVertexHighPurBJetTags'       ,
-   'pfCombinedSecondaryVertexV2BJetTags'          ,
-   'pfCombinedInclusiveSecondaryVertexV2BJetTags' ,
-   'pfCombinedSecondaryVertexSoftLeptonBJetTags'  ,
-   'pfCombinedMVABJetTags' 
-]
 
 from PhysicsTools.PatAlgos.tools.jetTools import *
 ## PATify fat jets
@@ -537,9 +541,13 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    SelectEvents = cms.vstring('filterPath')
 #    )
 
+
 #------------------------------------------------------------------------------- 
+#
 #  Q/G Tagger pre-requisites
+#
 #  Reference:https://twiki.cern.ch/twiki/bin/viewauth/CMS/QuarkGluonLikelihood
+#
 #------------------------------------------------------------------------------- 
 process.load('RecoJets.JetProducers.QGTagger_cfi')
 process.QGTagger.srcJets = ('slimmedJets')
