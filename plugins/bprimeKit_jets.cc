@@ -6,6 +6,7 @@
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 #include "MyAna/bprimeKit/interface/bprimeKit_util.h"
+#include <typeinfo>
 
 //----- Jet Specific CMSSW packages  ---------------------------------------------------------------
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -142,6 +143,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                JetInfo[icoll].SubjetsIdxStart[JetInfo[icoll].Size] += JetInfo[icoll].NSubjets[idx_pre]; }
             
             auto wSubjets = it_jet->subjets("SoftDrop");
+            cout << "SubJets are stored as " << typeid(wSubjets).name() << endl;
             for ( auto const & subjet : wSubjets ) {
                ++JetInfo[icoll].NSubjets[JetInfo[icoll].Size] ; 
                JetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
