@@ -835,16 +835,24 @@ public:
    float JVBeta                  [MAX_JETS] ;
 
    //--------------------------  Jet Correction information  ---------------------------
-   float PtCorrRaw               [MAX_JETS] ;
-   float PtCorrL2                [MAX_JETS] ;
-   float PtCorrL3                [MAX_JETS] ;
-   float PtCorrL7g               [MAX_JETS] ;
-   float PtCorrL7uds             [MAX_JETS] ;
-   float PtCorrL7c               [MAX_JETS] ;
-   float PtCorrL7b               [MAX_JETS] ;
-   float JetBProbBJetTags        [MAX_JETS] ;
-   float CombinedSVBJetTags      [MAX_JETS] ;
-   float CombinedSVMVABJetTags   [MAX_JETS] ;
+   float PtCorrRaw                                    [MAX_JETS] ;
+   float PtCorrL2                                     [MAX_JETS] ;
+   float PtCorrL3                                     [MAX_JETS] ;
+   float PtCorrL7g                                    [MAX_JETS] ;
+   float PtCorrL7uds                                  [MAX_JETS] ;
+   float PtCorrL7c                                    [MAX_JETS] ;
+   float PtCorrL7b                                    [MAX_JETS] ;
+   float combinedSecondaryVertexBJetTags              [MAX_JETS] ;
+   float pfJetBProbabilityBJetTags                    [MAX_JETS] ;
+   float pfJetProbabilityBJetTags                     [MAX_JETS] ;
+   float pfTrackCountingHighPurBJetTags               [MAX_JETS] ;
+   float pfTrackCountingHighEffBJetTags               [MAX_JETS] ;
+   float pfSimpleSecondaryVertexHighEffBJetTags       [MAX_JETS] ;
+   float pfSimpleSecondaryVertexHighPurBJetTags       [MAX_JETS] ;
+   float pfCombinedSecondaryVertexV2BJetTags          [MAX_JETS] ;
+   float pfCombinedInclusiveSecondaryVertexV2BJetTags [MAX_JETS] ;
+   float pfCombinedSecondaryVertexSoftLeptonBJetTags  [MAX_JETS] ;
+   float pfCombinedMVABJetTags                        [MAX_JETS] ;
 
    //----------------------------  Generation information  -----------------------------
    float GenJetPt                [MAX_JETS] ;
@@ -915,9 +923,17 @@ public:
       root->Branch( ( name + ".PtCorrL7uds" ).c_str() , PtCorrL7uds , ( name + ".PtCorrL7uds[" + name + ".Size]/F" ).c_str() ) ;
       root->Branch( ( name + ".PtCorrL7c" ).c_str() , PtCorrL7c , ( name + ".PtCorrL7c[" + name + ".Size]/F" ).c_str() ) ;
       root->Branch( ( name + ".PtCorrL7b" ).c_str() , PtCorrL7b , ( name + ".PtCorrL7b[" + name + ".Size]/F" ).c_str() ) ;
-      root->Branch( ( name + ".JetBProbBJetTags" ).c_str() , JetBProbBJetTags , ( name + ".JetBProbBJetTags[" + name + ".Size]/F" ).c_str() ) ;
-      root->Branch( ( name + ".CombinedSVBJetTags" ).c_str() , CombinedSVBJetTags , ( name + ".CombinedSVBJetTags[" + name + ".Size]/F" ).c_str() ) ;
-      root->Branch( ( name + ".CombinedSVMVABJetTags" ).c_str() , CombinedSVMVABJetTags , ( name + ".CombinedSVMVABJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".combinedSecondaryVertexBJetTags" ).c_str() , combinedSecondaryVertexBJetTags , ( name + ".combinedSecondaryVertexBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfJetBProbabilityBJetTags" ).c_str() , pfJetBProbabilityBJetTags , ( name + ".pfJetBProbabilityBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfJetProbabilityBJetTags" ).c_str() , pfJetProbabilityBJetTags , ( name + ".pfJetProbabilityBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfTrackCountingHighPurBJetTags" ).c_str() , pfTrackCountingHighPurBJetTags , ( name + ".pfTrackCountingHighPurBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfTrackCountingHighEffBJetTags" ).c_str() , pfTrackCountingHighEffBJetTags , ( name + ".pfTrackCountingHighEffBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfSimpleSecondaryVertexHighEffBJetTags" ).c_str() , pfSimpleSecondaryVertexHighEffBJetTags , ( name + ".pfSimpleSecondaryVertexHighEffBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfSimpleSecondaryVertexHighPurBJetTags" ).c_str() , pfSimpleSecondaryVertexHighPurBJetTags , ( name + ".pfSimpleSecondaryVertexHighPurBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfCombinedSecondaryVertexV2BJetTags" ).c_str() , pfCombinedSecondaryVertexV2BJetTags , ( name + ".pfCombinedSecondaryVertexV2BJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfCombinedInclusiveSecondaryVertexV2BJetTags" ).c_str() , pfCombinedInclusiveSecondaryVertexV2BJetTags , ( name + ".pfCombinedInclusiveSecondaryVertexV2BJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfCombinedSecondaryVertexSoftLeptonBJetTags" ).c_str() , pfCombinedSecondaryVertexSoftLeptonBJetTags , ( name + ".pfCombinedSecondaryVertexSoftLeptonBJetTags[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".pfCombinedMVABJetTags" ).c_str() , pfCombinedMVABJetTags , ( name + ".pfCombinedMVABJetTags[" + name + ".Size]/F" ).c_str() ) ;
       root->Branch( ( name + ".GenJetPt" ).c_str() , GenJetPt , ( name + ".GenJetPt[" + name + ".Size]/F" ).c_str() ) ;
       root->Branch( ( name + ".GenJetEta" ).c_str() , GenJetEta , ( name + ".GenJetEta[" + name + ".Size]/F" ).c_str() ) ;
       root->Branch( ( name + ".GenJetPhi" ).c_str() , GenJetPhi , ( name + ".GenJetPhi[" + name + ".Size]/F" ).c_str() ) ;
@@ -972,9 +988,17 @@ public:
       root->SetBranchAddress( ( name + ".PtCorrL7uds" ).c_str() , PtCorrL7uds ) ;
       root->SetBranchAddress( ( name + ".PtCorrL7c" ).c_str() , PtCorrL7c ) ;
       root->SetBranchAddress( ( name + ".PtCorrL7b" ).c_str() , PtCorrL7b ) ;
-      root->SetBranchAddress( ( name + ".JetBProbBJetTags" ).c_str() , JetBProbBJetTags ) ;
-      root->SetBranchAddress( ( name + ".CombinedSVBJetTags" ).c_str() , CombinedSVBJetTags ) ;
-      root->SetBranchAddress( ( name + ".CombinedSVMVABJetTags" ).c_str() , CombinedSVMVABJetTags ) ;
+      root->SetBranchAddress( ( name + ".combinedSecondaryVertexBJetTags" ).c_str() , combinedSecondaryVertexBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfJetBProbabilityBJetTags" ).c_str() , pfJetBProbabilityBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfJetProbabilityBJetTags" ).c_str() , pfJetProbabilityBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfTrackCountingHighPurBJetTags" ).c_str() , pfTrackCountingHighPurBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfTrackCountingHighEffBJetTags" ).c_str() , pfTrackCountingHighEffBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfSimpleSecondaryVertexHighEffBJetTags" ).c_str() , pfSimpleSecondaryVertexHighEffBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfSimpleSecondaryVertexHighPurBJetTags" ).c_str() , pfSimpleSecondaryVertexHighPurBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfCombinedSecondaryVertexV2BJetTags" ).c_str() , pfCombinedSecondaryVertexV2BJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfCombinedInclusiveSecondaryVertexV2BJetTags" ).c_str() , pfCombinedInclusiveSecondaryVertexV2BJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfCombinedSecondaryVertexSoftLeptonBJetTags" ).c_str() , pfCombinedSecondaryVertexSoftLeptonBJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfCombinedMVABJetTags" ).c_str() , pfCombinedMVABJetTags ) ;
       root->SetBranchAddress( ( name + ".GenJetPt" ).c_str() , GenJetPt ) ;
       root->SetBranchAddress( ( name + ".GenJetEta" ).c_str() , GenJetEta ) ;
       root->SetBranchAddress( ( name + ".GenJetPhi" ).c_str() , GenJetPhi ) ;
