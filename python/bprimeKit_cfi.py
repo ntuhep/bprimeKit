@@ -7,7 +7,8 @@ bprimeKit = cms.EDAnalyzer(
    reducedEBRecHitCollection = cms.InputTag("reducedEgamma","reducedEBRecHits"),
    reducedEERecHitCollection = cms.InputTag("reducedEgamma","reducedEERecHits"),
    rhoLabel                  = cms.InputTag("fixedGridRhoFastjetAll"), 
-   #------------------------------  Photon Information  -------------------------------
+
+   #----- Photon information ------------------------------------------------------------------------ 
    PhoCollections            = cms.vstring('PhotonInfo'),
    pholabel                  = cms.VInputTag('slimmedPhotons'),
    phoLooseIdMap             = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"     ) ,
@@ -17,7 +18,8 @@ bprimeKit = cms.EDAnalyzer(
    phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
    phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
    phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
-   #------------------------------  Lepton Information  -------------------------------
+   
+   #----- Lepton related information -------------------------------------------------------------------
    LepCollections  = cms.vstring('LepInfo'),
    muonlabel       = cms.VInputTag('slimmedMuons'     ) ,
    eleclabel       = cms.VInputTag('slimmedElectrons' ) ,
@@ -29,9 +31,9 @@ bprimeKit = cms.EDAnalyzer(
    eleHEEPIdMap    = cms.InputTag( "egmGsfElectronIDs:heepElectronID-HEEPV51"                                  ) ,
    eleMVAValuesMap = cms.InputTag( "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Phys14NonTrigValues"   ) ,
 
-   #--------------------------------  Jet information  --------------------------------      
-   jetlabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8'  ), ##Requires adding 'selectedPatJetsAK8PFCHSPrunedPacked','patJetsCMSTopTagCHSPacked'
-   JetCollections = cms.vstring( 'JetInfo' , 'AK8JetInfo' ) ,      ##Requires adding 'AK8BosonJetInfo','CA8TopJetInfo'
+   #----- Jet Information ------------------------------------------------------------------------------
+   jetlabel       = cms.VInputTag ( 'slimmedJets' , 'slimmedJetsAK8' ) ,
+   JetCollections = cms.vstring   ( 'JetInfo'     , 'AK8JetInfo'     ) ,
 
    PairCollection            = cms.untracked.int32(1),
    metlabel                  = cms.VInputTag("slimmedMETs"),
