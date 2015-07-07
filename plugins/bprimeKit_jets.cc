@@ -129,29 +129,29 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          }
 
          //-------------------------------  Subjet structure  --------------------------------
-         // Turned off by Enoch Chen 2015-07-06
-         //if( fatjetcoll ) {
-         //   if( debug_ > 10 ) { cout << ">>Jet>> Getting Subjet information ..." << endl ;}
-         //   JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] = 0;
-         //   JetInfo[icoll].SubjetsIdxStart [JetInfo[icoll].Size] = 0;
+         if( fatjetcoll ) {
+            cout << ">> Subjets for Using JetCollection" << jetcollections_[icoll] << endl;
+            if( debug_ > 10 ) { cout << ">>Jet>> Getting Subjet information ..." << endl ;}
+            JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] = 0;
+            JetInfo[icoll].SubjetsIdxStart [JetInfo[icoll].Size] = 0;
+            it_jet->userFloat("NjettinessAK8CHS:tau2");
 
-         //   for( int idx_pre = 0; idx_pre < JetInfo[icoll].Size; idx_pre++ )
-         //   { JetInfo[icoll].SubjetsIdxStart[JetInfo[icoll].Size] += JetInfo[icoll].NSubjets[idx_pre]; }
-         //   for( unsigned int ind = 0; ind < it_jet->numberOfDaughters(); ind++ ) {
-         //      const pat::Jet* subjet = (const pat::Jet*)( it_jet->daughter( ind ) );
-         //      //if(subjet->pt()<0.1) continue;
-         //      JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] += 1;
-
-         //      JetInfo[icoll].SubjetMass_w.push_back ( subjet->mass    ( ) );
-         //      JetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
-         //      JetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
-         //      JetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
-         //      JetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
-         //      JetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
-         //      JetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->correctedP4( 0 ).pt() );
-         //      JetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
-         //   }
-         //}
+            for( int idx_pre = 0; idx_pre < JetInfo[icoll].Size; ++idx_pre ){ 
+               JetInfo[icoll].SubjetsIdxStart[JetInfo[icoll].Size] += JetInfo[icoll].NSubjets[idx_pre]; }
+            
+            auto wSubjets = it_jet->subjets("SoftDrop");
+            for ( auto const & subjet : wSubjets ) {
+               ++JetInfo[icoll].NSubjets[JetInfo[icoll].Size] ; 
+               JetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
+               JetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
+               JetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
+               JetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
+               JetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
+               JetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
+               JetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->correctedP4( 0 ).pt() );
+               JetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
+            }
+         }
 
          //----------------------------  Jet ID string insertion  ----------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting IDs ..." << endl ;}
