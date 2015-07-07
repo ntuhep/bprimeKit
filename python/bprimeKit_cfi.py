@@ -32,8 +32,8 @@ bprimeKit = cms.EDAnalyzer(
    eleMVAValuesMap = cms.InputTag( "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Phys14NonTrigValues"   ) ,
 
    #----- Jet Information ------------------------------------------------------------------------------
-   jetlabel       = cms.VInputTag ( 'slimmedJets' , 'slimmedJetsAK8' ) ,
-   JetCollections = cms.vstring   ( 'JetInfo'     , 'AK8JetInfo'     ) ,
+   jetlabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8' , 'slimmedJetsAK8') ,
+   JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
 
    PairCollection            = cms.untracked.int32(1),
    metlabel                  = cms.VInputTag("slimmedMETs"),

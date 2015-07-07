@@ -18,6 +18,8 @@ options.register('maxEvts',
                  opts.VarParsing.varType.int,
                  'Number of events to process')
 
+
+
 options.register('sample',
 #'file:/store/georgi/2015/input/miniAOD/TprimeTprime_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/0CA15594-AA13-E511-905F-02163E015283.root',
 #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
@@ -56,6 +58,12 @@ options.register('LHE',
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.bool,
                  'Keep LHEProducts')
+
+options.register('Debug',
+                 0,# default value: no messages
+                 opts.VarParsing.multiplicity.singleton,
+                 opts.VarParsing.varType.int,
+                 'debug level')
 
 options.parseArguments()
 
@@ -584,7 +592,7 @@ process.TFileService = cms.Service("TFileService",
 )
 
 process.load("MyAna.bprimeKit.bprimeKit_cfi")
-
+process.bprimeKit.Debug=options.Debug
 
 #process.fullPath = cms.Schedule(
 #    process.analysisPath

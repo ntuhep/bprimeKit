@@ -68,7 +68,8 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       EvtInfo.nBX += 1;
    }
    
-   if( debug_ > 15 ) { cout << "Getting MC info" << endl ; }
+   if( debug_ > 15 ) { //cout << "Getting MC info" << endl ; 
+   }
 
    for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
       pdgId             = it_gen->pdgId();
@@ -79,13 +80,13 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
 
       //--------------------------  Photon decay type flagging  ---------------------------
       if( it_gen->status() == 3 || (it_gen->status() == 1 && it_gen->pt() > 20 )){
-         cout << ">>> Geninfo >>> Photon type" << endl;
+         //cout << ">>> Geninfo >>> Photon type" << endl;
          iMo1 = iMo2 = iDa1 = iDa2 = -1;
          iGrandMo1 = iGrandMo2 = -1;
          NMo = it_gen->numberOfMothers();
          NDa = it_gen->numberOfDaughters();
 
-         cout << ">>> GenInfo >>> Finding ancestors " << endl;
+         //cout << ">>> GenInfo >>> Finding ancestors " << endl;
          mother1 = find( cands.begin(), cands.end(), it_gen->mother( 0 ) );
          if( mother1 != cands.end() ) { 
             iMo1 = mother1 - cands.begin() ; 
@@ -103,7 +104,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          found = find( cands.begin(), cands.end(), it_gen->daughter( NDa - 1 ) );
          if( found != cands.end() ) { iDa2 = found - cands.begin() ; }
 
-         cout << ">>> GenInfo >>> Inserting information " << endl;
+         //cout << ">>> GenInfo >>> Inserting information " << endl;
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()     ;
          GenInfo.Eta            [GenInfo.Size] = it_gen->eta()    ;
          GenInfo.Phi            [GenInfo.Size] = it_gen->phi()    ;
@@ -161,7 +162,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
           *
          *******************************************************************************/ 
          if( it_gen->status() == 3 ) {
-            cout << ">>> GenInfo >>> photon status 3 " << endl;
+            //cout << ">>> GenInfo >>> photon status 3 " << endl;
             if( it_gen->pdgId() == 22 ) {
                // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
                GenInfo.PhotonFlag[GenInfo.Size]    = 0;
@@ -169,9 +170,9 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
                GenInfo.PhotonFlag[GenInfo.Size]    = -1; }
          } else if( it_gen->status() == 1 ) {
             if( it_gen->pt() < 20 ) { continue; }
-            cout << ">>> GenInfo >>> photon status 1 " << endl;
+            //cout << ">>> GenInfo >>> photon status 1 " << endl;
             GenInfo.PhotonFlag[GenInfo.Size]     = -1;
-            cout << ">>> GenInfo >>> photon status 1 >>> finding Photon Flag " << endl;
+            //cout << ">>> GenInfo >>> photon status 1 >>> finding Photon Flag " << endl;
             if( iMo1 != -1 && iMo2 != -1 && it_gen->pdgId() == 22 ) {
                if( GenInfo.Mo1PdgID[GenInfo.Size] == 22 && GenInfo.Mo2PdgID[GenInfo.Size] == 22 ) {
                   if( ( GenHandle->begin() + iMo1 )->status() == 3 && ( GenHandle->begin() + iMo2 )->status() == 3 )
@@ -213,7 +214,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       { monId   = it_gen->mother( 0 )->pdgId(); }
 
       //-------------------  b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH  -------------------
-      cout << ">>> GenInfo >> Getting decay mode " << endl;
+      //cout << ">>> GenInfo >> Getting decay mode " << endl;
       if ( pdgId == +7 ) { 
          EvtInfo.McbprimeMass[0] = it_gen->p4().mag();
          // b' decay mode      - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH

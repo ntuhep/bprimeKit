@@ -35,6 +35,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 	JetCorrectionUncertainty* jecUnc;
 	char bufferJECU[32];
 	edm::ParameterSet* PS_Jets;
+   std::string subjetName;
 
    // Turned off, see below
 	//double tracks_x    ; 
@@ -65,6 +66,18 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       fatjetcoll  = ( jetcollections_[icoll] == "AK8JetInfo" ) ;
       calojetcoll  = ( false ) ;
       CAjetcoll   = ( false ) ;
+
+      if( jetcollections_[icoll] =="AK8BosonJetInfo" ) {
+         fatjetcoll = true;
+         subjetName = "SoftDrop";
+      }
+      else if( jetcollections_[icoll] == "CA8TopJetInfo" ) {
+         fatjetcoll = true;
+         subjetName = "CMSTopTag";
+      }else{
+         fatjetcoll = false;
+         subjetName = "";
+      }
       
       //----- For Jet Uncertainties  ---------------------------------------------------------------------
       if( pfjetcoll ) {
@@ -133,7 +146,6 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
          //-------------------------------  Subjet structure  --------------------------------
          if( fatjetcoll ) {
-            cout << ">> Subjets for Using JetCollection" << jetcollections_[icoll] << endl;
             if( debug_ > 10 ) { cout << ">>Jet>> Getting Subjet information ..." << endl ;}
             JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] = 0;
             JetInfo[icoll].SubjetsIdxStart [JetInfo[icoll].Size] = 0;
@@ -141,10 +153,9 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
             for( int idx_pre = 0; idx_pre < JetInfo[icoll].Size; ++idx_pre ){ 
                JetInfo[icoll].SubjetsIdxStart[JetInfo[icoll].Size] += JetInfo[icoll].NSubjets[idx_pre]; }
-            
-            auto wSubjets = it_jet->subjets("SoftDrop");
-            cout << "SubJets are stored as " << typeid(wSubjets).name() << endl;
-            for ( auto const & subjet : wSubjets ) {
+           
+            auto subjetsList = it_jet->subjets( subjetName );
+            for ( auto const & subjet : subjetsList ) {
                ++JetInfo[icoll].NSubjets[JetInfo[icoll].Size] ; 
                JetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
                JetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );

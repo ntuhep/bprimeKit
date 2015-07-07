@@ -110,13 +110,13 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //-----------------------  New Isolation information: Enoch  ------------------------
       if( getElectronID_ ){
          const auto el = gsfElecHandle->ptrAt( i );
-         cout <<"\t>>> Getting isolation information"<< endl;
+         //cout <<"\t>>> Getting isolation information"<< endl;
          LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[el]); 
-         cout << "\t>>> Getting new Isolation information" << endl;
+         //cout << "\t>>> Getting new Isolation information" << endl;
          LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Size] = (*eleMVAValues)[el];
          LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;

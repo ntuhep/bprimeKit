@@ -24,7 +24,7 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
 	 string NonLabel;
 
    //--------------------------  Setting up helper variables  --------------------------
-   cout << "Getting lepton Handlers" << endl;
+   //cout << "Getting lepton Handlers" << endl;
    NonLabel = "";
    for( unsigned il = 0; il < taulabel_.size(); il++ ) {
       if( NonLabel.compare( taulabel_[il].label() ) == 0 ) { continue; }

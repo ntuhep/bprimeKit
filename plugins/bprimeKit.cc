@@ -204,7 +204,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if( !TurnOffInCMSSW73x )
       if( tracklabel_.size() > 0 ) { iEvent.getByLabel( tracklabel_[0], TrackHandle ); }         //get tracks for calculating dRmin (Dmitry)
 
-   printf( "[Test] tracklabel is ok?\n" );
+   //cout << "[Test] tracklabel is ok?" ;
 
    // All PF Candidate for alternate isolation
    // edm::Handle<reco::PFCandidateCollection> pfCandidatesH;
