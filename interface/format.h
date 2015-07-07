@@ -863,11 +863,19 @@ public:
    float GenPhi                  [MAX_JETS] ;
    int   GenPdgID                [MAX_JETS] ;
    int   GenFlavor               [MAX_JETS] ;
-   int   GenMCTag                [MAX_JETS] ; // 0: unknown, 1: decay from W, 2: decay from Z, (+10) from b', (+20) from t'
+   int   GenMCTag                [MAX_JETS] ; // 0: unknown[MAX_JETS]; 1: decay from W[MAX_JETS]; 2: decay from Z[MAX_JETS]; (+10) from b'[MAX_JETS]; (+20) from t'
 
    //------------------------------  Subjet information  -------------------------------
-   int NSubjets                  [MAX_JETS] ;
-   int SubjetsIdxStart           [MAX_JETS] ;
+   float NjettinessAK8tau1        [MAX_JETS] ;
+   float NjettinessAK8tau2        [MAX_JETS] ;
+   float NjettinessAK8tau3        [MAX_JETS] ;
+   float ak8PFJetsCHSSoftDropMass [MAX_JETS] ;
+   float ak8PFJetsCHSPrunedMass   [MAX_JETS] ;
+   float ak8PFJetsCHSTrimmedMass  [MAX_JETS] ;
+   float ak8PFJetsCHSFilteredMass [MAX_JETS] ;
+
+   int NSubjets                   [MAX_JETS] ;
+   int SubjetsIdxStart            [MAX_JETS] ;
    std::vector<float> SubjetMass_w               ;
    std::vector<float> SubjetPt_w                 ;
    std::vector<float> SubjetEt_w                 ;
@@ -943,6 +951,13 @@ public:
       root->Branch( ( name + ".GenPdgID" ).c_str() , GenPdgID , ( name + ".GenPdgID[" + name + ".Size]/I" ).c_str() ) ;
       root->Branch( ( name + ".GenFlavor" ).c_str() , GenFlavor , ( name + ".GenFlavor[" + name + ".Size]/I" ).c_str() ) ;
       root->Branch( ( name + ".GenMCTag" ).c_str() , GenMCTag , ( name + ".GenMCTag[" + name + ".Size]/I" ).c_str() ) ;
+      root->Branch( ( name + ".NjettinessAK8tau1" ).c_str() , NjettinessAK8tau1 , ( name + ".NjettinessAK8tau1[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".NjettinessAK8tau2" ).c_str() , NjettinessAK8tau2 , ( name + ".NjettinessAK8tau2[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".NjettinessAK8tau3" ).c_str() , NjettinessAK8tau3 , ( name + ".NjettinessAK8tau3[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".ak8PFJetsCHSSoftDropMass" ).c_str() , ak8PFJetsCHSSoftDropMass , ( name + ".ak8PFJetsCHSSoftDropMass[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".ak8PFJetsCHSPrunedMass" ).c_str() , ak8PFJetsCHSPrunedMass , ( name + ".ak8PFJetsCHSPrunedMass[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".ak8PFJetsCHSTrimmedMass" ).c_str() , ak8PFJetsCHSTrimmedMass , ( name + ".ak8PFJetsCHSTrimmedMass[" + name + ".Size]/F" ).c_str() ) ;
+      root->Branch( ( name + ".ak8PFJetsCHSFilteredMass" ).c_str() , ak8PFJetsCHSFilteredMass , ( name + ".ak8PFJetsCHSFilteredMass[" + name + ".Size]/F" ).c_str() ) ;
       root->Branch( ( name + ".NSubjets" ).c_str() , NSubjets , ( name + ".NSubjets[" + name + ".Size]/I" ).c_str() ) ;
       root->Branch( ( name + ".SubjetsIdxStart" ).c_str() , SubjetsIdxStart , ( name + ".SubjetsIdxStart[" + name + ".Size]/I" ).c_str() ) ;
       root->Branch( ( name + ".SubjetMass" ).c_str() , &SubjetMass_w );
@@ -1008,6 +1023,13 @@ public:
       root->SetBranchAddress( ( name + ".GenPdgID" ).c_str() , GenPdgID ) ;
       root->SetBranchAddress( ( name + ".GenFlavor" ).c_str() , GenFlavor ) ;
       root->SetBranchAddress( ( name + ".GenMCTag" ).c_str() , GenMCTag ) ;
+      root->SetBranchAddress( ( name + ".NjettinessAK8tau1" ).c_str() , NjettinessAK8tau1 ) ;
+      root->SetBranchAddress( ( name + ".NjettinessAK8tau2" ).c_str() , NjettinessAK8tau2 ) ;
+      root->SetBranchAddress( ( name + ".NjettinessAK8tau3" ).c_str() , NjettinessAK8tau3 ) ;
+      root->SetBranchAddress( ( name + ".ak8PFJetsCHSSoftDropMass" ).c_str() , ak8PFJetsCHSSoftDropMass ) ;
+      root->SetBranchAddress( ( name + ".ak8PFJetsCHSPrunedMass" ).c_str() , ak8PFJetsCHSPrunedMass ) ;
+      root->SetBranchAddress( ( name + ".ak8PFJetsCHSTrimmedMass" ).c_str() , ak8PFJetsCHSTrimmedMass ) ;
+      root->SetBranchAddress( ( name + ".ak8PFJetsCHSFilteredMass" ).c_str() , ak8PFJetsCHSFilteredMass ) ;
       root->SetBranchAddress( ( name + ".NSubjets" ).c_str() , NSubjets ) ;
       root->SetBranchAddress( ( name + ".SubjetsIdxStart" ).c_str() , SubjetsIdxStart ) ;
       SubjetMass = 0 ;

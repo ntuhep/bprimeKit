@@ -256,7 +256,7 @@ private:
    map < std::string, int >::iterator HLTmaplist_pr;
    HLTConfigProvider hltConfig_;
 
-   bool isData;   
+   bool isData;
 };
 
 #endif /* end of include guard: __BPRIMEKIT_H__ */

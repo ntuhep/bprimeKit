@@ -147,10 +147,18 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          //-------------------------------  Subjet structure  --------------------------------
          if( fatjetcoll ) {
             if( debug_ > 10 ) { cout << ">>Jet>> Getting Subjet information ..." << endl ;}
+
+            JetInfo[icoll].NjettinessAK8tau1        [JetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau1"       ) ;
+            JetInfo[icoll].NjettinessAK8tau2        [JetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau2"       ) ;
+            JetInfo[icoll].NjettinessAK8tau3        [JetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau3"       ) ;
+            JetInfo[icoll].ak8PFJetsCHSSoftDropMass [JetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSSoftDropMass" ) ;
+            JetInfo[icoll].ak8PFJetsCHSPrunedMass   [JetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSPrunedMass"   ) ;
+            JetInfo[icoll].ak8PFJetsCHSTrimmedMass  [JetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSTrimmedMass"  ) ;
+            JetInfo[icoll].ak8PFJetsCHSFilteredMass [JetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSFilteredMass" ) ;
+
+
             JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] = 0;
             JetInfo[icoll].SubjetsIdxStart [JetInfo[icoll].Size] = 0;
-            it_jet->userFloat("NjettinessAK8CHS:tau2");
-
             for( int idx_pre = 0; idx_pre < JetInfo[icoll].Size; ++idx_pre ){ 
                JetInfo[icoll].SubjetsIdxStart[JetInfo[icoll].Size] += JetInfo[icoll].NSubjets[idx_pre]; }
            
