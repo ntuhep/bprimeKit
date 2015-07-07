@@ -176,11 +176,8 @@ private:
    std::vector<edm::InputTag>  dcslabel_            ;
    std::vector<edm::InputTag>  genevtlabel_         ;
    std::vector<edm::InputTag>  gtdigilabel_         ;
-   std::vector<edm::InputTag>  rhocorrectionlabel_  ;
-   std::vector<edm::InputTag>  sigmaLabel_          ;
    std::vector<edm::InputTag>  puInfoLabel_         ;
    edm::InputTag               conversionsInputTag_ ;
-   edm::InputTag               rhoIsoInputTag       ;
    std::vector<edm::InputTag>  isoValInputTags_     ;
 
    //------------------------------  Jet Related tokens  -------------------------------

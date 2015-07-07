@@ -58,15 +58,7 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
    }
 
    //------------------------  Setting up isolation parameters  ------------------------
-   cout << "Attempting to read rhoiso..." << endl;
    iEvent.getByLabel( conversionsInputTag_, conversions_h );
-   if( !TurnOffInCMSSW73x )
-   iEvent.getByLabel( rhoIsoInputTag, rhoIso_h ); 
-   if( !TurnOffInCMSSW73x )
-   rhoIso = 0;
-   //rhoIso = *( rhoIso_h.product() );
-
-   //iEvent.getByLabel("gsfElectrons", els_h);
    
    //-------------------------  Begin looping over collection  -------------------------
    for( size_t icoll = 0; icoll < lepcollections_.size(); icoll++ ) { 

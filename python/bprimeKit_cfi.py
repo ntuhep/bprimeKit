@@ -49,12 +49,9 @@ bprimeKit = cms.EDAnalyzer(
    dcslabel                  = cms.VInputTag("scalersRawToDigi"),
    genevtlabel               = cms.VInputTag("generator"),
    gtdigilabel               = cms.VInputTag("gtDigis"),
-   rhocorrectionlabel        = cms.VInputTag("kt6PFJetsForIsolation:rho","kt6PFJetsForIsolation:rho"),  #not used in 73x [electron,muon]
-   sigmaLabel                = cms.VInputTag("kt6PFJetsForIsolation:sigma","kt6PFJetsForIsolation:rho"),    #not used in 73x [electron,muon]
    puInfoLabel               = cms.VInputTag("addPileupInfo"),
    #conversionsInputTag      = cms.InputTag("allConversions"),
    conversionsInputTag       = cms.InputTag("reducedEgamma","reducedConversions"),
-   rhoIsoInputTag            = cms.InputTag("kt6PFJetsForIsolation", "rho"),	# not used in 73x
    
    isoValInputTags = cms.VInputTag( 
       cms.InputTag('elPFIsoValueCharged03PFIdPFIso'),

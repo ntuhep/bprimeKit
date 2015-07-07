@@ -68,12 +68,11 @@ elLabel   = 'slimmedElectrons'
 jLabel    = 'slimmedJets'
 jLabelAK8 = 'slimmedJetsAK8'
 
-ak8subjetLabel = 'selectedPatJetsAK8PFCHSPrunedSubjets'
-
 pvLabel           = 'offlineSlimmedPrimaryVertices'
 convLabel         = 'reducedEgamma:reducedConversions'
 particleFlowLabel = 'packedPFCandidates'
 metLabel          = 'slimmedMETs'
+rhoLabel          = 'fixedGridRhoFastjetAll'
 
 triggerResultsLabel    = "TriggerResults"
 triggerSummaryLabel    = "hltTriggerSummaryAOD"
@@ -481,6 +480,7 @@ process.electronUserData = cms.EDProducer(
     eleLabel            = cms.InputTag("skimmedPatElectrons"),
     pv                  = cms.InputTag(pvLabel),
     conversion          = cms.InputTag(convLabel),
+    rho                 = cms.InputTag(rhoLabel),
     triggerResults      = cms.InputTag(triggerResultsLabel),
     triggerSummary      = cms.InputTag(triggerSummaryLabel),
     hltElectronFilter   = cms.InputTag(hltElectronFilterLabel),  ##trigger matching code to be fixed!

@@ -50,13 +50,10 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    dcslabel_           = iConfig.getParameter<TagList>( "dcslabel"           ) ; //scalersRawToDigi
    genevtlabel_        = iConfig.getParameter<TagList>( "genevtlabel"        ) ; //generator
    gtdigilabel_        = iConfig.getParameter<TagList>( "gtdigilabel"        ) ; //gtDigis
-   rhocorrectionlabel_ = iConfig.getParameter<TagList>( "rhocorrectionlabel" ) ; // For PU correction
-   sigmaLabel_         = iConfig.getParameter<TagList>( "sigmaLabel"         ) ; // For PU correction
    puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
 
    //-----------------------  2012 Election simple-cut-based ID  ----------------------- 
    conversionsInputTag_ = iConfig.getParameter<edm::InputTag> ( "conversionsInputTag" ) ;
-   rhoIsoInputTag       = iConfig.getParameter<edm::InputTag> ( "rhoIsoInputTag"      ) ;
    isoValInputTags_     = iConfig.getParameter<TagList>       ( "isoValInputTags"     ) ;
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
@@ -201,13 +198,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if( debug_ > 0 ) { cout << "Begin Analyze" << endl; }
    isData = iEvent.isRealData();   // Add by Jacky
 
-   if( !TurnOffInCMSSW73x )
-      for( unsigned il = 0; il < rhocorrectionlabel_.size(); il++ ) {
-         rhoH.push_back( edm::Handle<double> () );
-         iEvent.getByLabel( rhocorrectionlabel_[il], rhoH[il] );
-         sigmaHandle.push_back( edm::Handle<double> () );
-         iEvent.getByLabel( sigmaLabel_[il], sigmaHandle[il] );
-      }
    if(!isData && genlabel_.size() > 0 ) iEvent.getByLabel( genlabel_[0], GenHandle);
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
    if( offlinePVBSlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS ); } //Offline primary vertices with Beam Spot constraint //Dmitry
