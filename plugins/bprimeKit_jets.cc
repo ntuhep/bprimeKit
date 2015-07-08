@@ -178,7 +178,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                JetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
                JetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
                JetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
-               JetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->correctedP4( 0 ).pt() );
+               JetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
                JetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
             }
          }
