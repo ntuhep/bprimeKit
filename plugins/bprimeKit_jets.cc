@@ -10,6 +10,7 @@
 
 //----- Jet Specific CMSSW packages  ---------------------------------------------------------------
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/BTauReco/interface/CATopJetTagInfo.h"
 
 #include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
 #include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
@@ -155,7 +156,13 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             JetInfo[icoll].ak8PFJetsCHSPrunedMass   [JetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSPrunedMass"   ) ;
             JetInfo[icoll].ak8PFJetsCHSTrimmedMass  [JetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSTrimmedMass"  ) ;
             JetInfo[icoll].ak8PFJetsCHSFilteredMass [JetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSFilteredMass" ) ;
+            JetInfo[icoll].topJetMass               [JetInfo[icoll].Size]=it_jet->userFloat( "cmsTopTagPFJetsCHSLinksAK8" ) ;
 
+            reco::CATopJetTagInfo const * tagInfo =  dynamic_cast<reco::CATopJetTagInfo const *>( it_jet->tagInfo("caTop"));
+            if ( tagInfo != 0 ) {
+               JetInfo[icoll].ca8MinMass [JetInfo[icoll].Size] = tagInfo->properties().minMass;
+               JetInfo[icoll].ca8TopMass [JetInfo[icoll].Size] = tagInfo->properties().topMass;
+            }
 
             JetInfo[icoll].NSubjets        [JetInfo[icoll].Size] = 0;
             JetInfo[icoll].SubjetsIdxStart [JetInfo[icoll].Size] = 0;
