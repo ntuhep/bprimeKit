@@ -24,76 +24,76 @@
 
 class EvtInfoBranches {
 public:
-   int     RunNo  ;
-   size_t  EvtNo  ;
-   int     BxNo   ;
-   int     LumiNo ;
-   int     Orbit  ;
+   Int_t      RunNo  ;
+   ULong64_t  EvtNo  ;
+   Int_t      BxNo   ;
+   Int_t      LumiNo ;
+   Int_t      Orbit  ;
    //----- MC Information  ----------------------------------------------------------------------------
-   int   McFlag            ; // MC or not MC, that's the question
-   int   McSigTag          ; // MC Signature tag    - 0: others, 1: 2L (opposite-sign), 2: 2L (same-sign), 3: 3L, 4: 4L
-   int   McbprimeMode [2]  ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
-   int   MctprimeMode [2]  ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
-   int   McWMode      [4]  ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
-   int   McZMode      [2]  ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
-   float McbprimeMass [2]  ; // mass: b'(bar)
-   float MctprimeMass [2]  ; // mass: t'(bar)
-   float MctopMass    [2]  ; // mass: top(bar)
-   float McWMass      [4]  ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
-   float McZMass      [2]  ; // mass: Z from b'(bar) or t'(bar)
-   float McDauPt      [14] ; // Generic MC daughter information
-   float McDauEta     [14] ; // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
-   float McDauPhi     [14] ;
-   int   McDauPdgID   [14] ;
+   Int_t   McFlag            ; // MC or not MC, that's the question
+   Int_t   McSigTag          ; // MC Signature tag    - 0: others, 1: 2L (opposite-sign), 2: 2L (same-sign), 3: 3L, 4: 4L
+   Int_t   McbprimeMode [2]  ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
+   Int_t   MctprimeMode [2]  ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
+   Int_t   McWMode      [4]  ; // W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar - 0: others, 1: enu, 2: munu, 3: taunu, 4: jj
+   Int_t   McZMode      [2]  ; // Z from b'(bar)/t'(t'bar)  - 0: others, 1: ee, 2: mumu, 3: tautau, 4: nunu, 5: bb, 6: jj
+   Float_t McbprimeMass [2]  ; // mass: b'(bar)
+   Float_t MctprimeMass [2]  ; // mass: t'(bar)
+   Float_t MctopMass    [2]  ; // mass: top(bar)
+   Float_t McWMass      [4]  ; // mass: W- from b'(t'bar)/W+ from t/W+ from b'bar(t')/W- from tbar
+   Float_t McZMass      [2]  ; // mass: Z from b'(bar) or t'(bar)
+   Float_t McDauPt      [14] ; // Generic MC daughter information
+   Float_t McDauEta     [14] ; // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
+   Float_t McDauPhi     [14] ;
+   Int_t   McDauPdgID   [14] ;
    //----- Isolation related information  -------------------------------------------------------------
-   float Rho       ;
-   float RhoPU  [2];       // [electron,muon]
-   float SigmaPU[2];      // [electron,muon]
+   Float_t Rho       ;
+   Float_t RhoPU  [2];       // [electron,muon]
+   Float_t SigmaPU[2];      // [electron,muon]
    //----- Beamspot information  ----------------------------------------------------------------------
-   float BeamSpotX;
-   float BeamSpotY;
-   float BeamSpotZ;
+   Float_t BeamSpotX;
+   Float_t BeamSpotY;
+   Float_t BeamSpotZ;
    //----- PU information  ----------------------------------------------------------------------------
-   int   nBX            ;
-   int   nPU    [MAX_BX];
-   int   BXPU   [MAX_BX];
-   float TrueIT [MAX_BX];
+   Int_t   nBX            ;
+   Int_t   nPU    [MAX_BX];
+   Int_t   BXPU   [MAX_BX];
+   Float_t TrueIT [MAX_BX];
    //----- Parton distribution functions information  -------------------------------------------------
-   int   PDFid1   ;
-   int   PDFid2   ;
-   float PDFx1    ;
-   float PDFx2    ;
-   float PDFscale ;
-   float PDFv1    ;
-   float PDFv2    ;
+   Int_t   PDFid1   ;
+   Int_t   PDFid2   ;
+   Float_t PDFx1    ;
+   Float_t PDFx2    ;
+   Float_t PDFscale ;
+   Float_t PDFv1    ;
+   Float_t PDFv2    ;
    //----- Particle Flow information  -----------------------------------------------------------------
-   float PFMET                                     ;
-   float PFMETType1CorrectedPFMetUnclusteredEnUp   ;
-   float PFMETType1CorrectedPFMetUnclusteredEnDown ;
-   float PFMETPhi                                  ;
-   float PFRawMET                                  ;
-   float PFRawMETPhi                               ;
-   float PFSumEt                                   ;
-   float PFMETSig                                  ;
-   float PFMETlongitudinal                         ;
-   float PFMETRealSig                              ;
-   float PFGenMET                                  ;
-   float PFGenMETPhi                               ;
-   float PFMETx                                    ; //Uly 2011-04-04
-   float PFMETy                                    ; //Uly 2011-04-04
+   Float_t PFMET                                     ;
+   Float_t PFMETType1CorrectedPFMetUnclusteredEnUp   ;
+   Float_t PFMETType1CorrectedPFMetUnclusteredEnDown ;
+   Float_t PFMETPhi                                  ;
+   Float_t PFRawMET                                  ;
+   Float_t PFRawMETPhi                               ;
+   Float_t PFSumEt                                   ;
+   Float_t PFMETSig                                  ;
+   Float_t PFMETlongitudinal                         ;
+   Float_t PFMETRealSig                              ;
+   Float_t PFGenMET                                  ;
+   Float_t PFGenMETPhi                               ;
+   Float_t PFMETx                                    ; //Uly 2011-04-04
+   Float_t PFMETy                                    ; //Uly 2011-04-04
    //----- High Level Trigger information  ------------------------------------------------------------
-   int   TrgCount                    ; // No. of fired booking bits
-   int   nTrgBook                    ;
-   char  TrgBook[N_TRIGGER_BOOKINGS] ; // Trigger bits, reserved up to 120 entries
-   int   nHLT                        ;
-   float HighPurityFraction          ; //Added by Dmitry to help filter out bad events
-   int   NofTracks                   ; //Added by Dmitry to help filter out bad events
-   float ptHat                       ;
-   int   HLTPrescaleFactor[512]      ;
-   int   HLTName2enum[512]           ;
-   bool  HLTbits[N_TRIGGER_BOOKINGS] ;
-   int   L1[128]                     ; // L1 trigger bits
-   int   TT[64]                      ; // Techical trigger bits
+   Int_t   TrgCount                    ; // No. of fired booking bits
+   Int_t   nTrgBook                    ;
+   Char_t  TrgBook[N_TRIGGER_BOOKINGS] ; // Trigger bits, reserved up to 120 entries
+   Int_t   nHLT                        ;
+   Float_t HighPurityFraction          ; //Added by Dmitry to help filter out bad events
+   Int_t   NofTracks                   ; //Added by Dmitry to help filter out bad events
+   Float_t ptHat                       ;
+   Int_t   HLTPrescaleFactor[512]      ;
+   Int_t   HLTName2enum[512]           ;
+   Bool_t  HLTbits[N_TRIGGER_BOOKINGS] ;
+   Int_t   L1[128]                     ; // L1 trigger bits
+   Int_t   TT[64]                      ; // Techical trigger bits
 
    void RegisterTree( TTree* root , std::string name = "EvtInfo" ) {
       root->Branch( ( name + ".RunNo" ).c_str(), &RunNo, ( name + ".RunNo/I" ).c_str() );
@@ -156,7 +156,7 @@ public:
       root->Branch( ( name + ".ptHat" ).c_str(), &ptHat, ( name + ".ptHat/F" ).c_str() );
       root->Branch( ( name + ".HLTPrescaleFactor" ).c_str(), HLTPrescaleFactor, ( name + ".HLTPrescaleFactor[" + name + ".nHLT]/I" ).c_str() );
       root->Branch( ( name + ".HLTName2enum" ).c_str(), HLTName2enum, ( name + ".HLTName2enum[" + name + ".nHLT]/I" ).c_str() );
-      root->Branch( ( name + ".HLTbits" ).c_str(), HLTbits, ( name + ".HLTbits[" + name + ".nHLT]/C" ).c_str() );
+      root->Branch( ( name + ".HLTbits" ).c_str(), HLTbits, ( name + ".HLTbits[" + name + ".nHLT]/O" ).c_str() );
       root->Branch( ( name + ".L1" ).c_str(), L1, ( name + ".L1[128]/I" ).c_str() );
       root->Branch( ( name + ".TT" ).c_str(), TT, ( name + ".TT[64]/I" ).c_str() );
    }
@@ -228,214 +228,214 @@ public:
 };
 class LepInfoBranches {
 public:
-   int   Size;
-   int   Index                                 [MAX_LEPTONS] ;
+   Int_t   Size;
+   Int_t   Index                                 [MAX_LEPTONS] ;
    //----- Generic information  -----------------------------------------------------------------------
-   int   LeptonType                            [MAX_LEPTONS] ;
-   int   Charge                                [MAX_LEPTONS] ;
-   float Pt                                    [MAX_LEPTONS] ;
-   float Et                                    [MAX_LEPTONS] ;
-   float Eta                                   [MAX_LEPTONS] ;
-   float Phi                                   [MAX_LEPTONS] ;
-   float Px                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   float Py                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   float Pz                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   float Energy                                [MAX_LEPTONS] ; //Uly 2011-04-04
-   float TrackIso                              [MAX_LEPTONS] ;
-   float EcalIso                               [MAX_LEPTONS] ;
-   float HcalIso                               [MAX_LEPTONS] ;
-   float ChargedHadronIso                      [MAX_LEPTONS] ;
-   float NeutralHadronIso                      [MAX_LEPTONS] ;
-   float PhotonIso                             [MAX_LEPTONS] ;
-   float ChargedHadronIsoR03                   [MAX_LEPTONS] ;
-   float NeutralHadronIsoR03                   [MAX_LEPTONS] ;
-   float PhotonIsoR03                          [MAX_LEPTONS] ;
-   float sumPUPtR03                            [MAX_LEPTONS] ;
-   float IsoRhoCorrR03                         [MAX_LEPTONS] ;
-   float ChargedHadronIsoR04                   [MAX_LEPTONS] ;
-   float NeutralHadronIsoR04                   [MAX_LEPTONS] ;
-   float PhotonIsoR04                          [MAX_LEPTONS] ;
-   float sumPUPtR04                            [MAX_LEPTONS] ;
-   float IsoRhoCorrR04                         [MAX_LEPTONS] ;
-   float Ip3dPV                                [MAX_LEPTONS] ;
-   float Ip3dPVErr                             [MAX_LEPTONS] ;
-   float Ip3dPVSignificance                    [MAX_LEPTONS] ;
+   Int_t   LeptonType                            [MAX_LEPTONS] ;
+   Int_t   Charge                                [MAX_LEPTONS] ;
+   Float_t Pt                                    [MAX_LEPTONS] ;
+   Float_t Et                                    [MAX_LEPTONS] ;
+   Float_t Eta                                   [MAX_LEPTONS] ;
+   Float_t Phi                                   [MAX_LEPTONS] ;
+   Float_t Px                                    [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Py                                    [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Pz                                    [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Energy                                [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t TrackIso                              [MAX_LEPTONS] ;
+   Float_t EcalIso                               [MAX_LEPTONS] ;
+   Float_t HcalIso                               [MAX_LEPTONS] ;
+   Float_t ChargedHadronIso                      [MAX_LEPTONS] ;
+   Float_t NeutralHadronIso                      [MAX_LEPTONS] ;
+   Float_t PhotonIso                             [MAX_LEPTONS] ;
+   Float_t ChargedHadronIsoR03                   [MAX_LEPTONS] ;
+   Float_t NeutralHadronIsoR03                   [MAX_LEPTONS] ;
+   Float_t PhotonIsoR03                          [MAX_LEPTONS] ;
+   Float_t sumPUPtR03                            [MAX_LEPTONS] ;
+   Float_t IsoRhoCorrR03                         [MAX_LEPTONS] ;
+   Float_t ChargedHadronIsoR04                   [MAX_LEPTONS] ;
+   Float_t NeutralHadronIsoR04                   [MAX_LEPTONS] ;
+   Float_t PhotonIsoR04                          [MAX_LEPTONS] ;
+   Float_t sumPUPtR04                            [MAX_LEPTONS] ;
+   Float_t IsoRhoCorrR04                         [MAX_LEPTONS] ;
+   Float_t Ip3dPV                                [MAX_LEPTONS] ;
+   Float_t Ip3dPVErr                             [MAX_LEPTONS] ;
+   Float_t Ip3dPVSignificance                    [MAX_LEPTONS] ;
 
    //------------------------------------------------------------------------------
    //   Muon Information
    //------------------------------------------------------------------------------
 
    //----- General Muon information  ------------------------------------------------------------------
-   float  CaloEnergy                   [MAX_LEPTONS]  ;
-   bool   isGoodMuonTMOneStationTight  [MAX_LEPTONS]  ; //   For     Soft        Muon
-   bool   isPFMuon                     [MAX_LEPTONS]  ;
-   bool   MuIDGlobalMuonPromptTight    [MAX_LEPTONS]  ;
-   float  MuGlobalNormalizedChi2       [MAX_LEPTONS]  ; //   Dmitry
-   float  MuCaloCompat                 [MAX_LEPTONS]  ;
-   int    MuNChambers                  [MAX_LEPTONS]  ;
-   int    MuNChambersMatchesSegment    [MAX_LEPTONS]  ;
-   int    MuNMatchedStations           [MAX_LEPTONS]  ;
-   int    MuNLostOuterHits             [MAX_LEPTONS]  ;
-   int    MuNMuonhits                  [MAX_LEPTONS]  ;
-   int    MuDThits                     [MAX_LEPTONS]  ;
-   int    MuCSChits                    [MAX_LEPTONS]  ;
-   int    MuRPChits                    [MAX_LEPTONS]  ;
-   int    MuType                       [MAX_LEPTONS]  ;
+   Float_t  CaloEnergy                   [MAX_LEPTONS]  ;
+   Bool_t   isGoodMuonTMOneStationTight  [MAX_LEPTONS]  ; //   For     Soft        Muon
+   Bool_t   isPFMuon                     [MAX_LEPTONS]  ;
+   Bool_t   MuIDGlobalMuonPromptTight    [MAX_LEPTONS]  ;
+   Float_t  MuGlobalNormalizedChi2       [MAX_LEPTONS]  ; //   Dmitry
+   Float_t  MuCaloCompat                 [MAX_LEPTONS]  ;
+   Int_t    MuNChambers                  [MAX_LEPTONS]  ;
+   Int_t    MuNChambersMatchesSegment    [MAX_LEPTONS]  ;
+   Int_t    MuNMatchedStations           [MAX_LEPTONS]  ;
+   Int_t    MuNLostOuterHits             [MAX_LEPTONS]  ;
+   Int_t    MuNMuonhits                  [MAX_LEPTONS]  ;
+   Int_t    MuDThits                     [MAX_LEPTONS]  ;
+   Int_t    MuCSChits                    [MAX_LEPTONS]  ;
+   Int_t    MuRPChits                    [MAX_LEPTONS]  ;
+   Int_t    MuType                       [MAX_LEPTONS]  ;
 
    //----- Cosmic Ray filters  ------------------------------------------------------------------------
-   int    MuontimenDof                 [MAX_LEPTONS]  ;
-   float  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
-   float  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
-   int    Muondirection                [MAX_LEPTONS]  ;
+   Int_t    MuontimenDof                 [MAX_LEPTONS]  ;
+   Float_t  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
+   Float_t  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
+   Int_t    Muondirection                [MAX_LEPTONS]  ;
 
    //----- Inner Muon information  --------------------------------------------------------------------
-   float  innerTracknormalizedChi2     [MAX_LEPTONS]  ;   // For     Soft        Muon
-   float  MuInnerPtError               [MAX_LEPTONS]  ;
-   float  MuGlobalPtError              [MAX_LEPTONS]  ;
-   float  MuInnerTrackDz               [MAX_LEPTONS]  ;
-   float  MuInnerTrackD0               [MAX_LEPTONS]  ;
-   float  MuInnerTrackDxy_BS           [MAX_LEPTONS]  ;
-   float  MuInnerTrackDxy_PV           [MAX_LEPTONS]  ;
-   float  MuInnerTrackDxy_PVBS         [MAX_LEPTONS]  ;
-   int    MuInnerTrackNHits            [MAX_LEPTONS]  ;
-   int    MuNTrackerHits               [MAX_LEPTONS]  ;
-   int    MuNLostInnerHits             [MAX_LEPTONS]  ;
-   float  vertexZ                      [MAX_LEPTONS]  ; //   Uly     2011-04-04
-   int    MuNPixelLayers               [MAX_LEPTONS]  ;
-   int    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
-   int    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
+   Float_t  innerTracknormalizedChi2     [MAX_LEPTONS]  ;   // For     Soft        Muon
+   Float_t  MuInnerPtError               [MAX_LEPTONS]  ;
+   Float_t  MuGlobalPtError              [MAX_LEPTONS]  ;
+   Float_t  MuInnerTrackDz               [MAX_LEPTONS]  ;
+   Float_t  MuInnerTrackD0               [MAX_LEPTONS]  ;
+   Float_t  MuInnerTrackDxy_BS           [MAX_LEPTONS]  ;
+   Float_t  MuInnerTrackDxy_PV           [MAX_LEPTONS]  ;
+   Float_t  MuInnerTrackDxy_PVBS         [MAX_LEPTONS]  ;
+   Int_t    MuInnerTrackNHits            [MAX_LEPTONS]  ;
+   Int_t    MuNTrackerHits               [MAX_LEPTONS]  ;
+   Int_t    MuNLostInnerHits             [MAX_LEPTONS]  ;
+   Float_t  vertexZ                      [MAX_LEPTONS]  ; //   Uly     2011-04-04
+   Int_t    MuNPixelLayers               [MAX_LEPTONS]  ;
+   Int_t    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
+   Int_t    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
 
    //------------------------------------------------------------------------------
    //   Electron Information
    //------------------------------------------------------------------------------
-   int   ChargeGsf                             [MAX_LEPTONS] ;
-   int   ChargeCtf                             [MAX_LEPTONS] ;
-   int   ChargeScPix                           [MAX_LEPTONS] ;
-   int   isEcalDriven                          [MAX_LEPTONS] ;
-   int   isTrackerDriven                       [MAX_LEPTONS] ;
-   float caloEta                               [MAX_LEPTONS] ;
-   float e1x5                                  [MAX_LEPTONS] ;
-   float e2x5Max                               [MAX_LEPTONS] ;
-   float e5x5                                  [MAX_LEPTONS] ;
-   float HcalDepth1Iso                         [MAX_LEPTONS] ;
-   float HcalDepth2Iso                         [MAX_LEPTONS] ;
-   float EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
-   float EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdTRIGGERTIGHT       [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdTRIGGERWP70        [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdVETO               [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdLOOSE              [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdMEDIUM             [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdTIGHT              [MAX_LEPTONS] ; // Add by Jacky
-   bool  EgammaCutBasedEleIdHEEP               [MAX_LEPTONS] ;
-   float Eldr03HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
-   float Eldr03HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
-   float Eldr04HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
-   float Eldr04HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
-   float ElhcalOverEcalBc                      [MAX_LEPTONS] ;
-   float ElEcalE                               [MAX_LEPTONS] ;
-   float ElEoverP                              [MAX_LEPTONS] ;
-   float EldeltaEta                            [MAX_LEPTONS] ;
-   float EldeltaPhi                            [MAX_LEPTONS] ;
-   float ElHadoverEm                           [MAX_LEPTONS] ;
-   float ElsigmaIetaIeta                       [MAX_LEPTONS] ; // Jacky
-   float ElscSigmaIetaIeta                     [MAX_LEPTONS] ; // Jacky
-   float ElEnergyErr                           [MAX_LEPTONS] ;
-   float ElMomentumErr                         [MAX_LEPTONS] ;
-   float ElSharedHitsFraction                  [MAX_LEPTONS] ; //Dmitry
-   float dR_gsf_ctfTrack                       [MAX_LEPTONS] ; //Dmitry
-   float dPt_gsf_ctfTrack                      [MAX_LEPTONS] ; //Dmitry
-   bool  ElhasConv                             [MAX_LEPTONS] ;
+   Int_t   ChargeGsf                             [MAX_LEPTONS] ;
+   Int_t   ChargeCtf                             [MAX_LEPTONS] ;
+   Int_t   ChargeScPix                           [MAX_LEPTONS] ;
+   Int_t   isEcalDriven                          [MAX_LEPTONS] ;
+   Int_t   isTrackerDriven                       [MAX_LEPTONS] ;
+   Float_t caloEta                               [MAX_LEPTONS] ;
+   Float_t e1x5                                  [MAX_LEPTONS] ;
+   Float_t e2x5Max                               [MAX_LEPTONS] ;
+   Float_t e5x5                                  [MAX_LEPTONS] ;
+   Float_t HcalDepth1Iso                         [MAX_LEPTONS] ;
+   Float_t HcalDepth2Iso                         [MAX_LEPTONS] ;
+   Float_t EgammaMVANonTrig                      [MAX_LEPTONS] ; // Add by Jacky
+   Float_t EgammaMVATrig                         [MAX_LEPTONS] ; // Add by Jacky
+   Bool_t  EgammaCutBasedEleIdTRIGGERTIGHT       [MAX_LEPTONS] ; // Add by Jacky
+   Bool_t  EgammaCutBasedEleIdTRIGGERWP70        [MAX_LEPTONS] ; // Add by Jacky
+   Bool_t  EgammaCutBasedEleIdVETO               [MAX_LEPTONS] ; // Add by Jacky
+   Bool_t  EgammaCutBasedEleIdLOOSE              [MAX_LEPTONS] ; // Add by Jacky
+   Bool_t  EgammaCutBasedEleIdMEDIUM             [MAX_LEPTONS] ; // Add by Jacky
+   Bool_t  EgammaCutBasedEleIdTIGHT              [MAX_LEPTONS] ; // Add by Jacky
+   Bool_t  EgammaCutBasedEleIdHEEP               [MAX_LEPTONS] ;
+   Float_t Eldr03HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
+   Float_t Eldr03HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
+   Float_t Eldr04HcalDepth1TowerSumEtBc          [MAX_LEPTONS] ;
+   Float_t Eldr04HcalDepth2TowerSumEtBc          [MAX_LEPTONS] ;
+   Float_t ElhcalOverEcalBc                      [MAX_LEPTONS] ;
+   Float_t ElEcalE                               [MAX_LEPTONS] ;
+   Float_t ElEoverP                              [MAX_LEPTONS] ;
+   Float_t EldeltaEta                            [MAX_LEPTONS] ;
+   Float_t EldeltaPhi                            [MAX_LEPTONS] ;
+   Float_t ElHadoverEm                           [MAX_LEPTONS] ;
+   Float_t ElsigmaIetaIeta                       [MAX_LEPTONS] ; // Jacky
+   Float_t ElscSigmaIetaIeta                     [MAX_LEPTONS] ; // Jacky
+   Float_t ElEnergyErr                           [MAX_LEPTONS] ;
+   Float_t ElMomentumErr                         [MAX_LEPTONS] ;
+   Float_t ElSharedHitsFraction                  [MAX_LEPTONS] ; //Dmitry
+   Float_t dR_gsf_ctfTrack                       [MAX_LEPTONS] ; //Dmitry
+   Float_t dPt_gsf_ctfTrack                      [MAX_LEPTONS] ; //Dmitry
+   Bool_t  ElhasConv                             [MAX_LEPTONS] ;
 
    //----- Track related information  -----------------------------------------------------------------
-   int   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
-   float ElTrackNLostHits                      [MAX_LEPTONS] ;  //yjlei
-   float ElTrackDz                             [MAX_LEPTONS] ;
-   float ElTrackDz_BS                          [MAX_LEPTONS] ;
-   float ElTrackD0                             [MAX_LEPTONS] ;
-   float ElTrackDxy_BS                         [MAX_LEPTONS] ;
-   float ElTrackDxy_PV                         [MAX_LEPTONS] ;
-   float ElTrackDxy_PVBS                       [MAX_LEPTONS] ; //yjlei
-   int   ElNClusters                           [MAX_LEPTONS] ;
-   int   ElClassification                      [MAX_LEPTONS] ;
-   float ElFBrem                               [MAX_LEPTONS] ;
-   int NumberOfExpectedInnerHits               [MAX_LEPTONS] ; // Add by Jacky
+   Int_t   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
+   Float_t ElTrackNLostHits                      [MAX_LEPTONS] ;  //yjlei
+   Float_t ElTrackDz                             [MAX_LEPTONS] ;
+   Float_t ElTrackDz_BS                          [MAX_LEPTONS] ;
+   Float_t ElTrackD0                             [MAX_LEPTONS] ;
+   Float_t ElTrackDxy_BS                         [MAX_LEPTONS] ;
+   Float_t ElTrackDxy_PV                         [MAX_LEPTONS] ;
+   Float_t ElTrackDxy_PVBS                       [MAX_LEPTONS] ; //yjlei
+   Int_t   ElNClusters                           [MAX_LEPTONS] ;
+   Int_t   ElClassification                      [MAX_LEPTONS] ;
+   Float_t ElFBrem                               [MAX_LEPTONS] ;
+   Int_t NumberOfExpectedInnerHits               [MAX_LEPTONS] ; // Add by Jacky
 
    //----- Conversion rejections  ---------------------------------------------------------------------
-   float Eldist                                [MAX_LEPTONS] ; // Add by Jacky
-   float Eldcot                                [MAX_LEPTONS] ; // Add by Jacky
-   float Elconvradius                          [MAX_LEPTONS] ; // Add by Jacky
-   float ElConvPoint_x                         [MAX_LEPTONS] ; // Add by Jacky
-   float ElConvPoint_y                         [MAX_LEPTONS] ; // Add by Jacky
-   float ElConvPoint_z                         [MAX_LEPTONS] ; // Add by Jacky
-   float dcotdist                              [MAX_LEPTONS] ;
-   float ElseedEoverP                          [MAX_LEPTONS] ;
-   float ElEcalIso04                           [MAX_LEPTONS] ;
-   float ElHcalIso04                           [MAX_LEPTONS] ;
-   int   ElNumberOfBrems                       [MAX_LEPTONS] ;
-   float TrgPt                                 [MAX_LEPTONS] ;
-   float TrgEta                                [MAX_LEPTONS] ;
-   float TrgPhi                                [MAX_LEPTONS] ;
-   int TrgID                                   [MAX_LEPTONS] ;
+   Float_t Eldist                                [MAX_LEPTONS] ; // Add by Jacky
+   Float_t Eldcot                                [MAX_LEPTONS] ; // Add by Jacky
+   Float_t Elconvradius                          [MAX_LEPTONS] ; // Add by Jacky
+   Float_t ElConvPoint_x                         [MAX_LEPTONS] ; // Add by Jacky
+   Float_t ElConvPoint_y                         [MAX_LEPTONS] ; // Add by Jacky
+   Float_t ElConvPoint_z                         [MAX_LEPTONS] ; // Add by Jacky
+   Float_t dcotdist                              [MAX_LEPTONS] ;
+   Float_t ElseedEoverP                          [MAX_LEPTONS] ;
+   Float_t ElEcalIso04                           [MAX_LEPTONS] ;
+   Float_t ElHcalIso04                           [MAX_LEPTONS] ;
+   Int_t   ElNumberOfBrems                       [MAX_LEPTONS] ;
+   Float_t TrgPt                                 [MAX_LEPTONS] ;
+   Float_t TrgEta                                [MAX_LEPTONS] ;
+   Float_t TrgPhi                                [MAX_LEPTONS] ;
+   Int_t TrgID                                   [MAX_LEPTONS] ;
 
    //------------------------------------------------------------------------------
    //   Tau information
    //------------------------------------------------------------------------------
-   int   isPFTau                                      [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
-   bool   DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
-   bool   DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
-   bool   ByLooseElectronRejection                    [MAX_LEPTONS] ;
-   bool   ByMediumElectronRejection                   [MAX_LEPTONS] ;
-   bool   ByTightElectronRejection                    [MAX_LEPTONS] ;
-   bool   ByMVA5LooseElectronRejection                [MAX_LEPTONS] ;
-   bool   ByMVA5MediumElectronRejection               [MAX_LEPTONS] ;
-   bool   ByMVA5TightElectronRejection                [MAX_LEPTONS] ;
-   bool   ByMVA5VTightElectronRejection               [MAX_LEPTONS] ;
-   bool   ByLooseMuonRejection3                       [MAX_LEPTONS] ;
-   bool   ByTightMuonRejection3                       [MAX_LEPTONS] ;
-   bool   ByMVALooseMuonRejection                     [MAX_LEPTONS] ;
-   bool   ByMVAMediumMuonRejection                    [MAX_LEPTONS] ;
-   bool   ByMVATightMuonRejection                     [MAX_LEPTONS] ;
-   bool   ByLooseCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-   bool   ByMediumCombinedIsolationDeltaBetaCorr3Hits [MAX_LEPTONS] ;
-   bool   ByTightCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-   float   CombinedIsolationDeltaBetaCorrRaw3Hits     [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
-   bool   ByMediumIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3newDMwoLT             [MAX_LEPTONS] ;
-   float   ByIsolationMVA3newDMwoLTraw                [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
-   bool   ByMediumIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3oldDMwLT              [MAX_LEPTONS] ;
-   float   ByIsolationMVA3oldDMwLTraw                 [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3oldDMwoLT             [MAX_LEPTONS] ;
-   float   ByIsolationMVA3oldDMwoLTraw                [MAX_LEPTONS] ;
-   bool   ByVLooseIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-   bool   ByLooseIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
-   bool   ByMediumIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-   bool   ByTightIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
-   bool   ByVTightIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-   bool   ByVVTightIsolationMVA3newDMwLT              [MAX_LEPTONS] ;
-   float   ByIsolationMVA3newDMwLTraw                 [MAX_LEPTONS] ;
+   Int_t   isPFTau                                      [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
+   Bool_t   DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
+   Bool_t   DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
+   Bool_t   ByLooseElectronRejection                    [MAX_LEPTONS] ;
+   Bool_t   ByMediumElectronRejection                   [MAX_LEPTONS] ;
+   Bool_t   ByTightElectronRejection                    [MAX_LEPTONS] ;
+   Bool_t   ByMVA5LooseElectronRejection                [MAX_LEPTONS] ;
+   Bool_t   ByMVA5MediumElectronRejection               [MAX_LEPTONS] ;
+   Bool_t   ByMVA5TightElectronRejection                [MAX_LEPTONS] ;
+   Bool_t   ByMVA5VTightElectronRejection               [MAX_LEPTONS] ;
+   Bool_t   ByLooseMuonRejection3                       [MAX_LEPTONS] ;
+   Bool_t   ByTightMuonRejection3                       [MAX_LEPTONS] ;
+   Bool_t   ByMVALooseMuonRejection                     [MAX_LEPTONS] ;
+   Bool_t   ByMVAMediumMuonRejection                    [MAX_LEPTONS] ;
+   Bool_t   ByMVATightMuonRejection                     [MAX_LEPTONS] ;
+   Bool_t   ByLooseCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
+   Bool_t   ByMediumCombinedIsolationDeltaBetaCorr3Hits [MAX_LEPTONS] ;
+   Bool_t   ByTightCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
+   Float_t   CombinedIsolationDeltaBetaCorrRaw3Hits     [MAX_LEPTONS] ;
+   Bool_t   ByVLooseIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
+   Bool_t   ByLooseIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
+   Bool_t   ByMediumIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
+   Bool_t   ByTightIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
+   Bool_t   ByVTightIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
+   Bool_t   ByVVTightIsolationMVA3newDMwoLT             [MAX_LEPTONS] ;
+   Float_t   ByIsolationMVA3newDMwoLTraw                [MAX_LEPTONS] ;
+   Bool_t   ByVLooseIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
+   Bool_t   ByLooseIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
+   Bool_t   ByMediumIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
+   Bool_t   ByTightIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
+   Bool_t   ByVTightIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
+   Bool_t   ByVVTightIsolationMVA3oldDMwLT              [MAX_LEPTONS] ;
+   Float_t   ByIsolationMVA3oldDMwLTraw                 [MAX_LEPTONS] ;
+   Bool_t   ByVLooseIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
+   Bool_t   ByLooseIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
+   Bool_t   ByTightIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
+   Bool_t   ByVTightIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
+   Bool_t   ByVVTightIsolationMVA3oldDMwoLT             [MAX_LEPTONS] ;
+   Float_t   ByIsolationMVA3oldDMwoLTraw                [MAX_LEPTONS] ;
+   Bool_t   ByVLooseIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
+   Bool_t   ByLooseIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
+   Bool_t   ByMediumIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
+   Bool_t   ByTightIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
+   Bool_t   ByVTightIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
+   Bool_t   ByVVTightIsolationMVA3newDMwLT              [MAX_LEPTONS] ;
+   Float_t   ByIsolationMVA3newDMwLTraw                 [MAX_LEPTONS] ;
 
    //----- Generation Monte Carlo information  --------------------------------------------------------
-   float GenPt                                 [MAX_LEPTONS] ;
-   float GenEta                                [MAX_LEPTONS] ;
-   float GenPhi                                [MAX_LEPTONS] ;
-   int   GenPdgID                              [MAX_LEPTONS] ;
-   int   GenMCTag                              [MAX_LEPTONS] ;
+   Float_t GenPt                                 [MAX_LEPTONS] ;
+   Float_t GenEta                                [MAX_LEPTONS] ;
+   Float_t GenPhi                                [MAX_LEPTONS] ;
+   Int_t   GenPdgID                              [MAX_LEPTONS] ;
+   Int_t   GenMCTag                              [MAX_LEPTONS] ;
 #ifdef __BPRIMEKIT__
-   reco::Candidate* CandRef[MAX_LEPTONS]; // backward pointer to the PAT objects
+   reco::Candidate* CandRef[MAX_LEPTONS]; // backward poInt_ter to the PAT objects
 #endif
 
    void RegisterTree( TTree* root , std::string name = "LepInfo" ) {
@@ -471,9 +471,9 @@ public:
       root->Branch( ( name + ".Ip3dPVErr" ).c_str(), Ip3dPVErr, ( name + ".Ip3dPVErr[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Ip3dPVSignificance" ).c_str(), Ip3dPVSignificance, ( name + ".Ip3dPVSignificance[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".CaloEnergy" ).c_str(), CaloEnergy, ( name + ".CaloEnergy[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".isGoodMuonTMOneStationTight" ).c_str(), isGoodMuonTMOneStationTight, ( name + ".isGoodMuonTMOneStationTight[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".isPFMuon" ).c_str(), isPFMuon, ( name + ".isPFMuon[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".MuIDGlobalMuonPromptTight" ).c_str(), MuIDGlobalMuonPromptTight, ( name + ".MuIDGlobalMuonPromptTight[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".isGoodMuonTMOneStationTight" ).c_str(), isGoodMuonTMOneStationTight, ( name + ".isGoodMuonTMOneStationTight[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".isPFMuon" ).c_str(), isPFMuon, ( name + ".isPFMuon[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".MuIDGlobalMuonPromptTight" ).c_str(), MuIDGlobalMuonPromptTight, ( name + ".MuIDGlobalMuonPromptTight[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".MuGlobalNormalizedChi2" ).c_str(), MuGlobalNormalizedChi2, ( name + ".MuGlobalNormalizedChi2[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".MuCaloCompat" ).c_str(), MuCaloCompat, ( name + ".MuCaloCompat[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".MuNChambers" ).c_str(), MuNChambers, ( name + ".MuNChambers[" + name + ".Size]/I" ).c_str() );
@@ -517,13 +517,13 @@ public:
       root->Branch( ( name + ".HcalDepth2Iso" ).c_str(), HcalDepth2Iso, ( name + ".HcalDepth2Iso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".EgammaMVANonTrig" ).c_str(), EgammaMVANonTrig, ( name + ".EgammaMVANonTrig[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".EgammaMVATrig" ).c_str(), EgammaMVATrig, ( name + ".EgammaMVATrig[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".EgammaCutBasedEleIdTRIGGERTIGHT" ).c_str(), EgammaCutBasedEleIdTRIGGERTIGHT, ( name + ".EgammaCutBasedEleIdTRIGGERTIGHT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".EgammaCutBasedEleIdTRIGGERWP70" ).c_str(), EgammaCutBasedEleIdTRIGGERWP70, ( name + ".EgammaCutBasedEleIdTRIGGERWP70[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".EgammaCutBasedEleIdVETO" ).c_str(), EgammaCutBasedEleIdVETO, ( name + ".EgammaCutBasedEleIdVETO[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".EgammaCutBasedEleIdLOOSE" ).c_str(), EgammaCutBasedEleIdLOOSE, ( name + ".EgammaCutBasedEleIdLOOSE[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".EgammaCutBasedEleIdMEDIUM" ).c_str(), EgammaCutBasedEleIdMEDIUM, ( name + ".EgammaCutBasedEleIdMEDIUM[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".EgammaCutBasedEleIdTIGHT" ).c_str(), EgammaCutBasedEleIdTIGHT, ( name + ".EgammaCutBasedEleIdTIGHT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".EgammaCutBasedEleIdHEEP" ).c_str(), EgammaCutBasedEleIdHEEP, ( name + ".EgammaCutBasedEleIdHEEP[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".EgammaCutBasedEleIdTRIGGERTIGHT" ).c_str(), EgammaCutBasedEleIdTRIGGERTIGHT, ( name + ".EgammaCutBasedEleIdTRIGGERTIGHT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".EgammaCutBasedEleIdTRIGGERWP70" ).c_str(), EgammaCutBasedEleIdTRIGGERWP70, ( name + ".EgammaCutBasedEleIdTRIGGERWP70[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".EgammaCutBasedEleIdVETO" ).c_str(), EgammaCutBasedEleIdVETO, ( name + ".EgammaCutBasedEleIdVETO[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".EgammaCutBasedEleIdLOOSE" ).c_str(), EgammaCutBasedEleIdLOOSE, ( name + ".EgammaCutBasedEleIdLOOSE[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".EgammaCutBasedEleIdMEDIUM" ).c_str(), EgammaCutBasedEleIdMEDIUM, ( name + ".EgammaCutBasedEleIdMEDIUM[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".EgammaCutBasedEleIdTIGHT" ).c_str(), EgammaCutBasedEleIdTIGHT, ( name + ".EgammaCutBasedEleIdTIGHT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".EgammaCutBasedEleIdHEEP" ).c_str(), EgammaCutBasedEleIdHEEP, ( name + ".EgammaCutBasedEleIdHEEP[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".Eldr03HcalDepth1TowerSumEtBc" ).c_str(), Eldr03HcalDepth1TowerSumEtBc, ( name + ".Eldr03HcalDepth1TowerSumEtBc[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eldr03HcalDepth2TowerSumEtBc" ).c_str(), Eldr03HcalDepth2TowerSumEtBc, ( name + ".Eldr03HcalDepth2TowerSumEtBc[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eldr04HcalDepth1TowerSumEtBc" ).c_str(), Eldr04HcalDepth1TowerSumEtBc, ( name + ".Eldr04HcalDepth1TowerSumEtBc[" + name + ".Size]/F" ).c_str() );
@@ -541,7 +541,7 @@ public:
       root->Branch( ( name + ".ElSharedHitsFraction" ).c_str(), ElSharedHitsFraction, ( name + ".ElSharedHitsFraction[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".dR_gsf_ctfTrack" ).c_str(), dR_gsf_ctfTrack, ( name + ".dR_gsf_ctfTrack[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".dPt_gsf_ctfTrack" ).c_str(), dPt_gsf_ctfTrack, ( name + ".dPt_gsf_ctfTrack[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ElhasConv" ).c_str(), ElhasConv, ( name + ".ElhasConv[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".ElhasConv" ).c_str(), ElhasConv, ( name + ".ElhasConv[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".ElTrackNHits" ).c_str(), ElTrackNHits, ( name + ".ElTrackNHits[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".ElTrackNLostHits" ).c_str(), ElTrackNLostHits, ( name + ".ElTrackNLostHits[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".ElTrackDz" ).c_str(), ElTrackDz, ( name + ".ElTrackDz[" + name + ".Size]/F" ).c_str() );
@@ -570,50 +570,50 @@ public:
       root->Branch( ( name + ".TrgPhi" ).c_str(), TrgPhi, ( name + ".TrgPhi[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".TrgID" ).c_str(), TrgID, ( name + ".TrgID[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".isPFTau" ).c_str(), isPFTau, ( name + ".isPFTau[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".DiscriminationByDecayModeFinding" ).c_str(), DiscriminationByDecayModeFinding, ( name + ".DiscriminationByDecayModeFinding[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".DiscriminationByDecayModeFindingNewDMs" ).c_str(), DiscriminationByDecayModeFindingNewDMs, ( name + ".DiscriminationByDecayModeFindingNewDMs[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByLooseElectronRejection" ).c_str(), ByLooseElectronRejection, ( name + ".ByLooseElectronRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMediumElectronRejection" ).c_str(), ByMediumElectronRejection, ( name + ".ByMediumElectronRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByTightElectronRejection" ).c_str(), ByTightElectronRejection, ( name + ".ByTightElectronRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMVA5LooseElectronRejection" ).c_str(), ByMVA5LooseElectronRejection, ( name + ".ByMVA5LooseElectronRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMVA5MediumElectronRejection" ).c_str(), ByMVA5MediumElectronRejection, ( name + ".ByMVA5MediumElectronRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMVA5TightElectronRejection" ).c_str(), ByMVA5TightElectronRejection, ( name + ".ByMVA5TightElectronRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMVA5VTightElectronRejection" ).c_str(), ByMVA5VTightElectronRejection, ( name + ".ByMVA5VTightElectronRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByLooseMuonRejection3" ).c_str(), ByLooseMuonRejection3, ( name + ".ByLooseMuonRejection3[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByTightMuonRejection3" ).c_str(), ByTightMuonRejection3, ( name + ".ByTightMuonRejection3[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMVALooseMuonRejection" ).c_str(), ByMVALooseMuonRejection, ( name + ".ByMVALooseMuonRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMVAMediumMuonRejection" ).c_str(), ByMVAMediumMuonRejection, ( name + ".ByMVAMediumMuonRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMVATightMuonRejection" ).c_str(), ByMVATightMuonRejection, ( name + ".ByMVATightMuonRejection[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByLooseCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByLooseCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByLooseCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMediumCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByMediumCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByMediumCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByTightCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByTightCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByTightCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".DiscriminationByDecayModeFinding" ).c_str(), DiscriminationByDecayModeFinding, ( name + ".DiscriminationByDecayModeFinding[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".DiscriminationByDecayModeFindingNewDMs" ).c_str(), DiscriminationByDecayModeFindingNewDMs, ( name + ".DiscriminationByDecayModeFindingNewDMs[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByLooseElectronRejection" ).c_str(), ByLooseElectronRejection, ( name + ".ByLooseElectronRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMediumElectronRejection" ).c_str(), ByMediumElectronRejection, ( name + ".ByMediumElectronRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByTightElectronRejection" ).c_str(), ByTightElectronRejection, ( name + ".ByTightElectronRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMVA5LooseElectronRejection" ).c_str(), ByMVA5LooseElectronRejection, ( name + ".ByMVA5LooseElectronRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMVA5MediumElectronRejection" ).c_str(), ByMVA5MediumElectronRejection, ( name + ".ByMVA5MediumElectronRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMVA5TightElectronRejection" ).c_str(), ByMVA5TightElectronRejection, ( name + ".ByMVA5TightElectronRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMVA5VTightElectronRejection" ).c_str(), ByMVA5VTightElectronRejection, ( name + ".ByMVA5VTightElectronRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByLooseMuonRejection3" ).c_str(), ByLooseMuonRejection3, ( name + ".ByLooseMuonRejection3[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByTightMuonRejection3" ).c_str(), ByTightMuonRejection3, ( name + ".ByTightMuonRejection3[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMVALooseMuonRejection" ).c_str(), ByMVALooseMuonRejection, ( name + ".ByMVALooseMuonRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMVAMediumMuonRejection" ).c_str(), ByMVAMediumMuonRejection, ( name + ".ByMVAMediumMuonRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMVATightMuonRejection" ).c_str(), ByMVATightMuonRejection, ( name + ".ByMVATightMuonRejection[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByLooseCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByLooseCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByLooseCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMediumCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByMediumCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByMediumCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByTightCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByTightCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByTightCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".CombinedIsolationDeltaBetaCorrRaw3Hits" ).c_str(), CombinedIsolationDeltaBetaCorrRaw3Hits, ( name + ".CombinedIsolationDeltaBetaCorrRaw3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByVLooseIsolationMVA3newDMwoLT" ).c_str(), ByVLooseIsolationMVA3newDMwoLT, ( name + ".ByVLooseIsolationMVA3newDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByLooseIsolationMVA3newDMwoLT" ).c_str(), ByLooseIsolationMVA3newDMwoLT, ( name + ".ByLooseIsolationMVA3newDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMediumIsolationMVA3newDMwoLT" ).c_str(), ByMediumIsolationMVA3newDMwoLT, ( name + ".ByMediumIsolationMVA3newDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByTightIsolationMVA3newDMwoLT" ).c_str(), ByTightIsolationMVA3newDMwoLT, ( name + ".ByTightIsolationMVA3newDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVTightIsolationMVA3newDMwoLT" ).c_str(), ByVTightIsolationMVA3newDMwoLT, ( name + ".ByVTightIsolationMVA3newDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVVTightIsolationMVA3newDMwoLT" ).c_str(), ByVVTightIsolationMVA3newDMwoLT, ( name + ".ByVVTightIsolationMVA3newDMwoLT[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".ByVLooseIsolationMVA3newDMwoLT" ).c_str(), ByVLooseIsolationMVA3newDMwoLT, ( name + ".ByVLooseIsolationMVA3newDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByLooseIsolationMVA3newDMwoLT" ).c_str(), ByLooseIsolationMVA3newDMwoLT, ( name + ".ByLooseIsolationMVA3newDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMediumIsolationMVA3newDMwoLT" ).c_str(), ByMediumIsolationMVA3newDMwoLT, ( name + ".ByMediumIsolationMVA3newDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByTightIsolationMVA3newDMwoLT" ).c_str(), ByTightIsolationMVA3newDMwoLT, ( name + ".ByTightIsolationMVA3newDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVTightIsolationMVA3newDMwoLT" ).c_str(), ByVTightIsolationMVA3newDMwoLT, ( name + ".ByVTightIsolationMVA3newDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVVTightIsolationMVA3newDMwoLT" ).c_str(), ByVVTightIsolationMVA3newDMwoLT, ( name + ".ByVVTightIsolationMVA3newDMwoLT[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".ByIsolationMVA3newDMwoLTraw" ).c_str(), ByIsolationMVA3newDMwoLTraw, ( name + ".ByIsolationMVA3newDMwoLTraw[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByVLooseIsolationMVA3oldDMwLT" ).c_str(), ByVLooseIsolationMVA3oldDMwLT, ( name + ".ByVLooseIsolationMVA3oldDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByLooseIsolationMVA3oldDMwLT" ).c_str(), ByLooseIsolationMVA3oldDMwLT, ( name + ".ByLooseIsolationMVA3oldDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMediumIsolationMVA3oldDMwLT" ).c_str(), ByMediumIsolationMVA3oldDMwLT, ( name + ".ByMediumIsolationMVA3oldDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByTightIsolationMVA3oldDMwLT" ).c_str(), ByTightIsolationMVA3oldDMwLT, ( name + ".ByTightIsolationMVA3oldDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVTightIsolationMVA3oldDMwLT" ).c_str(), ByVTightIsolationMVA3oldDMwLT, ( name + ".ByVTightIsolationMVA3oldDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVVTightIsolationMVA3oldDMwLT" ).c_str(), ByVVTightIsolationMVA3oldDMwLT, ( name + ".ByVVTightIsolationMVA3oldDMwLT[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".ByVLooseIsolationMVA3oldDMwLT" ).c_str(), ByVLooseIsolationMVA3oldDMwLT, ( name + ".ByVLooseIsolationMVA3oldDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByLooseIsolationMVA3oldDMwLT" ).c_str(), ByLooseIsolationMVA3oldDMwLT, ( name + ".ByLooseIsolationMVA3oldDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMediumIsolationMVA3oldDMwLT" ).c_str(), ByMediumIsolationMVA3oldDMwLT, ( name + ".ByMediumIsolationMVA3oldDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByTightIsolationMVA3oldDMwLT" ).c_str(), ByTightIsolationMVA3oldDMwLT, ( name + ".ByTightIsolationMVA3oldDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVTightIsolationMVA3oldDMwLT" ).c_str(), ByVTightIsolationMVA3oldDMwLT, ( name + ".ByVTightIsolationMVA3oldDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVVTightIsolationMVA3oldDMwLT" ).c_str(), ByVVTightIsolationMVA3oldDMwLT, ( name + ".ByVVTightIsolationMVA3oldDMwLT[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".ByIsolationMVA3oldDMwLTraw" ).c_str(), ByIsolationMVA3oldDMwLTraw, ( name + ".ByIsolationMVA3oldDMwLTraw[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByVLooseIsolationMVA3oldDMwoLT" ).c_str(), ByVLooseIsolationMVA3oldDMwoLT, ( name + ".ByVLooseIsolationMVA3oldDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByLooseIsolationMVA3oldDMwoLT" ).c_str(), ByLooseIsolationMVA3oldDMwoLT, ( name + ".ByLooseIsolationMVA3oldDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByTightIsolationMVA3oldDMwoLT" ).c_str(), ByTightIsolationMVA3oldDMwoLT, ( name + ".ByTightIsolationMVA3oldDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVTightIsolationMVA3oldDMwoLT" ).c_str(), ByVTightIsolationMVA3oldDMwoLT, ( name + ".ByVTightIsolationMVA3oldDMwoLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVVTightIsolationMVA3oldDMwoLT" ).c_str(), ByVVTightIsolationMVA3oldDMwoLT, ( name + ".ByVVTightIsolationMVA3oldDMwoLT[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".ByVLooseIsolationMVA3oldDMwoLT" ).c_str(), ByVLooseIsolationMVA3oldDMwoLT, ( name + ".ByVLooseIsolationMVA3oldDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByLooseIsolationMVA3oldDMwoLT" ).c_str(), ByLooseIsolationMVA3oldDMwoLT, ( name + ".ByLooseIsolationMVA3oldDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByTightIsolationMVA3oldDMwoLT" ).c_str(), ByTightIsolationMVA3oldDMwoLT, ( name + ".ByTightIsolationMVA3oldDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVTightIsolationMVA3oldDMwoLT" ).c_str(), ByVTightIsolationMVA3oldDMwoLT, ( name + ".ByVTightIsolationMVA3oldDMwoLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVVTightIsolationMVA3oldDMwoLT" ).c_str(), ByVVTightIsolationMVA3oldDMwoLT, ( name + ".ByVVTightIsolationMVA3oldDMwoLT[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".ByIsolationMVA3oldDMwoLTraw" ).c_str(), ByIsolationMVA3oldDMwoLTraw, ( name + ".ByIsolationMVA3oldDMwoLTraw[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByVLooseIsolationMVA3newDMwLT" ).c_str(), ByVLooseIsolationMVA3newDMwLT, ( name + ".ByVLooseIsolationMVA3newDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByLooseIsolationMVA3newDMwLT" ).c_str(), ByLooseIsolationMVA3newDMwLT, ( name + ".ByLooseIsolationMVA3newDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByMediumIsolationMVA3newDMwLT" ).c_str(), ByMediumIsolationMVA3newDMwLT, ( name + ".ByMediumIsolationMVA3newDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByTightIsolationMVA3newDMwLT" ).c_str(), ByTightIsolationMVA3newDMwLT, ( name + ".ByTightIsolationMVA3newDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVTightIsolationMVA3newDMwLT" ).c_str(), ByVTightIsolationMVA3newDMwLT, ( name + ".ByVTightIsolationMVA3newDMwLT[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".ByVVTightIsolationMVA3newDMwLT" ).c_str(), ByVVTightIsolationMVA3newDMwLT, ( name + ".ByVVTightIsolationMVA3newDMwLT[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".ByVLooseIsolationMVA3newDMwLT" ).c_str(), ByVLooseIsolationMVA3newDMwLT, ( name + ".ByVLooseIsolationMVA3newDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByLooseIsolationMVA3newDMwLT" ).c_str(), ByLooseIsolationMVA3newDMwLT, ( name + ".ByLooseIsolationMVA3newDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByMediumIsolationMVA3newDMwLT" ).c_str(), ByMediumIsolationMVA3newDMwLT, ( name + ".ByMediumIsolationMVA3newDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByTightIsolationMVA3newDMwLT" ).c_str(), ByTightIsolationMVA3newDMwLT, ( name + ".ByTightIsolationMVA3newDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVTightIsolationMVA3newDMwLT" ).c_str(), ByVTightIsolationMVA3newDMwLT, ( name + ".ByVTightIsolationMVA3newDMwLT[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".ByVVTightIsolationMVA3newDMwLT" ).c_str(), ByVVTightIsolationMVA3newDMwLT, ( name + ".ByVVTightIsolationMVA3newDMwLT[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".ByIsolationMVA3newDMwLTraw" ).c_str(), ByIsolationMVA3newDMwLTraw, ( name + ".ByIsolationMVA3newDMwLTraw[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenPt" ).c_str(), GenPt, ( name + ".GenPt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenEta" ).c_str(), GenEta, ( name + ".GenEta[" + name + ".Size]/F" ).c_str() );
@@ -807,101 +807,101 @@ public:
 };
 class JetInfoBranches {
 public:
-   int   Size;
-   int   Index                   [MAX_JETS] ;
+   Int_t   Size;
+   Int_t   Index                   [MAX_JETS] ;
    //----- Generic information  -----------------------------------------------------------------------
-   int   NTracks                 [MAX_JETS] ;
-   float Et                      [MAX_JETS] ;
-   float Pt                      [MAX_JETS] ;
-   float Unc                     [MAX_JETS] ;
-   float Eta                     [MAX_JETS] ;
-   float Phi                     [MAX_JETS] ;
-   float Px                      [MAX_JETS] ; //Uly 2011-04-04
-   float Py                      [MAX_JETS] ; //Uly 2011-04-04
-   float Pz                      [MAX_JETS] ; //Uly 2011-04-04
-   float Energy                  [MAX_JETS] ; //Uly 2011-04-04
-   float Mass                    [MAX_JETS] ;
-   float Area                    [MAX_JETS] ;
-   int   JetIDLOOSE              [MAX_JETS] ; //Add by Chiyi
-   float JetCharge               [MAX_JETS] ;
-   float QGTagsMLP               [MAX_JETS] ;
-   float QGTagsLikelihood        [MAX_JETS] ;
-   int   NConstituents           [MAX_JETS] ;
+   Int_t   NTracks                 [MAX_JETS] ;
+   Float_t Et                      [MAX_JETS] ;
+   Float_t Pt                      [MAX_JETS] ;
+   Float_t Unc                     [MAX_JETS] ;
+   Float_t Eta                     [MAX_JETS] ;
+   Float_t Phi                     [MAX_JETS] ;
+   Float_t Px                      [MAX_JETS] ; //Uly 2011-04-04
+   Float_t Py                      [MAX_JETS] ; //Uly 2011-04-04
+   Float_t Pz                      [MAX_JETS] ; //Uly 2011-04-04
+   Float_t Energy                  [MAX_JETS] ; //Uly 2011-04-04
+   Float_t Mass                    [MAX_JETS] ;
+   Float_t Area                    [MAX_JETS] ;
+   Int_t   JetIDLOOSE              [MAX_JETS] ; //Add by Chiyi
+   Float_t JetCharge               [MAX_JETS] ;
+   Float_t QGTagsMLP               [MAX_JETS] ;
+   Float_t QGTagsLikelihood        [MAX_JETS] ;
+   Int_t   NConstituents           [MAX_JETS] ;
 
-   int   NCH                     [MAX_JETS] ;
-   float CEF                     [MAX_JETS] ;
-   float NHF                     [MAX_JETS] ;
-   float NEF                     [MAX_JETS] ;
-   float CHF                     [MAX_JETS] ;
-   float JVAlpha                 [MAX_JETS] ;
-   float JVBeta                  [MAX_JETS] ;
+   Int_t   NCH                     [MAX_JETS] ;
+   Float_t CEF                     [MAX_JETS] ;
+   Float_t NHF                     [MAX_JETS] ;
+   Float_t NEF                     [MAX_JETS] ;
+   Float_t CHF                     [MAX_JETS] ;
+   Float_t JVAlpha                 [MAX_JETS] ;
+   Float_t JVBeta                  [MAX_JETS] ;
 
    //----- Jet Corrections information  ---------------------------------------------------------------
-   float PtCorrRaw                                    [MAX_JETS] ;
-   float PtCorrL2                                     [MAX_JETS] ;
-   float PtCorrL3                                     [MAX_JETS] ;
-   float PtCorrL7g                                    [MAX_JETS] ;
-   float PtCorrL7uds                                  [MAX_JETS] ;
-   float PtCorrL7c                                    [MAX_JETS] ;
-   float PtCorrL7b                                    [MAX_JETS] ;
+   Float_t PtCorrRaw                                    [MAX_JETS] ;
+   Float_t PtCorrL2                                     [MAX_JETS] ;
+   Float_t PtCorrL3                                     [MAX_JETS] ;
+   Float_t PtCorrL7g                                    [MAX_JETS] ;
+   Float_t PtCorrL7uds                                  [MAX_JETS] ;
+   Float_t PtCorrL7c                                    [MAX_JETS] ;
+   Float_t PtCorrL7b                                    [MAX_JETS] ;
    //----- Btags  -------------------------------------------------------------------------------------
-   float combinedSecondaryVertexBJetTags              [MAX_JETS] ;
-   float pfJetBProbabilityBJetTags                    [MAX_JETS] ;
-   float pfJetProbabilityBJetTags                     [MAX_JETS] ;
-   float pfTrackCountingHighPurBJetTags               [MAX_JETS] ;
-   float pfTrackCountingHighEffBJetTags               [MAX_JETS] ;
-   float pfSimpleSecondaryVertexHighEffBJetTags       [MAX_JETS] ;
-   float pfSimpleSecondaryVertexHighPurBJetTags       [MAX_JETS] ;
-   float pfCombinedSecondaryVertexV2BJetTags          [MAX_JETS] ;
-   float pfCombinedInclusiveSecondaryVertexV2BJetTags [MAX_JETS] ;
-   float pfCombinedSecondaryVertexSoftLeptonBJetTags  [MAX_JETS] ;
-   float pfCombinedMVABJetTags                        [MAX_JETS] ;
+   Float_t combinedSecondaryVertexBJetTags              [MAX_JETS] ;
+   Float_t pfJetBProbabilityBJetTags                    [MAX_JETS] ;
+   Float_t pfJetProbabilityBJetTags                     [MAX_JETS] ;
+   Float_t pfTrackCountingHighPurBJetTags               [MAX_JETS] ;
+   Float_t pfTrackCountingHighEffBJetTags               [MAX_JETS] ;
+   Float_t pfSimpleSecondaryVertexHighEffBJetTags       [MAX_JETS] ;
+   Float_t pfSimpleSecondaryVertexHighPurBJetTags       [MAX_JETS] ;
+   Float_t pfCombinedSecondaryVertexV2BJetTags          [MAX_JETS] ;
+   Float_t pfCombinedInclusiveSecondaryVertexV2BJetTags [MAX_JETS] ;
+   Float_t pfCombinedSecondaryVertexSoftLeptonBJetTags  [MAX_JETS] ;
+   Float_t pfCombinedMVABJetTags                        [MAX_JETS] ;
 
    //----- Generation MC information  -----------------------------------------------------------------
-   float GenJetPt                [MAX_JETS] ;
-   float GenJetEta               [MAX_JETS] ;
-   float GenJetPhi               [MAX_JETS] ;
-   float GenPt                   [MAX_JETS] ;
-   float GenEta                  [MAX_JETS] ;
-   float GenPhi                  [MAX_JETS] ;
-   int   GenPdgID                [MAX_JETS] ;
-   int   GenFlavor               [MAX_JETS] ;
-   int   GenMCTag                [MAX_JETS] ; // 0: unknown, 1: decay from W, 2: decay from Z, (+10) from b', (+20) from t'
+   Float_t GenJetPt                [MAX_JETS] ;
+   Float_t GenJetEta               [MAX_JETS] ;
+   Float_t GenJetPhi               [MAX_JETS] ;
+   Float_t GenPt                   [MAX_JETS] ;
+   Float_t GenEta                  [MAX_JETS] ;
+   Float_t GenPhi                  [MAX_JETS] ;
+   Int_t   GenPdgID                [MAX_JETS] ;
+   Int_t   GenFlavor               [MAX_JETS] ;
+   Int_t   GenMCTag                [MAX_JETS] ; // 0: unknown, 1: decay from W, 2: decay from Z, (+10) from b', (+20) from t'
 
    //----- SubjetInformation  -------------------------------------------------------------------------
-   int NSubjets                    [MAX_JETS] ;
-   int SubjetsIdxStart             [MAX_JETS] ;
-   float NjettinessAK8tau1         [MAX_JETS] ;
-   float NjettinessAK8tau2         [MAX_JETS] ;
-   float NjettinessAK8tau3         [MAX_JETS] ;
-   float ak8PFJetsCHSSoftDropMass  [MAX_JETS] ;
-   float  ak8PFJetsCHSPrunedMass   [MAX_JETS] ;
-   float  ak8PFJetsCHSTrimmedMass  [MAX_JETS] ;
-   float  ak8PFJetsCHSFilteredMass [MAX_JETS] ;
-   float topJetMass [MAX_JETS];
-   float ca8TopMass [MAX_JETS];
-   float ca8MinMass [MAX_JETS];
-   //----- Vector pointer types used for reading  -----------------------------------------------------
-   std::vector<float>* SubjetMass                ;
-   std::vector<float>* SubjetPt                  ;
-   std::vector<float>* SubjetEt                  ;
-   std::vector<float>* SubjetEta                 ;
-   std::vector<float>* SubjetPhi                 ;
-   std::vector<float>* SubjetCombinedSVBJetTags  ;
-   std::vector<float>* SubjetPtUncorr            ;
-   std::vector<float>* SubjetArea                ;
+   Int_t NSubjets                    [MAX_JETS] ;
+   Int_t SubjetsIdxStart             [MAX_JETS] ;
+   Float_t NjettinessAK8tau1         [MAX_JETS] ;
+   Float_t NjettinessAK8tau2         [MAX_JETS] ;
+   Float_t NjettinessAK8tau3         [MAX_JETS] ;
+   Float_t ak8PFJetsCHSSoftDropMass  [MAX_JETS] ;
+   Float_t  ak8PFJetsCHSPrunedMass   [MAX_JETS] ;
+   Float_t  ak8PFJetsCHSTrimmedMass  [MAX_JETS] ;
+   Float_t  ak8PFJetsCHSFilteredMass [MAX_JETS] ;
+   Float_t topJetMass [MAX_JETS];
+   Float_t ca8TopMass [MAX_JETS];
+   Float_t ca8MinMass [MAX_JETS];
+   //----- Vector poInt_ter types used for reading  -----------------------------------------------------
+   std::vector<Float_t>* SubjetMass                ;
+   std::vector<Float_t>* SubjetPt                  ;
+   std::vector<Float_t>* SubjetEt                  ;
+   std::vector<Float_t>* SubjetEta                 ;
+   std::vector<Float_t>* SubjetPhi                 ;
+   std::vector<Float_t>* SubjetCombinedSVBJetTags  ;
+   std::vector<Float_t>* SubjetPtUncorr            ;
+   std::vector<Float_t>* SubjetArea                ;
    //----- Vector type used for writing  --------------------------------------------------------------
-   std::vector<float> SubjetMass_w               ;
-   std::vector<float> SubjetPt_w                 ;
-   std::vector<float> SubjetEt_w                 ;
-   std::vector<float> SubjetEta_w                ;
-   std::vector<float> SubjetPhi_w                ;
-   std::vector<float> SubjetCombinedSVBJetTags_w ;
-   std::vector<float> SubjetPtUncorr_w           ;
-   std::vector<float> SubjetArea_w               ;
+   std::vector<Float_t> SubjetMass_w               ;
+   std::vector<Float_t> SubjetPt_w                 ;
+   std::vector<Float_t> SubjetEt_w                 ;
+   std::vector<Float_t> SubjetEta_w                ;
+   std::vector<Float_t> SubjetPhi_w                ;
+   std::vector<Float_t> SubjetCombinedSVBJetTags_w ;
+   std::vector<Float_t> SubjetPtUncorr_w           ;
+   std::vector<Float_t> SubjetArea_w               ;
 
 #ifdef __BPRIMEKIT__
-   reco::Candidate* CandRef[MAX_JETS]; // backward pointer to the PAT objects
+   reco::Candidate* CandRef[MAX_JETS]; // backward poInt_ter to the PAT objects
 #endif
    void RegisterTree( TTree* root , std::string name = "JetInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
@@ -1064,20 +1064,20 @@ public:
 };
 class PairInfoBranches {
 public:
-   int   Size;
-   int   Index     [MAX_PAIRS] ;
-   int   Type      [MAX_PAIRS] ; // type of pairing - 1: ll (regardless of charge and flavor!), 2: jj
-   int   Obj1Index [MAX_PAIRS] ;
-   int   Obj2Index [MAX_PAIRS] ;
-   int   GenPdgID  [MAX_PAIRS] ;
-   float Mass      [MAX_PAIRS] ;
-   float Pt        [MAX_PAIRS] ;
-   float Eta       [MAX_PAIRS] ;
-   float Phi       [MAX_PAIRS] ;
-   float GenMass   [MAX_PAIRS] ;
-   float GenPt     [MAX_PAIRS] ;
-   float GenEta    [MAX_PAIRS] ;
-   float GenPhi    [MAX_PAIRS] ;
+   Int_t   Size;
+   Int_t   Index     [MAX_PAIRS] ;
+   Int_t   Type      [MAX_PAIRS] ; // type of pairing - 1: ll (regardless of charge and flavor!), 2: jj
+   Int_t   Obj1Index [MAX_PAIRS] ;
+   Int_t   Obj2Index [MAX_PAIRS] ;
+   Int_t   GenPdgID  [MAX_PAIRS] ;
+   Float_t Mass      [MAX_PAIRS] ;
+   Float_t Pt        [MAX_PAIRS] ;
+   Float_t Eta       [MAX_PAIRS] ;
+   Float_t Phi       [MAX_PAIRS] ;
+   Float_t GenMass   [MAX_PAIRS] ;
+   Float_t GenPt     [MAX_PAIRS] ;
+   Float_t GenEta    [MAX_PAIRS] ;
+   Float_t GenPhi    [MAX_PAIRS] ;
 
    void RegisterTree( TTree* root , std::string name = "PairInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
@@ -1114,31 +1114,31 @@ public:
 };
 class GenInfoBranches {
 public:
-   int Size;
-   float Weight;
-   float Pt           [MAX_GENS] ;
-   float Eta          [MAX_GENS] ;
-   float Phi          [MAX_GENS] ;
-   float Mass         [MAX_GENS] ;
-   int PdgID          [MAX_GENS] ;
-   int PhotonFlag     [MAX_GENS] ;   // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
-   int Status         [MAX_GENS] ;
-   int nMo            [MAX_GENS] ;
-   int nDa            [MAX_GENS] ;
-   int Mo1            [MAX_GENS] ;
-   int Mo2            [MAX_GENS] ;
-   int Da1            [MAX_GENS] ;
-   int Da2            [MAX_GENS] ;
-   int Mo1PdgID       [MAX_GENS] ;
-   int Mo2PdgID       [MAX_GENS] ;
-   int Mo1Status      [MAX_GENS] ;
-   int Mo2Status      [MAX_GENS] ;
-   int Da1PdgID       [MAX_GENS] ;
-   int Da2PdgID       [MAX_GENS] ;
-   int GrandMo1PdgID  [MAX_GENS] ;
-   int GrandMo2PdgID  [MAX_GENS] ;
-   int GrandMo1Status [MAX_GENS] ;
-   int GrandMo2Status [MAX_GENS] ;
+   Int_t Size;
+   Float_t Weight;
+   Float_t Pt           [MAX_GENS] ;
+   Float_t Eta          [MAX_GENS] ;
+   Float_t Phi          [MAX_GENS] ;
+   Float_t Mass         [MAX_GENS] ;
+   Int_t PdgID          [MAX_GENS] ;
+   Int_t PhotonFlag     [MAX_GENS] ;   // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
+   Int_t Status         [MAX_GENS] ;
+   Int_t nMo            [MAX_GENS] ;
+   Int_t nDa            [MAX_GENS] ;
+   Int_t Mo1            [MAX_GENS] ;
+   Int_t Mo2            [MAX_GENS] ;
+   Int_t Da1            [MAX_GENS] ;
+   Int_t Da2            [MAX_GENS] ;
+   Int_t Mo1PdgID       [MAX_GENS] ;
+   Int_t Mo2PdgID       [MAX_GENS] ;
+   Int_t Mo1Status      [MAX_GENS] ;
+   Int_t Mo2Status      [MAX_GENS] ;
+   Int_t Da1PdgID       [MAX_GENS] ;
+   Int_t Da2PdgID       [MAX_GENS] ;
+   Int_t GrandMo1PdgID  [MAX_GENS] ;
+   Int_t GrandMo2PdgID  [MAX_GENS] ;
+   Int_t GrandMo1Status [MAX_GENS] ;
+   Int_t GrandMo2Status [MAX_GENS] ;
 
    void RegisterTree( TTree* root , std::string name = "GenInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
@@ -1197,30 +1197,30 @@ public:
 };
 class PhotonInfoBranches {
 public:
-   int   Size;
-   float Pt                   [MAX_PHOTONS] ;
-   float Eta                  [MAX_PHOTONS] ;
-   float Phi                  [MAX_PHOTONS] ;
-   float HoverE               [MAX_PHOTONS] ;
-   float SigmaIetaIeta        [MAX_PHOTONS] ;
-   float hadTowOverEm         [MAX_PHOTONS] ;
-   float hcalIsoConeDR04_2012 [MAX_PHOTONS] ;
-   float phoPFChIso           [MAX_PHOTONS] ;
-   float phoPFNeuIso          [MAX_PHOTONS] ;
-   float phoPFPhoIso          [MAX_PHOTONS] ;
-   float phoIDMVA             [MAX_PHOTONS] ;
-   bool  phoPassLoose         [MAX_PHOTONS] ;
-   bool  phoPassMedium        [MAX_PHOTONS] ;
-   bool  phoPassTight         [MAX_PHOTONS] ;
-   float r9                   [MAX_PHOTONS] ;
-   bool  passelectronveto     [MAX_PHOTONS] ;
-   float  EcalIso             [MAX_PHOTONS] ;
-   float  HcalIso             [MAX_PHOTONS] ;
-   float  TrackIso            [MAX_PHOTONS] ;
-   float GenPt                [MAX_PHOTONS] ;
-   float GenEta               [MAX_PHOTONS] ;
-   float GenPhi               [MAX_PHOTONS] ;
-   int   GenPdgID             [MAX_PHOTONS] ;
+   Int_t   Size;
+   Float_t Pt                   [MAX_PHOTONS] ;
+   Float_t Eta                  [MAX_PHOTONS] ;
+   Float_t Phi                  [MAX_PHOTONS] ;
+   Float_t HoverE               [MAX_PHOTONS] ;
+   Float_t SigmaIetaIeta        [MAX_PHOTONS] ;
+   Float_t hadTowOverEm         [MAX_PHOTONS] ;
+   Float_t hcalIsoConeDR04_2012 [MAX_PHOTONS] ;
+   Float_t phoPFChIso           [MAX_PHOTONS] ;
+   Float_t phoPFNeuIso          [MAX_PHOTONS] ;
+   Float_t phoPFPhoIso          [MAX_PHOTONS] ;
+   Float_t phoIDMVA             [MAX_PHOTONS] ;
+   Bool_t  phoPassLoose         [MAX_PHOTONS] ;
+   Bool_t  phoPassMedium        [MAX_PHOTONS] ;
+   Bool_t  phoPassTight         [MAX_PHOTONS] ;
+   Float_t r9                   [MAX_PHOTONS] ;
+   Bool_t  passelectronveto     [MAX_PHOTONS] ;
+   Float_t  EcalIso             [MAX_PHOTONS] ;
+   Float_t  HcalIso             [MAX_PHOTONS] ;
+   Float_t  TrackIso            [MAX_PHOTONS] ;
+   Float_t GenPt                [MAX_PHOTONS] ;
+   Float_t GenEta               [MAX_PHOTONS] ;
+   Float_t GenPhi               [MAX_PHOTONS] ;
+   Int_t   GenPdgID             [MAX_PHOTONS] ;
 
    void RegisterTree( TTree* root , std::string name = "PhotonInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
@@ -1235,11 +1235,11 @@ public:
       root->Branch( ( name + ".phoPFNeuIso" ).c_str(), phoPFNeuIso, ( name + ".phoPFNeuIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".phoPFPhoIso" ).c_str(), phoPFPhoIso, ( name + ".phoPFPhoIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".phoIDMVA" ).c_str(), phoIDMVA, ( name + ".phoIDMVA[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".phoPassLoose" ).c_str(), phoPassLoose, ( name + ".phoPassLoose[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".phoPassMedium" ).c_str(), phoPassMedium, ( name + ".phoPassMedium[" + name + ".Size]/C" ).c_str() );
-      root->Branch( ( name + ".phoPassTight" ).c_str(), phoPassTight, ( name + ".phoPassTight[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".phoPassLoose" ).c_str(), phoPassLoose, ( name + ".phoPassLoose[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".phoPassMedium" ).c_str(), phoPassMedium, ( name + ".phoPassMedium[" + name + ".Size]/O" ).c_str() );
+      root->Branch( ( name + ".phoPassTight" ).c_str(), phoPassTight, ( name + ".phoPassTight[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".r9" ).c_str(), r9, ( name + ".r9[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".passelectronveto" ).c_str(), passelectronveto, ( name + ".passelectronveto[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".passelectronveto" ).c_str(), passelectronveto, ( name + ".passelectronveto[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".EcalIso" ).c_str(), EcalIso, ( name + ".EcalIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".HcalIso" ).c_str(), HcalIso, ( name + ".HcalIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".TrackIso" ).c_str(), TrackIso, ( name + ".TrackIso[" + name + ".Size]/F" ).c_str() );
@@ -1277,22 +1277,22 @@ public:
 };
 class VertexInfoBranches {
 public:
-   int     Size;
-   int     isValid        [MAX_Vertices] ;
-   bool    isFake         [MAX_Vertices] ; //Uly 2011-04-04
-   int     Type           [MAX_Vertices] ;   //0 - Offline Primary Vertices, 1 - Offline Primary Vertices with beam spot constraint, 2 - Pixel Vertices
-   float   Ndof           [MAX_Vertices] ;
-   float   NormalizedChi2 [MAX_Vertices] ;
-   float   Pt_Sum         [MAX_Vertices] ;
-   float   Pt_Sum2        [MAX_Vertices] ;
-   float   x              [MAX_Vertices] ;
-   float   y              [MAX_Vertices] ;
-   float   z              [MAX_Vertices] ;
-   float   Rho            [MAX_Vertices] ;
+   Int_t     Size;
+   Int_t     isValid        [MAX_Vertices] ;
+   Bool_t    isFake         [MAX_Vertices] ; //Uly 2011-04-04
+   Int_t     Type           [MAX_Vertices] ;   //0 - Offline Primary Vertices, 1 - Offline Primary Vertices with beam spot constraint, 2 - Pixel Vertices
+   Float_t   Ndof           [MAX_Vertices] ;
+   Float_t   NormalizedChi2 [MAX_Vertices] ;
+   Float_t   Pt_Sum         [MAX_Vertices] ;
+   Float_t   Pt_Sum2        [MAX_Vertices] ;
+   Float_t   x              [MAX_Vertices] ;
+   Float_t   y              [MAX_Vertices] ;
+   Float_t   z              [MAX_Vertices] ;
+   Float_t   Rho            [MAX_Vertices] ;
    void RegisterTree( TTree* root , std::string name = "VertexInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".isValid" ).c_str(), isValid, ( name + ".isValid[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".isFake" ).c_str(), isFake, ( name + ".isFake[" + name + ".Size]/C" ).c_str() );
+      root->Branch( ( name + ".isFake" ).c_str(), isFake, ( name + ".isFake[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".Type" ).c_str(), Type, ( name + ".Type[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".Ndof" ).c_str(), Ndof, ( name + ".Ndof[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NormalizedChi2" ).c_str(), NormalizedChi2, ( name + ".NormalizedChi2[" + name + ".Size]/F" ).c_str() );
