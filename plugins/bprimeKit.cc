@@ -155,8 +155,9 @@ void bprimeKit::beginJob()
 {
    root = new TTree( "root", "root" );
    EvtInfo.RegisterTree( root );
+   VertexInfo.RegisterTree( root );
    if( !skipGenInfo_ ) { GenInfo.RegisterTree( root ); }
-   if( lepcollections_.size() > MAX_LEPCOLLECTIONS ) { cout << "WARNING: Too many lep collections, using first " << MAX_LEPCOLLECTIONS << endl; }
+   
    for( unsigned i = 0; i < lepcollections_.size(); i++ ) {
       if( i >= MAX_LEPCOLLECTIONS ) { break; }
       LepInfo[i].RegisterTree( root, lepcollections_[i] );
@@ -165,8 +166,6 @@ void bprimeKit::beginJob()
       if( i >= MAX_PHOCOLLECTIONS ) { break; }
       PhotonInfo[i].RegisterTree( root, phocollections_[i] );
    }
-   VertexInfo.RegisterTree( root );
-   if( jetcollections_.size() > MAX_JETCOLLECTIONS ) { cout << "WARNING: Too many jet collections, using first " << MAX_JETCOLLECTIONS << endl; }
    for( unsigned i = 0; i < jetcollections_.size(); i++ ) {
       if( i >= MAX_JETCOLLECTIONS ) { break; }
       JetInfo[i].RegisterTree( root, jetcollections_[i] );
