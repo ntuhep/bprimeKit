@@ -99,7 +99,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].NumberOfExpectedInnerHits [LepInfo[icoll].Size] = it_el->gsfTrack()->hitPattern().numberOfHits( reco::HitPattern::MISSING_INNER_HITS ) ; // Add by Jacky
       LepInfo[icoll].vertexZ                   [LepInfo[icoll].Size] = it_el->vertex().z()                                                                  ; //Uly 2011-04-04
       
-      //---------------------------  For cut based electron ID  ---------------------------
+      //----- Cut based electron ID  ---------------------------------------------------------------------
       float dist_ = ( it_el->convDist() == -9999. ? 9999 : it_el->convDist() );
       float dcot_ = ( it_el->convDcot() == -9999. ? 9999 : it_el->convDcot() );
       LepInfo[icoll].dcotdist[LepInfo[icoll].Size] = ( ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) > 0 ? ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) : 0 );
@@ -107,7 +107,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].ElHcalIso04[LepInfo[icoll].Size]  = it_el->dr04HcalTowerSumEt();
       LepInfo[icoll].ElEcalIso04[LepInfo[icoll].Size]  = it_el->dr04EcalRecHitSumEt();
       
-      //-----------------------  New Isolation information: Enoch  ------------------------
+      //----- Isolation variables  -----------------------------------------------------------------------
       if( getElectronID_ ){
          const auto el = gsfElecHandle->ptrAt( i );
          //cout <<"\t>>> Getting isolation information"<< endl;
@@ -121,6 +121,23 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
          LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
+               
+         LepInfo[icoll].ElEcalE                     [LepInfo[icoll].Size] = el->ecalEnergy();
+         LepInfo[icoll].ElhcalOverEcalBc            [LepInfo[icoll].Size] = el->hcalOverEcalBc();
+         LepInfo[icoll].Eldr03HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth1TowerSumEtBc();
+         LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth2TowerSumEtBc();
+         LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth1TowerSumEtBc();
+         LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
+               
+         // cuts to match tight trigger requirements
+         bool trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
+         LepInfo[icoll].EgammaCutBasedEleIdTRIGGERTIGHT  [LepInfo[icoll].Size] = trigtight;
+
+         // for 2011 WP70 trigger
+         bool trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, *el );
+         LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
+               
+         LepInfo[icoll].ElhasConv  [LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
       }
      
       //---------------------------  MC Generation information  ---------------------------
@@ -192,25 +209,12 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 
                // alternative way to access to PF iso
                unsigned int ivtx = 0;
-               VertexRef myVtxRef( VertexHandle, ivtx );
 
-               if( !TurnOffInCMSSW73x ) {
-               //   isolatorR03.fGetIsolation( &*gsfEle, &thePfColl, myVtxRef, VertexHandle );
-               //   isolatorR04.fGetIsolation( &*gsfEle, &thePfColl, myVtxRef, VertexHandle );
                }
 
 
                ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
                if( isData ) { EATarget = ElectronEffectiveArea::kEleEAData2012; }
-
-
-               // cuts to match tight trigger requirements
-               bool trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, ele );
-               LepInfo[icoll].EgammaCutBasedEleIdTRIGGERTIGHT  [LepInfo[icoll].Size] = trigtight;
-
-               // for 2011 WP70 trigger
-               bool trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, ele );
-               LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
 
                LepInfo[icoll].ChargedHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationCharged();
                LepInfo[icoll].NeutralHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationNeutral();
@@ -237,17 +241,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                   max( LepInfo[icoll].NeutralHadronIsoR04[LepInfo[icoll].Size]
                        + LepInfo[icoll].PhotonIsoR04[LepInfo[icoll].Size] - rhoPrime * AEffR04, 0.0 );
 
-               LepInfo[icoll].ElEcalE                   [LepInfo[icoll].Size] = ele->ecalEnergy();
-               LepInfo[icoll].ElhasConv                 [LepInfo[icoll].Size]
-                  = ConversionTools::hasMatchedConversion( *ele, conversions_h, beamSpot.position() );
-               //
-               //   hOverE2012 = (hcalDepth1 + hcalDepth2)/ele->superCluster()->energy();
-               ///
-               LepInfo[icoll].ElhcalOverEcalBc          [LepInfo[icoll].Size] = ele->hcalOverEcalBc();
-               LepInfo[icoll].Eldr03HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = ele->dr03HcalDepth1TowerSumEtBc();
-               LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = ele->dr03HcalDepth2TowerSumEtBc();
-               LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = ele->dr04HcalDepth1TowerSumEtBc();
-               LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = ele->dr04HcalDepth2TowerSumEtBc();
             }*/
          }
       }
@@ -268,17 +261,16 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       ConversionFinder convFinder;
 
       // Conversion rejection (Version2).
-      if( !TurnOffInCMSSW73x )
-         if( tracks_h.isValid() ) { // turn off on CMSSW73X
-            if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
-            ConversionInfo convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
-            LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = convInfo.dist();
-            LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = convInfo.dcot();
-            LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = convInfo.radiusOfConversion();
-            LepInfo[icoll].ElConvPoint_x [LepInfo[icoll].Size] = convInfo.pointOfConversion().x();
-            LepInfo[icoll].ElConvPoint_y [LepInfo[icoll].Size] = convInfo.pointOfConversion().y();
-            LepInfo[icoll].ElConvPoint_z [LepInfo[icoll].Size] = convInfo.pointOfConversion().z();
-         }
+      if( tracks_h.isValid() ) { // turn off on CMSSW73X
+         if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
+         ConversionInfo convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
+         LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = convInfo.dist();
+         LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = convInfo.dcot();
+         LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = convInfo.radiusOfConversion();
+         LepInfo[icoll].ElConvPoint_x [LepInfo[icoll].Size] = convInfo.pointOfConversion().x();
+         LepInfo[icoll].ElConvPoint_y [LepInfo[icoll].Size] = convInfo.pointOfConversion().y();
+         LepInfo[icoll].ElConvPoint_z [LepInfo[icoll].Size] = convInfo.pointOfConversion().z();
+      }
 
       //   static bool hasMatchedConversion(const reco::GsfElectron &ele,
       //       const edm::Handle<reco::ConversionCollection> &convCol, const math::XYZPoint &beamspot,

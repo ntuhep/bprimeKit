@@ -12,10 +12,6 @@
 
 ## Lepton information
 
-   - General problem
-      - [ ] Particle Flow information (what classifies as PF information?)
-      - [ ] GsfElectron and RecoElectron comparison
-
    - Common variable issues:
       - [ ] Isolation information: Duplicates and inconsistance format
       - [ ] Ip3d information: Required vertex infromation
@@ -26,19 +22,20 @@
 
    - Electron information
       - [ ] Isolation related: Should be replaced with pre-computed cuts?
-         - [ ] Common isolation information
-         - [ ] float ElhcalOverEcalBc
-         - [ ] float Eldr03HcalDepth1TowerSumEtBc
-         - [ ] float Eldr03HcalDepth2TowerSumEtBc
-         - [ ] float Eldr04HcalDepth1TowerSumEtBc
-         - [ ] float Eldr04HcalDepth2TowerSumEtBc
-         - [ ] float EgammaMVANonTrig: AOD only?
+         - [X] float *R03
+         - [ ] float *R04: Check is still exists
+         - [X] float ElhcalOverEcalBc
+         - [X] float Eldr03HcalDepth1TowerSumEtBc
+         - [X] float Eldr03HcalDepth2TowerSumEtBc
+         - [X] float Eldr04HcalDepth1TowerSumEtBc
+         - [X] float Eldr04HcalDepth2TowerSumEtBc
+         - [X] float EgammaMVANonTrig
          - [ ] float EgammaMVATrig: AOD only?
-         - [ ] bool  EgammaCutBasedEleIdTRIGGERTIGHT
-         - [ ] bool  EgammaCutBasedEleIdTRIGGERWP70
-         - [ ] float ElEcalE
-         - [ ] bool  ElhasConv
-      - [ ] Conversion rejection related:
+         - [X] bool  EgammaCutBasedEleIdTRIGGERTIGHT
+         - [X] bool  EgammaCutBasedEleIdTRIGGERWP70
+         - [X] float ElEcalE
+         - [X] bool  ElhasConv
+      - [ ] Conversion rejection related: / new recipe found for trackless 
          - [ ] float Eldist
          - [ ] float Eldcot
          - [ ] float Elconvradius
@@ -61,14 +58,12 @@
 
 ## Jet information
    - [ ] General issue
-      - [ ] No particle flow information
       - [ ] QuarkGluonTagger: cannot be used for by `slimmedJetsAK8` collection
-      - [ ] Subjet info extraction.
+      - [X] Subjet info extraction.
       - [X] bTag completed 
 
 ## Photon information 
-   - [ ] General information
-      - [ ] Particle flow information
+   - [X] General information
       - [X] Added identification?
 
    - [X] Isolation information: No DR03 and DR04 distinctions anymore?
@@ -78,7 +73,6 @@
       - [ ] float phoPFChIsoDR04
       - [ ] float phoPFNeuIsoDR04
       - [ ] float phoPFPhoIsoDR04
-
 
 ## Vertex information
   - [ ] No "offlinePrimaryVerticesWithBS" 

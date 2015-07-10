@@ -11,7 +11,7 @@
 
 //-------------------------  Muon specific CMSSW libraries  -------------------------
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
-
+#include "TrackingTools/IPTools/interface/IPTools.h"
 
 
 //------------------------------------------------------------------------------ 
@@ -147,16 +147,15 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          //   TODO Debugging 
          //------------------------------------------------------------------------------ 
          
-         if( TurnOnInCMSSW_7_4_1 ) {
-         //   const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
-         //   reco::Vertex thevtx = pvCol->at( 0 );
-         //   const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
-         //   const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
-         //   //std::cout<<"Muon Ip3dPVSignificance : "<<thesign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
-         //   LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
-         //   LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
-         //   LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
-         }
+         const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
+         reco::Vertex thevtx = pvCol->at( 0 );
+         const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
+         const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
+         //std::cout<<"Muon Ip3dPVSignificance : "<<thesign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
+         LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
+         LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
+         LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
+         
       }
 
       if ( it_mu->type() & 0x02 ) {

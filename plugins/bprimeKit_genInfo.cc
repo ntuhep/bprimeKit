@@ -9,14 +9,11 @@
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
 //-----------------------  GenInfo specific CMSSW libraries  ------------------------
-#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
 //------------------------------------------------------------------------------ 
 //   Typedefs and enums
 //------------------------------------------------------------------------------ 
-typedef edm::Handle<std::vector<PileupSummaryInfo>>      PileupHandle;
-typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
 typedef std::vector<reco::GenParticle>::const_iterator   GenPIterator;
 typedef std::vector<const reco::Candidate*>              CandidateList;
 typedef CandidateList::const_iterator                    CandidateIterator;
@@ -31,8 +28,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    const reco::Candidate* MCDaughters[14];
    const reco::Candidate* dau1;
    const reco::Candidate* dau2;
-   PileupHandle           PUInfo;
-   PileupIterator         PVI;
    GenInfoHandle          genEventInfo;
    CandidateList          cands;
    CandidateIterator      found;
@@ -59,17 +54,8 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    }
    GenInfo.Weight = evWeight;
    
-   
-   if( puInfoLabel_.size() > 0 ) { iEvent.getByLabel( puInfoLabel_[0], PUInfo ); }
-   for( PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI ) {
-      EvtInfo.nPU[EvtInfo.nBX] = PVI->getPU_NumInteractions();
-      EvtInfo.BXPU[EvtInfo.nBX] = PVI->getBunchCrossing();
-      EvtInfo.TrueIT[EvtInfo.nBX] = PVI->getTrueNumInteractions();
-      EvtInfo.nBX += 1;
-   }
-   
-   if( debug_ > 15 ) { //cout << "Getting MC info" << endl ; 
-   }
+    
+   if( debug_ > 15 ) { cout << "Getting MC info" << endl ; }
 
    for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
       pdgId             = it_gen->pdgId();

@@ -12,6 +12,7 @@
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 
 //------------------------------------------------------------------------------ 
 //   Custom typedefs and enums
@@ -19,6 +20,8 @@
 typedef std::vector<pat::MET>   METList;
 typedef edm::Handle<METList>    METHandler;
 typedef METList::const_iterator METIterator;
+typedef edm::Handle<std::vector<PileupSummaryInfo>>      PileupHandle;
+typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
@@ -26,10 +29,12 @@ typedef METList::const_iterator METIterator;
 bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    //-----------------------------  Variable declaration  ------------------------------
-   METHandler  METHandle;
-   METHandler  pfMETHandle;
-   METHandler  pfMETHandle_TempPlus;
-   METHandler  pfMETHandle_TempDown;
+   PileupHandle     PUInfo;
+   PileupIterator   PVI;
+   METHandler       METHandle;
+   METHandler       pfMETHandle;
+   METHandler       pfMETHandle_TempPlus;
+   METHandler       pfMETHandle_TempDown;
    METIterator it_pfmet  ; 
    edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
    edm::Handle<TriggerResults> TrgResultsHandle;
@@ -51,6 +56,14 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
    EvtInfo.ptHat    = -1.;
    EvtInfo.Rho      = * (rhoHandle.product()) ; 
+   
+   if( puInfoLabel_.size() > 0 ) { iEvent.getByLabel( puInfoLabel_[0], PUInfo ); }
+   for( PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI ) {
+      EvtInfo.nPU[EvtInfo.nBX] = PVI->getPU_NumInteractions();
+      EvtInfo.BXPU[EvtInfo.nBX] = PVI->getBunchCrossing();
+      EvtInfo.TrueIT[EvtInfo.nBX] = PVI->getTrueNumInteractions();
+      EvtInfo.nBX += 1;
+   }
    
    //-------------------------------  Getting beam spot  -------------------------------
    if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
@@ -140,58 +153,59 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    }
 
    //------------------------  High level trigger information  -------------------------
-//   bool with_TriggerResults = ( hltlabel_.size() > 0 ) ? iEvent.getByLabel( hltlabel_[0], TrgResultsHandle ) : false;
-//   if ( with_TriggerResults ) {
-//      const edm::TriggerNames& TrgNames = iEvent.triggerNames( *TrgResultsHandle );
-//      EvtInfo.TrgCount = 0;
-//      for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) {
-//         unsigned int TrgIndex = TrgNames.triggerIndex( TriggerBooking[i] );
-//         if ( TrgIndex == TrgNames.size() ) {
-//            EvtInfo.TrgBook[i] = -4; // The trigger path is not known in this event.
-//         } else if ( !TrgResultsHandle->wasrun( TrgIndex ) ) {
-//            EvtInfo.TrgBook[i] = -3; // The trigger path was not included in this event.
-//         } else if ( !TrgResultsHandle->accept( TrgIndex ) ) {
-//            EvtInfo.TrgBook[i] = -2; // The trigger path was not accepted in this event.
-//         } else if (  TrgResultsHandle->error ( TrgIndex ) ) {
-//            EvtInfo.TrgBook[i] = -1; // The trigger path has an error in this event.
-//         } else {
-//            EvtInfo.TrgBook[i] = +1; // It's triggered.
-//            EvtInfo.TrgCount++;
-//         }
-//      }
-//      EvtInfo.nHLT = TrgNames.size();
-//      for( size_t i = 0; i < TrgNames.size(); i++ ) {
-//         EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
-//         const std::string triggerName_ = TrgNames.triggerName( i );
-//         psValueCombo = hltConfig_.prescaleValues( iEvent, iSetup, triggerName_ );
-//         EvtInfo.HLTPrescaleFactor[i] = ( int )psValueCombo.second;
-//         HLTmaplist_pr = HLTmaplist.find( TrgNames.triggerName( i ) );
-//         if( HLTmaplist_pr != HLTmaplist.end() ) {
-//            EvtInfo.HLTName2enum[i] = HLTmaplist_pr->second ;
-//         } else {
-//            EvtInfo.HLTName2enum[i] = -1; }
-//      }
-//   }
-//   //------------------  Level 1 trigger and technical trigger bits  -------------------
-//   if( gtdigilabel_.size() > 0 ) { iEvent.getByLabel( gtdigilabel_[0], gtRecord ); }
-//   if( gtRecord.isValid() ) {
-//      DecisionWord dWord = gtRecord->decisionWord();
-//      if ( ! dWord.empty() ) { // if board not there this is zero
-//         // loop over dec. bit to get total rate (no overlap)
-//         for ( int i = 0; i < 128; ++i ) {
-//            //  if(dWord[i]!=0 && debug)cout << i << " " << dWord[i] << ": ";
-//            EvtInfo.L1[i] = dWord[i];
-//         }
-//      }
-//      TechnicalTriggerWord tw = gtRecord->technicalTriggerWord();
-//      if ( ! tw.empty() ) {
-//         // loop over dec. bit to get total rate (no overlap)
-//         for ( int i = 0; i < 64; ++i ) {
-//            //  if(tw[i]!=0 && debug) cout << i << "  " << tw[i] << ": ";
-//            EvtInfo.TT[i] = tw[i];
-//         }
-//      }
-//   }
+   bool with_TriggerResults = ( hltlabel_.size() > 0 ) ? iEvent.getByLabel( hltlabel_[0], TrgResultsHandle ) : false;
+   if ( with_TriggerResults ) {
+      if( debug_ > 10 ) { cout << "Getting High Level Trigger" << endl; }
+      const edm::TriggerNames& TrgNames = iEvent.triggerNames( *TrgResultsHandle );
+      EvtInfo.TrgCount = 0;
+      for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) {
+         unsigned int TrgIndex = TrgNames.triggerIndex( TriggerBooking[i] );
+         if ( TrgIndex == TrgNames.size() ) {
+            EvtInfo.TrgBook[i] = -4; // The trigger path is not known in this event.
+         } else if ( !TrgResultsHandle->wasrun( TrgIndex ) ) {
+            EvtInfo.TrgBook[i] = -3; // The trigger path was not included in this event.
+         } else if ( !TrgResultsHandle->accept( TrgIndex ) ) {
+            EvtInfo.TrgBook[i] = -2; // The trigger path was not accepted in this event.
+         } else if (  TrgResultsHandle->error ( TrgIndex ) ) {
+            EvtInfo.TrgBook[i] = -1; // The trigger path has an error in this event.
+         } else {
+            EvtInfo.TrgBook[i] = +1; // It's triggered.
+            EvtInfo.TrgCount++;
+         }
+      }
+      EvtInfo.nHLT = TrgNames.size();
+      for( size_t i = 0; i < TrgNames.size(); i++ ) {
+         EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
+         const std::string triggerName_ = TrgNames.triggerName( i );
+         psValueCombo = hltConfig_.prescaleValues( iEvent, iSetup, triggerName_ );
+         EvtInfo.HLTPrescaleFactor[i] = ( int )psValueCombo.second;
+         HLTmaplist_pr = HLTmaplist.find( TrgNames.triggerName( i ) );
+         if( HLTmaplist_pr != HLTmaplist.end() ) {
+            EvtInfo.HLTName2enum[i] = HLTmaplist_pr->second ;
+         } else {
+            EvtInfo.HLTName2enum[i] = -1; }
+      }
+   }
+   //------------------  Level 1 trigger and technical trigger bits  -------------------
+   if( gtdigilabel_.size() > 0 ) { iEvent.getByLabel( gtdigilabel_[0], gtRecord ); }
+   if( gtRecord.isValid() ) {
+      DecisionWord dWord = gtRecord->decisionWord();
+      if ( ! dWord.empty() ) { // if board not there this is zero
+         // loop over dec. bit to get total rate (no overlap)
+         for ( int i = 0; i < 128; ++i ) {
+            if(dWord[i]!=0 && debug_ ){ cout <<"Dword: "<< i << " " << dWord[i] << ": ";}
+            EvtInfo.L1[i] = dWord[i];
+         }
+      }
+      TechnicalTriggerWord tw = gtRecord->technicalTriggerWord();
+      if ( ! tw.empty() ) {
+         // loop over dec. bit to get total rate (no overlap)
+         for ( int i = 0; i < 64; ++i ) {
+            //  if(tw[i]!=0 && debug) cout << i << "  " << tw[i] << ": ";
+            EvtInfo.TT[i] = tw[i];
+         }
+      }
+   }
 
    //------------------------------------------------------------------------------ 
    //   TODO Under construction

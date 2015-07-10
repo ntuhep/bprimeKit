@@ -20,10 +20,6 @@
 #define __BPRIMEKIT_H__
 
 
-#ifndef __BPRIMEKIT__
-#define __BPRIMEKIT__
-#endif
-
 //------------------------------------------------------------------------------ 
 //   Libraries 
 //------------------------------------------------------------------------------ 
@@ -206,7 +202,7 @@ private:
    edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
    std::vector<edm::Handle<double> >            sigmaHandle;
    TauHandlerList       TauHandle;
-   TrackHandler          tracks_h       ; // Jacky
+   TrackHandler         tracks_h       ; // Jacky
    GsfElectronHandle    els_h          ;
    ConversionHandle     conversions_h  ;
    DcsStatusHandle      dcsHandle      ; // Jacky
@@ -257,6 +253,8 @@ private:
    HLTConfigProvider hltConfig_;
 
    bool isData;
+   const TransientTrackBuilder* transientTrackBuilder;
+   const reco::VertexCollection* pvCol;
 };
 
 #endif /* end of include guard: __BPRIMEKIT_H__ */

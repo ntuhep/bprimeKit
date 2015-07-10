@@ -16,7 +16,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
-
+#include "TrackingTools/Records/interface/TransientTrackRecord.h"
 
 //------------------------------------------------------------------------------ 
 //   Custom enums, typedefs and macros
@@ -156,8 +156,7 @@ void bprimeKit::beginJob()
    root = new TTree( "root", "root" );
    EvtInfo.RegisterTree( root );
    VertexInfo.RegisterTree( root );
-   if( !skipGenInfo_ ) { GenInfo.RegisterTree( root ); }
-   
+   if( !skipGenInfo_ ) { GenInfo.RegisterTree( root ); } 
    for( unsigned i = 0; i < lepcollections_.size(); i++ ) {
       if( i >= MAX_LEPCOLLECTIONS ) { break; }
       LepInfo[i].RegisterTree( root, lepcollections_[i] );
@@ -200,17 +199,13 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if(!isData && genlabel_.size() > 0 ) iEvent.getByLabel( genlabel_[0], GenHandle);
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
    if( offlinePVBSlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS ); } //Offline primary vertices with Beam Spot constraint //Dmitry
-   if( !TurnOffInCMSSW73x )
-      if( tracklabel_.size() > 0 ) { iEvent.getByLabel( tracklabel_[0], TrackHandle ); }         //get tracks for calculating dRmin (Dmitry)
-
-   //cout << "[Test] tracklabel is ok?" ;
 
    // All PF Candidate for alternate isolation
    // edm::Handle<reco::PFCandidateCollection> pfCandidatesH;
    // if( !TurnOffInCMSSW73x )
-   // { iEvent.getByLabel( "particleFlow", pfCandidatesH ); }
+   // iEvent.getByLabel( "particleFlow", pfCandidatesH );
    // if( !TurnOffInCMSSW73x )
-   // { thePfColl = *( pfCandidatesH.product() ); }
+   // thePfColl = *( pfCandidatesH.product() );
 
    // development for CMSSW_73X
    //edm::Handle<pat::PackedCandidateCollection> thePfColl;
@@ -222,13 +217,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    // reference to (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/plugins/ElectronIdMVAProducer.cc)
    //EcalClusterLazyTools lazyTools( iEvent, iSetup, reducedEBRecHitCollectionToken_, reducedEERecHitCollectionToken_ );
 
-   if( TurnOnInCMSSW_7_4_1 ){
-   //    edm::ESHandle<TransientTrackBuilder> builder;
-   //    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
-   //    TransientTrackBuilder thebuilder = *( builder.product() );
-   //    const TransientTrackBuilder* transientTrackBuilder = builder.product();
-   }
-
+   edm::ESHandle<TransientTrackBuilder> builder;
+   iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
+   TransientTrackBuilder thebuilder = *( builder.product() );
+   transientTrackBuilder = builder.product();
 
    //  iEvent.getByLabel("electronGsfTracks",      gsfTrackHandle);  //get gsftracks (Dmitry)
    //  const edm::View<reco::GsfTrack> & gsfTracks = *gsfTrackHandle;

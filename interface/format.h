@@ -4,8 +4,8 @@
  *  Description : The branch format for the bprimeKit nTuple
  *
 *******************************************************************************/
-#ifndef __BPRIMEKIT_FORMAT_H__
-#define __BPRIMEKIT_FORMAT_H__
+#ifndef __FORMAT_H__
+#define __FORMAT_H__
 
 //------------------------------  Required libraries  -------------------------------
 #include <TTree.h>
@@ -261,9 +261,6 @@ public:
    Float_t Ip3dPVErr                             [MAX_LEPTONS] ;
    Float_t Ip3dPVSignificance                    [MAX_LEPTONS] ;
 
-   //------------------------------------------------------------------------------
-   //   Muon Information
-   //------------------------------------------------------------------------------
 
    //----- General Muon information  ------------------------------------------------------------------
    Float_t  CaloEnergy                   [MAX_LEPTONS]  ;
@@ -282,7 +279,7 @@ public:
    Int_t    MuRPChits                    [MAX_LEPTONS]  ;
    Int_t    MuType                       [MAX_LEPTONS]  ;
 
-   //----- Cosmic Ray filters  ------------------------------------------------------------------------
+   //----- Muon cosmic ray filter  --------------------------------------------------------------------
    Int_t    MuontimenDof                 [MAX_LEPTONS]  ;
    Float_t  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
    Float_t  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
@@ -305,9 +302,7 @@ public:
    Int_t    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
    Int_t    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
 
-   //------------------------------------------------------------------------------
-   //   Electron Information
-   //------------------------------------------------------------------------------
+   //----- Generic Electron information  --------------------------------------------------------------
    Int_t   ChargeGsf                             [MAX_LEPTONS] ;
    Int_t   ChargeCtf                             [MAX_LEPTONS] ;
    Int_t   ChargeScPix                           [MAX_LEPTONS] ;
@@ -347,7 +342,7 @@ public:
    Float_t dPt_gsf_ctfTrack                      [MAX_LEPTONS] ; //Dmitry
    Bool_t  ElhasConv                             [MAX_LEPTONS] ;
 
-   //----- Track related information  -----------------------------------------------------------------
+   //----- Electron track related information  --------------------------------------------------------
    Int_t   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
    Float_t ElTrackNLostHits                      [MAX_LEPTONS] ;  //yjlei
    Float_t ElTrackDz                             [MAX_LEPTONS] ;
@@ -361,7 +356,7 @@ public:
    Float_t ElFBrem                               [MAX_LEPTONS] ;
    Int_t NumberOfExpectedInnerHits               [MAX_LEPTONS] ; // Add by Jacky
 
-   //----- Conversion rejections  ---------------------------------------------------------------------
+   //----- Electron conversion rejection  -------------------------------------------------------------
    Float_t Eldist                                [MAX_LEPTONS] ; // Add by Jacky
    Float_t Eldcot                                [MAX_LEPTONS] ; // Add by Jacky
    Float_t Elconvradius                          [MAX_LEPTONS] ; // Add by Jacky
@@ -378,9 +373,7 @@ public:
    Float_t TrgPhi                                [MAX_LEPTONS] ;
    Int_t TrgID                                   [MAX_LEPTONS] ;
 
-   //------------------------------------------------------------------------------
-   //   Tau information
-   //------------------------------------------------------------------------------
+   //----- Tau information  ---------------------------------------------------------------------------
    Int_t   isPFTau                                      [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
    Bool_t   DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
    Bool_t   DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
@@ -434,7 +427,7 @@ public:
    Float_t GenPhi                                [MAX_LEPTONS] ;
    Int_t   GenPdgID                              [MAX_LEPTONS] ;
    Int_t   GenMCTag                              [MAX_LEPTONS] ;
-#ifdef __BPRIMEKIT__
+#ifdef __BPRIMEKIT_H__
    reco::Candidate* CandRef[MAX_LEPTONS]; // backward poInt_ter to the PAT objects
 #endif
 
@@ -900,7 +893,7 @@ public:
    std::vector<Float_t> SubjetPtUncorr_w           ;
    std::vector<Float_t> SubjetArea_w               ;
 
-#ifdef __BPRIMEKIT__
+#ifdef __BPRIMEKIT_H__
    reco::Candidate* CandRef[MAX_JETS]; // backward poInt_ter to the PAT objects
 #endif
    void RegisterTree( TTree* root , std::string name = "JetInfo" ) {
@@ -1318,5 +1311,5 @@ public:
       root->SetBranchAddress( ( name + ".Rho" ).c_str() , Rho ) ;
    }
 };
-#endif // __BPRIMEKIT_FORMAT_H__
+#endif // __BPRIMEKIT_H_FORMAT_H__
 
