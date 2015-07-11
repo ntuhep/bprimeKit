@@ -116,13 +116,11 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //----- Isolation variables  -----------------------------------------------------------------------
       if( getElectronID_ ){
          const auto el = gsfElecHandle->ptrAt( i );
-         //cout <<"\t>>> Getting isolation information"<< endl;
          LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[el]); 
-         //cout << "\t>>> Getting new Isolation information" << endl;
          LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Size] = (*eleMVAValues)[el];
          LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
@@ -230,12 +228,11 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 
 
       //Conversion rejection (Add by Jacky)
-
-      // if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
+      if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
       // convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
-      // LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = convInfo.dist();
-      // LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = convInfo.dcot();
-      // LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = convInfo.radiusOfConversion();
+      LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = it_el->convDist();
+      LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = it_el->convRadius();
+      LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = it_el->convDcot();
       // LepInfo[icoll].ElConvPoint_x [LepInfo[icoll].Size] = convInfo.pointOfConversion().x();
       // LepInfo[icoll].ElConvPoint_y [LepInfo[icoll].Size] = convInfo.pointOfConversion().y();
       // LepInfo[icoll].ElConvPoint_z [LepInfo[icoll].Size] = convInfo.pointOfConversion().z();

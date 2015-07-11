@@ -39,25 +39,21 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
 {
    results = TFileDirectory( fs->mkdir( "results" ) );
    metlabel_           = iConfig.getParameter<TagList>( "metlabel"           ) ; //"patMETs"
-   pfmetlabel_         = iConfig.getParameter<TagList>( "pfmetlabel"         ) ; //"pfpatMETs"
    genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
    hltlabel_           = iConfig.getParameter<TagList>( "hltlabel"           ) ; // "TriggerResults::HLT"
    pathltlabel_        = iConfig.getParameter<TagList>( "pathltlabel"        ) ; // patTriggerEvent
    offlinePVlabel_     = iConfig.getParameter<TagList>( "offlinePVlabel"     ) ; //offlinePrimaryVertices
    offlinePVBSlabel_   = iConfig.getParameter<TagList>( "offlinePVBSlabel"   ) ; //offlinePrimaryVerticesWithBS
    offlineBSlabel_     = iConfig.getParameter<TagList>( "offlineBSlabel"     ) ; //offlineBeamSpot
-   tracklabel_         = iConfig.getParameter<TagList>( "tracklabel"         ) ; //generalTracks
    dcslabel_           = iConfig.getParameter<TagList>( "dcslabel"           ) ; //scalersRawToDigi
    genevtlabel_        = iConfig.getParameter<TagList>( "genevtlabel"        ) ; //generator
    gtdigilabel_        = iConfig.getParameter<TagList>( "gtdigilabel"        ) ; //gtDigis
    puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
 
    //-----------------------  2012 Election simple-cut-based ID  ----------------------- 
-   conversionsInputTag_ = iConfig.getParameter<edm::InputTag> ( "conversionsInputTag" ) ;
    isoValInputTags_     = iConfig.getParameter<TagList>       ( "isoValInputTags"     ) ;
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
-   //-------------------------------  Collection naming  -------------------------------
 
    //---------------------------------  Settings flag  ---------------------------------
    pairColl_            = iConfig.getUntrackedParameter<int>      ( "PairCollection" , 0     ) ;
@@ -101,9 +97,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    // update for CMSSW_7_2_0
    reducedEBRecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEBRecHitCollection" ) );
    reducedEERecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEERecHitCollection" ) );
-   // update for CMSSW_7_3_1
-   // reducedEBRecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEBRecHits"));
-   // reducedEERecHitCollectionToken_ = consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("reducedEgamma","reducedEERecHits"));
    
 
    //----------------------------  Common variables set-up  ----------------------------
@@ -144,6 +137,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       HLTmaplist.insert( pair< std::string, int > ( TriggerBooking[i], i ) ); }
 }
+
 bprimeKit::~bprimeKit()
 {}
 
@@ -191,6 +185,7 @@ void bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )
 
 void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
+   //----- Setting up common variables  ---------------------------------------------------------------
    edm::ESHandle<ParticleDataTable> pdt_;
    iSetup.getData( pdt_ );
    if( debug_ > 0 ) { cout << "Begin Analyze" << endl; }
@@ -200,20 +195,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
    if( offlinePVBSlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS ); } //Offline primary vertices with Beam Spot constraint //Dmitry
    pvCol = VertexHandle.product();
-   // All PF Candidate for alternate isolation
-   // edm::Handle<reco::PFCandidateCollection> pfCandidatesH;
-   // if( !TurnOffInCMSSW73x )
-   // iEvent.getByLabel( "particleFlow", pfCandidatesH );
-   // if( !TurnOffInCMSSW73x )
-   // thePfColl = *( pfCandidatesH.product() );
-
-   // development for CMSSW_73X
-   //edm::Handle<pat::PackedCandidateCollection> thePfColl;
-   //iEvent.getByToken(pfToken_, thePfColl);
-   //const  PackedCandidateCollection thePfColl = pfCandidatesH;
-
-
-
+   
    edm::ESHandle<TransientTrackBuilder> builder;
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
    TransientTrackBuilder thebuilder = *( builder.product() );

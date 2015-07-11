@@ -7,6 +7,7 @@ bprimeKit = cms.EDAnalyzer(
    reducedEBRecHitCollection = cms.InputTag("reducedEgamma","reducedEBRecHits"),
    reducedEERecHitCollection = cms.InputTag("reducedEgamma","reducedEERecHits"),
    rhoLabel                  = cms.InputTag("fixedGridRhoFastjetAll"), 
+   metlabel                  = cms.VInputTag("slimmedMETs"),
 
    #----- Photon information ------------------------------------------------------------------------ 
    PhoCollections            = cms.vstring('PhotonInfo'),
@@ -36,22 +37,17 @@ bprimeKit = cms.EDAnalyzer(
    JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
 
    PairCollection            = cms.untracked.int32(1),
-   metlabel                  = cms.VInputTag("slimmedMETs"),
-   pfmetlabel                = cms.VInputTag("slimmedMETs"),	## No PF MET for this moment in CMSSW73X
    genlabel                  = cms.VInputTag("prunedGenParticles"),
    hltlabel                  = cms.VInputTag("TriggerResults::HLT"),
    pathltlabel               = cms.VInputTag("patTriggerEvent"),
    offlinePVlabel            = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
    offlinePVBSlabel          = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
    offlineBSlabel            = cms.VInputTag("offlineBeamSpot"),
-   tracklabel                = cms.VInputTag("generalTracks"),# not used in CMSSW73X "generalTracks"),
    pfCands                   = cms.InputTag("packedPFCandidates"),
    dcslabel                  = cms.VInputTag("scalersRawToDigi"),
    genevtlabel               = cms.VInputTag("generator"),
    gtdigilabel               = cms.VInputTag("gtDigis"),
    puInfoLabel               = cms.VInputTag("addPileupInfo"),
-   #conversionsInputTag      = cms.InputTag("allConversions"),
-   conversionsInputTag       = cms.InputTag("reducedEgamma","reducedConversions"),
    
    isoValInputTags = cms.VInputTag( 
       cms.InputTag('elPFIsoValueCharged03PFIdPFIso'),

@@ -32,20 +32,18 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    PileupHandle     PUInfo;
    PileupIterator   PVI;
    METHandler       METHandle;
-   METHandler       pfMETHandle;
    METHandler       pfMETHandle_TempPlus;
    METHandler       pfMETHandle_TempDown;
-   METIterator it_pfmet  ; 
+   METIterator      it_met  ; 
    edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
    edm::Handle<TriggerResults> TrgResultsHandle;
    edm::Handle<L1GlobalTriggerReadoutRecord> gtRecord;
    edm::Handle<double> rhoHandle;
    std::pair<int,int>  psValueCombo;
-   const edm::View<reco::Track>& tracks = *TrackHandle;
 
    iEvent.getByToken( rhoLabel_ , rhoHandle );
-    
-   if( pfmetlabel_.size() > 0 ) { iEvent.getByLabel( pfmetlabel_[0],  pfMETHandle ); }
+   iEvent.getByLabel( metlabel_[0],  METHandle );
+   iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
    
    EvtInfo.RunNo    = iEvent.id().run();
    EvtInfo.EvtNo    = iEvent.id().event();
@@ -67,25 +65,16 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    
    //-------------------------------  Getting beam spot  -------------------------------
    if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
-   if( offlineBSlabel_.size() > 0 ) {
-      iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
-      if ( beamSpotHandle.isValid() ) {
-         beamSpot = *beamSpotHandle.product();
-         EvtInfo.BeamSpotX = beamSpot.position().x();
-         EvtInfo.BeamSpotY = beamSpot.position().y();
-         EvtInfo.BeamSpotZ = beamSpot.position().z();
-      } else {
-         edm::LogInfo( "MyAnalyzer" )
-               << "No beam spot available from EventSetup \n";
-      }
+   if ( beamSpotHandle.isValid() ) {
+      beamSpot = *beamSpotHandle.product();
+      EvtInfo.BeamSpotX = beamSpot.position().x();
+      EvtInfo.BeamSpotY = beamSpot.position().y();
+      EvtInfo.BeamSpotZ = beamSpot.position().z();
+   } else {
+      edm::LogInfo( "MyAnalyzer" )
+            << "No beam spot available from EventSetup \n";
    }
 
-   if( !TurnOffInCMSSW73x ){
-   for( unsigned int ri_ = 0; ri_ < 2; ri_++ ) {
-      if( rhoH[ri_].isValid() ) { EvtInfo.RhoPU[ri_] = *( rhoH[ri_].product() ); }
-      if( sigmaHandle[ri_].isValid() ) { EvtInfo.SigmaPU[ri_] = *( sigmaHandle[ri_].product() ); }
-   }
-   }
 
    int mclep_count[2] = {0, 0};
    if ( EvtInfo.McWMode[0] == 1 || EvtInfo.McWMode[0] == 2 ) { mclep_count[1]++; }
@@ -108,36 +97,35 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
 
 
 
-   if( pfMETHandle.isValid() ) {
-      if( debug_ > 15 ) { cout << "Get pfMET info\n"; }
-      for( it_pfmet = pfMETHandle->begin(); it_pfmet != pfMETHandle->end(); it_pfmet++ ) {
-         EvtInfo.PFMET              = it_pfmet->pt()             ;
-         EvtInfo.PFMETPhi           = it_pfmet->phi()            ;
-         EvtInfo.PFRawMET           = it_pfmet->uncorrectedPt()  ;
-         EvtInfo.PFRawMETPhi        = it_pfmet->uncorrectedPhi() ;
-         EvtInfo.PFMETx             = it_pfmet->px()             ; //Uly 2011-04-04
-         EvtInfo.PFMETy             = it_pfmet->py()             ; //Uly 2011-04-04
-         EvtInfo.PFSumEt            = it_pfmet->sumEt()          ;
-         EvtInfo.PFMETSig           = it_pfmet->mEtSig()         ; //MET Significance = MET / std::sqrt(SumET)
-         EvtInfo.PFMETRealSig       = it_pfmet->significance()   ; //real MET significance
-         EvtInfo.PFMETlongitudinal  = it_pfmet->e_longitudinal() ; //longitudinal component of the vector sum of energy over all object
-         const reco::GenMET* genmet = it_pfmet->genMET()         ;
-         if ( !skipGenInfo_ && genmet != NULL ) {
-            EvtInfo.PFGenMET        = genmet->pt();
-            EvtInfo.PFGenMETPhi     = genmet->phi();
-         }
+   if( debug_ > 15 ) { cout << "Get pfMET info\n"; }
+   for( it_met = METHandle->begin(); it_met != METHandle->end(); it_met++ ) {
+      EvtInfo.PFMET              = it_met->pt()             ;
+      EvtInfo.PFMETPhi           = it_met->phi()            ;
+      EvtInfo.PFRawMET           = it_met->uncorrectedPt()  ;
+      EvtInfo.PFRawMETPhi        = it_met->uncorrectedPhi() ;
+      EvtInfo.PFMETx             = it_met->px()             ; //Uly 2011-04-04
+      EvtInfo.PFMETy             = it_met->py()             ; //Uly 2011-04-04
+      EvtInfo.PFSumEt            = it_met->sumEt()          ;
+      EvtInfo.PFMETSig           = it_met->mEtSig()         ; //MET Significance = MET / std::sqrt(SumET)
+      EvtInfo.PFMETRealSig       = it_met->significance()   ; //real MET significance
+      EvtInfo.PFMETlongitudinal  = it_met->e_longitudinal() ; //longitudinal component of the vector sum of energy over all object
+      const reco::GenMET* genmet = it_met->genMET()         ;
+      if ( !skipGenInfo_ && genmet != NULL ) {
+         EvtInfo.PFGenMET        = genmet->pt();
+         EvtInfo.PFGenMETPhi     = genmet->phi();
       }
    }
+   
    //--------------------------  MET correction information  --------------------------- 
    iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus );
    if( pfMETHandle_TempPlus.isValid() ){
-      for( it_pfmet = pfMETHandle_TempPlus->begin(); it_pfmet != pfMETHandle_TempPlus->end(); it_pfmet++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_pfmet->pt(); }
+      for( it_met = pfMETHandle_TempPlus->begin(); it_met != pfMETHandle_TempPlus->end(); it_met++ ) {
+         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_met->pt(); }
    }
    iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  pfMETHandle_TempDown );
    if( pfMETHandle_TempDown.isValid() ){
-      for( it_pfmet = pfMETHandle_TempDown->begin() ; it_pfmet != pfMETHandle_TempDown->end(); it_pfmet++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_pfmet->pt(); }
+      for( it_met = pfMETHandle_TempDown->begin() ; it_met != pfMETHandle_TempDown->end(); it_met++ ) {
+         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_met->pt(); }
    }
 
    //----------------------------  Generation information  -----------------------------
@@ -201,44 +189,11 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       if ( ! tw.empty() ) {
          // loop over dec. bit to get total rate (no overlap)
          for ( int i = 0; i < 64; ++i ) {
-            //  if(tw[i]!=0 && debug) cout << i << "  " << tw[i] << ": ";
             EvtInfo.TT[i] = tw[i];
          }
       }
    }
 
-   //------------------------------------------------------------------------------ 
-   //   TODO Under construction
-   //------------------------------------------------------------------------------ 
-   if( !TurnOffInCMSSW73x ){
-   for( unsigned int ri_ = 0; ri_ < 2; ri_++ ) {
-      if( rhoH[ri_].isValid() ) { EvtInfo.RhoPU[ri_] = *( rhoH[ri_].product() ); }
-      if( sigmaHandle[ri_].isValid() ) { EvtInfo.SigmaPU[ri_] = *( sigmaHandle[ri_].product() ); }
-   }
-   }
-   
-   //   if(METHandle.isValid()) {
-   //     if(debug_>15) cout << "Get MET info\n";
-   //     for( std::vector<pat::MET>::const_iterator it_met = METHandle->begin();
-   //    it_met != METHandle->end(); it_met++ ) {
-   //       EvtInfo.MET        = it_met->pt();
-   //       EvtInfo.METPhi        = it_met->phi();
-   //       EvtInfo.RawMET        = it_met->uncorrectedPt();
-   //       EvtInfo.RawMETPhi     = it_met->uncorrectedPhi();
-   //       EvtInfo.SumEt         = it_met->sumEt();
-   //       EvtInfo.METSig        = it_met->mEtSig();
-   //       EvtInfo.eLong         = it_met->e_longitudinal();
-   //       EvtInfo.MaxHadTower   = it_met->maxEtInHadTowers();
-   //       EvtInfo.MaxEmTower    = it_met->maxEtInEmTowers();
-   //       EvtInfo.FracHad       = it_met->etFractionHadronic();
-   //       EvtInfo.FracEm        = it_met->emEtFraction();
-   //       const reco::GenMET * genmet = it_met->genMET();
-   //       if (genmet!=NULL) {
-   //         EvtInfo.GenMET        = genmet->pt();
-   //         EvtInfo.GenMETPhi     = genmet->phi();
-   //       }
-   //     }
-   //   }
    //by Dmitry Hits for filtering the real data
    //*******************************************************************
    //Add the number of tracks and fraction of high purity tracks in the track collection to the EvtInfo
@@ -253,18 +208,16 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    //For details see CMS IN-2008/017
    //Currently, if the number of tracks > 10,
    //then 25% of HighPurity tracks have to be present in the event for it to be called good event
-   int numhighpurity = 0;
-   if( !TurnOffInCMSSW73x ){
-   if( TrackHandle.isValid() && !TrackHandle.failedToGet() && TrackHandle->size() > 0 ) {
-      reco::TrackBase::TrackQuality _trackQuality = reco::TrackBase::qualityByName( "highPurity" );
-      edm::View<reco::Track>::const_iterator itk = tracks.begin();
-      edm::View<reco::Track>::const_iterator itk_e = tracks.end();
-      for( ; itk != itk_e; ++itk ) {
-         if( itk->quality( _trackQuality ) ) { numhighpurity++; }
-      }
-      EvtInfo.NofTracks = TrackHandle->size();
-      EvtInfo.HighPurityFraction = ( float )numhighpurity / ( float )TrackHandle->size();
-   }
-   }
+   // int numhighpurity = 0;
+   // if( TrackHandle.isValid() && !TrackHandle.failedToGet() && TrackHandle->size() > 0 ) {
+   //    reco::TrackBase::TrackQuality _trackQuality = reco::TrackBase::qualityByName( "highPurity" );
+   //    edm::View<reco::Track>::const_iterator itk = tracks.begin();
+   //    edm::View<reco::Track>::const_iterator itk_e = tracks.end();
+   //    for( ; itk != itk_e; ++itk ) {
+   //       if( itk->quality( _trackQuality ) ) { numhighpurity++; }
+   //    }
+   //    EvtInfo.NofTracks = TrackHandle->size();
+   //    EvtInfo.HighPurityFraction = ( float )numhighpurity / ( float )TrackHandle->size();
+   // }
    return true;
 }

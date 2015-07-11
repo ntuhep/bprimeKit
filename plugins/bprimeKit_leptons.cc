@@ -24,7 +24,6 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
 	 string NonLabel;
 
    //--------------------------  Setting up helper variables  --------------------------
-   //cout << "Getting lepton Handlers" << endl;
    NonLabel = "";
    for( unsigned il = 0; il < taulabel_.size(); il++ ) {
       if( NonLabel.compare( taulabel_[il].label() ) == 0 ) { continue; }
@@ -32,10 +31,6 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
       iEvent.getByLabel( taulabel_[il], TauHandle[il] );
       if( debug_ > 10 ) { cout << "leps " << il << " taulabel " << taulabel_[il] << " with " << TauHandle[il]->size() << " entries\n"; }
    }
-   iEvent.getByLabel( "reducedEgamma", "reducedGedGsfElectronCores", els_h ); //  for CMSSW73x 
-   iEvent.getByLabel( conversionsInputTag_, conversions_h );
-   if( !TurnOffInCMSSW73x )
-      if( tracklabel_.size() > 0 ) { iEvent.getByLabel( tracklabel_[0], tracks_h ); }            //Add by Jacky
    if( dcslabel_.size() > 0 ) { iEvent.getByLabel( dcslabel_[0], dcsHandle ); }            //refer to ElectroWeakAnalysis/MultiBosons/VgAnalyzerKit.cc (Jacky)
    
    
@@ -57,10 +52,7 @@ bool bprimeKit::fillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
    }
    }
 
-   //------------------------  Setting up isolation parameters  ------------------------
-   iEvent.getByLabel( conversionsInputTag_, conversions_h );
    
-   //-------------------------  Begin looping over collection  -------------------------
    for( size_t icoll = 0; icoll < lepcollections_.size(); icoll++ ) { 
       if( icoll >= MAX_LEPCOLLECTIONS ) { break; }
       if( debug_ > 5 ) { cout << "Fill lepton info, collection " << icoll << " with name " << lepcollections_[icoll] << endl; }

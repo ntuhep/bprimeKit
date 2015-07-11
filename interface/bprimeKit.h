@@ -66,7 +66,7 @@ typedef edm::View<reco::GsfElectron>   GsfList             ;
 typedef edm::Handle<GsfList>           GsfHandler          ;
 typedef GsfList::const_iterator        GsfIterator         ;
 
-typedef std::vector<pat::Muon>         MuonList;
+typedef edm::View<pat::Muon>           MuonList;
 typedef edm::Handle<MuonList>          MuonHandler;
 typedef std::vector<MuonHandler>       MuonHandlerList;
 typedef MuonList::const_iterator       MuonIterator ;
@@ -149,18 +149,10 @@ private:
    JetInfoBranches          JetInfo   [MAX_JETCOLLECTIONS] ;
    VertexInfoBranches       VertexInfo                     ;
    PairInfoBranches         PairInfo                       ;
-   std::vector<std::string> lepcollections_                ;
    std::vector<std::string> phocollections_                ;
-   std::vector<std::string> jetcollections_                ;
    
    //-------------------------  Plugin interaction variables  --------------------------
-   std::vector<edm::InputTag>  muonlabel_           ;
-   std::vector<edm::InputTag>  eleclabel_           ;
-   std::vector<edm::InputTag>  taulabel_            ;
-   std::vector<edm::InputTag>  pholabel_            ;
-   std::vector<edm::InputTag>  jetlabel_            ;
    std::vector<edm::InputTag>  metlabel_            ;
-   std::vector<edm::InputTag>  pfmetlabel_          ;
    std::vector<edm::InputTag>  pfjetlabel_          ;
    std::vector<edm::InputTag>  genlabel_            ;
    std::vector<edm::InputTag>  hltlabel_            ;
@@ -168,39 +160,43 @@ private:
    std::vector<edm::InputTag>  offlinePVlabel_      ;
    std::vector<edm::InputTag>  offlinePVBSlabel_    ;
    std::vector<edm::InputTag>  offlineBSlabel_      ;
-   std::vector<edm::InputTag>  tracklabel_          ;
    std::vector<edm::InputTag>  dcslabel_            ;
    std::vector<edm::InputTag>  genevtlabel_         ;
    std::vector<edm::InputTag>  gtdigilabel_         ;
    std::vector<edm::InputTag>  puInfoLabel_         ;
-   edm::InputTag               conversionsInputTag_ ;
    std::vector<edm::InputTag>  isoValInputTags_     ;
 
-   //------------------------------  Jet Related tokens  -------------------------------
+   //----- Jet variable setup  ------------------------------------------------------------------------
+   std::vector<std::string> jetcollections_                ;
+   std::vector<edm::InputTag>  jetlabel_            ;
    edm::EDGetTokenT<edm::ValueMap<float>>   qgToken_;
-   //----------------------------  Photon isolation tokens  ----------------------------
-   edm::EDGetTokenT<edm::ValueMap<bool> >  phoLooseIdMapToken_             ;
-   edm::EDGetTokenT<edm::ValueMap<bool> >  phoMediumIdMapToken_            ;
-   edm::EDGetTokenT<edm::ValueMap<bool> >  phoTightIdMapToken_             ;
-   edm::EDGetTokenT<edm::ValueMap<float> > phoMVAValuesMapToken_           ;
-   edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_       ;
-   edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_ ;
-   edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_        ;
-   edm::EDGetTokenT<edm::ValueMap<float> > phoWorstChargedIsolationToken_  ;
+   
+   //----- Photon variable setup  ---------------------------------------------------------------------
+   std::vector<edm::InputTag>  pholabel_            ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  phoLooseIdMapToken_             ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  phoMediumIdMapToken_            ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  phoTightIdMapToken_             ;
+   edm::EDGetTokenT<edm::ValueMap<float>> phoMVAValuesMapToken_           ;
+   edm::EDGetTokenT<edm::ValueMap<float>> phoChargedIsolationToken_       ;
+   edm::EDGetTokenT<edm::ValueMap<float>> phoNeutralHadronIsolationToken_ ;
+   edm::EDGetTokenT<edm::ValueMap<float>> phoPhotonIsolationToken_        ;
+   edm::EDGetTokenT<edm::ValueMap<float>> phoWorstChargedIsolationToken_  ;
 
-   //---------------------------  Electron Isolation tokens  ---------------------------
-   edm::EDGetTokenT<edm::ValueMap<bool> >  eleVetoIdMapToken_    ;
-   edm::EDGetTokenT<edm::ValueMap<bool> >  eleLooseIdMapToken_   ;
-   edm::EDGetTokenT<edm::ValueMap<bool> >  eleMediumIdMapToken_  ;
-   edm::EDGetTokenT<edm::ValueMap<bool> >  eleTightIdMapToken_   ;
-   edm::EDGetTokenT<edm::ValueMap<bool> >  eleHEEPIdMapToken_    ;
-   edm::EDGetTokenT<edm::ValueMap<float> > eleMVAValuesMapToken_ ;
+   //----- Lepton variable setup  ---------------------------------------------------------------------
+   std::vector<std::string> lepcollections_                ;
+   std::vector<edm::InputTag>  muonlabel_           ;
+   std::vector<edm::InputTag>  eleclabel_           ;
+   std::vector<edm::InputTag>  taulabel_            ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  eleVetoIdMapToken_    ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  eleLooseIdMapToken_   ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  eleMediumIdMapToken_  ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  eleTightIdMapToken_   ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>  eleHEEPIdMapToken_    ;
+   edm::EDGetTokenT<edm::ValueMap<float>> eleMVAValuesMapToken_ ;
    
    edm::EDGetTokenT<double>               rhoLabel_;
    //----------------  Information type independent helper variables  -----------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
-   edm::Handle<edm::View<reco::Track> >         TrackHandle; //Dmitry
-   std::vector<edm::Handle<double> >            sigmaHandle;
    TauHandlerList       TauHandle;
    TrackHandler         tracks_h       ; // Jacky
    GsfElectronHandle    els_h          ;

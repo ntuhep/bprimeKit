@@ -28,36 +28,37 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
    if( debug_ > 10 ) { 
       cout << " Muon collection size " << muonHandle->size() << endl; 
    }
-   for( MuonIterator it_mu = muonHandle->begin(); it_mu != muonHandle->end(); it_mu++ ) {
+   for( MuonIterator it_mu = muonHandle->begin(); it_mu != muonHandle->end(); ++it_mu ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;//exit(0);
       }
       if( debug_ > 11 ) { 
          cout << "  Size " << LepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl;
-      }   
-      //cout <<">>> Muon >>> Getting generic information" << endl; 
-      LepInfo[icoll].Index      [LepInfo[icoll].Size] = LepInfo[icoll].Size;
-      LepInfo[icoll].LeptonType [LepInfo[icoll].Size] = 13;
-      LepInfo[icoll].Charge     [LepInfo[icoll].Size] = it_mu->charge();
-      LepInfo[icoll].Pt         [LepInfo[icoll].Size] = it_mu->pt();
-      LepInfo[icoll].Eta        [LepInfo[icoll].Size] = it_mu->eta();
-      LepInfo[icoll].Phi        [LepInfo[icoll].Size] = it_mu->phi();
-      LepInfo[icoll].TrackIso   [LepInfo[icoll].Size] = it_mu->trackIso();
-      LepInfo[icoll].EcalIso    [LepInfo[icoll].Size] = it_mu->ecalIso();
-      LepInfo[icoll].HcalIso    [LepInfo[icoll].Size] = it_mu->hcalIso();
-      LepInfo[icoll].Px         [LepInfo[icoll].Size] = it_mu->px(); //Uly 2011-04-04
-      LepInfo[icoll].Py         [LepInfo[icoll].Size] = it_mu->py(); //Uly 2011-04-04
-      LepInfo[icoll].Pz         [LepInfo[icoll].Size] = it_mu->pz(); //Uly 2011-04-04
-      LepInfo[icoll].Energy     [LepInfo[icoll].Size] = it_mu->energy(); //Uly 2011-04-04
+      } 
+      LepInfo[icoll].Index      [LepInfo[icoll].Size] = 0 ;
+      LepInfo[icoll].LeptonType [LepInfo[icoll].Size] = 13                  ;
+      cout << "Geting 1 " << endl;
+      LepInfo[icoll].Charge     [LepInfo[icoll].Size] = it_mu->charge()     ;
+      LepInfo[icoll].Pt         [LepInfo[icoll].Size] = it_mu->pt()         ;
+      LepInfo[icoll].Eta        [LepInfo[icoll].Size] = it_mu->eta()        ;
+      LepInfo[icoll].Phi        [LepInfo[icoll].Size] = it_mu->phi()        ;
+      LepInfo[icoll].Px         [LepInfo[icoll].Size] = it_mu->px()         ; //Uly 2011-04-04
+      LepInfo[icoll].Py         [LepInfo[icoll].Size] = it_mu->py()         ; //Uly 2011-04-04
+      LepInfo[icoll].Pz         [LepInfo[icoll].Size] = it_mu->pz()         ; //Uly 2011-04-04
+      LepInfo[icoll].Energy     [LepInfo[icoll].Size] = it_mu->energy()     ; //Uly 2011-04-04
+      cout << "Geting 1 " << endl;
+      LepInfo[icoll].TrackIso   [LepInfo[icoll].Size] = it_mu->trackIso()   ;
+      LepInfo[icoll].EcalIso    [LepInfo[icoll].Size] = it_mu->ecalIso()    ;
+      LepInfo[icoll].HcalIso    [LepInfo[icoll].Size] = it_mu->hcalIso()    ;
 
       // For Soft Muon selection (https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Soft_Muon)
-      if( muon::isGoodMuon( *it_mu, muon::TMOneStationTight ) ) {
-         LepInfo[icoll].isGoodMuonTMOneStationTight    [LepInfo[icoll].Size] = true;
-      } else {
-         LepInfo[icoll].isGoodMuonTMOneStationTight    [LepInfo[icoll].Size] = false;
-      }
-
+      // if( debug_ > 10 ) 
+      { cout << ">>> Getting muon is good" << endl ; }
+      LepInfo[icoll].isGoodMuonTMOneStationTight    [LepInfo[icoll].Size] = muon::isGoodMuon( *it_mu , muon::TMOneStationTight ) ; 
+     
+      //if( debug_ > 10 )i
+      { cout << ">>> Setting muon IP variables" << endl ; }
       // Initialize these three variables in case the muon has no track.
       LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size]             = -10000;
       LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size]          = -10000;
@@ -76,7 +77,10 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
         Effective area :
                 http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h?revision=1.7&view=markup
          */
+
+      if( debug_ > 10 ) { cout << ">> Finish collecting generic info" << endl; }
       if ( it_mu->isPFMuon() && it_mu->isPFIsolationValid() ) {
+         if( debug_ > 10 ) { cout << "   >>> Getting Muon isolation information" <<endl ;}
          LepInfo[icoll].ChargedHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumChargedHadronPt;
          LepInfo[icoll].NeutralHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumNeutralHadronEt;
          LepInfo[icoll].PhotonIsoR03         [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumPhotonEt;
@@ -100,7 +104,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
 
       // Timing information for distinguishing cosmic ray and prompt muon
       if( it_mu->isTimeValid() ) {
-         // cout <<">>> Muon >>> Getting muon type " << endl;
+         if( debug_ > 10 ) { cout << "   >>> Getting Muon cosmic information" <<endl ;}
          // number of muon stations used
          LepInfo[icoll].MuontimenDof             [LepInfo[icoll].Size] = it_mu->time().nDof;
          // time of arrival at the IP for the Beta=1 hypothesis
@@ -111,11 +115,8 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          // enum Direction { OutsideIn = -1, Undefined = 0, InsideOut = 1 };
          LepInfo[icoll].Muondirection            [LepInfo[icoll].Size] = it_mu->time().direction();
       }
-
-      //cout <<">>> Muon >>> Getting type information" << endl;
       reco::MuonEnergy muEnergy = it_mu->calEnergy();
       LepInfo[icoll].CaloEnergy [LepInfo[icoll].Size] = muEnergy.em + muEnergy.had + muEnergy.ho;
-
       LepInfo[icoll].MuIDGlobalMuonPromptTight         [LepInfo[icoll].Size] = it_mu->muonID( "GlobalMuonPromptTight" );
 
       // InnerTrack() is only valid for GlobalMuon and TrackerMuon
@@ -137,6 +138,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          LepInfo[icoll].MuNPixelLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().pixelLayersWithMeasurement(); //Uly 2011-04-04
          LepInfo[icoll].MuNTrackLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
 
+         if( debug_ > 10 ) {cout << "   >>> Getting muon impact parameter info" << endl ; }
          const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
          reco::Vertex thevtx = pvCol->at( 0 );
          const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
@@ -166,6 +168,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
       LepInfo[icoll].MuType[LepInfo[icoll].Size] = it_mu->type();
 
       if ( !isData && !skipGenInfo_ ) {
+         if( debug_ > 10 ) {cout << "   >>> Getting Muon generation information" << endl ; }
          const reco::GenParticle* gen = it_mu->genLepton();
          if ( gen != NULL ) {
             LepInfo[icoll].GenPt    [LepInfo[icoll].Size] = gen->pt();
