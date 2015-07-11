@@ -17,6 +17,7 @@
 #include "EgammaAnalysis/ElectronTools/interface/EGammaCutBasedEleId.h"
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "TrackingTools/IPTools/interface/IPTools.h"
 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
@@ -28,7 +29,12 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    edm::Handle<edm::ValueMap<bool>>  tight_id_decisions;
    edm::Handle<edm::ValueMap<bool>>  heep_id_decisions;
    edm::Handle<edm::ValueMap<float>> eleMVAValues;
+   ConversionFinder convFinder;
+   ConversionInfo convInfo;
 
+   ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
+   if( isData ) { EATarget = ElectronEffectiveArea::kEleEAData2012; }
+   
    iEvent.getByLabel( eleclabel_[icoll], elecHandle );
    iEvent.getByLabel( eleclabel_[icoll], gsfElecHandle ) ;
    //----------------------  Setting up electron ID information  -----------------------
@@ -128,6 +134,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth2TowerSumEtBc();
          LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth1TowerSumEtBc();
          LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
+         LepInfo[icoll].ElhasConv  [LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
                
          // cuts to match tight trigger requirements
          bool trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
@@ -137,7 +144,12 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          bool trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, *el );
          LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
                
-         LepInfo[icoll].ElhasConv  [LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
+               
+         double rhoPrime = max( (double)(EvtInfo.Rho), 0.0 ); 
+         float AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea( 
+               ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
+         LepInfo[icoll].IsoRhoCorrR03[LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
+            max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03, 0.0 );
       }
      
       //---------------------------  MC Generation information  ---------------------------
@@ -167,19 +179,9 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //   Debugging
       //------------------------------------------------------------------------------ 
       
-      if( !TurnOffInCMSSW73x )
-         if( tracks_h.isValid() && it_el->closestCtfTrackRef().isNonnull() ) //tracks_h may not be exactly right, but should work?
-         { LepInfo[icoll].ChargeCtf       [LepInfo[icoll].Size] = it_el->closestCtfTrackRef()->charge(); }
-
-      //-------------------------  Getting isolation information  -------------------------
       if( getElectronID_ ) {
          if( !TurnOffInCMSSW73x ){
-//            size_t nGsfEle = 0 ;
             /*
-            for( GsfIterator gsfEle=els_h->begin() ; gsfEle != els_h->end(); ++gsfEle , ++nGsfEle ){
-               if ( gsfEle->gsfTrack()->pt() != it_el->gsfTrack()->pt() ) { continue ; }
-               reco::GsfElectronRef ele( els_h, nGsfEle );
-               const GsfElectronCollection theEGamma = *( els_h.product() );
                // MVA-ID  -- start
                Vertex dummy;
                if( TurnOffInCMSSW73x ) {
@@ -196,43 +198,14 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
                   dummy = Vertex( p, e, 0, 0, 0 );
                }
 
-               //bool debugMVAclass = false;
-               if ( TurnOnInCMSSW_7_4_1 ) {
-               //   float myMVANonTrigMethod =
-               //      myMVANonTrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
                //   float myMVATrigMethod =
                //      myMVATrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
-               //   LepInfo[icoll].EgammaMVANonTrig   [LepInfo[icoll].Size] = myMVANonTrigMethod;
                //   LepInfo[icoll].EgammaMVATrig      [LepInfo[icoll].Size] = myMVATrigMethod;
                }
-               // MVA-ID  -- end
-
-               // alternative way to access to PF iso
-               unsigned int ivtx = 0;
-
-               }
 
 
-               ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
-               if( isData ) { EATarget = ElectronEffectiveArea::kEleEAData2012; }
-
-               LepInfo[icoll].ChargedHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationCharged();
-               LepInfo[icoll].NeutralHadronIsoR03       [LepInfo[icoll].Size] = isolatorR03.getIsolationNeutral();
-               LepInfo[icoll].PhotonIsoR03              [LepInfo[icoll].Size] = isolatorR03.getIsolationPhoton();
                LepInfo[icoll].sumPUPtR03                [LepInfo[icoll].Size] = isolatorR03.getIsolationChargedAll();
-               float AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
-               double rhoPrime = 0.;
-               if( !TurnOffInCMSSW73x )
-               rhoPrime = max( ( double ) * ( rhoH[0].product() ), 0.0 ); 
-               
-               LepInfo[icoll].IsoRhoCorrR03             [LepInfo[icoll].Size] =
-                  LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
-                  max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size]
-                       + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03, 0.0 );
 
-               LepInfo[icoll].ChargedHadronIsoR04       [LepInfo[icoll].Size] = isolatorR04.getIsolationCharged();
-               LepInfo[icoll].NeutralHadronIsoR04       [LepInfo[icoll].Size] = isolatorR04.getIsolationNeutral();
-               LepInfo[icoll].PhotonIsoR04              [LepInfo[icoll].Size] = isolatorR04.getIsolationPhoton();
                LepInfo[icoll].sumPUPtR04                [LepInfo[icoll].Size] = isolatorR04.getIsolationChargedAll();
 
                float AEffR04 = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso04, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
@@ -244,39 +217,28 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             }*/
          }
       }
+      
+      //----- Impact parameter related  ------------------------------------------------------------------
       // Reference from UserCode/MitProd/TreeFiller/src/FillerElectrons.cc
-      if( TurnOnInCMSSW_7_4_1 ) {
-      //   const reco::TransientTrack& tt = transientTrackBuilder->build( it_el->gsfTrack() );
-      //   reco::Vertex thevtx = pvCol->at( 0 );
-      //   const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
-      //   const double gsfsign   = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
-      //   //std::cout<<"Electron Ip3dPVSignificance : "<<gsfsign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
-      //   LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value();
-      //   LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
-      //   LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
-      }
+      const reco::TransientTrack& tt = transientTrackBuilder->build( it_el->gsfTrack() );
+      reco::Vertex thevtx = pvCol->at( 0 );
+      const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
+      const double gsfsign   = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
+      LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value();
+      LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
+      LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
 
 
       //Conversion rejection (Add by Jacky)
-      ConversionFinder convFinder;
 
-      // Conversion rejection (Version2).
-      if( tracks_h.isValid() ) { // turn off on CMSSW73X
-         if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
-         ConversionInfo convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
-         LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = convInfo.dist();
-         LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = convInfo.dcot();
-         LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = convInfo.radiusOfConversion();
-         LepInfo[icoll].ElConvPoint_x [LepInfo[icoll].Size] = convInfo.pointOfConversion().x();
-         LepInfo[icoll].ElConvPoint_y [LepInfo[icoll].Size] = convInfo.pointOfConversion().y();
-         LepInfo[icoll].ElConvPoint_z [LepInfo[icoll].Size] = convInfo.pointOfConversion().z();
-      }
-
-      //   static bool hasMatchedConversion(const reco::GsfElectron &ele,
-      //       const edm::Handle<reco::ConversionCollection> &convCol, const math::XYZPoint &beamspot,
-      //       bool allowCkfMatch=true, float lxyMin=2.0, float probMin=1e-6, uint nHitsBeforeVtxMax=0);
-      //LepInfo[icoll].ElhasConv[LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion(*it_el, conversions_h, beamSpot.position());
-      //   float mHits = it_el->gsfTrack()->trackerExpectedHitsInner().numberOfHits();
+      // if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
+      // convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
+      // LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = convInfo.dist();
+      // LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = convInfo.dcot();
+      // LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = convInfo.radiusOfConversion();
+      // LepInfo[icoll].ElConvPoint_x [LepInfo[icoll].Size] = convInfo.pointOfConversion().x();
+      // LepInfo[icoll].ElConvPoint_y [LepInfo[icoll].Size] = convInfo.pointOfConversion().y();
+      // LepInfo[icoll].ElConvPoint_z [LepInfo[icoll].Size] = convInfo.pointOfConversion().z();
 
       LepInfo[icoll].CandRef[LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_el );
       LepInfo[icoll].Size++;

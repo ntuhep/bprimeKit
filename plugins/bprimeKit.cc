@@ -199,7 +199,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if(!isData && genlabel_.size() > 0 ) iEvent.getByLabel( genlabel_[0], GenHandle);
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
    if( offlinePVBSlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS ); } //Offline primary vertices with Beam Spot constraint //Dmitry
-
+   pvCol = VertexHandle.product();
    // All PF Candidate for alternate isolation
    // edm::Handle<reco::PFCandidateCollection> pfCandidatesH;
    // if( !TurnOffInCMSSW73x )
@@ -213,18 +213,21 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    //const  PackedCandidateCollection thePfColl = pfCandidatesH;
 
 
-   // update for CMSSW_7_2_0
-   // reference to (https://cmssdt.cern.ch/SDT/lxr/source//EgammaAnalysis/ElectronTools/plugins/ElectronIdMVAProducer.cc)
-   //EcalClusterLazyTools lazyTools( iEvent, iSetup, reducedEBRecHitCollectionToken_, reducedEERecHitCollectionToken_ );
 
    edm::ESHandle<TransientTrackBuilder> builder;
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
    TransientTrackBuilder thebuilder = *( builder.product() );
    transientTrackBuilder = builder.product();
 
-   //  iEvent.getByLabel("electronGsfTracks",      gsfTrackHandle);  //get gsftracks (Dmitry)
-   //  const edm::View<reco::GsfTrack> & gsfTracks = *gsfTrackHandle;
 
+   //------------------------------------------------------------------------------ 
+   //   Generation and Event information
+   //------------------------------------------------------------------------------  
+   if( debug_ > 5 ) { cout << "\tFill Gen and Event Info.\n"; }
+   memset( &GenInfo, 0x00, sizeof( GenInfo ) );
+   memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );
+   fillGenInfo( iEvent , iSetup );
+   fillEvent  ( iEvent , iSetup );
 
    // Start to fill the main root branches
    //------------------------------------------------------------------------------ 
@@ -255,14 +258,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    fillJetPair( iEvent, iSetup ) ;
 #endif
 
-   //------------------------------------------------------------------------------ 
-   //   Generation and Event information
-   //------------------------------------------------------------------------------  
-   if( debug_ > 5 ) { cout << "\tFill Gen and Event Info.\n"; }
-   memset( &GenInfo, 0x00, sizeof( GenInfo ) );
-   memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );
-   fillGenInfo( iEvent , iSetup );
-   fillEvent  ( iEvent , iSetup );
    
    //------------------------------------------------------------------------------ 
    //   Processing debugging messages and file writing

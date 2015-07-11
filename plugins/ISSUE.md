@@ -3,25 +3,25 @@
 ## Event information
 
    - Isolation information
-      - [ ] float RhoPU: Recipe found, but is it used?
+      - [X] float RhoPU: Recipe found, but is it used?
       - [X] float Rho: replaced RhoPU with since RHO value.
-      - [ ] float SigmaPU: Not used any more?
+      - [X] float SigmaPU: Not used any more?
    - High level trigger information
-      - [ ] Untested
+      - [ ] Untested: Multiple errors.. format update?
 
 
 ## Lepton information
 
    - Common variable issues:
-      - [ ] Isolation information: Duplicates and inconsistance format
-      - [ ] Ip3d information: Required vertex infromation
+      - [X] Isolation information: Duplicates and inconsistance format
+      - [X] Ip3d information: Required vertex infromation
 
    - Muon information:
-      - [ ] Isolation information: For all muons
-      - [ ] Ip3d informattoin: in inner muon
+      - [X] Isolation information: For all muons
+      - [X] Ip3d informattoin: in inner muon
 
    - Electron information
-      - [ ] Isolation related: Should be replaced with pre-computed cuts?
+      - [X] Isolation related: Should be replaced with pre-computed cuts?
          - [X] float *R03
          - [ ] float *R04: Check is still exists
          - [X] float ElhcalOverEcalBc
@@ -67,12 +67,6 @@
       - [X] Added identification?
 
    - [X] Isolation information: No DR03 and DR04 distinctions anymore?
-      - [ ] float phoPFChIsoDR03
-      - [ ] float phoPFNeuIsoDR03
-      - [ ] float phoPFPhoIsoDR03
-      - [ ] float phoPFChIsoDR04
-      - [ ] float phoPFNeuIsoDR04
-      - [ ] float phoPFPhoIsoDR04
 
 ## Vertex information
   - [ ] No "offlinePrimaryVerticesWithBS" 

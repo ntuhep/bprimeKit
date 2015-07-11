@@ -21,6 +21,9 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
 {
    MuonHandler muonHandle;
    iEvent.getByLabel( muonlabel_[icoll], muonHandle );
+         
+   MuonEffectiveArea::MuonEffectiveAreaTarget EATarget = MuonEffectiveArea::kMuEAFall11MC;
+   if( isData ) { EATarget = MuonEffectiveArea::kMuEAData2012; }
 
    if( debug_ > 10 ) { 
       cout << " Muon collection size " << muonHandle->size() << endl; 
@@ -74,33 +77,25 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
                 http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h?revision=1.7&view=markup
          */
       if ( it_mu->isPFMuon() && it_mu->isPFIsolationValid() ) {
-         //cout << ">>> Muon >>> Getting isolation information" << endl;
          LepInfo[icoll].ChargedHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumChargedHadronPt;
          LepInfo[icoll].NeutralHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumNeutralHadronEt;
          LepInfo[icoll].PhotonIsoR03         [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumPhotonEt;
          LepInfo[icoll].sumPUPtR03           [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumPUPt;
-         MuonEffectiveArea::MuonEffectiveAreaTarget EATarget = MuonEffectiveArea::kMuEAFall11MC;
-         if( isData ) { EATarget = MuonEffectiveArea::kMuEAData2012; }
-         float AEffR03 = MuonEffectiveArea::GetMuonEffectiveArea( MuonEffectiveArea::kMuGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
-         double rhoPrime = 0;
 
-         if( !TurnOffInCMSSW73x ){
-         //rhoPrime = max( ( double ) * ( rhoH[1].product() ), 0.0 );
-         }
-         
-         LepInfo[icoll].IsoRhoCorrR03             [LepInfo[icoll].Size] =
-            LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
-            max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size]
-                 + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03, 0.0 );
          LepInfo[icoll].ChargedHadronIsoR04  [LepInfo[icoll].Size] = it_mu->pfIsolationR04().sumChargedHadronPt;
          LepInfo[icoll].NeutralHadronIsoR04  [LepInfo[icoll].Size] = it_mu->pfIsolationR04().sumNeutralHadronEt;
          LepInfo[icoll].PhotonIsoR04         [LepInfo[icoll].Size] = it_mu->pfIsolationR04().sumPhotonEt;
          LepInfo[icoll].sumPUPtR04           [LepInfo[icoll].Size] = it_mu->pfIsolationR04().sumPUPt;
+
+         double rhoPrime = max( (double)(EvtInfo.Rho), 0.0 );
+         
+         float AEffR03 = MuonEffectiveArea::GetMuonEffectiveArea( MuonEffectiveArea::kMuGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
+         LepInfo[icoll].IsoRhoCorrR03[LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
+            max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03, 0.0 );
+
          float AEffR04 = MuonEffectiveArea::GetMuonEffectiveArea( MuonEffectiveArea::kMuGammaAndNeutralHadronIso04, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
-         LepInfo[icoll].IsoRhoCorrR04             [LepInfo[icoll].Size] =
-            LepInfo[icoll].ChargedHadronIsoR04[LepInfo[icoll].Size] +
-            max( LepInfo[icoll].NeutralHadronIsoR04[LepInfo[icoll].Size]
-                 + LepInfo[icoll].PhotonIsoR04[LepInfo[icoll].Size] - rhoPrime * AEffR04, 0.0 );
+         LepInfo[icoll].IsoRhoCorrR04             [LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR04[LepInfo[icoll].Size] +
+            max( LepInfo[icoll].NeutralHadronIsoR04[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR04[LepInfo[icoll].Size] - rhoPrime * AEffR04, 0.0 );
       }
 
       // Timing information for distinguishing cosmic ray and prompt muon
@@ -136,26 +131,19 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          LepInfo[icoll].MuInnerTrackNHits      [LepInfo[icoll].Size] = it_mu->innerTrack()->numberOfValidHits();
          LepInfo[icoll].MuNTrackerHits         [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidTrackerHits();
          LepInfo[icoll].MuNPixelLayers         [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidPixelHits();
-         //LepInfo[icoll].MuNLostInnerHits       [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfLostHits();
          // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
          LepInfo[icoll].MuNLostInnerHits       [LepInfo[icoll].Size] = -1;
          LepInfo[icoll].vertexZ                [LepInfo[icoll].Size] = it_mu->vertex().z(); //Uly 2011-04-04
          LepInfo[icoll].MuNPixelLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().pixelLayersWithMeasurement(); //Uly 2011-04-04
          LepInfo[icoll].MuNTrackLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
 
-         //------------------------------------------------------------------------------ 
-         //   TODO Debugging 
-         //------------------------------------------------------------------------------ 
-         
          const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
          reco::Vertex thevtx = pvCol->at( 0 );
          const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
-         const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
-         //std::cout<<"Muon Ip3dPVSignificance : "<<thesign*ip3dpv.second.value()/ip3dpv.second.error() <<std::endl;
+         const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) ) >= 0 ) ? 1. : -1.;
          LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
          LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
-         LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
-         
+         LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error(); 
       }
 
       if ( it_mu->type() & 0x02 ) {
