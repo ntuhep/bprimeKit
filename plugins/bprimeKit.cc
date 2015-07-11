@@ -39,21 +39,19 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
 {
    results = TFileDirectory( fs->mkdir( "results" ) );
    metlabel_           = iConfig.getParameter<TagList>( "metlabel"           ) ; //"patMETs"
+   rhoLabel_ = consumes<double> (iConfig.getParameter<InputTag>("rhoLabel"));
    genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
    hltlabel_           = iConfig.getParameter<TagList>( "hltlabel"           ) ; // "TriggerResults::HLT"
    pathltlabel_        = iConfig.getParameter<TagList>( "pathltlabel"        ) ; // patTriggerEvent
    offlinePVlabel_     = iConfig.getParameter<TagList>( "offlinePVlabel"     ) ; //offlinePrimaryVertices
    offlinePVBSlabel_   = iConfig.getParameter<TagList>( "offlinePVBSlabel"   ) ; //offlinePrimaryVerticesWithBS
    offlineBSlabel_     = iConfig.getParameter<TagList>( "offlineBSlabel"     ) ; //offlineBeamSpot
-   dcslabel_           = iConfig.getParameter<TagList>( "dcslabel"           ) ; //scalersRawToDigi
    genevtlabel_        = iConfig.getParameter<TagList>( "genevtlabel"        ) ; //generator
    gtdigilabel_        = iConfig.getParameter<TagList>( "gtdigilabel"        ) ; //gtDigis
    puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
 
    //-----------------------  2012 Election simple-cut-based ID  ----------------------- 
-   isoValInputTags_     = iConfig.getParameter<TagList>       ( "isoValInputTags"     ) ;
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
-
 
    //---------------------------------  Settings flag  ---------------------------------
    pairColl_            = iConfig.getUntrackedParameter<int>      ( "PairCollection" , 0     ) ;
@@ -65,15 +63,15 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    debug_               = iConfig.getUntrackedParameter<int>      ( "Debug"          , 0     ) ;
    
    //----------------------------------  Jet Related  ----------------------------------
-   jetcollections_      = iConfig.getParameter<StrList>( "JetCollections" ) ; //branch names
-   jetlabel_           = iConfig.getParameter<TagList> ( "jetlabel"       ) ; // "cleanPatJets"
+   jetcollections_  = iConfig.getParameter<StrList>( "JetCollections" ) ; //branch names
+   jetlabel_        = iConfig.getParameter<TagList>( "jetlabel"       ) ; 
    qgToken_ = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
    
    //----- Lepton related information  ----------------------------------------------------------------
    lepcollections_       = iConfig.getParameter<StrList>( "LepCollections"     ) ; //branch names
-   muonlabel_            = iConfig.getParameter<TagList>( "muonlabel"          ) ; //"cleanPatMuons"
-   eleclabel_            = iConfig.getParameter<TagList>( "eleclabel"          ) ; // "cleanPatElectrons"
-   taulabel_             = iConfig.getParameter<TagList>( "taulabel"           ) ; // "selectedPatTausPFlow"
+   muonlabel_            = iConfig.getParameter<TagList>( "muonlabel"          ) ;
+   eleclabel_            = iConfig.getParameter<TagList>( "eleclabel"          ) ;
+   taulabel_             = iConfig.getParameter<TagList>( "taulabel"           ) ;
    eleVetoIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
    eleLooseIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
@@ -92,38 +90,14 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    phoNeutralHadronIsolationToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoNeutralHadronIsolation" )) ;
    phoPhotonIsolationToken_        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
    
-   rhoLabel_ = consumes<double> (iConfig.getParameter<InputTag>("rhoLabel"));
-   //-------------------------------  CMSSW_7X updates  --------------------------------
-   // update for CMSSW_7_2_0
-   reducedEBRecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEBRecHitCollection" ) );
-   reducedEERecHitCollectionToken_    = consumes<EcalRecHitCollection>( iConfig.getParameter<edm::InputTag>( "reducedEERecHitCollection" ) );
    
 
-   //----------------------------  Common variables set-up  ----------------------------
-   isolatorR03.initializeElectronIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
-   isolatorR04.initializeElectronIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
-   isolatorR03.setConeSize( 0.3 );
-   isolatorR04.setConeSize( 0.4 );
-
-   PhotonisolatorR03.initializePhotonIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
-   PhotonisolatorR04.initializePhotonIsolation( kTRUE ); //NOTE: this automatically set all the correct defaul veto values
-   PhotonisolatorR03.setConeSize( 0.3 );
-   PhotonisolatorR04.setConeSize( 0.4 );
    // NOTE: It is safer and crab-compliant to get the files locally, i.e in EgammaAnalysis/ElectronTools/data
    // (see the downloard.url file in that directory)
    // Alternatively (for tests), they can be read from AFS:
    //*
-   myMVANonTrig = new EGammaMvaEleEstimator();
-   StrList  myManualCatWeigths;
    if( EIDMVAInputTags_.size() != 12 ) { cout << "EIDMVAInputTags array size (12) is not correct" << endl; }
-   for( int ie = 0; ie < 6; ie++ ) { myManualCatWeigths.push_back( EIDMVAInputTags_[ie].c_str() ); }
 
-   bool manualCat = true;
-
-   myMVANonTrig->initialize( "BDT",
-                             EGammaMvaEleEstimator::kNonTrig,
-                             manualCat,
-                             myManualCatWeigths );
    StrList myManualCatWeigthsTrig;
    for( int ie = 0; ie < 6; ie++ ) { 
       myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
@@ -131,7 +105,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    myMVATrig = new EGammaMvaEleEstimator();
    myMVATrig->initialize( "BDT",
                           EGammaMvaEleEstimator::kTrig,
-                          manualCat,
+                          true,
                           myManualCatWeigthsTrig );
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 

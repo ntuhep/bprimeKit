@@ -29,8 +29,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    edm::Handle<edm::ValueMap<bool>>  tight_id_decisions;
    edm::Handle<edm::ValueMap<bool>>  heep_id_decisions;
    edm::Handle<edm::ValueMap<float>> eleMVAValues;
-   ConversionFinder convFinder;
-   ConversionInfo convInfo;
 
    ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
    if( isData ) { EATarget = ElectronEffectiveArea::kEleEAData2012; }
@@ -132,7 +130,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth2TowerSumEtBc();
          LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth1TowerSumEtBc();
          LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
-         LepInfo[icoll].ElhasConv  [LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
                
          // cuts to match tight trigger requirements
          bool trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
@@ -173,44 +170,9 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       }
       
 
-      //------------------------------------------------------------------------------ 
-      //   Debugging
-      //------------------------------------------------------------------------------ 
-      
       if( getElectronID_ ) {
          if( !TurnOffInCMSSW73x ){
             /*
-               // MVA-ID  -- start
-               Vertex dummy;
-               if( TurnOffInCMSSW73x ) {
-               //const Vertex* pv = &dummy;
-               }
-               if ( VertexHandle->size() != 0 ) {
-               //   pv = &*VertexHandle->begin();
-               } else { // create a dummy PV
-                  Vertex::Error e;
-                  e( 0, 0 ) = 0.0015 * 0.0015;
-                  e( 1, 1 ) = 0.0015 * 0.0015;
-                  e( 2, 2 ) = 15. * 15.;
-                  Vertex::Point p( 0, 0, 0 );
-                  dummy = Vertex( p, e, 0, 0, 0 );
-               }
-
-               //   float myMVATrigMethod =
-               //      myMVATrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
-               //   LepInfo[icoll].EgammaMVATrig      [LepInfo[icoll].Size] = myMVATrigMethod;
-               }
-
-
-               LepInfo[icoll].sumPUPtR03                [LepInfo[icoll].Size] = isolatorR03.getIsolationChargedAll();
-
-               LepInfo[icoll].sumPUPtR04                [LepInfo[icoll].Size] = isolatorR04.getIsolationChargedAll();
-
-               float AEffR04 = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso04, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
-               LepInfo[icoll].IsoRhoCorrR04             [LepInfo[icoll].Size] =
-                  LepInfo[icoll].ChargedHadronIsoR04[LepInfo[icoll].Size] +
-                  max( LepInfo[icoll].NeutralHadronIsoR04[LepInfo[icoll].Size]
-                       + LepInfo[icoll].PhotonIsoR04[LepInfo[icoll].Size] - rhoPrime * AEffR04, 0.0 );
 
             }*/
          }
@@ -229,13 +191,9 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 
       //Conversion rejection (Add by Jacky)
       if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
-      // convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
       LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = it_el->convDist();
       LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = it_el->convRadius();
       LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = it_el->convDcot();
-      // LepInfo[icoll].ElConvPoint_x [LepInfo[icoll].Size] = convInfo.pointOfConversion().x();
-      // LepInfo[icoll].ElConvPoint_y [LepInfo[icoll].Size] = convInfo.pointOfConversion().y();
-      // LepInfo[icoll].ElConvPoint_z [LepInfo[icoll].Size] = convInfo.pointOfConversion().z();
 
       LepInfo[icoll].CandRef[LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_el );
       LepInfo[icoll].Size++;
@@ -243,3 +201,37 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    return true;
 }
 
+//-------------------------------------------------------------------------------------------------- 
+//   Legacy code section
+//--------------------------------------------------------------------------------------------------
+//LepInfo[icoll].ElhasConv  [LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
+//
+// convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
+// ConversionFinder convFinder;
+// ConversionInfo convInfo;
+// LepInfo[icoll].ElConvPoint_x [LepInfo[icoll].Size] = convInfo.pointOfConversion().x();
+// LepInfo[icoll].ElConvPoint_y [LepInfo[icoll].Size] = convInfo.pointOfConversion().y();
+// LepInfo[icoll].ElConvPoint_z [LepInfo[icoll].Size] = convInfo.pointOfConversion().z();
+
+//// MVA-ID  -- start
+// Vertex dummy;
+// const Vertex* pv = &dummy;
+// if ( VertexHandle->size() != 0 ) {
+//     pv = &*VertexHandle->begin();
+// } else { // create a dummy PV
+//   Vertex::Error e;
+//   e( 0, 0 ) = 0.0015 * 0.0015;
+//   e( 1, 1 ) = 0.0015 * 0.0015;
+//   e( 2, 2 ) = 15. * 15.;
+//   Vertex::Point p( 0, 0, 0 );
+//   dummy = Vertex( p, e, 0, 0, 0 );
+//}
+//
+// float myMVATrigMethod = myMVATrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
+// LepInfo[icoll].EgammaMVATrig      [LepInfo[icoll].Size] = myMVATrigMethod;
+// LepInfo[icoll].sumPUPtR03                [LepInfo[icoll].Size] = isolatorR03.getIsolationChargedAll();
+// LepInfo[icoll].sumPUPtR04                [LepInfo[icoll].Size] = isolatorR04.getIsolationChargedAll();
+// float AEffR04 = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso04, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
+// LepInfo[icoll].IsoRhoCorrR04             [LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR04[LepInfo[icoll].Size] +
+//   max( LepInfo[icoll].NeutralHadronIsoR04[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR04[LepInfo[icoll].Size] - rhoPrime * AEffR04, 0.0 );
+//

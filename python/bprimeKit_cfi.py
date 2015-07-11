@@ -4,8 +4,8 @@ from MyAna.bprimeKit.ObjectParameters_cfi import *
 bprimeKit = cms.EDAnalyzer(
    "bprimeKit",
    MCtag                     = cms.untracked.bool(False),
-   reducedEBRecHitCollection = cms.InputTag("reducedEgamma","reducedEBRecHits"),
-   reducedEERecHitCollection = cms.InputTag("reducedEgamma","reducedEERecHits"),
+
+   
    rhoLabel                  = cms.InputTag("fixedGridRhoFastjetAll"), 
    metlabel                  = cms.VInputTag("slimmedMETs"),
 
@@ -39,22 +39,14 @@ bprimeKit = cms.EDAnalyzer(
    PairCollection            = cms.untracked.int32(1),
    genlabel                  = cms.VInputTag("prunedGenParticles"),
    hltlabel                  = cms.VInputTag("TriggerResults::HLT"),
-   pathltlabel               = cms.VInputTag("patTriggerEvent"),
    offlinePVlabel            = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
    offlinePVBSlabel          = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
    offlineBSlabel            = cms.VInputTag("offlineBeamSpot"),
    pfCands                   = cms.InputTag("packedPFCandidates"),
-   dcslabel                  = cms.VInputTag("scalersRawToDigi"),
    genevtlabel               = cms.VInputTag("generator"),
    gtdigilabel               = cms.VInputTag("gtDigis"),
    puInfoLabel               = cms.VInputTag("addPileupInfo"),
    
-   isoValInputTags = cms.VInputTag( 
-      cms.InputTag('elPFIsoValueCharged03PFIdPFIso'),
-      cms.InputTag('elPFIsoValueGamma03PFIdPFIso'  ),
-      cms.InputTag('elPFIsoValueNeutral03PFIdPFIso')
-   ),
-
    EIDMVAInputTags = cms.vstring(
       'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat1.weights.xml' ,
       'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat2.weights.xml' ,

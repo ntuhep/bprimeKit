@@ -149,22 +149,18 @@ private:
    JetInfoBranches          JetInfo   [MAX_JETCOLLECTIONS] ;
    VertexInfoBranches       VertexInfo                     ;
    PairInfoBranches         PairInfo                       ;
-   std::vector<std::string> phocollections_                ;
    
    //-------------------------  Plugin interaction variables  --------------------------
    std::vector<edm::InputTag>  metlabel_            ;
-   std::vector<edm::InputTag>  pfjetlabel_          ;
+   edm::EDGetTokenT<double>    rhoLabel_;
    std::vector<edm::InputTag>  genlabel_            ;
    std::vector<edm::InputTag>  hltlabel_            ;
-   std::vector<edm::InputTag>  pathltlabel_         ;
    std::vector<edm::InputTag>  offlinePVlabel_      ;
    std::vector<edm::InputTag>  offlinePVBSlabel_    ;
    std::vector<edm::InputTag>  offlineBSlabel_      ;
-   std::vector<edm::InputTag>  dcslabel_            ;
    std::vector<edm::InputTag>  genevtlabel_         ;
    std::vector<edm::InputTag>  gtdigilabel_         ;
    std::vector<edm::InputTag>  puInfoLabel_         ;
-   std::vector<edm::InputTag>  isoValInputTags_     ;
 
    //----- Jet variable setup  ------------------------------------------------------------------------
    std::vector<std::string> jetcollections_                ;
@@ -172,6 +168,7 @@ private:
    edm::EDGetTokenT<edm::ValueMap<float>>   qgToken_;
    
    //----- Photon variable setup  ---------------------------------------------------------------------
+   std::vector<std::string> phocollections_                ;
    std::vector<edm::InputTag>  pholabel_            ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoLooseIdMapToken_             ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoMediumIdMapToken_            ;
@@ -194,17 +191,8 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleHEEPIdMapToken_    ;
    edm::EDGetTokenT<edm::ValueMap<float>> eleMVAValuesMapToken_ ;
    
-   edm::EDGetTokenT<double>               rhoLabel_;
    //----------------  Information type independent helper variables  -----------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
-   TauHandlerList       TauHandle;
-   TrackHandler         tracks_h       ; // Jacky
-   GsfElectronHandle    els_h          ;
-   ConversionHandle     conversions_h  ;
-   DcsStatusHandle      dcsHandle      ; // Jacky
-   edm::Handle<double> rhoIso_h;
-   double rhoIso;
-   double evt_bField;
 
    //--------------------------------  Vertex related  --------------------------------- 
    double                               Signal_Vz      ;
@@ -214,23 +202,11 @@ private:
    edm::Handle<reco::BeamSpot>          beamSpotHandle ;
    edm::Handle<reco::VertexCollection>  VertexHandle   ;
    edm::Handle<reco::VertexCollection>  VertexHandleBS ; //Dmitry
-
-   std::vector<edm::Handle<double> > rhoH;
   
-   //----------------------------------  Electron ID  ----------------------------------
-   PFIsolationEstimator isolatorR03       ;
-   PFIsolationEstimator isolatorR04       ;
-   PFIsolationEstimator PhotonisolatorR03 ;
-   PFIsolationEstimator PhotonisolatorR04 ;
 
-   EGammaMvaEleEstimator* myMVANonTrig;
    EGammaMvaEleEstimator* myMVATrig;
    std::vector<std::string> EIDMVAInputTags_;
 
-   // update for CMSSW_7_2_0
-   edm::EDGetTokenT<EcalRecHitCollection> reducedEBRecHitCollectionToken_;
-   edm::EDGetTokenT<EcalRecHitCollection> reducedEERecHitCollectionToken_;
-   edm::EDGetTokenT<pat::PackedCandidateCollection> pfToken_;
    
    
    int pairColl_;//which lepton collection to use for pairs

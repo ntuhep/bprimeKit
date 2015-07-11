@@ -13,11 +13,11 @@
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll ) 
-{ 
-   if( TauHandle.size() <= icoll ) {  return false; } 
-   if( debug_ > 10 ) { cout << " Tau collection size " << TauHandle[icoll]->size() << endl; }
+{
+   TauHandler tauHandle;
+   iEvent.getByLabel( taulabel_[icoll] , tauHandle ) ; 
 
-   for( TauIterator it_tau = TauHandle[icoll]->begin(); it_tau != TauHandle[icoll]->end(); it_tau++ ) { 
+   for( TauIterator it_tau = tauHandle->begin(); it_tau != tauHandle->end(); it_tau++ ) { 
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr<< "ERROR: number of leptons exceeds the size of array." << endl;
          break;
@@ -44,8 +44,6 @@ bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       LepInfo[icoll].NeutralHadronIso  [LepInfo[icoll].Size] = it_tau->neutralHadronIso();
       LepInfo[icoll].PhotonIso         [LepInfo[icoll].Size] = it_tau->photonIso();
       LepInfo[icoll].isPFTau           [LepInfo[icoll].Size] = it_tau->isPFTau();    // YoungKyu 2012-10-16
-      //LepInfo[icoll].signalCharge         [LepInfo[icoll].Size] = it_tau->signalCharge();    // YoungKyu 2012-11-08
-      //hpsPFTau ID
 
       //------------------------------  Tau ID information  -------------------------------
       LepInfo[icoll].DiscriminationByDecayModeFinding           [LepInfo[icoll].Size] =it_tau->tauID ( "decayModeFinding"                            );
