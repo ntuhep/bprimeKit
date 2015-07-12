@@ -19,43 +19,61 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 
+
+//-------------------------------------------------------------------------------------------------- 
+//   BprimeKit electron information methods
+//-------------------------------------------------------------------------------------------------- 
 bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
-   ElectronHandler elecHandle ;
+   //-------------------------------------------------------------------------------------------------- 
+   //   Helper variables definition
+   //-------------------------------------------------------------------------------------------------- 
+   ElectronHandler elecHandle   ;
    GsfHandler      gsfElecHandle;
-   edm::Handle<edm::ValueMap<bool>>  veto_id_decisions;
-   edm::Handle<edm::ValueMap<bool>>  loose_id_decisions;
-   edm::Handle<edm::ValueMap<bool>>  medium_id_decisions;
-   edm::Handle<edm::ValueMap<bool>>  tight_id_decisions;
-   edm::Handle<edm::ValueMap<bool>>  heep_id_decisions;
-   edm::Handle<edm::ValueMap<float>> eleMVAValues;
+   edm::Handle<edm::ValueMap<bool>>  veto_id_decisions   ;
+   edm::Handle<edm::ValueMap<bool>>  loose_id_decisions  ;
+   edm::Handle<edm::ValueMap<bool>>  medium_id_decisions ;
+   edm::Handle<edm::ValueMap<bool>>  tight_id_decisions  ;
+   edm::Handle<edm::ValueMap<bool>>  heep_id_decisions   ;
+   edm::Handle<edm::ValueMap<float>> eleMVAValues        ; 
+   ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget;
 
-   ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget = ElectronEffectiveArea::kEleEAFall11MC;
-   if( isData ) { EATarget = ElectronEffectiveArea::kEleEAData2012; }
-   
-   iEvent.getByLabel( eleclabel_[icoll], elecHandle );
-   iEvent.getByLabel( eleclabel_[icoll], gsfElecHandle ) ;
-   //----------------------  Setting up electron ID information  -----------------------
+   float dist_     ,dcot_     , rhoPrime, AEffR03  ;
+   bool  trigtight , trigwp70 ;
+  
+   //-------------------------------------------------------------------------------------------------- 
+   //   Event wide variables setup
+   //-------------------------------------------------------------------------------------------------- 
+   iEvent.getByLabel( eleclabel_[icoll]     , elecHandle          ) ;
+   iEvent.getByLabel( eleclabel_[icoll]     , gsfElecHandle       ) ;
    iEvent.getByToken( eleVetoIdMapToken_    , veto_id_decisions   ) ;
    iEvent.getByToken( eleLooseIdMapToken_   , loose_id_decisions  ) ;
    iEvent.getByToken( eleMediumIdMapToken_  , medium_id_decisions ) ;
    iEvent.getByToken( eleTightIdMapToken_   , tight_id_decisions  ) ;
    iEvent.getByToken( eleHEEPIdMapToken_    , heep_id_decisions   ) ;
    iEvent.getByToken( eleMVAValuesMapToken_ , eleMVAValues        ) ;
+   
+   if( isData ) { 
+      EATarget = ElectronEffectiveArea::kEleEAData2012; }
+   else {EATarget = ElectronEffectiveArea::kEleEAFall11MC;
+   }
 
+
+   //-------------------------------------------------------------------------------------------------- 
+   //   Begin main loop
+   //-------------------------------------------------------------------------------------------------- 
    ElectronIterator it_el = elecHandle->begin();
-   for( size_t i = 0 ; i < elecHandle->size() ; ++i , ++it_el ) {//loop over electrons in collection
-      if( debug_ > 11 ) { 
-         cout << "\t>>>Size " << LepInfo[icoll].Size << " el et,eta,phi " 
-              << it_el->et() << "," << it_el->superCluster()->eta() << "," 
-              << it_el->superCluster()->phi() << endl;
-      }
+   for( size_t i = 0 ; i < elecHandle->size() ; ++i , ++it_el ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
-         break;//exit(0);
+         break;
+      }
+      if( debug_ > 11 ) { 
+         cout << "\t>>>Size " << LepInfo[icoll].Size << " el et,eta,phi " << it_el->et() << "," << it_el->superCluster()->eta() << "," 
+              << it_el->superCluster()->phi() << endl;
       }
 
-      //-------------------------  Inserting generic information  -------------------------
+      //----- Inserting generic information  -------------------------------------------------------------
       LepInfo[icoll].LeptonType                [LepInfo[icoll].Size] = 11                                                                                   ;
       LepInfo[icoll].Index                     [LepInfo[icoll].Size] = LepInfo[icoll].Size                                                                  ;
       LepInfo[icoll].isEcalDriven              [LepInfo[icoll].Size] = it_el->ecalDrivenSeed()                                                              ;
@@ -104,8 +122,8 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].vertexZ                   [LepInfo[icoll].Size] = it_el->vertex().z()                                                                  ; //Uly 2011-04-04
       
       //----- Cut based electron ID  ---------------------------------------------------------------------
-      float dist_ = ( it_el->convDist() == -9999. ? 9999 : it_el->convDist() );
-      float dcot_ = ( it_el->convDcot() == -9999. ? 9999 : it_el->convDcot() );
+      dist_ = ( it_el->convDist() == -9999. ? 9999 : it_el->convDist() );
+      dcot_ = ( it_el->convDcot() == -9999. ? 9999 : it_el->convDcot() );
       LepInfo[icoll].dcotdist[LepInfo[icoll].Size] = ( ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) > 0 ? ( 0.04 - std::max( fabs( dist_ ), fabs( dcot_ ) ) ) : 0 );
       LepInfo[icoll].ElseedEoverP[LepInfo[icoll].Size] = it_el->eSeedClusterOverP();
       LepInfo[icoll].ElHcalIso04[LepInfo[icoll].Size]  = it_el->dr04HcalTowerSumEt();
@@ -132,22 +150,20 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
                
          // cuts to match tight trigger requirements
-         bool trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
+         trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
          LepInfo[icoll].EgammaCutBasedEleIdTRIGGERTIGHT  [LepInfo[icoll].Size] = trigtight;
-
          // for 2011 WP70 trigger
-         bool trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, *el );
+         trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, *el );
          LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
                
-               
-         double rhoPrime = max( (double)(EvtInfo.Rho), 0.0 ); 
-         float AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea( 
+         rhoPrime = max( (double)(EvtInfo.Rho), 0.0 ); 
+         AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea( 
                ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
          LepInfo[icoll].IsoRhoCorrR03[LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
             max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03, 0.0 );
       }
      
-      //---------------------------  MC Generation information  ---------------------------
+      //----- Generation Monte Carlo information  --------------------------------------------------------
       if ( !isData && !skipGenInfo_ ) {
          if( debug_ > 15 ) { cout << "   Getting MC information\n"; }
          const reco::GenParticle* gen = it_el->genLepton(); 
@@ -158,7 +174,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             LepInfo[icoll].GenPdgID     [LepInfo[icoll].Size] = gen->pdgId();
             LepInfo[icoll].GenMCTag     [LepInfo[icoll].Size] = getGenMCTag( gen ) ;
          }
-
          if( debug_ > 15 ) { cout << "Get GenHandle\n"; }
          if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && GenHandle.isValid() ) {
             for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end() ; it_gen++ ) {
@@ -167,15 +182,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             }
          }
          if( debug_ > 15 ) { cout << "   Done getting MC information\n"; }
-      }
-      
-
-      if( getElectronID_ ) {
-         if( !TurnOffInCMSSW73x ){
-            /*
-
-            }*/
-         }
       }
       
       //----- Impact parameter related  ------------------------------------------------------------------
@@ -188,9 +194,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
       LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
 
-
-      //Conversion rejection (Add by Jacky)
-      if( debug_ > 15 ) { cout << "   Get conversion info\n"; }
+      //----- Conversion rejection information  ----------------------------------------------------------
       LepInfo[icoll].Eldist        [LepInfo[icoll].Size] = it_el->convDist();
       LepInfo[icoll].Elconvradius  [LepInfo[icoll].Size] = it_el->convRadius();
       LepInfo[icoll].Eldcot        [LepInfo[icoll].Size] = it_el->convDcot();

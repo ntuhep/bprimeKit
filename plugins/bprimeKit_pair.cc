@@ -48,13 +48,13 @@ bool bprimeKit::fillLepPair( const edm::Event& iEvent , const edm::EventSetup& i
       if ( !isData && !skipGenInfo_ ) { //mc
          par1 = par2 = NULL;
          if ( LepInfo[pairColl_].LeptonType[index1] == 11 ){ 
-            par1 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index1] )->genLepton(); 
-         } else if ( LepInfo[pairColl_].LeptonType[index1] == 13 ){ 
+            par1 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index1] )->genLepton(); } 
+         else if ( LepInfo[pairColl_].LeptonType[index1] == 13 ){ 
             par1 = ( ( pat::Muon*     )LepInfo[pairColl_].CandRef[index1] )->genLepton(); }
          if ( LepInfo[pairColl_].LeptonType[index2] == 11 ){ 
-            par2 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index2] )->genLepton(); 
-         } else if ( LepInfo[pairColl_].LeptonType[index2] == 13 ){ 
-            par2 = ( ( pat::Muon*     )LepInfo[pairColl_].CandRef[index2] )->genLepton(); }
+            par2 = ( ( pat::Electron* )LepInfo[pairColl_].CandRef[index2] )->genLepton(); } 
+         else if ( LepInfo[pairColl_].LeptonType[index2] == 13 ){ 
+            par2 = ( ( pat::Muon*     )LepInfo[pairColl_].CandRef[index2] )->genLepton(); } 
          fillPairGen( par1 , par2 );
       }
       PairInfo.Size++;
@@ -92,7 +92,6 @@ bool bprimeKit::fillJetPair( const edm::Event& iEvent , const edm::EventSetup& i
    }}
    return true;
 }
-
 
 bool bprimeKit::fillPairInfo( const int index1 , const int index2 , math::XYZTLorentzVector& sum )
 {

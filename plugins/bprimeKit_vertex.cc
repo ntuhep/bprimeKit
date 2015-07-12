@@ -7,20 +7,16 @@
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
-//------------------------------------------------------------------------------ 
-//   static helper variables and functions
-//------------------------------------------------------------------------------ 
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 
-
 bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    bool   gotPrimVtx;
    double PVBS_Pt_Max;
       
-   if( debug_ > 5 ) { cout << "\tFill Vertex Info.\n"; }
+   if( debug_ > 5 ) { cout << "Fill Vertex Info.\n"; }
    memset( &VertexInfo, 0x00, sizeof( VertexInfo ) );
    
    //----- Vertices without beamspot constraints  -----------------------------------------------------
@@ -47,7 +43,7 @@ bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
          VertexInfo.Pt_Sum         [ VertexInfo.Size ] = 0.                       ;
          VertexInfo.Pt_Sum2        [ VertexInfo.Size ] = 0.                       ;
 
-         for ( reco::Vertex::trackRef_iterator it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
+         for ( auto it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
             VertexInfo.Pt_Sum  [ VertexInfo.Size ] += ( *it )->pt();
             VertexInfo.Pt_Sum2 [ VertexInfo.Size ] += ( ( *it )->pt() * ( *it )->pt() );
          }
@@ -82,7 +78,7 @@ bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
          VertexInfo.Pt_Sum         [ VertexInfo.Size ] = 0.                       ;
          VertexInfo.Pt_Sum2        [ VertexInfo.Size ] = 0.                       ;
 
-         for ( reco::Vertex::trackRef_iterator it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
+         for ( auto it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
             VertexInfo.Pt_Sum  [ VertexInfo.Size ] += ( *it )->pt();
             VertexInfo.Pt_Sum2 [ VertexInfo.Size ] += ( ( *it )->pt() * ( *it )->pt() );
          }
@@ -93,6 +89,5 @@ bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
          VertexInfo.Size++;
       }
    }
-
    return true;
 }

@@ -23,20 +23,20 @@
 
 bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-	JetHandlerList     JetHandle;  //PFJets
+   //----- EDM interaction variables  -----------------------------------------------------------------
+	JetHandlerList     JetHandle;
 	JetIterator        it_jet   ;
    edm::Handle<edm::ValueMap<float>> qgHandle;
-   bool pfjetcoll  ;
-	bool calojetcoll;
-	bool fatjetcoll ;
-	bool CAjetcoll  ;
 	edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
-	bool jetID;
+   //----- Jet collection type handling  --------------------------------------------------------------
+   bool pfjetcoll  , calojetcoll, fatjetcoll , CAjetcoll  ;
+   std::string subjetName;
+	//----- Algorithm specific helper functions  -------------------------------------------------------
+   bool jetID      ;
+	char bufferJECU[32];
 	pat::strbitset ret ;
 	JetCorrectionUncertainty* jecUnc;
-	char bufferJECU[32];
 	edm::ParameterSet* PS_Jets;
-   std::string subjetName;
 
    // Turned off, see below
 	//double tracks_x    ; 
@@ -64,7 +64,6 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       memset( &JetInfo[icoll], 0x00, sizeof( JetInfo[icoll] ) );
 
       pfjetcoll   = ( jetcollections_[icoll] == "JetInfo" ) ;
-      fatjetcoll  = ( jetcollections_[icoll] == "AK8JetInfo" ) ;
       calojetcoll  = ( false ) ;
       CAjetcoll   = ( false ) ;
 
@@ -88,6 +87,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       } else if( fatjetcoll || CAjetcoll ) {
          sprintf( bufferJECU, "AK7PFchs" );
       }
+
       iSetup.get<JetCorrectionsRecord>().get( bufferJECU, JetCorParColl );
       JetCorrectorParameters const& JetCorPar = ( *JetCorParColl )["Uncertainty"];
       jecUnc = new JetCorrectionUncertainty( JetCorPar );
@@ -117,7 +117,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          JetInfo[icoll].Area          [JetInfo[icoll].Size] = it_jet->jetArea()                 ;
   
          //----- QG Tagger information  ---------------------------------------------------------------------
-         // TODO additional QG tagger information 
+         // Official documentation is updating
          if( debug_ > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
          JetInfo[icoll].QGTagsLikelihood  [JetInfo[icoll].Size] = -1;
          if( pfjetcoll ) {
@@ -126,7 +126,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             JetInfo[icoll].QGTagsLikelihood[JetInfo[icoll].Size] = (*qgHandle)[jetRef];
          }
          
-         //----------------------------  Uncertainty information  ----------------------------
+         //----- Jet Uncertainty  ---------------------------------------------------------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting Uncertainty..." << endl ;}
          jecUnc->setJetEta( it_jet->eta() );
          jecUnc->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
@@ -135,7 +135,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          }
          
 
-         //---------------------------  Particle flow information  ---------------------------
+         //----- Particle flow information  -----------------------------------------------------------------
          if( pfjetcoll ) {
             if( debug_ > 10 ) { cout << ">>Jet>> Getting Particle flow information ..." << endl ;}
             JetInfo[icoll].NCH[JetInfo[icoll].Size] = it_jet->chargedMultiplicity();
@@ -145,7 +145,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             JetInfo[icoll].CHF[JetInfo[icoll].Size] = it_jet->chargedHadronEnergyFraction();
          }
 
-         //-------------------------------  Subjet structure  --------------------------------
+         //----- Jet Substructure  --------------------------------------------------------------------------
          if( fatjetcoll ) {
             if( debug_ > 10 ) { cout << ">>Jet>> Getting Subjet information ..." << endl ;}
 
@@ -183,7 +183,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             }
          }
 
-         //----------------------------  Jet ID string insertion  ----------------------------
+         //----- Jet ID string insertions  ------------------------------------------------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting IDs ..." << endl ;}
          jetID = true;
          PS_Jets = new edm::ParameterSet ; 
@@ -209,9 +209,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          JetInfo[icoll].JetIDLOOSE[JetInfo[icoll].Size] = ( jetID ) ?  1 : 0;
 
          //----------------------------  Jet- track association  -----------------------------
-         if( debug_ > 10 ) { cout << ">>Jet>> Getting track information ..." << endl ;}
          //Turned off by Enoch Chen 2015-07-06, Fatal Error: PFJet constituent is not of PFCandidate type
-         
          //tracks_x     = 0.;
          //tracks_y     = 0.;
          //tracks_x_tot = 0.;
@@ -247,7 +245,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          //   JetInfo[icoll].JVBeta[JetInfo[icoll].Size] = -1.;
          //}
          
-         //----------------  Jet correction, b tagging and jet additional ID  ----------------
+         //----- Jet Correction Information  ----------------------------------------------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting b tags  ..." << endl ;}
          JetInfo[icoll].PtCorrRaw   [JetInfo[icoll].Size] = it_jet->correctedJet( "Uncorrected"       ).pt();
          JetInfo[icoll].PtCorrL2    [JetInfo[icoll].Size] = it_jet->correctedJet( "L2Relative"        ).pt(); // L2(rel)
@@ -272,21 +270,6 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          JetInfo[icoll].pfCombinedSecondaryVertexSoftLeptonBJetTags [JetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedSecondaryVertexSoftLeptonBJetTags"  );
          JetInfo[icoll].pfCombinedMVABJetTags                       [JetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedMVABJetTags"                       );
 
-         //
-         // DM: access double secondary vertex info
-         //
-         //edm::Handle<reco::JetTagCollection> doubleTagHandle;
-         //iEvent.getByLabel( "doubleSecondaryVertexHighEffBJetTags", doubleTagHandle);
-         //const reco::JetTagCollection & doubleTagColl = *(doubleTagHandle.product());
-         //for(reco::JetTagCollection::const_iterator it = doubleTagColl.begin() ; it!=doubleTagColl.end() ; ++it) {
-         //  TLorentzVector bjetv((it->first)->px(),(it->first)->py(),(it->first)->pz()) ;
-         //  //if ( TMath::Abs((it->first)->pt() - it_jet->pt()) < (0.1*(it->first)->pt()) && (TMath::Abs((it->first)->eta() - it_jet->eta())) < (0.1*(it->first)->eta()) ) {
-         //  if ( bjetv.DeltaR(jetv) < 0.5 ) {
-         //    JetInfo[icoll].DoubleSecondaryVertexHighEffBJetTags [JetInfo[icoll].Size] = it->second ;
-         //    break ;
-         //  }}
-         //}
-         
          //----- Generation MC Data  ------------------------------------------------------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting MC data set ..." << endl ;} 
          if ( !isData && !skipGenInfo_ ) {

@@ -21,8 +21,6 @@ int getGenMCTag( GenIterator& , MuonIterator& ) ;
 //------------------------------------------------------------------------------ 
 //   Begin implemenation
 //------------------------------------------------------------------------------ 
-
-//---------------------  MCTag from generation particle alone  ----------------------
 static const reco::Candidate* genCand ; 
 static int bprimeTag;
 static int returnTag;

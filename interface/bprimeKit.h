@@ -50,7 +50,6 @@
 //--------------------------------  Custom Classes  ---------------------------------
 #include "MyAna/bprimeKit/interface/format.h"
 #include "MyAna/bprimeKit/interface/TriggerBooking.h"
-#include "MyAna/bprimeKit/interface/objectSelector.h"
 
 
 //------------------------------------------------------------------------------ 
@@ -100,13 +99,6 @@ typedef VertexList::const_iterator VertexListCIT;
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
 #define MAX_JETCOLLECTIONS 3
-#define TurnOffInCMSSW73x true
-#define TurnOnInCMSSW_7_4_1 false
-#define W_MASS          80.403
-#define Z_MASS          91.1876
-#define MUON_MASS       0.105658
-#define ELECTRON_MASS   0.0005109989
-
 
 //------------------------------------------------------------------------------ 
 //   BprimeKit definitions 
@@ -117,14 +109,18 @@ public:
    ~bprimeKit();
 
 private:
-   //--------------------------  Methods required by plugin  ---------------------------
+   //-------------------------------------------------------------------------------------------------- 
+   //   Inheritance methods
+   //-------------------------------------------------------------------------------------------------- 
    virtual void beginJob() ;
    virtual void analyze( const edm::Event&, const edm::EventSetup& ) ;
    virtual void endJob() ;
    virtual void beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup );
    virtual void endRun( edm::Run const&, edm::EventSetup const& );
 
-   //-----------------------------  Custom helper methods  -----------------------------
+   //-------------------------------------------------------------------------------------------------- 
+   //   Helper Methods
+   //-------------------------------------------------------------------------------------------------- 
    bool fillVertex    ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillPhoton    ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillLepton    ( const edm::Event&, const edm::EventSetup& ) ;
@@ -140,7 +136,11 @@ private:
    bool fillPairInfo  ( const int , const int , math::XYZTLorentzVector& );
    bool fillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
 
-   //-------------------------  NTuple interaction variables  --------------------------
+   //-------------------------------------------------------------------------------------------------- 
+   //   Private data members
+   //-------------------------------------------------------------------------------------------------- 
+
+   //----- Ntuple interaction variables  --------------------------------------------------------------
    TTree*                   root                           ;
    EvtInfoBranches          EvtInfo                        ;
    GenInfoBranches          GenInfo                        ;
@@ -150,26 +150,30 @@ private:
    VertexInfoBranches       VertexInfo                     ;
    PairInfoBranches         PairInfo                       ;
    
-   //-------------------------  Plugin interaction variables  --------------------------
-   std::vector<edm::InputTag>  metlabel_            ;
-   edm::EDGetTokenT<double>    rhoLabel_;
-   std::vector<edm::InputTag>  genlabel_            ;
-   std::vector<edm::InputTag>  hltlabel_            ;
-   std::vector<edm::InputTag>  offlinePVlabel_      ;
-   std::vector<edm::InputTag>  offlinePVBSlabel_    ;
-   std::vector<edm::InputTag>  offlineBSlabel_      ;
+   //----- Event variable setup  ----------------------------------------------------------------------
+   std::vector<edm::InputTag>  metlabel_    ;
+   edm::EDGetTokenT<double>    rhoLabel_    ;
+   std::vector<edm::InputTag>  hltlabel_    ;
+   std::vector<edm::InputTag>  puInfoLabel_ ;
+   
+   //----- Vertex variable setup  ---------------------------------------------------------------------
+   std::vector<edm::InputTag>  offlinePVlabel_   ;
+   std::vector<edm::InputTag>  offlinePVBSlabel_ ;
+   std::vector<edm::InputTag>  offlineBSlabel_   ;
+   
+   //----- Generation variables setup  ----------------------------------------------------------------
    std::vector<edm::InputTag>  genevtlabel_         ;
+   std::vector<edm::InputTag>  genlabel_            ;
    std::vector<edm::InputTag>  gtdigilabel_         ;
-   std::vector<edm::InputTag>  puInfoLabel_         ;
 
    //----- Jet variable setup  ------------------------------------------------------------------------
-   std::vector<std::string> jetcollections_                ;
-   std::vector<edm::InputTag>  jetlabel_            ;
-   edm::EDGetTokenT<edm::ValueMap<float>>   qgToken_;
+   std::vector<std::string>                jetcollections_ ;
+   std::vector<edm::InputTag>              jetlabel_       ;
+   edm::EDGetTokenT<edm::ValueMap<float>>  qgToken_        ;
    
    //----- Photon variable setup  ---------------------------------------------------------------------
-   std::vector<std::string> phocollections_                ;
-   std::vector<edm::InputTag>  pholabel_            ;
+   std::vector<std::string>    phocollections_                            ;
+   std::vector<edm::InputTag>  pholabel_                                  ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoLooseIdMapToken_             ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoMediumIdMapToken_            ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoTightIdMapToken_             ;
@@ -180,10 +184,10 @@ private:
    edm::EDGetTokenT<edm::ValueMap<float>> phoWorstChargedIsolationToken_  ;
 
    //----- Lepton variable setup  ---------------------------------------------------------------------
-   std::vector<std::string> lepcollections_                ;
-   std::vector<edm::InputTag>  muonlabel_           ;
-   std::vector<edm::InputTag>  eleclabel_           ;
-   std::vector<edm::InputTag>  taulabel_            ;
+   std::vector<std::string>    lepcollections_                  ;
+   std::vector<edm::InputTag>  muonlabel_                       ;
+   std::vector<edm::InputTag>  eleclabel_                       ;
+   std::vector<edm::InputTag>  taulabel_                        ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleVetoIdMapToken_    ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleLooseIdMapToken_   ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleMediumIdMapToken_  ;
@@ -191,10 +195,8 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleHEEPIdMapToken_    ;
    edm::EDGetTokenT<edm::ValueMap<float>> eleMVAValuesMapToken_ ;
    
-   //----------------  Information type independent helper variables  -----------------
+   //----- Inter-branch storage requirements  ---------------------------------------------------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
-
-   //--------------------------------  Vertex related  --------------------------------- 
    double                               Signal_Vz      ;
    reco::Vertex                         PrimVtx        ;
    reco::Vertex                         PrimVtx_BS     ;
@@ -202,31 +204,25 @@ private:
    edm::Handle<reco::BeamSpot>          beamSpotHandle ;
    edm::Handle<reco::VertexCollection>  VertexHandle   ;
    edm::Handle<reco::VertexCollection>  VertexHandleBS ; //Dmitry
-  
-
-   EGammaMvaEleEstimator* myMVATrig;
-   std::vector<std::string> EIDMVAInputTags_;
-
-   
-   
-   int pairColl_;//which lepton collection to use for pairs
-   bool getElectronID_;
-   bool getPhotonID_ ;
-   bool skipGenInfo_;
-   bool includeL7_;
+   const TransientTrackBuilder*         transientTrackBuilder;
+   const reco::VertexCollection*        pvCol;
+   map<std::string,int>           HLTmaplist;
+   map<std::string,int>::iterator HLTmaplist_pr;
+   HLTConfigProvider              hltConfig_;
+ 
+   //----- Configuration flags  -----------------------------------------------------------------------
+   int  pairColl_      ;
+   bool getElectronID_ ;
+   bool getPhotonID_   ;
+   bool skipGenInfo_   ;
+   bool includeL7_     ;
+   int  debug_         ;
+   bool isData         ;
 
    edm::ParameterSet SelectionParameters_;
-
-   objectSelector* Selector_;
-
-   int debug_;
-   map < std::string, int > HLTmaplist;
-   map < std::string, int >::iterator HLTmaplist_pr;
-   HLTConfigProvider hltConfig_;
-
-   bool isData;
-   const TransientTrackBuilder* transientTrackBuilder;
-   const reco::VertexCollection* pvCol;
+   
+   EGammaMvaEleEstimator* myMVATrig;
+   std::vector<std::string> EIDMVAInputTags_;
 };
 
 #endif /* end of include guard: __BPRIMEKIT_H__ */

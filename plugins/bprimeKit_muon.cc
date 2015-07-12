@@ -31,52 +31,42 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
    for( MuonIterator it_mu = muonHandle->begin(); it_mu != muonHandle->end(); ++it_mu ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
-         break;//exit(0);
+         break;
       }
       if( debug_ > 11 ) { 
-         cout << "  Size " << LepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl;
-      }
-      cout << "Size:" << LepInfo[icoll].Size << endl;
-      LepInfo[icoll].Index      [LepInfo[icoll].Size] = 0 ;
-      LepInfo[icoll].LeptonType [LepInfo[icoll].Size] = 13                  ;
-      cout << "Geting 1 " << endl;
-      LepInfo[icoll].Charge     [LepInfo[icoll].Size] = it_mu->charge()     ;
-      LepInfo[icoll].Pt         [LepInfo[icoll].Size] = it_mu->pt()         ;
-      LepInfo[icoll].Eta        [LepInfo[icoll].Size] = it_mu->eta()        ;
-      LepInfo[icoll].Phi        [LepInfo[icoll].Size] = it_mu->phi()        ;
-      LepInfo[icoll].Px         [LepInfo[icoll].Size] = it_mu->px()         ; //Uly 2011-04-04
-      LepInfo[icoll].Py         [LepInfo[icoll].Size] = it_mu->py()         ; //Uly 2011-04-04
-      LepInfo[icoll].Pz         [LepInfo[icoll].Size] = it_mu->pz()         ; //Uly 2011-04-04
-      LepInfo[icoll].Energy     [LepInfo[icoll].Size] = it_mu->energy()     ; //Uly 2011-04-04
-      cout << "Geting 1 " << endl;
-      LepInfo[icoll].TrackIso   [LepInfo[icoll].Size] = it_mu->trackIso()   ;
-      LepInfo[icoll].EcalIso    [LepInfo[icoll].Size] = it_mu->ecalIso()    ;
-      LepInfo[icoll].HcalIso    [LepInfo[icoll].Size] = it_mu->hcalIso()    ;
+         cout << "  Size " << LepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl; }
+      
+      LepInfo[icoll].Index                     [LepInfo[icoll].Size] = LepInfo[icoll].Size              ;
+      LepInfo[icoll].LeptonType                [LepInfo[icoll].Size] = 13                               ;
+      LepInfo[icoll].Charge                    [LepInfo[icoll].Size] = it_mu->charge()                  ;
+      LepInfo[icoll].Energy                    [LepInfo[icoll].Size] = it_mu->energy()                  ;
+      LepInfo[icoll].Pt                        [LepInfo[icoll].Size] = it_mu->pt()                      ;
+      LepInfo[icoll].Eta                       [LepInfo[icoll].Size] = it_mu->eta()                     ;
+      LepInfo[icoll].Phi                       [LepInfo[icoll].Size] = it_mu->phi()                     ;
+      LepInfo[icoll].Px                        [LepInfo[icoll].Size] = it_mu->px()                      ; //Uly 2011-04-04
+      LepInfo[icoll].Py                        [LepInfo[icoll].Size] = it_mu->py()                      ; //Uly 2011-04-04
+      LepInfo[icoll].Pz                        [LepInfo[icoll].Size] = it_mu->pz()                      ; //Uly 2011-04-04
+      LepInfo[icoll].TrackIso                  [LepInfo[icoll].Size] = it_mu->trackIso()                ;
+      LepInfo[icoll].EcalIso                   [LepInfo[icoll].Size] = it_mu->ecalIso()                 ;
+      LepInfo[icoll].HcalIso                   [LepInfo[icoll].Size] = it_mu->hcalIso()                 ;
+      LepInfo[icoll].isPFMuon                  [LepInfo[icoll].Size] = it_mu->isPFMuon()                ;
+      LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_mu->chargedHadronIso()        ;
+      LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_mu->neutralHadronIso()        ;
+      LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_mu->photonIso()               ;
+      LepInfo[icoll].MuType                    [LepInfo[icoll].Size] = it_mu->type()                    ;
+      LepInfo[icoll].MuCaloCompat              [LepInfo[icoll].Size] = it_mu->caloCompatibility()       ;
+      LepInfo[icoll].MuNChambers               [LepInfo[icoll].Size] = it_mu->numberOfChambers()        ;
+      LepInfo[icoll].MuNChambersMatchesSegment [LepInfo[icoll].Size] = it_mu->numberOfMatches()         ; // At least 2 Chambers matched with segments
+      LepInfo[icoll].MuNMatchedStations        [LepInfo[icoll].Size] = it_mu->numberOfMatchedStations() ;
 
-      // For Soft Muon selection (https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Soft_Muon)
-      // if( debug_ > 10 ) 
-      { cout << ">>> Getting muon is good" << endl ; }
+      //----- Good Muon selection  -----------------------------------------------------------------------
+      // https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Soft_Muon
       LepInfo[icoll].isGoodMuonTMOneStationTight    [LepInfo[icoll].Size] = muon::isGoodMuon( *it_mu , muon::TMOneStationTight ) ; 
      
-      // Initialize these three variables in case the muon has no track.
-      LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size]             = -10000;
-      LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size]          = -10000;
-      LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = -10000;
-
-      //PFIso
-      LepInfo[icoll].isPFMuon          [LepInfo[icoll].Size] = it_mu->isPFMuon();
-      LepInfo[icoll].ChargedHadronIso  [LepInfo[icoll].Size] = it_mu->chargedHadronIso();
-      LepInfo[icoll].NeutralHadronIso  [LepInfo[icoll].Size] = it_mu->neutralHadronIso();
-      LepInfo[icoll].PhotonIso         [LepInfo[icoll].Size] = it_mu->photonIso();
-      /*
-         There are two ways to correct PFIsol by using DeltaBeta or rho correction.
-         1). DeltaBeta : I = [sumChargedHadronPt+ max(0.,sumNeutralHadronPt+sumPhotonPt-0.5sumPUPt]/pt
-         2). Rho correction in page9 of
-             https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=188494
-        Effective area :
-                http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h?revision=1.7&view=markup
-         */
-
+      //----- Muon isolation information  ----------------------------------------------------------------
+      //  1. Delta Beta     : I = [sumChargedHadronPt+ max(0.,sumNeutralHadronPt+sumPhotonPt-0.5sumPUPt]/pt
+      //  2. Rho Correction : https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=188494
+      //  Effective Area    : http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h?revision=1.7&view=markup
       if ( it_mu->isPFMuon() && it_mu->isPFIsolationValid() ) {
          LepInfo[icoll].ChargedHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumChargedHadronPt;
          LepInfo[icoll].NeutralHadronIsoR03  [LepInfo[icoll].Size] = it_mu->pfIsolationR03().sumNeutralHadronEt;
@@ -95,55 +85,60 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
             max( LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03, 0.0 );
 
          float AEffR04 = MuonEffectiveArea::GetMuonEffectiveArea( MuonEffectiveArea::kMuGammaAndNeutralHadronIso04, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
-         LepInfo[icoll].IsoRhoCorrR04             [LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR04[LepInfo[icoll].Size] +
+         LepInfo[icoll].IsoRhoCorrR04 [LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR04[LepInfo[icoll].Size] +
             max( LepInfo[icoll].NeutralHadronIsoR04[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR04[LepInfo[icoll].Size] - rhoPrime * AEffR04, 0.0 );
       }
 
-      // Timing information for distinguishing cosmic ray and prompt muon
+      //----- Cosmic ray filters  ------------------------------------------------------------------------
       if( it_mu->isTimeValid() ) {
-         // number of muon stations used
-         LepInfo[icoll].MuontimenDof             [LepInfo[icoll].Size] = it_mu->time().nDof;
-         // time of arrival at the IP for the Beta=1 hypothesis
+         //----- Number of muon stations used  --------------------------------------------------------------
+         LepInfo[icoll].MuontimenDof[LepInfo[icoll].Size] = it_mu->time().nDof;
+
+         //----- Tim arrival at the impact point for the beta=1 hypothesis  ---------------------------------
          // a) particle is moving from inside out
-         LepInfo[icoll].MuontimeAtIpInOut        [LepInfo[icoll].Size] = it_mu->time().timeAtIpInOut;
          // b) particle is moving from outside in
-         LepInfo[icoll].MuontimeAtIpOutIn        [LepInfo[icoll].Size] = it_mu->time().timeAtIpOutIn;
-         // enum Direction { OutsideIn = -1, Undefined = 0, InsideOut = 1 };
-         LepInfo[icoll].Muondirection            [LepInfo[icoll].Size] = it_mu->time().direction();
+         // Direction:  Outside In = -1, Undefined = 0, Inside Out = 1
+         LepInfo[icoll].MuontimeAtIpInOut[LepInfo[icoll].Size] = it_mu->time().timeAtIpInOut;
+         LepInfo[icoll].MuontimeAtIpOutIn[LepInfo[icoll].Size] = it_mu->time().timeAtIpOutIn;
+         LepInfo[icoll].Muondirection    [LepInfo[icoll].Size] = it_mu->time().direction();
       }
       reco::MuonEnergy muEnergy = it_mu->calEnergy();
       LepInfo[icoll].CaloEnergy [LepInfo[icoll].Size] = muEnergy.em + muEnergy.had + muEnergy.ho;
       LepInfo[icoll].MuIDGlobalMuonPromptTight         [LepInfo[icoll].Size] = it_mu->muonID( "GlobalMuonPromptTight" );
 
-      // InnerTrack() is only valid for GlobalMuon and TrackerMuon
-      // See LepInfo[icoll].MuType for it_mu->type() bits
+      //----- Track and impact parameter information  ----------------------------------------------------
+      // Only valid for global Muons and tracker Muon
+      LepInfo[icoll].Ip3dPV             [LepInfo[icoll].Size] = -10000;
+      LepInfo[icoll].Ip3dPVErr          [LepInfo[icoll].Size] = -10000;
+      LepInfo[icoll].Ip3dPVSignificance [LepInfo[icoll].Size] = -10000;
       if ( ( it_mu->type() & 0x02 ) || ( it_mu->type() & 0x04 ) ) {
-         LepInfo[icoll].innerTracknormalizedChi2 [LepInfo[icoll].Size] = it_mu->innerTrack()->normalizedChi2();
-         LepInfo[icoll].MuInnerPtError         [LepInfo[icoll].Size] = it_mu->innerTrack()->ptError();
-         LepInfo[icoll].MuInnerTrackDz         [LepInfo[icoll].Size] = it_mu->innerTrack()->dz( PrimVtx.position() );
-         LepInfo[icoll].MuInnerTrackD0         [LepInfo[icoll].Size] = it_mu->innerTrack()->d0();
-         LepInfo[icoll].MuInnerTrackDxy_BS     [LepInfo[icoll].Size] = it_mu->innerTrack()->dxy( beamSpot.position() );
-         LepInfo[icoll].MuInnerTrackDxy_PV     [LepInfo[icoll].Size] = it_mu->innerTrack()->dxy( PrimVtx.position() );
-         LepInfo[icoll].MuInnerTrackDxy_PVBS   [LepInfo[icoll].Size] = it_mu->innerTrack()->dxy( PrimVtx_BS.position() );
-         LepInfo[icoll].MuInnerTrackNHits      [LepInfo[icoll].Size] = it_mu->innerTrack()->numberOfValidHits();
-         LepInfo[icoll].MuNTrackerHits         [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidTrackerHits();
-         LepInfo[icoll].MuNPixelLayers         [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidPixelHits();
+         LepInfo[icoll].innerTracknormalizedChi2 [LepInfo[icoll].Size] = it_mu->innerTrack()->normalizedChi2()                    ;
+         LepInfo[icoll].MuInnerPtError           [LepInfo[icoll].Size] = it_mu->innerTrack()->ptError()                               ;
+         LepInfo[icoll].MuInnerTrackDz           [LepInfo[icoll].Size] = it_mu->innerTrack()->dz( PrimVtx.position() )                ;
+         LepInfo[icoll].MuInnerTrackD0           [LepInfo[icoll].Size] = it_mu->innerTrack()->d0()                                    ;
+         LepInfo[icoll].MuInnerTrackDxy_BS       [LepInfo[icoll].Size] = it_mu->innerTrack()->dxy( beamSpot.position() )              ;
+         LepInfo[icoll].MuInnerTrackDxy_PV       [LepInfo[icoll].Size] = it_mu->innerTrack()->dxy( PrimVtx.position() )               ;
+         LepInfo[icoll].MuInnerTrackDxy_PVBS     [LepInfo[icoll].Size] = it_mu->innerTrack()->dxy( PrimVtx_BS.position() )            ;
+         LepInfo[icoll].MuInnerTrackNHits        [LepInfo[icoll].Size] = it_mu->innerTrack()->numberOfValidHits()                     ;
+         LepInfo[icoll].MuNTrackerHits           [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidTrackerHits() ;
+         LepInfo[icoll].MuNPixelLayers           [LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().numberOfValidPixelHits()   ;
          // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
-         LepInfo[icoll].MuNLostInnerHits       [LepInfo[icoll].Size] = -1;
-         LepInfo[icoll].vertexZ                [LepInfo[icoll].Size] = it_mu->vertex().z(); //Uly 2011-04-04
+         LepInfo[icoll].MuNLostInnerHits     [LepInfo[icoll].Size] = -1;
+         LepInfo[icoll].vertexZ              [LepInfo[icoll].Size] = it_mu->vertex().z(); //Uly 2011-04-04
          LepInfo[icoll].MuNPixelLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().pixelLayersWithMeasurement(); //Uly 2011-04-04
          LepInfo[icoll].MuNTrackLayersWMeasurement[LepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
 
-         if( debug_ > 10 ) {cout << "   >>> Getting muon impact parameter info" << endl ; }
+         //----- Impact paramters  --------------------------------------------------------------------------
          const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
          reco::Vertex thevtx = pvCol->at( 0 );
          const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
          const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) ) >= 0 ) ? 1. : -1.;
-         LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
-         LepInfo[icoll].Ip3dPVErr[LepInfo[icoll].Size] = ip3dpv.second.error();
-         LepInfo[icoll].Ip3dPVSignificance[LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error(); 
+         LepInfo[icoll].Ip3dPV             [LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
+         LepInfo[icoll].Ip3dPVErr          [LepInfo[icoll].Size] = ip3dpv.second.error();
+         LepInfo[icoll].Ip3dPVSignificance [LepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
       }
-
+      
+      //----- Global muon specific parameters  -----------------------------------------------------------
       if ( it_mu->type() & 0x02 ) {
          LepInfo[icoll].MuGlobalPtError        [LepInfo[icoll].Size] = it_mu->globalTrack()->ptError();
          LepInfo[icoll].MuGlobalNormalizedChi2 [LepInfo[icoll].Size] = it_mu->globalTrack()->normalizedChi2();
@@ -153,16 +148,10 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          LepInfo[icoll].MuRPChits              [LepInfo[icoll].Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonRPCHits();
       }
       if ( ( it_mu->type() & 0x02 ) || ( it_mu->type() & 0x08 ) ) {
-         LepInfo[icoll].MuNLostOuterHits       [LepInfo[icoll].Size] = -1;
+         LepInfo[icoll].MuNLostOuterHits [LepInfo[icoll].Size] = -1;
       }
 
-      LepInfo[icoll].MuCaloCompat              [LepInfo[icoll].Size] = it_mu->caloCompatibility();
-      LepInfo[icoll].MuNChambers               [LepInfo[icoll].Size] = it_mu->numberOfChambers();
-      LepInfo[icoll].MuNChambersMatchesSegment [LepInfo[icoll].Size] = it_mu->numberOfMatches();  // At least 2 Chambers matched with segments
-      LepInfo[icoll].MuNMatchedStations        [LepInfo[icoll].Size] = it_mu->numberOfMatchedStations();
-
-      LepInfo[icoll].MuType[LepInfo[icoll].Size] = it_mu->type();
-
+      //----- Generation Monte Carlo information  --------------------------------------------------------
       if ( !isData && !skipGenInfo_ ) {
          const reco::GenParticle* gen = it_mu->genLepton();
          if ( gen != NULL ) {
@@ -178,6 +167,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
             if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) { break; }
             LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_mu )  ; }
       }
+
       LepInfo[icoll].CandRef [LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_mu );
       LepInfo[icoll].Size++;
    }

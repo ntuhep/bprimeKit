@@ -38,7 +38,9 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    int numberOfDaughters , numberOfMothers;
    double evWeight;
 
-   //-------------------------------------  Setup  ------------------------------------- 
+   //-------------------------------------------------------------------------------------------------- 
+   //   Setting up common variables
+   //-------------------------------------------------------------------------------------------------- 
    for( int i = 0; i < 14; i++ ) { MCDaughters[i] = NULL; }
    if( isData || skipGenInfo_  ) return false;
    if( !isData && genlabel_.size() > 0 ) { iEvent.getByLabel( genlabel_[0], GenHandle ); }
@@ -57,6 +59,9 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
     
    if( debug_ > 15 ) { cout << "Getting MC info" << endl ; }
 
+   //-------------------------------------------------------------------------------------------------- 
+   //   Begin main loop
+   //-------------------------------------------------------------------------------------------------- 
    for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
       pdgId             = it_gen->pdgId();
       numberOfDaughters = it_gen->numberOfDaughters();
@@ -64,15 +69,13 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       dauId1 = dauId2 = monId = 0;
       dau1   = dau2   = NULL;
 
-      //--------------------------  Photon decay type flagging  ---------------------------
+      //----- Photon decay type flagging  ----------------------------------------------------------------
       if( it_gen->status() == 3 || (it_gen->status() == 1 && it_gen->pt() > 20 )){
-         //cout << ">>> Geninfo >>> Photon type" << endl;
          iMo1 = iMo2 = iDa1 = iDa2 = -1;
          iGrandMo1 = iGrandMo2 = -1;
          NMo = it_gen->numberOfMothers();
          NDa = it_gen->numberOfDaughters();
 
-         //cout << ">>> GenInfo >>> Finding ancestors " << endl;
          mother1 = find( cands.begin(), cands.end(), it_gen->mother( 0 ) );
          if( mother1 != cands.end() ) { 
             iMo1 = mother1 - cands.begin() ; 
@@ -90,7 +93,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          found = find( cands.begin(), cands.end(), it_gen->daughter( NDa - 1 ) );
          if( found != cands.end() ) { iDa2 = found - cands.begin() ; }
 
-         //cout << ">>> GenInfo >>> Inserting information " << endl;
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()     ;
          GenInfo.Eta            [GenInfo.Size] = it_gen->eta()    ;
          GenInfo.Phi            [GenInfo.Size] = it_gen->phi()    ;
@@ -144,21 +146,16 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
           *          pid(22) && status(1) && M_status(3) && M_pid(<6 || =21) && GM_status(3) && GM_pid(2212)
           *     3 : FSR photon
           *          pid(22) && status(1) && M_status(3) && GM_status(3) && GM_pid(!2212)
-          *     
           *
          *******************************************************************************/ 
          if( it_gen->status() == 3 ) {
-            //cout << ">>> GenInfo >>> photon status 3 " << endl;
             if( it_gen->pdgId() == 22 ) {
-               // -1 : unknown or not photon, 0 : prompt photon, 1 : decay in flight, 2 : ISR, 3 : FSR
-               GenInfo.PhotonFlag[GenInfo.Size]    = 0;
-            } else {
+               GenInfo.PhotonFlag[GenInfo.Size]    = 0; } 
+            else {
                GenInfo.PhotonFlag[GenInfo.Size]    = -1; }
          } else if( it_gen->status() == 1 ) {
             if( it_gen->pt() < 20 ) { continue; }
-            //cout << ">>> GenInfo >>> photon status 1 " << endl;
             GenInfo.PhotonFlag[GenInfo.Size]     = -1;
-            //cout << ">>> GenInfo >>> photon status 1 >>> finding Photon Flag " << endl;
             if( iMo1 != -1 && iMo2 != -1 && it_gen->pdgId() == 22 ) {
                if( GenInfo.Mo1PdgID[GenInfo.Size] == 22 && GenInfo.Mo2PdgID[GenInfo.Size] == 22 ) {
                   if( ( GenHandle->begin() + iMo1 )->status() == 3 && ( GenHandle->begin() + iMo2 )->status() == 3 )
@@ -180,7 +177,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
                         { GenInfo.PhotonFlag[GenInfo.Size]      = 3; }
                }
             } 
-      }
+         }
       }
 
       if ( numberOfDaughters >= 2 ) {
@@ -199,8 +196,8 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       if ( numberOfMothers >= 1 )
       { monId   = it_gen->mother( 0 )->pdgId(); }
 
-      //-------------------  b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH  -------------------
-      //cout << ">>> GenInfo >> Getting decay mode " << endl;
+      //----- b' decay mode  -----------------------------------------------------------------------------
+      // b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH
       if ( pdgId == +7 ) { 
          EvtInfo.McbprimeMass[0] = it_gen->p4().mag();
          // b' decay mode      - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
@@ -226,7 +223,9 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
             if ( abs( dau1->daughter( 1 )->pdgId() ) == 5 ) { MCDaughters[1] = dau1->daughter( 1 ); }
          } else { MCDaughters[1] = dau1; }
       }
-      //----------------  t' decay - 0:other, 1bW, 2:tZ, 3:tH , 4:tGamma  -----------------
+
+      //----- t' decay mode  -----------------------------------------------------------------------------
+      // 0:other, 1bW, 2:tZ, 3:tH , 4:tGamma
       else if ( pdgId == +8 ) {
          EvtInfo.MctprimeMass[0] = it_gen->p4().mag();
          if ( dauId1 == 5 && dauId2 == 24 ) { EvtInfo.MctprimeMode[0] = 1; }
@@ -254,7 +253,9 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       } else if ( pdgId == -6 ) { // find tbar
          EvtInfo.MctopMass[1] = it_gen->p4().mag();
       }
-      //-------------  W decay mode: 0:others, 1:enu, 2:munu, 3:taunu, 4:jj  --------------
+
+      //----- W decay mode  ------------------------------------------------------------------------------
+      // 0:others, 1:enu, 2:munu, 3:taunu, 4:jj
       else if ( pdgId == -24 && ( monId == +7 || monId == -8 ) ) { // W- from b' or t' bar
          EvtInfo.McWMass[0] = it_gen->p4().mag();
          if ( dauId1 == 11 && dauId2 == 12 ) { EvtInfo.McWMode[0] = 1; }
@@ -292,7 +293,8 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          MCDaughters[8] = dau1;
          MCDaughters[9] = dau2;
       } 
-      //--------  Z decay - 0:others, 1:ee, 2:mumu, 3:tautau, 4:nunu, 5:bb, b:jj  ---------
+      //----- Z decay mode  ------------------------------------------------------------------------------
+      // 0:others, 1:ee, 2:mumu, 3:tautau, 4:nunu, 5:bb, b:jj
       else if ( pdgId == 23 && ( monId == +7 || monId == +8 ) ) { // Z from b' or t'
          EvtInfo.McZMass[0] = it_gen->p4().mag();
          if ( dauId1 == 11 && dauId2 == 11 )   { EvtInfo.McZMode[0] = 1; }
@@ -323,7 +325,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       }
    }
   
-   //---------------------------  Fill generator daughters  ----------------------------
+   //----- Fill generation daughters  -----------------------------------------------------------------
    // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
    for( int i = 0; i < 14; i++ ) {
       if ( MCDaughters[i] == NULL ) { continue; }

@@ -28,9 +28,8 @@ typedef std::vector<std::string>   StrList;
 //------------------------------------------------------------------------------ 
 //   Helper variables
 //------------------------------------------------------------------------------ 
-edm::Service<TFileService> fs;
-TFileDirectory results ;
-
+static edm::Service<TFileService> fs;
+static TFileDirectory results ;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit methods: constructor and destructor
@@ -38,36 +37,27 @@ TFileDirectory results ;
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
 {
    results = TFileDirectory( fs->mkdir( "results" ) );
+   //----- Event related  -----------------------------------------------------------------------------
    metlabel_           = iConfig.getParameter<TagList>( "metlabel"           ) ; //"patMETs"
    rhoLabel_ = consumes<double> (iConfig.getParameter<InputTag>("rhoLabel"));
-   genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
    hltlabel_           = iConfig.getParameter<TagList>( "hltlabel"           ) ; // "TriggerResults::HLT"
-   pathltlabel_        = iConfig.getParameter<TagList>( "pathltlabel"        ) ; // patTriggerEvent
+   puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
+   
+   //----- Vertex related  ----------------------------------------------------------------------------
    offlinePVlabel_     = iConfig.getParameter<TagList>( "offlinePVlabel"     ) ; //offlinePrimaryVertices
    offlinePVBSlabel_   = iConfig.getParameter<TagList>( "offlinePVBSlabel"   ) ; //offlinePrimaryVerticesWithBS
    offlineBSlabel_     = iConfig.getParameter<TagList>( "offlineBSlabel"     ) ; //offlineBeamSpot
+   
+   //----- GenInfo related  ---------------------------------------------------------------------------
    genevtlabel_        = iConfig.getParameter<TagList>( "genevtlabel"        ) ; //generator
    gtdigilabel_        = iConfig.getParameter<TagList>( "gtdigilabel"        ) ; //gtDigis
-   puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
 
-   //-----------------------  2012 Election simple-cut-based ID  ----------------------- 
-   EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
-
-   //---------------------------------  Settings flag  ---------------------------------
-   pairColl_            = iConfig.getUntrackedParameter<int>      ( "PairCollection" , 0     ) ;
-   getElectronID_       = iConfig.getUntrackedParameter<bool>     ( "ElectronID"     , true  ) ;
-   getPhotonID_         = iConfig.getUntrackedParameter<bool>     ( "PhotonID"       , true  ) ;
-   skipGenInfo_         = iConfig.getUntrackedParameter<bool>     ( "SkipGenInfo"    , false ) ;
-   includeL7_           = iConfig.getUntrackedParameter<bool>     ( "IncludeL7"      , true  ) ;
-   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet> ( "SelectionParameters"    ) ;
-   debug_               = iConfig.getUntrackedParameter<int>      ( "Debug"          , 0     ) ;
-   
-   //----------------------------------  Jet Related  ----------------------------------
+   //----- Jet related  -------------------------------------------------------------------------------
    jetcollections_  = iConfig.getParameter<StrList>( "JetCollections" ) ; //branch names
    jetlabel_        = iConfig.getParameter<TagList>( "jetlabel"       ) ; 
    qgToken_ = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
    
-   //----- Lepton related information  ----------------------------------------------------------------
+   //----- Lepton related  ----------------------------------------------------------------------------
    lepcollections_       = iConfig.getParameter<StrList>( "LepCollections"     ) ; //branch names
    muonlabel_            = iConfig.getParameter<TagList>( "muonlabel"          ) ;
    eleclabel_            = iConfig.getParameter<TagList>( "eleclabel"          ) ;
@@ -77,6 +67,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
    eleTightIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
    eleHEEPIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
+   genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
    eleMVAValuesMapToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "eleMVAValuesMap" )) ;
    
    //----- Photon related  ----------------------------------------------------------------------------
@@ -91,22 +82,25 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    phoPhotonIsolationToken_        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
    
    
+   //----- Configuration flats  -----------------------------------------------------------------------
+   pairColl_            = iConfig.getUntrackedParameter<int>      ( "PairCollection" , 0     ) ;
+   getElectronID_       = iConfig.getUntrackedParameter<bool>     ( "ElectronID"     , true  ) ;
+   getPhotonID_         = iConfig.getUntrackedParameter<bool>     ( "PhotonID"       , true  ) ;
+   skipGenInfo_         = iConfig.getUntrackedParameter<bool>     ( "SkipGenInfo"    , false ) ;
+   includeL7_           = iConfig.getUntrackedParameter<bool>     ( "IncludeL7"      , true  ) ;
+   SelectionParameters_ = iConfig.getParameter<edm::ParameterSet> ( "SelectionParameters"    ) ;
+   debug_               = iConfig.getUntrackedParameter<int>      ( "Debug"          , 0     ) ;
+   
+   //----- 2015 cut based electron ID  ----------------------------------------------------------------
+   EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
-   // NOTE: It is safer and crab-compliant to get the files locally, i.e in EgammaAnalysis/ElectronTools/data
-   // (see the downloard.url file in that directory)
-   // Alternatively (for tests), they can be read from AFS:
-   //*
+   
    if( EIDMVAInputTags_.size() != 12 ) { cout << "EIDMVAInputTags array size (12) is not correct" << endl; }
-
    StrList myManualCatWeigthsTrig;
    for( int ie = 0; ie < 6; ie++ ) { 
       myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
-
    myMVATrig = new EGammaMvaEleEstimator();
-   myMVATrig->initialize( "BDT",
-                          EGammaMvaEleEstimator::kTrig,
-                          true,
-                          myManualCatWeigthsTrig );
+   myMVATrig->initialize( "BDT", EGammaMvaEleEstimator::kTrig, true, myManualCatWeigthsTrig );
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       HLTmaplist.insert( pair< std::string, int > ( TriggerBooking[i], i ) ); }
@@ -247,6 +241,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
       }
    }
 }
-//define this as a plug-in
+
 DEFINE_FWK_MODULE( bprimeKit );
 

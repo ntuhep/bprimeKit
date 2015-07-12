@@ -28,7 +28,9 @@ typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   //-----------------------------  Variable declaration  ------------------------------
+   //-------------------------------------------------------------------------------------------------- 
+   //   Helper variables definition
+   //-------------------------------------------------------------------------------------------------- 
    PileupHandle     PUInfo;
    PileupIterator   PVI;
    METHandler       METHandle;
@@ -36,7 +38,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    METHandler       pfMETHandle_TempDown;
    METIterator      it_met  ; 
    edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
-   edm::Handle<TriggerResults> TrgResultsHandle;
+   edm::Handle<TriggerResults>      TrgResultsHandle;
    edm::Handle<L1GlobalTriggerReadoutRecord> gtRecord;
    edm::Handle<double> rhoHandle;
    std::pair<int,int>  psValueCombo;
@@ -44,6 +46,9 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    iEvent.getByToken( rhoLabel_ , rhoHandle );
    iEvent.getByLabel( metlabel_[0],  METHandle );
    iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
+   iEvent.getByLabel( puInfoLabel_[0], PUInfo ); 
+   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus );
+   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  pfMETHandle_TempDown );
    
    EvtInfo.RunNo    = iEvent.id().run();
    EvtInfo.EvtNo    = iEvent.id().event();
@@ -55,15 +60,15 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.ptHat    = -1.;
    EvtInfo.Rho      = * (rhoHandle.product()) ; 
    
-   if( puInfoLabel_.size() > 0 ) { iEvent.getByLabel( puInfoLabel_[0], PUInfo ); }
+   //----- Pile up information  -----------------------------------------------------------------------
    for( PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI ) {
       EvtInfo.nPU[EvtInfo.nBX] = PVI->getPU_NumInteractions();
       EvtInfo.BXPU[EvtInfo.nBX] = PVI->getBunchCrossing();
       EvtInfo.TrueIT[EvtInfo.nBX] = PVI->getTrueNumInteractions();
-      EvtInfo.nBX += 1;
+      ++EvtInfo.nBX ;
    }
    
-   //-------------------------------  Getting beam spot  -------------------------------
+   //----- Getting beamspot information  --------------------------------------------------------------
    if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
    if ( beamSpotHandle.isValid() ) {
       beamSpot = *beamSpotHandle.product();
@@ -75,7 +80,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
             << "No beam spot available from EventSetup \n";
    }
 
-
+   //----- Getting Monte Carlo mode  ------------------------------------------------------------------
+   // See code in bprimeKit_genInfo.cc
    int mclep_count[2] = {0, 0};
    if ( EvtInfo.McWMode[0] == 1 || EvtInfo.McWMode[0] == 2 ) { mclep_count[1]++; }
    if ( EvtInfo.McWMode[1] == 1 || EvtInfo.McWMode[1] == 2 ) { mclep_count[0]++; }
@@ -95,9 +101,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if ( mclep_count[0] == 1 && mclep_count[1] == 2 ) { EvtInfo.McSigTag = 3; }
    if ( mclep_count[0] == 2 && mclep_count[1] == 2 ) { EvtInfo.McSigTag = 4; }
 
-
-
-   if( debug_ > 15 ) { cout << "Get pfMET info\n"; }
+   //----- Getting missing momentum information  ------------------------------------------------------
    for( it_met = METHandle->begin(); it_met != METHandle->end(); it_met++ ) {
       EvtInfo.PFMET              = it_met->pt()             ;
       EvtInfo.PFMETPhi           = it_met->phi()            ;
@@ -115,20 +119,17 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          EvtInfo.PFGenMETPhi     = genmet->phi();
       }
    }
-   
-   //--------------------------  MET correction information  --------------------------- 
-   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus );
+   //----- Missing momentum correction  ---------------------------------------------------------------
    if( pfMETHandle_TempPlus.isValid() ){
       for( it_met = pfMETHandle_TempPlus->begin(); it_met != pfMETHandle_TempPlus->end(); it_met++ ) {
          EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_met->pt(); }
    }
-   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  pfMETHandle_TempDown );
    if( pfMETHandle_TempDown.isValid() ){
       for( it_met = pfMETHandle_TempDown->begin() ; it_met != pfMETHandle_TempDown->end(); it_met++ ) {
          EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_met->pt(); }
    }
 
-   //----------------------------  Generation information  -----------------------------
+   //----- Generation information  --------------------------------------------------------------------
    bool with_GenEventInfo = ( genevtlabel_.size() > 0 ) ? iEvent.getByLabel( genevtlabel_[0], GenEventInfoHandle ) : false;
    if ( with_GenEventInfo && GenEventInfoHandle->hasPDF() ) {
       EvtInfo.PDFid1   = GenEventInfoHandle->pdf()->id.first;
@@ -140,13 +141,13 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       EvtInfo.PDFv2    = GenEventInfoHandle->pdf()->xPDF.second;
    }
 
-   //------------------------  High level trigger information  -------------------------
+   //----- High Level Trigger information  ------------------------------------------------------------
    bool with_TriggerResults = ( hltlabel_.size() > 0 ) ? iEvent.getByLabel( hltlabel_[0], TrgResultsHandle ) : false;
    if ( with_TriggerResults ) {
       if( debug_ > 10 ) { cout << "Getting High Level Trigger" << endl; }
       const edm::TriggerNames& TrgNames = iEvent.triggerNames( *TrgResultsHandle );
       EvtInfo.TrgCount = 0;
-      for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) {
+      for( size_t i = 0; i < N_TRIGGER_BOOKINGS; ++i ) {
          unsigned int TrgIndex = TrgNames.triggerIndex( TriggerBooking[i] );
          if ( TrgIndex == TrgNames.size() ) {
             EvtInfo.TrgBook[i] = -4; // The trigger path is not known in this event.
@@ -161,8 +162,9 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
             EvtInfo.TrgCount++;
          }
       }
+
       EvtInfo.nHLT = TrgNames.size();
-      for( size_t i = 0; i < TrgNames.size(); i++ ) {
+      for( size_t i = 0; i < TrgNames.size(); ++i ) {
          EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
          psValueCombo = hltConfig_.prescaleValues( iEvent, iSetup, triggerName_ );
@@ -194,30 +196,5 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       }
    }
 
-   //by Dmitry Hits for filtering the real data
-   //*******************************************************************
-   //Add the number of tracks and fraction of high purity tracks in the track collection to the EvtInfo
-   //*******************************************************************
-   //
-   //The desciption of tracks quality selection is here:
-   //https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideFinalTrackSelectors
-   //
-   //Cuts which determine the high purity depend on the CMSSW release:
-   //http://cmslxr.fnal.gov/lxr/source/RecoTracker/FinalTrackSelectors/python/selectHighPurity_cfi.py
-   //
-   //For details see CMS IN-2008/017
-   //Currently, if the number of tracks > 10,
-   //then 25% of HighPurity tracks have to be present in the event for it to be called good event
-   // int numhighpurity = 0;
-   // if( TrackHandle.isValid() && !TrackHandle.failedToGet() && TrackHandle->size() > 0 ) {
-   //    reco::TrackBase::TrackQuality _trackQuality = reco::TrackBase::qualityByName( "highPurity" );
-   //    edm::View<reco::Track>::const_iterator itk = tracks.begin();
-   //    edm::View<reco::Track>::const_iterator itk_e = tracks.end();
-   //    for( ; itk != itk_e; ++itk ) {
-   //       if( itk->quality( _trackQuality ) ) { numhighpurity++; }
-   //    }
-   //    EvtInfo.NofTracks = TrackHandle->size();
-   //    EvtInfo.HighPurityFraction = ( float )numhighpurity / ( float )TrackHandle->size();
-   // }
    return true;
 }
