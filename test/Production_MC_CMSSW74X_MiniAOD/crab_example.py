@@ -7,9 +7,9 @@ config.General.transferOutputs = True
 config.General.transferLogs = True
 
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'bprimeKit_miniAOD.py'
+config.JobType.psetName = '../bprimeKit_miniAOD.py'
 config.JobType.inputFiles = [
-    'dataEIDMVA' 
+    '../dataEIDMVA' 
     ] 
 
 config.Data.inputDataset = '/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9-v2/MINIAODSIM'
