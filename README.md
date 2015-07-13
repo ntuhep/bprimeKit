@@ -1,9 +1,9 @@
-# The bprimeKit
+# The bprime Analysis Kit
 
-The bprimeKit aims to strip the miniAOD format used by CMSSW into a standalone ROOT Ntuple for offline analysis needs. 
+The bprime analysis Kit aims to strip the miniAOD format used by CMSSW into a standalone ROOT Ntuple for offline analysis needs. 
 
 ## Setup and running
-Below is the standard setup for the brpimeKit running under CMSSW_7_4_2 
+The curent version of the bprime analysis kit is meant to be ran under CMSSW_7_4_5_patch5.
 ```
 cmsrel CMSSW_7_4_5_patch1
 cd CMSSW_7_4_5_patch1/src

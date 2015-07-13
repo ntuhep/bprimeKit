@@ -3,8 +3,8 @@ Here is the quick list of the classes and functions define in this directory sor
 
 ### `format.h`
 The file [`format.h`](format.h) defines the branches that are stored in the bprimeKit output Ntuple files. 
-All branche classes should have the same structure:
-   * All data stored are public, standard C++ datatypes 
+All branches classes should have the same structure:
+   * All data stored are public, ROOT style datatypes 
    * `RegisterTree( TTree , string )` method: for root file writing setup. 
    * `Register( TTree ,  string )` method: for root file reading setup.
 
@@ -20,6 +20,11 @@ The current defined branches for the bprimeKit ntuple is listed below:
 For an example of using the branches, see that file: [`proj.cc`](../test/proj.cc)
 
 For a utility to maintain the format.h see the [BprimeKit-Format-Generator](https://github.com/enochnotsocool/BprimeKit-Format-Generator) package.
+
+### `TriggerBooking.h`
+The [`TriggerBooking.h`](./TriggerBooking.h) defines the high level triggers used in the events of interest. 
+They are store as string list and `enum` pairs for simple coding interface in the plugins files.
+Maintenance of this file is also done by the [bprime Kit format generator](https://github.com/enochnotsocool/BprimeKit-Format-Generator) package.
 
 ### `bprimeKit.h`
 The file [`bprimeKit`](bprimeKit) defines the custom `EDAnalyzer` class that performs the bprimeKit ntuplizing process.
@@ -39,8 +44,4 @@ The function currently defined for the bprimeKit is:
       - `genMCTag( GenInterator& ,  Particle& )`: Generates the MC tags.
 
 
-### `TriggerBooking.h`
-The [`TriggerBooking.h`](./TriggerBooking.h) defines the high level triggers used in the events of interest. 
-They are store as string list and `enum` pairs for simple coding interface in the plugins files. 
-Maintenance of the high level trigger paths are achieve through the [`./check_HLTpath.csh`](./check_HLTpath.csh) script.  
 
