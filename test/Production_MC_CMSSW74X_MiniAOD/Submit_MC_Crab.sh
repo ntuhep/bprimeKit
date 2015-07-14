@@ -40,8 +40,11 @@ for DATA in $( cat MC_datasets_$USER ) ;  do
    sed -i "s@CRAB_JOB_NAME@$DATALABEL@"       $CRAB_FILE
    sed -i "s@CRAB_DATA_SET@$DATA@"            $CRAB_FILE 
    sed -i "s@BPK_PYTHONFILE@$BPK_PYTHONFILE@" $CRAB_FILE
+   if [[ $1 == "NTU_TIER_3" ]] ; then 
+      sed -i "s@T2_CERN_CH@T3_TW_NTU_HEP@" $CRAB_FILE
+   fi
 
-   crab submit -c $CRAB_FILE
+   #crab submit -c $CRAB_FILE
 done
 
 

@@ -28,6 +28,7 @@ typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
+   if( debug_ > 0 ) { cout << "Begin filling EvtInfoBranches" << endl ;}
    //-------------------------------------------------------------------------------------------------- 
    //   Helper variables definition
    //-------------------------------------------------------------------------------------------------- 
@@ -43,13 +44,16 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    edm::Handle<double> rhoHandle;
    std::pair<int,int>  psValueCombo;
 
+   if( debug_ > 0 ){ cout <<">>>Evt: Getting variables"<< endl;}
    iEvent.getByToken( rhoLabel_ , rhoHandle );
    iEvent.getByLabel( metlabel_[0],  METHandle );
    iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
-   iEvent.getByLabel( puInfoLabel_[0], PUInfo ); 
    iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus );
    iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  pfMETHandle_TempDown );
+   if( ! isData ) {
+      iEvent.getByLabel( puInfoLabel_[0], PUInfo ); }
    
+   if( debug_ > 0 ){ cout <<">>>Evt: Inserting generic information"<< endl;}
    EvtInfo.RunNo    = iEvent.id().run();
    EvtInfo.EvtNo    = iEvent.id().event();
    EvtInfo.McFlag   = iEvent.isRealData() ? 0 : 1;
@@ -60,16 +64,19 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.ptHat    = -1.;
    EvtInfo.Rho      = * (rhoHandle.product()) ; 
    
+   if( debug_ > 0 ){ cout <<">>>Evt: Inserting Pile up information information"<< endl;}
    //----- Pile up information  -----------------------------------------------------------------------
-   for( PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI ) {
-      EvtInfo.nPU[EvtInfo.nBX] = PVI->getPU_NumInteractions();
-      EvtInfo.BXPU[EvtInfo.nBX] = PVI->getBunchCrossing();
-      EvtInfo.TrueIT[EvtInfo.nBX] = PVI->getTrueNumInteractions();
-      ++EvtInfo.nBX ;
+   if( PUInfo.isValid() ) {
+      for( PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI ) {
+         EvtInfo.nPU[EvtInfo.nBX] = PVI->getPU_NumInteractions();
+         EvtInfo.BXPU[EvtInfo.nBX] = PVI->getBunchCrossing();
+         EvtInfo.TrueIT[EvtInfo.nBX] = PVI->getTrueNumInteractions();
+         ++EvtInfo.nBX ;
+      }
    }
    
    //----- Getting beamspot information  --------------------------------------------------------------
-   if( debug_ > 5 ) { cout << "\tGet beam spot.\n"; }
+   if( debug_ > 5 ) { cout << ">>>Evt: Get beam spot."<< endl; }
    if ( beamSpotHandle.isValid() ) {
       beamSpot = *beamSpotHandle.product();
       EvtInfo.BeamSpotX = beamSpot.position().x();
@@ -102,6 +109,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if ( mclep_count[0] == 2 && mclep_count[1] == 2 ) { EvtInfo.McSigTag = 4; }
 
    //----- Getting missing momentum information  ------------------------------------------------------
+   if( debug_ > 5 ) { cout << ">>>Evt: Get missing momentum."<< endl; }
    for( it_met = METHandle->begin(); it_met != METHandle->end(); it_met++ ) {
       EvtInfo.PFMET              = it_met->pt()             ;
       EvtInfo.PFMETPhi           = it_met->phi()            ;
@@ -120,6 +128,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       }
    }
    //----- Missing momentum correction  ---------------------------------------------------------------
+   if( debug_ > 5 ) { cout << ">>>Evt: Get missing momentum corrections."<< endl; }
    if( pfMETHandle_TempPlus.isValid() ){
       for( it_met = pfMETHandle_TempPlus->begin(); it_met != pfMETHandle_TempPlus->end(); it_met++ ) {
          EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_met->pt(); }
@@ -167,8 +176,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       for( size_t i = 0; i < TrgNames.size(); ++i ) {
          EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
-         psValueCombo = hltConfig_.prescaleValues( iEvent, iSetup, triggerName_ );
-         EvtInfo.HLTPrescaleFactor[i] = ( int )psValueCombo.second;
+         EvtInfo.HLTPrescaleFactor[i] = hltConfig_.prescaleValuesInDetail( iEvent, iSetup, triggerName_ ).second;
          HLTmaplist_pr = HLTmaplist.find( TrgNames.triggerName( i ) );
          if( HLTmaplist_pr != HLTmaplist.end() ) {
             EvtInfo.HLTName2enum[i] = HLTmaplist_pr->second ;

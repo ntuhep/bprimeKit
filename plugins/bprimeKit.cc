@@ -41,7 +41,8 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    metlabel_           = iConfig.getParameter<TagList>( "metlabel"           ) ; //"patMETs"
    rhoLabel_ = consumes<double> (iConfig.getParameter<InputTag>("rhoLabel"));
    hltlabel_           = iConfig.getParameter<TagList>( "hltlabel"           ) ; // "TriggerResults::HLT"
-   puInfoLabel_        = iConfig.getParameter<TagList>( "puInfoLabel"        ) ;
+   if( ! isData ){
+      puInfoLabel_ = iConfig.getParameter<TagList>( "puInfoLabel" ) ; }
    
    //----- Vertex related  ----------------------------------------------------------------------------
    offlinePVlabel_     = iConfig.getParameter<TagList>( "offlinePVlabel"     ) ; //offlinePrimaryVertices
