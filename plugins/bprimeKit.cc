@@ -104,7 +104,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    myMVATrig->initialize( "BDT", EGammaMvaEleEstimator::kTrig, true, myManualCatWeigthsTrig );
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
-      HLTmaplist.insert( pair< std::string, int > ( TriggerBooking[i], i ) ); }
+      HLTmaplist.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
 }
 
 bprimeKit::~bprimeKit()
@@ -145,7 +145,7 @@ void bprimeKit::endJob()
 void bprimeKit::beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup )
 {
    std::string processName_ = "HLT";
-   bool changed( false );
+   bool changed =  true ;
    hltConfig_.init( iRun, iSetup, processName_, changed );
 }
 void bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )

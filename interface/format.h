@@ -4,8 +4,8 @@
  *  Description : The branch format for the bprimeKit nTuple
  *
 *******************************************************************************/
-#ifndef __FORMAT_H__
-#define __FORMAT_H__
+#ifndef __BPRIMEKIT_FORMAT_H__
+#define __BPRIMEKIT_FORMAT_H__
 
 //------------------------------  Required libraries  -------------------------------
 #include <TTree.h>
@@ -20,7 +20,7 @@
 #define MAX_GENS           128
 #define MAX_Vertices       256
 #define MAX_BX             128
-#define N_TRIGGER_BOOKINGS 466
+#define N_TRIGGER_BOOKINGS 1508
 
 class EvtInfoBranches {
 public:
@@ -261,6 +261,9 @@ public:
    Float_t Ip3dPVErr                             [MAX_LEPTONS] ;
    Float_t Ip3dPVSignificance                    [MAX_LEPTONS] ;
 
+   //------------------------------------------------------------------------------
+   //   Muon Information
+   //------------------------------------------------------------------------------
 
    //----- General Muon information  ------------------------------------------------------------------
    Float_t  CaloEnergy                   [MAX_LEPTONS]  ;
@@ -279,7 +282,7 @@ public:
    Int_t    MuRPChits                    [MAX_LEPTONS]  ;
    Int_t    MuType                       [MAX_LEPTONS]  ;
 
-   //----- Muon cosmic ray filter  --------------------------------------------------------------------
+   //----- Cosmic Ray filters  ------------------------------------------------------------------------
    Int_t    MuontimenDof                 [MAX_LEPTONS]  ;
    Float_t  MuontimeAtIpInOut            [MAX_LEPTONS]  ;
    Float_t  MuontimeAtIpOutIn            [MAX_LEPTONS]  ;
@@ -302,7 +305,9 @@ public:
    Int_t    MuNPixelLayersWMeasurement   [MAX_LEPTONS]  ; //   Uly     2011-04-04
    Int_t    MuNTrackLayersWMeasurement   [MAX_LEPTONS]  ;
 
-   //----- Generic Electron information  --------------------------------------------------------------
+   //------------------------------------------------------------------------------
+   //   Electron Information
+   //------------------------------------------------------------------------------
    Int_t   ChargeGsf                             [MAX_LEPTONS] ;
    Int_t   ChargeCtf                             [MAX_LEPTONS] ;
    Int_t   ChargeScPix                           [MAX_LEPTONS] ;
@@ -342,7 +347,7 @@ public:
    Float_t dPt_gsf_ctfTrack                      [MAX_LEPTONS] ; //Dmitry
    Bool_t  ElhasConv                             [MAX_LEPTONS] ;
 
-   //----- Electron track related information  --------------------------------------------------------
+   //----- Track related information  -----------------------------------------------------------------
    Int_t   ElTrackNHits                          [MAX_LEPTONS] ; //Dmitry
    Float_t ElTrackNLostHits                      [MAX_LEPTONS] ;  //yjlei
    Float_t ElTrackDz                             [MAX_LEPTONS] ;
@@ -356,7 +361,7 @@ public:
    Float_t ElFBrem                               [MAX_LEPTONS] ;
    Int_t NumberOfExpectedInnerHits               [MAX_LEPTONS] ; // Add by Jacky
 
-   //----- Electron conversion rejection  -------------------------------------------------------------
+   //----- Conversion rejections  ---------------------------------------------------------------------
    Float_t Eldist                                [MAX_LEPTONS] ; // Add by Jacky
    Float_t Eldcot                                [MAX_LEPTONS] ; // Add by Jacky
    Float_t Elconvradius                          [MAX_LEPTONS] ; // Add by Jacky
@@ -373,7 +378,9 @@ public:
    Float_t TrgPhi                                [MAX_LEPTONS] ;
    Int_t TrgID                                   [MAX_LEPTONS] ;
 
-   //----- Tau information  ---------------------------------------------------------------------------
+   //------------------------------------------------------------------------------
+   //   Tau information
+   //------------------------------------------------------------------------------
    Int_t   isPFTau                                      [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
    Bool_t   DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
    Bool_t   DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
@@ -1311,5 +1318,5 @@ public:
       root->SetBranchAddress( ( name + ".Rho" ).c_str() , Rho ) ;
    }
 };
-#endif // __BPRIMEKIT_H_FORMAT_H__
+#endif // __BPRIMEKIT_FORMAT_H__
 

@@ -176,15 +176,20 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       for( size_t i = 0; i < TrgNames.size(); ++i ) {
          EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
-         EvtInfo.HLTPrescaleFactor[i] = hltConfig_.prescaleValuesInDetail( iEvent, iSetup, triggerName_ ).second;
-         HLTmaplist_pr = HLTmaplist.find( TrgNames.triggerName( i ) );
+         if( debug_ ) { cout << i <<"["<< EvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ; }
+         if( debug_ ) { cout << ">>Evt: Getting prescale set: " << hltConfig_.prescaleSet( iEvent , iSetup ) << endl; }
+         EvtInfo.HLTPrescaleFactor[i] = hltConfig_.prescaleValue( iEvent, iSetup, triggerName_ );
+         HLTmaplist_pr = HLTmaplist.find( triggerName_ );
          if( HLTmaplist_pr != HLTmaplist.end() ) {
             EvtInfo.HLTName2enum[i] = HLTmaplist_pr->second ;
          } else {
             EvtInfo.HLTName2enum[i] = -1; }
+         if( debug_ ) { cout << ">>Evt: Getting prescale " << EvtInfo.HLTPrescaleFactor[i] << endl ; }
+         if( debug_ ) { cout << ">>Evt: Getting Trigger int label " << EvtInfo.HLTName2enum[i] << endl; }
       }
    }
-   //------------------  Level 1 trigger and technical trigger bits  -------------------
+
+   //----- Level 1 trigger and technical trigger bits  ------------------------------------------------
    if( gtdigilabel_.size() > 0 ) { iEvent.getByLabel( gtdigilabel_[0], gtRecord ); }
    if( gtRecord.isValid() ) {
       DecisionWord dWord = gtRecord->decisionWord();
