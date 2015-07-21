@@ -14,7 +14,6 @@
 //------------------------------------------------------------------------------ 
 //   Typedefs and enums
 //------------------------------------------------------------------------------ 
-typedef std::vector<reco::GenParticle>::const_iterator   GenPIterator;
 typedef std::vector<const reco::Candidate*>              CandidateList;
 typedef CandidateList::const_iterator                    CandidateIterator;
 typedef edm::Handle<GenEventInfoProduct>                 GenInfoHandle;
@@ -63,19 +62,23 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    //   Begin main loop
    //-------------------------------------------------------------------------------------------------- 
    for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
+      
+      const reco::GenParticleRef genRef = reco::GenParticleRef( GenHandle , it_gen - (GenHandle->begin()) );
       pdgId             = it_gen->pdgId();
       numberOfDaughters = it_gen->numberOfDaughters();
       numberOfMothers   = it_gen->numberOfMothers();
       dauId1 = dauId2 = monId = 0;
       dau1   = dau2   = NULL;
 
-      //----- Photon decay type flagging  ----------------------------------------------------------------
+      //----- Inserting GenInfo data  --------------------------------------------------------------------
       if( it_gen->status() == 3 || (it_gen->status() == 1 && it_gen->pt() > 20 )){
+         if( debug_ ) { cout << "Enter GenInfo" << endl; } 
          iMo1 = iMo2 = iDa1 = iDa2 = -1;
          iGrandMo1 = iGrandMo2 = -1;
          NMo = it_gen->numberOfMothers();
          NDa = it_gen->numberOfDaughters();
 
+         if( debug_ ) { cout << ">>Gen>> Getting parent candidates" << endl;}
          mother1 = find( cands.begin(), cands.end(), it_gen->mother( 0 ) );
          if( mother1 != cands.end() ) { 
             iMo1 = mother1 - cands.begin() ; 
@@ -92,6 +95,9 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          if( found != cands.end() ) { iDa1 = found - cands.begin() ; }
          found = find( cands.begin(), cands.end(), it_gen->daughter( NDa - 1 ) );
          if( found != cands.end() ) { iDa2 = found - cands.begin() ; }
+         if( debug_ ) { 
+            cout << ">>Gen>> Getting parent candidates " 
+                 << iMo1 << " " << iMo2 << " " << iDa1 << " " << iDa2 <<endl;}
 
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()     ;
          GenInfo.Eta            [GenInfo.Size] = it_gen->eta()    ;
@@ -116,22 +122,22 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          GenInfo.GrandMo1Status [GenInfo.Size] = -1               ;
          GenInfo.GrandMo2Status [GenInfo.Size] = -1               ;
          GenInfo.Size++ ;
-         if( iDa1 != -1 ) { 
-            GenInfo.Da1PdgID[GenInfo.Size]    = ( GenHandle->begin() + iDa1 )->pdgId(); }
-         if( iDa2 != -1 ) { 
-            GenInfo.Da2PdgID[GenInfo.Size]    = ( GenHandle->begin() + iDa2 )->pdgId(); }
-         if( iMo1 != -1 ) {
-            GenInfo.Mo1PdgID[GenInfo.Size]      = ( GenHandle->begin() + iMo1 )->pdgId();
-            GenInfo.Mo1Status[GenInfo.Size]  = ( GenHandle->begin() + iMo1 )->status(); }
+        
+         if( NDa > 0 ) {
+            GenInfo.Da1PdgID[GenInfo.Size] =((const reco::Candidate*)( it_gen->daughter(0)     ))->pdgId() ;  
+            GenInfo.Da2PdgID[GenInfo.Size] =((const reco::Candidate*)( it_gen->daughter(NDa-1) ))->pdgId() ; }
+         if( NMo > 0 ) {
+            GenInfo.Mo1PdgID[GenInfo.Size]   = genRef->motherRef( 0 )->pdgId() ;  
+            GenInfo.Mo1Status[GenInfo.Size]  = genRef->motherRef( 0 )->status(); }
          if( iMo2 != -1 ) {
-            GenInfo.Mo2PdgID[GenInfo.Size]      = ( GenHandle->begin() + iMo2 )->pdgId();
+            GenInfo.Mo2PdgID[GenInfo.Size]   = ( GenHandle->begin() + iMo2 )->pdgId();
             GenInfo.Mo2Status[GenInfo.Size]  = ( GenHandle->begin() + iMo2 )->status(); }
          if( iGrandMo1 != -1 ) {
-            GenInfo.GrandMo1PdgID[GenInfo.Size]    = ( GenHandle->begin() + iGrandMo1 )->pdgId();
-            GenInfo.GrandMo1Status[GenInfo.Size]      = ( GenHandle->begin() + iGrandMo1 )->status(); }
+            GenInfo.GrandMo1PdgID[GenInfo.Size]  = ( GenHandle->begin() + iGrandMo1 )->pdgId();
+            GenInfo.GrandMo1Status[GenInfo.Size] = ( GenHandle->begin() + iGrandMo1 )->status(); }
          if( iGrandMo2 != -1 ) {
-            GenInfo.GrandMo2PdgID[GenInfo.Size]    = ( GenHandle->begin() + iGrandMo2 )->pdgId();
-            GenInfo.GrandMo2Status[GenInfo.Size]      = ( GenHandle->begin() + iGrandMo2 )->status(); }
+            GenInfo.GrandMo2PdgID[GenInfo.Size]  = ( GenHandle->begin() + iGrandMo2 )->pdgId();
+            GenInfo.GrandMo2Status[GenInfo.Size] = ( GenHandle->begin() + iGrandMo2 )->status(); }
 
          /*******************************************************************************
           *
@@ -147,7 +153,8 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
           *     3 : FSR photon
           *          pid(22) && status(1) && M_status(3) && GM_status(3) && GM_pid(!2212)
           *
-         *******************************************************************************/ 
+         *******************************************************************************/
+         if( debug_ ) { cout << "Entering Photon flag rules" << endl; }
          if( it_gen->status() == 3 ) {
             if( it_gen->pdgId() == 22 ) {
                GenInfo.PhotonFlag[GenInfo.Size]    = 0; } 
@@ -196,6 +203,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       if ( numberOfMothers >= 1 )
       { monId   = it_gen->mother( 0 )->pdgId(); }
 
+      if( debug_ ) { cout << "Getting decay mode" << endl; }
       //----- b' decay mode  -----------------------------------------------------------------------------
       // b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH
       if ( pdgId == +7 ) { 
