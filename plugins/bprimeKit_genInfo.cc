@@ -31,6 +31,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    CandidateList          cands;
    CandidateIterator      found;
    CandidateIterator      mother1 , mother2;
+   CandidateIterator      gmother1 , gmother2;
    int iMo1, iMo2, iDa1, iDa2;
    int iGrandMo1, iGrandMo2, NMo, NDa;
    int pdgId , dauId1 , dauId2 , monId ; 
@@ -43,7 +44,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    for( int i = 0; i < 14; i++ ) { MCDaughters[i] = NULL; }
    if( isData || skipGenInfo_  ) return false;
    if( !isData && genlabel_.size() > 0 ) { iEvent.getByLabel( genlabel_[0], GenHandle ); }
-   
+  
    for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
       cands.push_back( &*it_gen ); }
 
@@ -82,14 +83,14 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          mother1 = find( cands.begin(), cands.end(), it_gen->mother( 0 ) );
          if( mother1 != cands.end() ) { 
             iMo1 = mother1 - cands.begin() ; 
-            found = find( cands.begin(), cands.end(), (*mother1)->mother( 0 ) );
-            if( found != cands.end() ) { iGrandMo1 = found - cands.begin() ; }
+            gmother1 = find( cands.begin(), cands.end(), (*mother1)->mother( 0 ) );
+            if( gmother1 != cands.end() ) { iGrandMo1 = gmother1 - cands.begin() ; }
          }
          mother2 = find( cands.begin(), cands.end(), it_gen->mother( NMo - 1 ) );
          if( mother2 != cands.end() ) { 
-            iMo2 = found - cands.begin() ; 
-            found = find( cands.begin(), cands.end(), (*mother2)->mother( 0 ) );
-            if( found != cands.end() ) { iGrandMo2 = found - cands.begin() ; }
+            iMo2 = mother2 - cands.begin() ; 
+            gmother2 = find( cands.begin(), cands.end(), (*mother2)->mother( 0 ) );
+            if( gmother2 != cands.end() ) { iGrandMo2 = gmother2 - cands.begin() ; }
          }
          found = find( cands.begin(), cands.end(), it_gen->daughter( 0 ) );
          if( found != cands.end() ) { iDa1 = found - cands.begin() ; }
@@ -97,7 +98,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          if( found != cands.end() ) { iDa2 = found - cands.begin() ; }
          if( debug_ ) { 
             cout << ">>Gen>> Getting parent candidates " 
-                 << iMo1 << " " << iMo2 << " " << iDa1 << " " << iDa2 <<endl;}
+                 << iMo1 << " " << iMo2 << " " << iDa1 << " " << iDa2 <<endl; }
 
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()     ;
          GenInfo.Eta            [GenInfo.Size] = it_gen->eta()    ;
@@ -121,23 +122,22 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          GenInfo.GrandMo2PdgID  [GenInfo.Size] =  0               ;
          GenInfo.GrandMo1Status [GenInfo.Size] = -1               ;
          GenInfo.GrandMo2Status [GenInfo.Size] = -1               ;
-         GenInfo.Size++ ;
-        
+         
          if( NDa > 0 ) {
-            GenInfo.Da1PdgID[GenInfo.Size] =((const reco::Candidate*)( it_gen->daughter(0)     ))->pdgId() ;  
-            GenInfo.Da2PdgID[GenInfo.Size] =((const reco::Candidate*)( it_gen->daughter(NDa-1) ))->pdgId() ; }
+            GenInfo.Da1PdgID [GenInfo.Size]  = it_gen->daughter(0)->pdgId();
+            GenInfo.Da2PdgID [GenInfo.Size]  = it_gen->daughter(NDa-1)->pdgId();}
          if( NMo > 0 ) {
-            GenInfo.Mo1PdgID[GenInfo.Size]   = genRef->motherRef( 0 )->pdgId() ;  
-            GenInfo.Mo1Status[GenInfo.Size]  = genRef->motherRef( 0 )->status(); }
-         if( iMo2 != -1 ) {
-            GenInfo.Mo2PdgID[GenInfo.Size]   = ( GenHandle->begin() + iMo2 )->pdgId();
-            GenInfo.Mo2Status[GenInfo.Size]  = ( GenHandle->begin() + iMo2 )->status(); }
+            GenInfo.Mo1PdgID  [GenInfo.Size]   = it_gen->mother( 0 )->pdgId() ;  
+            GenInfo.Mo1Status [GenInfo.Size]   = it_gen->mother( 0 )->status();
+            GenInfo.Mo2PdgID  [GenInfo.Size]   = it_gen->mother( NMo-1 )->pdgId() ;  
+            GenInfo.Mo2Status [GenInfo.Size]   = it_gen->mother( NMo-1 )->status(); 
+         }
          if( iGrandMo1 != -1 ) {
-            GenInfo.GrandMo1PdgID[GenInfo.Size]  = ( GenHandle->begin() + iGrandMo1 )->pdgId();
-            GenInfo.GrandMo1Status[GenInfo.Size] = ( GenHandle->begin() + iGrandMo1 )->status(); }
+            GenInfo.GrandMo1PdgID[GenInfo.Size]  = it_gen->mother(0)->mother(0)->pdgId(); 
+            GenInfo.GrandMo1Status[GenInfo.Size] = it_gen->mother(0)->mother(0)->status(); }
          if( iGrandMo2 != -1 ) {
-            GenInfo.GrandMo2PdgID[GenInfo.Size]  = ( GenHandle->begin() + iGrandMo2 )->pdgId();
-            GenInfo.GrandMo2Status[GenInfo.Size] = ( GenHandle->begin() + iGrandMo2 )->status(); }
+            GenInfo.GrandMo2PdgID[GenInfo.Size]  = it_gen->mother(NMo-1)->mother(0)->pdgId();
+            GenInfo.GrandMo2Status[GenInfo.Size] = it_gen->mother(NMo-1)->mother(0)->status(); }
 
          /*******************************************************************************
           *
@@ -165,26 +165,24 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
             GenInfo.PhotonFlag[GenInfo.Size]     = -1;
             if( iMo1 != -1 && iMo2 != -1 && it_gen->pdgId() == 22 ) {
                if( GenInfo.Mo1PdgID[GenInfo.Size] == 22 && GenInfo.Mo2PdgID[GenInfo.Size] == 22 ) {
-                  if( ( GenHandle->begin() + iMo1 )->status() == 3 && ( GenHandle->begin() + iMo2 )->status() == 3 )
+                  if( GenInfo.Mo1Status[GenInfo.Size] == 3 && GenInfo.Mo2Status[GenInfo.Size] == 3 )
                   { GenInfo.PhotonFlag[GenInfo.Size]   = 0; }
-               } else if( ( GenHandle->begin() + iMo1 )->status() == 2 && ( GenHandle->begin() + iMo2 )->status() == 2 ) {
+               } else if( GenInfo.Mo1Status[GenInfo.Size] == 2 && GenInfo.Mo2Status[GenInfo.Size] == 2 ) {
                   GenInfo.PhotonFlag[GenInfo.Size]      = 1;
-               } else if( ( GenHandle->begin() + iMo1 )->status() == 3 && ( GenHandle->begin() + iMo2 )->status() == 3 &&
-                          ( ( abs( ( GenHandle->begin() + iMo1 )->pdgId() ) < 6 || ( GenHandle->begin() + iMo1 )->pdgId() == 21 ) &&
-                            ( abs( ( GenHandle->begin() + iMo1 )->pdgId() ) < 6 || ( GenHandle->begin() + iMo1 )->pdgId() == 21 ) )
-                        ) {
-                  if( iGrandMo1 != -1 && iGrandMo2 != -1 )
-                     if( ( GenHandle->begin() + iGrandMo1 )->pdgId() == 2212 )
-                        if( ( GenHandle->begin() + iGrandMo2 )->pdgId() == 2212 )
-                        { GenInfo.PhotonFlag[GenInfo.Size]      = 2; }
-               } else if( ( GenHandle->begin() + iMo1 )->status() == 3 && ( GenHandle->begin() + iMo2 )->status() == 3 ) {
-                  if( iGrandMo1 != -1 && iGrandMo2 != -1 )
-                     if( ( GenHandle->begin() + iGrandMo1 )->pdgId() != 2212 )
-                        if( ( GenHandle->begin() + iGrandMo2 )->pdgId() != 2212 )
-                        { GenInfo.PhotonFlag[GenInfo.Size]      = 3; }
+               } else if( GenInfo.Mo1Status[GenInfo.Size] == 3 && GenInfo.Mo2Status[GenInfo.Size] == 3 &&
+                          ( abs( ( GenInfo.Mo1PdgID[GenInfo.Size] ) < 6 || GenInfo.Mo1PdgID[GenInfo.Size] == 21 ) )&&
+                          ( abs( ( GenInfo.Mo2PdgID[GenInfo.Size] ) < 6 || GenInfo.Mo2PdgID[GenInfo.Size] == 21 ) )) {
+                     if( iGrandMo1 != -1 && iGrandMo2 != -1 && 
+                         GenInfo.GrandMo1PdgID[GenInfo.Size] == 2212 && GenInfo.GrandMo2PdgID[GenInfo.Size] == 2212 ){ 
+                     GenInfo.PhotonFlag[GenInfo.Size] = 2; }
+               } else if( GenInfo.Mo1Status[GenInfo.Size] == 3 && GenInfo.Mo2Status[GenInfo.Size] == 3 ) {
+                  if( iGrandMo1 != -1 && iGrandMo2 != -1 &&
+                      GenInfo.GrandMo1PdgID[GenInfo.Size] != 2212 && GenInfo.GrandMo2PdgID[GenInfo.Size] != 2212 ){ 
+                      GenInfo.PhotonFlag[GenInfo.Size] = 3; }
                }
             } 
          }
+         GenInfo.Size++ ;
       }
 
       if ( numberOfDaughters >= 2 ) {
