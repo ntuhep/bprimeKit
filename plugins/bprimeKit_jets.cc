@@ -26,10 +26,10 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
    //----- EDM interaction variables  -----------------------------------------------------------------
 	JetHandlerList     JetHandle;
 	JetIterator        it_jet   ;
-   edm::Handle<edm::ValueMap<float>> qgHandle;
+   //edm::Handle<edm::ValueMap<float>> qgHandle;
 	edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
    //----- Jet collection type handling  --------------------------------------------------------------
-   bool pfjetcoll  , calojetcoll, fatjetcoll , CAjetcoll  ;
+   bool        pfjetcoll, calojetcoll, fatjetcoll , CAjetcoll  ;
    std::string subjetName;
 	//----- Algorithm specific helper functions  -------------------------------------------------------
    bool jetID      ;
@@ -38,21 +38,14 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 	JetCorrectionUncertainty* jecUnc;
 	edm::ParameterSet* PS_Jets;
 
-   // Turned off, see below
-	//double tracks_x    ; 
-	//double tracks_y     ;
-	//double tracks_x_tot ;
-	//double tracks_y_tot ;
-
-
    for( unsigned il = 0; il < jetlabel_.size(); il++ ) {
       JetHandle.push_back( JetHandler() );
       iEvent.getByLabel( jetlabel_[il], JetHandle[il] );
       if( debug_ > 10 ) { cout << "jets " << il << " jetlabel " << jetlabel_[il] << " with " << JetHandle[il]->size() << " entries\n"; }
    }
 
-   if( debug_ > 10 ) {cout <<"Getting Q taggers" << endl;}
-   iEvent.getByToken(qgToken_ , qgHandle); 
+   //if( debug_ > 10 ) {cout <<"Getting Q taggers" << endl;}
+   //iEvent.getByToken(qgToken_ , qgHandle); 
 
    if( debug_ > 10 ) {cout <<"Begin looping" << endl;}
 
@@ -120,11 +113,11 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          // Official documentation is updating
          if( debug_ > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
          JetInfo[icoll].QGTagsLikelihood  [JetInfo[icoll].Size] = -1;
-         if( pfjetcoll ) {
-            int ijet = it_jet - JetHandle[icoll]->begin();
-            edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll], ijet ) );
-            JetInfo[icoll].QGTagsLikelihood[JetInfo[icoll].Size] = (*qgHandle)[jetRef];
-         }
+         // if( pfjetcoll && false ) { //Turning off in CMSSW_7_4_7
+         //    int ijet = it_jet - JetHandle[icoll]->begin();
+         //    edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll], ijet ) );
+         //    JetInfo[icoll].QGTagsLikelihood[JetInfo[icoll].Size] = (*qgHandle)[jetRef];
+         // }
          
          //----- Jet Uncertainty  ---------------------------------------------------------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting Uncertainty..." << endl ;}

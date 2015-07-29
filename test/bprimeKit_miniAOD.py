@@ -20,14 +20,6 @@ options.register('maxEvts',
 
 
 
-options.register('sample',
-#'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
-'/store/mc/RunIISpring15DR74/TprimeTprime_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/0CA15594-AA13-E511-905F-02163E015283.root',
-#'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/F884E560-CE09-E511-95DB-00266CF3DE70.root',
-#'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/1ECE44F9-5F02-E511-9A65-02163E00EA1F.root',
-      opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.string,
-                 'Sample to analyze')
 
 options.register('lheLabel',
                  'source',
@@ -58,6 +50,15 @@ options.register('LHE',
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.bool,
                  'Keep LHEProducts')
+
+options.register('sample',
+#'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
+'/store/mc/RunIISpring15DR74/TprimeTprime_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/0CA15594-AA13-E511-905F-02163E015283.root',
+#'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/F884E560-CE09-E511-95DB-00266CF3DE70.root',
+#'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/1ECE44F9-5F02-E511-9A65-02163E00EA1F.root',
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.string,
+      'Sample to analyze')
 
 options.register('Debug',
                  0,# default value: no messages
@@ -391,7 +392,7 @@ process.skimmedPatMuons = cms.EDFilter(
 process.skimmedPatElectrons = cms.EDFilter(
     "PATElectronSelector",
     src = cms.InputTag(elLabel),
-    cut = cms.string("pt > 30 && abs(eta) < 2.5")
+    cut = cms.string("pt > 10 && abs(eta) < 2.5")
     )
 
 process.skimmedPatMET = cms.EDFilter(
@@ -404,13 +405,13 @@ process.skimmedPatMET = cms.EDFilter(
 process.skimmedPatJets = cms.EDFilter(
     "PATJetSelector",
     src = cms.InputTag(jLabel),
-    cut = cms.string(" pt > 25 && abs(eta) < 4.")
+    cut = cms.string(" pt > 25 && abs(eta) < 5.")
     )
 
 process.skimmedPatJetsAK8 = cms.EDFilter(
     "CandViewSelector",
     src = cms.InputTag(jLabelAK8),
-    cut = cms.string("pt > 100 && abs(eta) < 4.")    
+    cut = cms.string("pt > 100 && abs(eta) < 5.")    
     )
 
 process.skimmedPatSubJetsAK8 = cms.EDFilter(
@@ -528,8 +529,6 @@ process.TriggerUserData = cms.EDProducer(
 
 ### Including ntuplizer 
 process.load("Analysis.B2GAnaFW.b2gedmntuples_cff")
-
-
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 process.edmNtuplesOut = cms.OutputModule(
@@ -571,7 +570,14 @@ if(options.LHE):
   process.edmNtuplesOut.outputCommands+=('keep LHEEventProduct_*_*_*',)
 ### end LHE products     
 
-process.edmNtuplesOut.outputCommands+=('keep *_generator_*_*',)
+if not options.isData : 
+    process.edmNtuplesOut.outputCommands+=(
+        'keep *_generator_*_*',
+        "keep *_genPart_*_*",
+        "keep *_genJetsAK8_*_*",
+        "keep *_genJetsAK8SoftDrop_*_*"
+        )
+
 process.edmNtuplesOut.fileName=options.outputLabel
 
 #process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
@@ -579,15 +585,6 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    )
 
 
-#------------------------------------------------------------------------------- 
-#
-#  Q/G Tagger pre-requisites
-#
-#  Reference:https://twiki.cern.ch/twiki/bin/viewauth/CMS/QuarkGluonLikelihood
-#
-#------------------------------------------------------------------------------- 
-process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets = ('slimmedJets')
 
 #------------------------------------------------------------------------------- 
 #   Egamma ID pre-requisites
@@ -627,7 +624,6 @@ process.bprimeKit.Debug=options.Debug
 #    )
 
 process.endPath = cms.Path(
-   process.QGTagger *
    process.egmGsfElectronIDSequence * 
    process.egmPhotonIDSequence *
    process.bprimeKit
