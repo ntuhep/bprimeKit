@@ -19,18 +19,18 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
    PhotonHandleList  PhoHandle;
    PhotonIterator    it_pho ;
    
-   edm::Handle<edm::ValueMap<bool> >  loose_id_decisions;
-   edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
-   edm::Handle<edm::ValueMap<bool> >  tight_id_decisions;
-   edm::Handle<edm::ValueMap<float> > mvaValues;
-   edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap;
-   edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap;
-   edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap;
+   edm::Handle<edm::ValueMap<bool>>  loose_id_decisions;
+   edm::Handle<edm::ValueMap<bool>>  medium_id_decisions;
+   edm::Handle<edm::ValueMap<bool>>  tight_id_decisions;
+//   edm::Handle<edm::ValueMap<float>> mvaValues;
+   edm::Handle<edm::ValueMap<float>> phoChargedIsolationMap;
+   edm::Handle<edm::ValueMap<float>> phoNeutralHadronIsolationMap;
+   edm::Handle<edm::ValueMap<float>> phoPhotonIsolationMap;
    if(getPhotonID_){
       iEvent.getByToken( phoLooseIdMapToken_             , loose_id_decisions           );
       iEvent.getByToken( phoMediumIdMapToken_            , medium_id_decisions          );
       iEvent.getByToken( phoTightIdMapToken_             , tight_id_decisions           );
-      iEvent.getByToken( phoMVAValuesMapToken_           , mvaValues                    );
+//      iEvent.getByToken( phoMVAValuesMapToken_           , mvaValues                    );
       iEvent.getByToken( phoChargedIsolationToken_       , phoChargedIsolationMap       );
       iEvent.getByToken( phoNeutralHadronIsolationToken_ , phoNeutralHadronIsolationMap );
       iEvent.getByToken( phoPhotonIsolationToken_        , phoPhotonIsolationMap        );
@@ -80,7 +80,7 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = (*loose_id_decisions)[pho];
             PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = (*medium_id_decisions)[pho];
             PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = (*tight_id_decisions)[pho];
-            PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[pho];
+            //PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[pho];
          } 
 
          //---------------------------  Generation MC information  ---------------------------

@@ -51,6 +51,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    
    //----- GenInfo related  ---------------------------------------------------------------------------
    genevtlabel_        = iConfig.getParameter<TagList>( "genevtlabel"        ) ; //generator
+   genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
    gtdigilabel_        = iConfig.getParameter<TagList>( "gtdigilabel"        ) ; //gtDigis
 
    //----- Jet related  -------------------------------------------------------------------------------
@@ -68,8 +69,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
    eleTightIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
    eleHEEPIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
-   genlabel_           = iConfig.getParameter<TagList>( "genlabel"           ) ; // "genParticles"
-   eleMVAValuesMapToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "eleMVAValuesMap" )) ;
+//   eleMVAValuesMapToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "eleMVAValuesMap" )) ;
    
    //----- Photon related  ----------------------------------------------------------------------------
    phocollections_                 = iConfig.getParameter<StrList> ( "PhoCollections"     ) ; //branch names
@@ -77,7 +77,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    phoLooseIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoLooseIdMap"             )) ;
    phoMediumIdMapToken_            = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoMediumIdMap"            )) ;
    phoTightIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoTightIdMap"             )) ;
-   phoMVAValuesMapToken_           = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoMVAValuesMap"           )) ;
+//   phoMVAValuesMapToken_           = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoMVAValuesMap"           )) ;
    phoChargedIsolationToken_       = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoChargedIsolation"       )) ;
    phoNeutralHadronIsolationToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoNeutralHadronIsolation" )) ;
    phoPhotonIsolationToken_        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;

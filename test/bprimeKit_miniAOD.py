@@ -608,7 +608,7 @@ for idmod in my_phoid_modules:
 
 
 #------------------------------------------------------------------------------- 
-# Loading bprimeKit setup in python/bprimeKit_cfi.py 
+#   Loading bprimeKit setup in python/bprimeKit_cfi.py 
 #------------------------------------------------------------------------------- 
 
 resultsFile = 'results.root'

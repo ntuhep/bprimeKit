@@ -35,7 +35,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    edm::Handle<edm::ValueMap<bool>>  medium_id_decisions ;
    edm::Handle<edm::ValueMap<bool>>  tight_id_decisions  ;
    edm::Handle<edm::ValueMap<bool>>  heep_id_decisions   ;
-   edm::Handle<edm::ValueMap<float>> eleMVAValues        ; 
+//   edm::Handle<edm::ValueMap<float>> eleMVAValues        ; 
    ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget;
 
    float dist_     ,dcot_     , rhoPrime, AEffR03  ;
@@ -51,7 +51,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    iEvent.getByToken( eleMediumIdMapToken_  , medium_id_decisions ) ;
    iEvent.getByToken( eleTightIdMapToken_   , tight_id_decisions  ) ;
    iEvent.getByToken( eleHEEPIdMapToken_    , heep_id_decisions   ) ;
-   iEvent.getByToken( eleMVAValuesMapToken_ , eleMVAValues        ) ;
+//   iEvent.getByToken( eleMVAValuesMapToken_ , eleMVAValues        ) ;
    
    if( isData ) { 
       EATarget = ElectronEffectiveArea::kEleEAData2012; }
@@ -137,7 +137,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[el]); 
-         LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Size] = (*eleMVAValues)[el];
+//         LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Size] = (*eleMVAValues)[el];
          LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
          LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
          LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
