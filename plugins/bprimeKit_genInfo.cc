@@ -76,7 +76,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
 
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
       if( isValidGenParticle(it_gen) && GenInfo.Size < 50  ){
-         if( debug_ ) { cout << "Enter GenInfo" << endl; } 
+         if( debug_ ) { cout << "Enter GenInfo: " << GenInfo.Size << endl; } 
 
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()                ;
          GenInfo.Eta            [GenInfo.Size] = it_gen->eta()               ;
