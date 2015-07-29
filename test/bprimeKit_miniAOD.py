@@ -532,7 +532,35 @@ process.load("Analysis.B2GAnaFW.b2gedmntuples_cff")
 
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
-
+process.edmNtuplesOut = cms.OutputModule(
+      "PoolOutputModule",
+      fileName = cms.untracked.string('B2GEDMNtuple.root'),
+      outputCommands = cms.untracked.vstring(
+         "drop *",
+         "keep *_muons_*_*",
+         "keep *_electrons_*_*",
+         "keep *_photons_*_*",
+         "keep *_photonjets_*_*",
+         "keep *_jetsAK4_*_*",
+         "keep *_jetsAK8_*_*",
+         "keep *_eventShape*_*_*",
+         "keep *_*_*centrality*_*",
+         "keep *_met_*_*",
+         "keep *_eventInfo_*_*",
+         "keep *_subjetsAK8_*_*",
+         "keep *_subjetsCmsTopTag*_*_*",
+         "keep *_jetKeysAK4_*_*",
+         "keep *_jetKeysAK8_*_*",
+         "keep *_subjetKeysAK8_*_*",
+         "keep *_subjetsCmsTopTagKeys_*_*",
+         "keep *_electronKeys_*_*",   
+         "keep *_muonKeys_*_*",
+         "keep *_TriggerUserData*_trigger*_*",
+         "keep *_fixedGridRhoFastjetAll_*_*",
+         "keep *_eventUserData_*_*"
+         ),
+      dropMetaData = cms.untracked.string('ALL'),
+      )
 ### keep info from LHEProducts if they are stored in PatTuples
 if(options.LHE):
   process.LHEUserData = cms.EDProducer("LHEUserData",
