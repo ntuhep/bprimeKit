@@ -4,7 +4,6 @@ from MyAna.bprimeKit.ObjectParameters_cfi import *
 bprimeKit = cms.EDAnalyzer(
    "bprimeKit",
    MCtag                     = cms.untracked.bool(False),
-
    
    rhoLabel                  = cms.InputTag("fixedGridRhoFastjetAll"), 
    metlabel                  = cms.VInputTag("slimmedMETs"),
