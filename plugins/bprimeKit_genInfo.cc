@@ -7,7 +7,7 @@
 
 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
-
+#include "MyAna/bprimeKit/interface/bprimeKit_util.h"
 //-----------------------  GenInfo specific CMSSW libraries  ------------------------
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 
@@ -22,7 +22,7 @@ int  photonFlag( const GenIterator& ) ;
 //------------------------------------------------------------------------------ 
 //   Typedefs and enums
 //------------------------------------------------------------------------------ 
-typedef std::vector<const reco::Candidate*>              CandidateList;
+typedef vector<const reco::Candidate*>              CandidateList;
 typedef CandidateList::const_iterator                    CandidateIterator;
 typedef edm::Handle<GenEventInfoProduct>                 GenInfoHandle;
 
@@ -32,6 +32,9 @@ typedef edm::Handle<GenEventInfoProduct>                 GenInfoHandle;
 
 bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
+   //-------------------------------------------------------------------------------------------------- 
+   //   Variable declaration
+   //-------------------------------------------------------------------------------------------------- 
    const reco::Candidate* MCDaughters[14];
    const reco::Candidate* dau1;
    const reco::Candidate* dau2;
@@ -43,6 +46,15 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    int NMo, NDa;
    int pdgId , dauId1 , dauId2 , monId ; 
    double evWeight;
+
+   bool isTZTZ = false;
+   bool isTZTH = false;
+   bool isTHTH = false;
+   bool isTHBW = false;
+   bool isTZBW = false;
+   bool isBWBW = false;
+   vector<int> quarkID;
+   vector<int> bosonID;
 
    //-------------------------------------------------------------------------------------------------- 
    //   Setting up common variables
@@ -140,6 +152,17 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          //----- Photon Flag, see definition below  ---------------------------------------------------------
          GenInfo.PhotonFlag[GenInfo.Size] = photonFlag( it_gen ) ;
          ++GenInfo.Size;
+
+         //----- Getting information for ljmet algorithm  ---------------------------------------------------
+         if( !isTprime( it_gen->pdgId() ) ) { continue ; }
+         for( size_t i = 0 ; i< it_gen->numberOfDaughters() ; ++i ){
+            int daughterId = it_gen->daughter(i)->pdgId();
+            if( abs(daughterId) == 5 || abs(daughterId) == 6 ){ 
+               quarkID.push_back( daughterId );
+            } else if( abs(daughterId) > 22 && abs(daughterId)<26 ){
+               bosonID.push_back( daughterId );
+            }
+         }
       }
 
       //-------------------------------------------------------------------------------------------------- 
@@ -300,6 +323,71 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       EvtInfo.McDauPhi[i]   = MCDaughters[i]->phi();
       EvtInfo.McDauPdgID[i] = MCDaughters[i]->pdgId();
    }
+
+   //-------------------------------------------------------------------------------------------------- 
+   //   Begin main part of ljmet algorithm
+   //   Main reference: https://github.com/cms-ljmet/Ljmet-Com/blob/master/src/TpTpCalc.cc
+   //-------------------------------------------------------------------------------------------------- 
+   if(quarkID.size() == 0){ return 0;}
+   else if(quarkID.size() != 2){
+      double test = quarkID[0]*quarkID[1];
+      int sign = -1; 
+      if(test > 0) { sign = 1; }
+      if(sign > 0){
+         if(quarkID.size() == 4){
+            swap(quarkID[2],quarkID[3]); }
+         swap(quarkID[1],quarkID[2]);
+         test = quarkID[0]*quarkID[1];
+         sign = -1; if(test > 0) sign = 1;
+         if(sign < 0) cout << "Signs are fixed!" << endl;
+      }
+      if(quarkID.size() > 3 && abs(quarkID[3]) == 6){
+         swap(quarkID[2],quarkID[3]); }
+      if(quarkID.size() > 2 && abs(quarkID[2]) == 6){
+         swap(quarkID[1],quarkID[2]); }
+   }
+
+   // tag the decay chains according to ID'd quarks and bosons.
+   // After the fixes above there should not be errors (if we've done it right!)
+
+   // 2 b quarks, check for matching W's
+   if(abs(quarkID[0]) == 5 && abs(quarkID[1]) == 5){
+      if(abs(bosonID[0]) == 24 && abs(bosonID[1]) == 24) { isBWBW = true; }
+   }
+   // 2 t quarks, check for Z's and H's
+   else if(abs(quarkID[0]) == 6 && abs(quarkID[1]) == 6){
+      if     (bosonID[0] == 23 && bosonID[1] == 23) isTZTZ = true;
+      else if(bosonID[0] == 25 && bosonID[1] == 25) isTHTH = true;
+      else if(bosonID[0] == 25 && bosonID[1] == 23) isTZTH = true;
+      else if(bosonID[0] == 23 && bosonID[1] == 25) isTZTH = true;
+      else { cout << "2 t daughters didn't match tZtZ, tHtH, or tZtH" << bosonID[0] << ", " << bosonID[1] << endl; }
+   }
+   // t-b pairs, check for correlating bosons in the right spots
+   else if(abs(quarkID[0]) == 6 && abs(quarkID[1]) == 5){
+      if     (bosonID[0] == 23 && abs(bosonID[1]) == 24) isTZBW = true;
+      else if(bosonID[0] == 25 && abs(bosonID[1]) == 24) isTHBW = true;
+      else cout << "t - b pair didn't match Z/H - W pair" << bosonID[0] << ", " << bosonID[1] << endl; 
+   }
+   // b-t pairs, check for correlating bosons in the right spots
+   else if(abs(quarkID[1]) == 6 && abs(quarkID[0]) == 5){
+      if     (bosonID[1] == 23 && abs(bosonID[0]) == 24) isTZBW = true;
+      else if(bosonID[1] == 25 && abs(bosonID[0]) == 24) isTHBW = true;
+      else cout << "b - t pair didn't match W - Z/H pair" << bosonID[0] << ", " << bosonID[1] << endl;
+   }
+   // error messages if we found something else entirely
+   else{
+      cout << "daughters didn't match a recognized pattern" << endl;
+      for(size_t i = 0; i < quarkID.size(); i++){ cout << "quark " << i << " = " << quarkID[i] << endl; }
+      for(size_t i = 0; i < bosonID.size(); i++){ cout << "boson " << i << " = " << bosonID[i] << endl; }
+   }
+
+   EvtInfo.McIsTZTZ = isTZTZ;
+   EvtInfo.McIsTHTH = isTHTH;
+   EvtInfo.McIsTZTH = isTZTH;
+   EvtInfo.McIsTZBW = isTZBW;
+   EvtInfo.McIsTHBW = isTHBW;
+   EvtInfo.McIsBWBW = isBWBW;
+
    return true;
 }
 
@@ -361,16 +449,16 @@ int photonFlag( const GenIterator& particle )
       auto mother1 = particle->mother(0);
       auto mother2 = particle->mother( numMo - 1 ) ;
       if( mother1->pdgId()  == 22 && mother2->status() == 22 && 
-          mother1->status() == 3  && mother2->status() == 3 ){ 
+            mother1->status() == 3  && mother2->status() == 3 ){ 
          return PROMPT_PHOTON ;
       } else if( mother1->status() == 2 && mother2->status() == 2 ) {
          return DECAY_IN_FLIGHT ;
       } else if( mother1->status()  == 3 && mother2->status()  == 3 &&
-                 mother1->mother(0) != 0 && mother2->mother(0) != 0 &&
-                 mother1->mother(0)->pdgId() == 2212 && 
-                 mother2->mother(0)->pdgId() == 2212 ){
+            mother1->mother(0) != 0 && mother2->mother(0) != 0 &&
+            mother1->mother(0)->pdgId() == 2212 && 
+            mother2->mother(0)->pdgId() == 2212 ){
          if( (  abs( mother1->pdgId() ) < 6 || mother1->pdgId()       == 21 ) &&
-             (  abs( mother2->pdgId() ) < 6 || mother2->pdgId() == 21 ) ) {
+               (  abs( mother2->pdgId() ) < 6 || mother2->pdgId() == 21 ) ) {
             return ISR_PHOTON; 
          } else return FSR_PHOTON;
       } else return UNKNOWN_FLAG ; 

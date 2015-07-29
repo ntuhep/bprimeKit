@@ -1,25 +1,28 @@
 /*******************************************************************************
  *
  *  Filename    : bprimeKit_utils.cpp
- *  Description : The common functions used in different branches
+ *  Description : Implementation of functions given in interface/bprimeKit_utils.h
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ *
+ *  Details     : All static global variables will be specified by the function 
+ *                sections
  *
 *******************************************************************************/
 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
-//------------------------------------------------------------------------------ 
-//   Prototype of all functions, static variables are function specific
-//------------------------------------------------------------------------------ 
+//----- MC tag for pat particles  ------------------------------------------------------------------
 int getGenMCTag( const reco::GenParticle* );
 int getGenMCTag( GenIterator& , double , double , double ); //Required by the below
 int getGenMCTag( GenIterator& , ElectronIterator& );
 int getGenMCTag( GenIterator& , MuonIterator& ) ;
 
+//----- MC tag for GenParticles  -------------------------------------------------------------------
+bool isTprime( const int ) ; 
 
 //------------------------------------------------------------------------------ 
-//   Begin implemenation
+//   MC tag for PAT particles
 //------------------------------------------------------------------------------ 
 static const reco::Candidate* genCand ; 
 static int bprimeTag;
@@ -80,4 +83,15 @@ int getGenMCTag( GenIterator& gen , ElectronIterator& el )
 int getGenMCTag( GenIterator& gen , MuonIterator& mu ) 
 {
    return getGenMCTag( gen , mu->eta() , mu->phi() , mu->pt() ) ; 
+}
+
+
+//-------------------------------------------------------------------------------------------------- 
+//   MC tag for GenParticles
+//--------------------------------------------------------------------------------------------------
+bool isTprime( const int pdgid ) 
+{
+   if( abs(pdgid)== 8 ) return true;
+   if( abs(pdgid)== 800001 ) return true;
+   return false;
 }
