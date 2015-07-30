@@ -87,7 +87,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       NDa    = it_gen->numberOfDaughters();
 
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
-      if( isValidGenParticle(it_gen) ){
+      if( isValidGenParticle(it_gen) && GenInfo.Size < 50 ){
          if( debug_ ) { cout << "Enter GenInfo" << endl; } 
 
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()                ;
