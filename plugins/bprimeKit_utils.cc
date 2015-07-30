@@ -92,6 +92,6 @@ int getGenMCTag( GenIterator& gen , MuonIterator& mu )
 bool isTprime( const int pdgid ) 
 {
    if( abs(pdgid)== 8 ) return true;
-   if( abs(pdgid)== 800001 ) return true;
+   if( abs(pdgid)== 8000001 ) return true;
    return false;
 }
