@@ -99,7 +99,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       
 
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
-      if( isValidGenParticle(it_gen) && GenInfo.Size < 50 ){
+      if( isValidGenParticle(it_gen) && GenInfo.Size < 30 ){
          if( debug_ ) { cout << "Enter GenInfo" << endl; } 
 
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()                ;
@@ -166,12 +166,12 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          ++GenInfo.Size;
 
          //----- Getting information for ljmet algorithm  ---------------------------------------------------
-         if( !isTprime( it_gen->pdgId() ) || NDa != 2 || hasTprimeDaughter( it_gen ) ) { continue ; }
+         if( !isTprime( it_gen->pdgId() ) || hasTprimeDaughter( it_gen ) ) { continue ; }
          for( size_t i = 0 ; i< it_gen->numberOfDaughters() ; ++i ){
             int daughterId = it_gen->daughter(i)->pdgId();
             if( abs(daughterId) == 5 || abs(daughterId) == 6 ){ 
                quarkID.push_back( daughterId );
-            } else if( abs(daughterId) > 22 && abs(daughterId)<26 ){
+            } else if( abs(daughterId) > 22 && abs(daughterId)< 26 ){
                bosonID.push_back( daughterId );
             }
          }

@@ -4,7 +4,6 @@ from MyAna.bprimeKit.ObjectParameters_cfi import *
 bprimeKit = cms.EDAnalyzer(
    "bprimeKit",
    MCtag                     = cms.untracked.bool(False),
-
    
    rhoLabel                  = cms.InputTag("fixedGridRhoFastjetAll"), 
    metlabel                  = cms.VInputTag("slimmedMETs"),
@@ -15,7 +14,7 @@ bprimeKit = cms.EDAnalyzer(
    phoLooseIdMap             = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"     ) ,
    phoMediumIdMap            = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"    ) ,
    phoTightIdMap             = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"     ) ,
-   phoMVAValuesMap           = cms.InputTag( "photonMVAValueMapProducer:PhotonMVAEstimatorRun2Spring15NonTrigValues" ) ,
+   #phoMVAValuesMap           = cms.InputTag( "photonMVAValueMapProducer:PhotonMVAEstimatorRun2Spring15NonTrigValues" ) ,
    phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
    phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
    phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
@@ -30,7 +29,7 @@ bprimeKit = cms.EDAnalyzer(
    eleMediumIdMap  = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium" ) ,
    eleTightIdMap   = cms.InputTag( "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"  ) ,
    eleHEEPIdMap    = cms.InputTag( "egmGsfElectronIDs:heepElectronID-HEEPV51"                                  ) ,
-   eleMVAValuesMap = cms.InputTag( "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Phys14NonTrigValues"   ) ,
+   #eleMVAValuesMap = cms.InputTag( "electronMVAValueMapProducer:ElectronMVAEstimatorRun2Phys14NonTrigValues"   ) ,
 
    #----- Jet Information ------------------------------------------------------------------------------
    jetlabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8' , 'slimmedJetsAK8') ,
