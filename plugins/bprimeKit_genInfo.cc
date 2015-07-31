@@ -18,6 +18,7 @@
 bool isHardProcesStatus( const int ) ;
 bool isGeneratorStatus(  const int ) ;
 bool isValidGenParticle( const GenIterator& ) ;
+bool hasTprimeDaughter( const GenIterator& ) ; 
 int  photonFlag( const GenIterator& ) ; 
 //------------------------------------------------------------------------------ 
 //   Typedefs and enums
@@ -40,6 +41,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    const reco::Candidate* dau2;
    GenInfoHandle          genEventInfo;
    CandidateList          cands;
+   CandidateIterator      found;
    CandidateIterator      daughter1, daughter2;
    CandidateIterator      mother1  , mother2;
    CandidateIterator      gmother1 , gmother2;
@@ -85,6 +87,16 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       pdgId  = it_gen->pdgId();
       NMo    = it_gen->numberOfMothers();
       NDa    = it_gen->numberOfDaughters();
+
+      // Flushing daughter information 
+      // printf("%3ld:%8d (Mass:%5.5lf); Daughters(%2lu): ", 
+      //       it_gen - GenHandle->begin() , it_gen->pdgId() , it_gen->mass() , it_gen->numberOfDaughters() );
+      // for( size_t i = 0 ; i < it_gen->numberOfDaughters() ; ++i ){
+      //    found = find( cands.begin() , cands.end() , it_gen->daughter(i) ) ; 
+      //    printf("%4ld(%4d)" , found - cands.begin() , it_gen->daughter(i)->pdgId() ) ;
+      // }
+      // printf("\n");
+      
 
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
       if( isValidGenParticle(it_gen) && GenInfo.Size < 50 ){
@@ -154,7 +166,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          ++GenInfo.Size;
 
          //----- Getting information for ljmet algorithm  ---------------------------------------------------
-         if( !isTprime( it_gen->pdgId() ) ) { continue ; }
+         if( !isTprime( it_gen->pdgId() ) || NDa != 2 || hasTprimeDaughter( it_gen ) ) { continue ; }
          for( size_t i = 0 ; i< it_gen->numberOfDaughters() ; ++i ){
             int daughterId = it_gen->daughter(i)->pdgId();
             if( abs(daughterId) == 5 || abs(daughterId) == 6 ){ 
@@ -464,4 +476,13 @@ int photonFlag( const GenIterator& particle )
       } else return UNKNOWN_FLAG ; 
    } 
    return UNKNOWN_FLAG;
+}
+
+bool hasTprimeDaughter( const GenIterator& particle )
+{
+   for( size_t i = 0 ; i < particle->numberOfDaughters() ; ++i ){
+      if( isTprime( particle->daughter(i)->pdgId() ) ){
+         return true; }
+   }
+   return false;
 }
