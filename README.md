@@ -10,7 +10,7 @@ cd CMSSW_7_4_7_patch2/src
 cmsenv 
 
 git cms-merge-topic ikrav:egm_id_747_v1
-git clone https://github.com/cmsb2g/B2GAnaFW -b CMSSW_7_4_X_v4 Analysis/B2GAnaFW 
+git clone https://github.com/cmsb2g/B2GAnaFW -b CMSSW_7_4_X_V4 Analysis/B2GAnaFW 
 git clone https://github.com/ETHZ/sixie-Muon-MuonAnalysisTools.git UserCode/sixie/Muon/MuonAnalysisTools
 git clone https://github.com/ntuhep/bprimeKit.git -b CMSSW_7_4_7 MyAna/bprimeKit
 
