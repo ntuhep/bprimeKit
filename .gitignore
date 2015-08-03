@@ -17,9 +17,10 @@ log*
 # Specific file exclusion 
 # [relative/path/to/file]
 
-interface/GenFormat/*
 test/Production_MC_CMSSW74X_MiniAOD/*/*
-test/Production_MC_CMSSW74X_MiniAOD/MC_datasets_*
+test/Production_MC_CMSSW74X_MiniAOD/MC_dataset_*
+test/Production_Data_CMSSW74X_MiniAOD/*/*
+test/Production_Data_CMSSW74X_MiniAOD/Data_dataset_*
 python/__init__.py
 
 

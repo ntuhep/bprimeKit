@@ -4,8 +4,8 @@
 
 WORKINGPATH=`pwd`
 
-if [ ! -e MC_dataset_$USER ] ;  then 
-   echo "Error: MC_dataset_$USER doesn't exists!"
+if [ ! -e Data_dataset_$USER ] ;  then 
+   echo "Error: Data_dataset_$USER doesn't exists!"
    exit
 fi
 
@@ -25,7 +25,7 @@ if [[ ! -d config_files ]] ; then
 fi 
 
 #-----  Setting up individual configuration files  -------------------------------------------------
-for DATA in $( cat MC_dataset_$USER ) ;  do
+for DATA in $( cat Data_dataset_$USER ) ;  do
    DATALABEL=` getDataLabel $DATA `
    echo $DATALABEL
 
@@ -33,7 +33,7 @@ for DATA in $( cat MC_dataset_$USER ) ;  do
    CRAB_FILE=config_files/"crab-$DATALABEL".py
    OUTPUT_FILE="results-$DATALABEL".root
 
-   cp ../bprimeKit_miniAOD_MC.py         $BPK_PYTHONFILE
+   cp ../bprimeKit_miniAOD_data.py       $BPK_PYTHONFILE
    sed -i "s@results.root@$OUTPUT_FILE@" $BPK_PYTHONFILE
 
    cp ./crab_template.py                      $CRAB_FILE 
@@ -41,7 +41,7 @@ for DATA in $( cat MC_dataset_$USER ) ;  do
    sed -i "s@CRAB_DATA_SET@$DATA@"            $CRAB_FILE 
    sed -i "s@BPK_PYTHONFILE@$BPK_PYTHONFILE@" $CRAB_FILE
    if [[ $1 == "NTU_TIER_3" ]] ; then 
-      sed -i "s@T2_CERN_CH@T3_TW_NTU_HEP@" $CRAB_FILE
+      sed -i "s@T2_CERN_CH@T3_TW_NTU_HEP@"    $CRAB_FILE
    fi
 
    #crab submit -c $CRAB_FILE

@@ -19,12 +19,11 @@ options.register('maxEvts',
                  'Number of events to process')
 
 
-
 options.register('sample',
 #'/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/244/00000/E42FEF61-6E27-E511-B93A-02163E0143C0.root',
 '/store/data/Run2015B/DoubleMuon/MINIAOD/PromptReco-v1/000/251/162/00000/12284DB9-4227-E511-A438-02163E013674.root',
-#      '/store/data/Run2015B/SingleMuon/MINIAOD/PromptReco-v1/000/251/883/00000/62919ECB-1F2D-E511-B387-02163E013796.root',
-      opts.VarParsing.multiplicity.singleton,
+#'/store/data/Run2015B/SingleMuon/MINIAOD/PromptReco-v1/000/251/883/00000/62919ECB-1F2D-E511-B387-02163E013796.root',
+                 opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
                  'Sample to analyze')
 
@@ -47,7 +46,7 @@ options.register('globalTag',
                  'Global Tag')
 
 options.register('isData',
-                 False,
+                 True,
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.bool,
                  'Is data?')
@@ -57,6 +56,7 @@ options.register('LHE',
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.bool,
                  'Keep LHEProducts')
+
 
 options.register('Debug',
                  0,# default value: no messages
@@ -390,7 +390,7 @@ process.skimmedPatMuons = cms.EDFilter(
 process.skimmedPatElectrons = cms.EDFilter(
     "PATElectronSelector",
     src = cms.InputTag(elLabel),
-    cut = cms.string("pt > 30 && abs(eta) < 2.5")
+    cut = cms.string("pt > 10 && abs(eta) < 2.5")
     )
 
 process.skimmedPatMET = cms.EDFilter(
@@ -403,13 +403,13 @@ process.skimmedPatMET = cms.EDFilter(
 process.skimmedPatJets = cms.EDFilter(
     "PATJetSelector",
     src = cms.InputTag(jLabel),
-    cut = cms.string(" pt > 25 && abs(eta) < 4.")
+    cut = cms.string(" pt > 25 && abs(eta) < 5.")
     )
 
 process.skimmedPatJetsAK8 = cms.EDFilter(
     "CandViewSelector",
     src = cms.InputTag(jLabelAK8),
-    cut = cms.string("pt > 100 && abs(eta) < 4.")    
+    cut = cms.string("pt > 100 && abs(eta) < 5.")    
     )
 
 process.skimmedPatSubJetsAK8 = cms.EDFilter(
@@ -527,11 +527,37 @@ process.TriggerUserData = cms.EDProducer(
 
 ### Including ntuplizer 
 process.load("Analysis.B2GAnaFW.b2gedmntuples_cff")
-
-
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
-
+process.edmNtuplesOut = cms.OutputModule(
+      "PoolOutputModule",
+      fileName = cms.untracked.string('B2GEDMNtuple.root'),
+      outputCommands = cms.untracked.vstring(
+         "drop *",
+         "keep *_muons_*_*",
+         "keep *_electrons_*_*",
+         "keep *_photons_*_*",
+         "keep *_photonjets_*_*",
+         "keep *_jetsAK4_*_*",
+         "keep *_jetsAK8_*_*",
+         "keep *_eventShape*_*_*",
+         "keep *_*_*centrality*_*",
+         "keep *_met_*_*",
+         "keep *_eventInfo_*_*",
+         "keep *_subjetsAK8_*_*",
+         "keep *_subjetsCmsTopTag*_*_*",
+         "keep *_jetKeysAK4_*_*",
+         "keep *_jetKeysAK8_*_*",
+         "keep *_subjetKeysAK8_*_*",
+         "keep *_subjetsCmsTopTagKeys_*_*",
+         "keep *_electronKeys_*_*",   
+         "keep *_muonKeys_*_*",
+         "keep *_TriggerUserData*_trigger*_*",
+         "keep *_fixedGridRhoFastjetAll_*_*",
+         "keep *_eventUserData_*_*"
+         ),
+      dropMetaData = cms.untracked.string('ALL'),
+      )
 ### keep info from LHEProducts if they are stored in PatTuples
 if(options.LHE):
   process.LHEUserData = cms.EDProducer("LHEUserData",
@@ -542,7 +568,14 @@ if(options.LHE):
   process.edmNtuplesOut.outputCommands+=('keep LHEEventProduct_*_*_*',)
 ### end LHE products     
 
-process.edmNtuplesOut.outputCommands+=('keep *_generator_*_*',)
+if not options.isData : 
+    process.edmNtuplesOut.outputCommands+=(
+        'keep *_generator_*_*',
+        "keep *_genPart_*_*",
+        "keep *_genJetsAK8_*_*",
+        "keep *_genJetsAK8SoftDrop_*_*"
+        )
+
 process.edmNtuplesOut.fileName=options.outputLabel
 
 #process.edmNtuplesOut.SelectEvents = cms.untracked.PSet(
@@ -550,15 +583,6 @@ process.edmNtuplesOut.fileName=options.outputLabel
 #    )
 
 
-#------------------------------------------------------------------------------- 
-#
-#  Q/G Tagger pre-requisites
-#
-#  Reference:https://twiki.cern.ch/twiki/bin/viewauth/CMS/QuarkGluonLikelihood
-#
-#------------------------------------------------------------------------------- 
-process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets = ('slimmedJets')
 
 #------------------------------------------------------------------------------- 
 #   Egamma ID pre-requisites
@@ -582,10 +606,10 @@ for idmod in my_phoid_modules:
 
 
 #------------------------------------------------------------------------------- 
-# Loading bprimeKit setup in python/bprimeKit_cfi.py 
+#   Loading bprimeKit setup in python/bprimeKit_cfi.py 
 #------------------------------------------------------------------------------- 
 
-resultsFile = 'results_data.root'
+resultsFile = 'results.root'
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string( resultsFile )
 )
@@ -598,7 +622,6 @@ process.bprimeKit.Debug=options.Debug
 #    )
 
 process.endPath = cms.Path(
-   process.QGTagger *
    process.egmGsfElectronIDSequence * 
    process.egmPhotonIDSequence *
    process.bprimeKit

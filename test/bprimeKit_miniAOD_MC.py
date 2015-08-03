@@ -22,10 +22,10 @@ options.register('maxEvts',
 
 options.register('sample',
 #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root',
+#'file:///store/georgi/2015/input/miniAOD/TprimeTprime_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/000C939B-5C13-E511-9EA6-F45214C748CE.root',
 #'/store/mc/RunIISpring15DR74/TprimeTprime_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/60000/0CA15594-AA13-E511-905F-02163E015283.root',
-#'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/F884E560-CE09-E511-95DB-00266CF3DE70.root',
+'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/F884E560-CE09-E511-95DB-00266CF3DE70.root',
 #'/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/1ECE44F9-5F02-E511-9A65-02163E00EA1F.root',
-'file:///store/georgi/2015/input/miniAOD/TprimeTprime_M-1000_TuneCUETP8M1_13TeV-madgraph-pythia8/000C939B-5C13-E511-9EA6-F45214C748CE.root',
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
                  'Sample to analyze')
