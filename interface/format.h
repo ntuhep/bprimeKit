@@ -31,12 +31,6 @@ public:
    Int_t      Orbit  ;
    //----- MC Information  ----------------------------------------------------------------------------
    Int_t   McFlag            ; // MC or not MC, that's the question
-   Bool_t  McIsTZTZ          ;
-   Bool_t  McIsTZTH          ;
-   Bool_t  McIsTZBW          ;
-   Bool_t  McIsTHTH          ;
-   Bool_t  McIsTHBW          ;
-   Bool_t  McIsBWBW          ;
    Int_t   McSigTag          ; // MC Signature tag    - 0: others, 1: 2L (opposite-sign), 2: 2L (same-sign), 3: 3L, 4: 4L
    Int_t   McbprimeMode [2]  ; // b'(bar) decay mode   - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
    Int_t   MctprimeMode [2]  ; // t'(bar) decay mode   - 0: others, 1: bW, 2: tZ, 3: tH, 4: tgamma
@@ -108,12 +102,6 @@ public:
       root->Branch( ( name + ".LumiNo" ).c_str(), &LumiNo, ( name + ".LumiNo/I" ).c_str() );
       root->Branch( ( name + ".Orbit" ).c_str(), &Orbit, ( name + ".Orbit/I" ).c_str() );
       root->Branch( ( name + ".McFlag" ).c_str(), &McFlag, ( name + ".McFlag/I" ).c_str() );
-      root->Branch( ( name + ".McIsTZTZ" ).c_str(), &McIsTZTZ, ( name + ".McIsTZTZ/O" ).c_str() );
-      root->Branch( ( name + ".McIsTZTH" ).c_str(), &McIsTZTH, ( name + ".McIsTZTH/O" ).c_str() );
-      root->Branch( ( name + ".McIsTZBW" ).c_str(), &McIsTZBW, ( name + ".McIsTZBW/O" ).c_str() );
-      root->Branch( ( name + ".McIsTHTH" ).c_str(), &McIsTHTH, ( name + ".McIsTHTH/O" ).c_str() );
-      root->Branch( ( name + ".McIsTHBW" ).c_str(), &McIsTHBW, ( name + ".McIsTHBW/O" ).c_str() );
-      root->Branch( ( name + ".McIsBWBW" ).c_str(), &McIsBWBW, ( name + ".McIsBWBW/O" ).c_str() );
       root->Branch( ( name + ".McSigTag" ).c_str(), &McSigTag, ( name + ".McSigTag/I" ).c_str() );
       root->Branch( ( name + ".McbprimeMode" ).c_str(), McbprimeMode, ( name + ".McbprimeMode[2]/I" ).c_str() );
       root->Branch( ( name + ".MctprimeMode" ).c_str(), MctprimeMode, ( name + ".MctprimeMode[2]/I" ).c_str() );
@@ -179,12 +167,6 @@ public:
       root->SetBranchAddress( ( name + ".LumiNo" ).c_str() , &LumiNo ) ;
       root->SetBranchAddress( ( name + ".Orbit" ).c_str() , &Orbit ) ;
       root->SetBranchAddress( ( name + ".McFlag" ).c_str() , &McFlag ) ;
-      root->SetBranchAddress( ( name + ".McIsTZTZ" ).c_str() , &McIsTZTZ ) ;
-      root->SetBranchAddress( ( name + ".McIsTZTH" ).c_str() , &McIsTZTH ) ;
-      root->SetBranchAddress( ( name + ".McIsTZBW" ).c_str() , &McIsTZBW ) ;
-      root->SetBranchAddress( ( name + ".McIsTHTH" ).c_str() , &McIsTHTH ) ;
-      root->SetBranchAddress( ( name + ".McIsTHBW" ).c_str() , &McIsTHBW ) ;
-      root->SetBranchAddress( ( name + ".McIsBWBW" ).c_str() , &McIsBWBW ) ;
       root->SetBranchAddress( ( name + ".McSigTag" ).c_str() , &McSigTag ) ;
       root->SetBranchAddress( ( name + ".McbprimeMode" ).c_str() , McbprimeMode ) ;
       root->SetBranchAddress( ( name + ".MctprimeMode" ).c_str() , MctprimeMode ) ;
