@@ -14,10 +14,10 @@ config.JobType.inputFiles = [
 config.Data.inputDataset = 'CRAB_DATA_SET'
 
 config.Data.inputDBS = 'global'
-config.Data.splitting = 'LumiBased'
-config.Data.unitsPerJob = 10
-config.Data.outLFNDirBase = 'LFN_DIR' 
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 20
+config.Data.outLFNDirBase = '/store/group/phys_b2g/BprimeKit_Ntuples_Data/' 
 #config.Data.publication = True
 #config.Data.publishDataName = 'CRAB3_tutorial_May2015_MC_analysis'
 
-config.Site.storageSite = 'SITE'
+config.Site.storageSite = 'T2_CH_CERN'

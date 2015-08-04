@@ -34,7 +34,6 @@ for DATA in $( cat MC_dataset_$USER ) ;  do
    OUTPUT_FILE="results-$DATALABEL".root
 
    cp ../bprimeKit_miniAOD_MC.py         $BPK_PYTHONFILE
-   sed -i "s@results.root@$OUTPUT_FILE@" $BPK_PYTHONFILE
 
    cp ./crab_template.py                      $CRAB_FILE 
    sed -i "s@CRAB_JOB_NAME@$DATALABEL@"       $CRAB_FILE

@@ -43,21 +43,13 @@ for DATA in $( cat Data_dataset_$USER ) ;  do
    OUTPUT_FILE="results-$DATALABEL".root
 
    cp ../bprimeKit_miniAOD_data.py       $BPK_PYTHONFILE
-   sed -i "s@results.root@$OUTPUT_FILE@" $BPK_PYTHONFILE
 
    cp ./crab_template.py                      $CRAB_FILE 
    sed -i "s@CRAB_JOB_NAME@$DATALABEL@"       $CRAB_FILE
    sed -i "s@CRAB_DATA_SET@$DATA@"            $CRAB_FILE 
    sed -i "s@BPK_PYTHONFILE@$BPK_PYTHONFILE@" $CRAB_FILE
 
-   site=`getSection ./site.cfg  SITE`
-   lfn=`getSection  ./site.cfg  LFN`
-   lfn=${lfn}/${REMOTE_DIR}
-
-   sed -i "s@SITE@${site}@"    $CRAB_FILE
-   sed -i "s@LFN_DIR@${lfn}@"  $CRAB_FILE
-
-   #crab submit -c $CRAB_FILE
+   crab submit -c $CRAB_FILE
 done
 
 
