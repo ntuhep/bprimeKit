@@ -44,7 +44,7 @@ for DATA in $( cat Data_dataset_$USER ) ;  do
       sed -i "s@T2_CERN_CH@T3_TW_NTU_HEP@"    $CRAB_FILE
    fi
 
-   #crab submit -c $CRAB_FILE
+   crab submit -c $CRAB_FILE
 done
 
 
