@@ -20,4 +20,4 @@ config.Data.outLFNDirBase = '/store/group/phys_b2g/BprimeKit_Ntuples'
 #config.Data.publication = True
 #config.Data.publishDataName = 'CRAB3_tutorial_May2015_MC_analysis'
 
-config.Site.storageSite = 'T2_CERN_CH'
+config.Site.storageSite = 'T2_CH_CERN'
