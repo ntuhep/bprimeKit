@@ -3,15 +3,24 @@
 #### SET FOLDER IN Tier3 FOR SAVING OUTPUT FILES like :/dpm/phys.ntu.edu.tw/home/cms/store/user/USERID/T3_folder #### 
 
 WORKINGPATH=`pwd`
+DATASET_FILE=MC_dataset_${USER}
 
-if [ ! -e MC_dataset_$USER ] ;  then 
-   echo "Error: MC_dataset_$USER doesn't exists!"
+if [ ! -e $DATASET_FILE ] ;  then 
+   echo "Error: $DATASET_FILE doesn't exists!"
    exit
 fi
 
 #-----  Helper functions  --------------------------------------------------------------------------
 function getDataLabel () {
    echo $1 | awk -F "/" '{print $2 }' 
+}
+
+function getSection(){
+   local file=$1
+   local section=$2   
+   local sedcmd="sed '/\[${2}\]/,/\[.*\]/!d'"
+
+   cat $file | eval $sedcmd | head -n -1 | tail -n +2
 }
 
 #-----  Setting up crab environment  ---------------------------------------------------------------
@@ -25,22 +34,25 @@ if [[ ! -d config_files ]] ; then
 fi 
 
 #-----  Setting up individual configuration files  -------------------------------------------------
-for DATA in $( cat MC_dataset_$USER ) ;  do
+for DATA in $( cat $DATASET_FILE ) ;  do
    DATALABEL=` getDataLabel $DATA `
    echo $DATALABEL
 
-   BPK_PYTHONFILE=config_files/"bprimeKit-miniAOD-$DATALABEL".py
+   BPK_PYTHONFILE=../bprimeKit_miniAOD_MC.py
    CRAB_FILE=config_files/"crab-$DATALABEL".py
-   OUTPUT_FILE="results-$DATALABEL".root
-
-   cp ../bprimeKit_miniAOD_MC.py         $BPK_PYTHONFILE
 
    cp ./crab_template.py                      $CRAB_FILE 
    sed -i "s@CRAB_JOB_NAME@$DATALABEL@"       $CRAB_FILE
    sed -i "s@CRAB_DATA_SET@$DATA@"            $CRAB_FILE 
    sed -i "s@BPK_PYTHONFILE@$BPK_PYTHONFILE@" $CRAB_FILE
 
-   crab submit -c $CRAB_FILE
+   site=`getSection ./Sites.cfg SITE`
+   lfn_dir=`getSection ./Sites.cfg LFN`
+   
+   sed -i "s@SITE@${site}@"       $CRAB_FILE 
+   sed -i "s@LFN_DIR@${lfn_dir}@" $CRAB_FILE
+
+   #crab submit -c $CRAB_FILE
 done
 
 

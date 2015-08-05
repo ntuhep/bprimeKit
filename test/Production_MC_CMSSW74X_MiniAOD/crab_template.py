@@ -16,8 +16,8 @@ config.Data.inputDataset = 'CRAB_DATA_SET'
 config.Data.inputDBS = 'global'
 config.Data.splitting = 'FileBased'
 config.Data.unitsPerJob = 20
-config.Data.outLFNDirBase = '/store/group/phys_b2g/BprimeKit_Ntuples_MC/' 
+config.Data.outLFNDirBase = 'LFN_DIR' 
 #config.Data.publication = True
 #config.Data.publishDataName = 'CRAB3_tutorial_May2015_MC_analysis'
 
-config.Site.storageSite = 'T2_CH_CERN'
+config.Site.storageSite = 'SITE'

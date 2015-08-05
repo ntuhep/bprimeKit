@@ -3,10 +3,10 @@
 #### SET FOLDER IN Tier3 FOR SAVING OUTPUT FILES like :/dpm/phys.ntu.edu.tw/home/cms/store/user/USERID/T3_folder #### 
 
 WORKINGPATH=`pwd`
-REMOTE_DIR="BPKNTP_747"
+DATASET_FILE=Data_dataset_${USER}
 
-if [ ! -e Data_dataset_$USER ] ;  then 
-   echo "Error: Data_dataset_$USER doesn't exists!"
+if [ ! -e $DATASET_FILE ] ;  then 
+   echo "Error: $DATASET_FILE doesn't exists!"
    exit
 fi
 
@@ -34,22 +34,25 @@ if [[ ! -d config_files ]] ; then
 fi 
 
 #-----  Setting up individual configuration files  -------------------------------------------------
-for DATA in $( cat Data_dataset_$USER ) ;  do
+for DATA in $( cat $DATASET_FILE ) ;  do
    DATALABEL=` getDataLabel $DATA `
    echo $DATALABEL
 
-   BPK_PYTHONFILE=config_files/"bprimeKit-miniAOD-$DATALABEL".py
+   BPK_PYTHONFILE=../bprimeKit_miniAOD_data.py
    CRAB_FILE=config_files/"crab-$DATALABEL".py
-   OUTPUT_FILE="results-$DATALABEL".root
-
-   cp ../bprimeKit_miniAOD_data.py       $BPK_PYTHONFILE
 
    cp ./crab_template.py                      $CRAB_FILE 
    sed -i "s@CRAB_JOB_NAME@$DATALABEL@"       $CRAB_FILE
    sed -i "s@CRAB_DATA_SET@$DATA@"            $CRAB_FILE 
    sed -i "s@BPK_PYTHONFILE@$BPK_PYTHONFILE@" $CRAB_FILE
 
-   crab submit -c $CRAB_FILE
+   site=`getSection ./Sites.cfg SITE`
+   lfn_dir=`getSection ./Sites.cfg LFN`
+   
+   sed -i "s@SITE@${site}@"       $CRAB_FILE 
+   sed -i "s@LFN_DIR@${lfn_dir}@" $CRAB_FILE
+
+   #crab submit -c $CRAB_FILE
 done
 
 
