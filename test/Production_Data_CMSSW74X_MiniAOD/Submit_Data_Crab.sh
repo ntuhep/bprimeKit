@@ -52,7 +52,7 @@ for DATA in $( cat $DATASET_FILE ) ;  do
    sed -i "s@SITE@${site}@"       $CRAB_FILE 
    sed -i "s@LFN_DIR@${lfn_dir}@" $CRAB_FILE
 
-   #crab submit -c $CRAB_FILE
+   crab submit -c $CRAB_FILE
 done
 
 
