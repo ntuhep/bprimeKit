@@ -94,7 +94,7 @@ REMOTE_SITE=`getSection ./Sites.cfg SITE`
 if [[ $REMOTE_SITE == "T2_CH_CERN" ]] ; then
    REMOTE_SERVER="eoscms.cern.ch"
 fi
-LFN_DIR=`getSection ./Sites.cfg LFN`
+LFN_DIR_LIST=( `getSection ./Sites.cfg LFN` )
 
 
 #-----  Argument parsing  --------------------------------------------------------------------------
@@ -143,9 +143,10 @@ fi
 # path/to/file=/cms/store/user/[userid]/[crabdir]/[dataLabel]/[crabName]/[submitTime]/0000/[rootfile]
 
 for targetLabel in ${targetLabelList[@]} ; do
+   for lfn_dir in ${LFN_DIR_LIST[@]} ; do 
    echo "Finding files for $targetLabel...."
    targetFileList=()
-   labelPath=$LFN_DIR/$targetLabel 
+   labelPath=$lfn_dir/$targetLabel 
    targetFileList+=("`descendxrdfs $labelPath 4`")
 
    for targetFile in ${targetFileList[@]} ; do
@@ -176,4 +177,5 @@ for targetLabel in ${targetLabelList[@]} ; do
          remotecp $targetFile $localFilePath
       fi
    done
+done
 done
