@@ -56,7 +56,7 @@ function remotecp() {
 local remoteFile=$1
 local localFile=$2
 echo "  >> $remoteFile"
-xrdcp -f xroot://$REMOTE_SERVER/$remoteFile $localFile &> /dev/null
+xrdcp -f xroot://$REMOTE_SERVER/$remoteFile $localFile
 }
 
 function addLogEntry(){
@@ -158,21 +158,22 @@ for targetLabel in ${targetLabelList[@]} ; do
       fileSize=`getFileSize $targetFile`
       localFilePath=$LOCAL_STORAGE/$targetLabel/$fileName
 
-      previousTime=`grep $fileName $LOG_FILE | awk '{print $1}'`
-      previousSize=`grep $fileName $LOG_FILE | awk '{print $3}'`
+      previousTime=`grep $targetLabel $LOG_FILE | grep $fileName | awk '{print $1}'`
+      previousSize=`grep $targetLabel $LOG_FILE | grep $fileName | awk '{print $4}'`
 
       if [[ $previousTime == "" ]] ; then 
          echo ">>> Inserting new file $fileName"
          addLogEntry $submitTime $targetLabel $fileName $fileSize
          remotecp $targetFile $localFilePath
 
-      elif [[ $submitTime -gt $previousTime ]] ; then 
+      elif [[ ($submitTime < $previousTime) ]] ; then 
          echo ">>> New submission for file $fileName found!"
          changeLogEntry $submitTime $targetLabel $fileName $fileSize
          remotecp $targetFile $localFilePath
 
-      elif [[ $fileSize -gt $previousSize ]]; then
+      elif [[ ($fileSize < $previousSize) ]]; then
          echo ">>> New update for file $fileName found!"
+         echo $filesize $previousSize
          changeLogEntry $submitTime $targetLabel $fileName $fileSize
          remotecp $targetFile $localFilePath
       fi
