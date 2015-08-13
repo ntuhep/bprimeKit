@@ -169,7 +169,10 @@ private:
    //----- Jet variable setup  ------------------------------------------------------------------------
    std::vector<std::string>                jetcollections_ ;
    std::vector<edm::InputTag>              jetlabel_       ;
-   edm::EDGetTokenT<edm::ValueMap<float>>  qgToken_        ;
+   edm::EDGetTokenT<edm::ValueMap<float>>  qgLikelihoodToken_        ;
+   edm::EDGetTokenT<edm::ValueMap<float>>  qgaxis2Token_ ;
+   edm::EDGetTokenT<edm::ValueMap<int  >>  qgmultToken_  ;
+   edm::EDGetTokenT<edm::ValueMap<float>>  qgptDToken_   ;
    
    //----- Photon variable setup  ---------------------------------------------------------------------
    std::vector<std::string>    phocollections_                            ;

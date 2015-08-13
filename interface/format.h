@@ -842,8 +842,11 @@ public:
    Float_t Area                    [MAX_JETS] ;
    Int_t   JetIDLOOSE              [MAX_JETS] ; //Add by Chiyi
    Float_t JetCharge               [MAX_JETS] ;
-   Float_t QGTagsMLP               [MAX_JETS] ;
+   //----- QG tagger variables  -----------------------------------------------------------------------
    Float_t QGTagsLikelihood        [MAX_JETS] ;
+   Float_t QGTagsAxis2             [MAX_JETS] ;
+   Float_t QGTagsMult              [MAX_JETS] ;
+   Float_t QGTagsPtD               [MAX_JETS] ;
    Int_t   NConstituents           [MAX_JETS] ;
 
    Int_t   NCH                     [MAX_JETS] ;
@@ -938,8 +941,10 @@ public:
       root->Branch( ( name + ".Area" ).c_str(), Area, ( name + ".Area[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".JetIDLOOSE" ).c_str(), JetIDLOOSE, ( name + ".JetIDLOOSE[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".JetCharge" ).c_str(), JetCharge, ( name + ".JetCharge[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".QGTagsMLP" ).c_str(), QGTagsMLP, ( name + ".QGTagsMLP[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsLikelihood" ).c_str(), QGTagsLikelihood, ( name + ".QGTagsLikelihood[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".QGTagsAxis2" ).c_str(), QGTagsAxis2, ( name + ".QGTagsAxis2[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".QGTagsMult" ).c_str(), QGTagsMult, ( name + ".QGTagsMult[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".QGTagsPtD" ).c_str(), QGTagsPtD, ( name + ".QGTagsPtD[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NConstituents" ).c_str(), NConstituents, ( name + ".NConstituents[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".NCH" ).c_str(), NCH, ( name + ".NCH[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".CEF" ).c_str(), CEF, ( name + ".CEF[" + name + ".Size]/F" ).c_str() );
@@ -1013,8 +1018,10 @@ public:
       root->SetBranchAddress( ( name + ".Area" ).c_str() , Area ) ;
       root->SetBranchAddress( ( name + ".JetIDLOOSE" ).c_str() , JetIDLOOSE ) ;
       root->SetBranchAddress( ( name + ".JetCharge" ).c_str() , JetCharge ) ;
-      root->SetBranchAddress( ( name + ".QGTagsMLP" ).c_str() , QGTagsMLP ) ;
       root->SetBranchAddress( ( name + ".QGTagsLikelihood" ).c_str() , QGTagsLikelihood ) ;
+      root->SetBranchAddress( ( name + ".QGTagsAxis2" ).c_str() , QGTagsAxis2 ) ;
+      root->SetBranchAddress( ( name + ".QGTagsMult" ).c_str() , QGTagsMult ) ;
+      root->SetBranchAddress( ( name + ".QGTagsPtD" ).c_str() , QGTagsPtD ) ;
       root->SetBranchAddress( ( name + ".NConstituents" ).c_str() , NConstituents ) ;
       root->SetBranchAddress( ( name + ".NCH" ).c_str() , NCH ) ;
       root->SetBranchAddress( ( name + ".CEF" ).c_str() , CEF ) ;

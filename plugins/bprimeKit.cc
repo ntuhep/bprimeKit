@@ -55,9 +55,12 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    gtdigilabel_        = iConfig.getParameter<TagList>( "gtdigilabel"        ) ; //gtDigis
 
    //----- Jet related  -------------------------------------------------------------------------------
-   jetcollections_  = iConfig.getParameter<StrList>( "JetCollections" ) ; //branch names
-   jetlabel_        = iConfig.getParameter<TagList>( "jetlabel"       ) ; 
-   //qgToken_ = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+   jetcollections_    = iConfig.getParameter<StrList>( "JetCollections" ) ; //branch names
+   jetlabel_          = iConfig.getParameter<TagList>( "jetlabel"       ) ;
+   qgLikelihoodToken_ = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+   qgaxis2Token_      = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
+   qgmultToken_       = consumes<edm::ValueMap<int  >>(edm::InputTag("QGTagger", "mult"));
+   qgptDToken_        = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
    
    //----- Lepton related  ----------------------------------------------------------------------------
    lepcollections_       = iConfig.getParameter<StrList>( "LepCollections"     ) ; //branch names
