@@ -61,8 +61,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.LumiNo   = iEvent.luminosityBlock();
    EvtInfo.Orbit    = iEvent.orbitNumber();
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
-   EvtInfo.ptHat    = -1.;
-   EvtInfo.Rho      = * (rhoHandle.product()) ; 
+   EvtInfo.Rho      = *(rhoHandle.product()) ; 
    
    if( debug_ > 0 ){ cout <<">>>Evt: Inserting Pile up information information"<< endl;}
    //----- Pile up information  -----------------------------------------------------------------------

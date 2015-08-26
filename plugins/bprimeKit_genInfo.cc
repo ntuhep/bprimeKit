@@ -69,9 +69,17 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       cands.push_back( &*it_gen ); }
 
    evWeight = 1.0 ;
-   iEvent.getByLabel( genevtlabel_ , genEventInfo );
-   evWeight      = genEventInfo->weight();
-   EvtInfo.ptHat = genEventInfo->qScale();
+   iEvent.getByLabel( genevtlabel_[0] , genEventInfo );
+   if( genEventInfo.isValid() ) {
+      if( debug_ ){
+         cout << "GenEventInfo Is Valid " << genEventInfo->qScale() <<" " << genEventInfo->weight() << endl; } 
+      evWeight      = genEventInfo->weight();
+      EvtInfo.ptHat = genEventInfo->qScale();
+      cout <<"GenEventInfo: " <<  EvtInfo.ptHat << " " << genEventInfo->qScale() << endl ;
+   } else {
+      if( debug_ ){
+         cout << "GenEventInfo Is Not Valid " << endl; } 
+   }
    GenInfo.Weight = evWeight;
 
    //-------------------------------------------------------------------------------------------------- 
