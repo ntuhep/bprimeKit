@@ -20,7 +20,7 @@ bprimeKit = cms.EDAnalyzer(
    phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
    
    #----- Lepton related information -------------------------------------------------------------------
-   LepCollections  = cms.vstring('LepInfo'),
+   LepCollections  = cms.vstring( 'LepInfo'),
    muonlabel       = cms.VInputTag('slimmedMuons'     ) ,
    eleclabel       = cms.VInputTag('slimmedElectrons' ) ,
    taulabel        = cms.VInputTag('slimmedTaus'      ) ,
@@ -35,15 +35,17 @@ bprimeKit = cms.EDAnalyzer(
    jetlabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8' , 'slimmedJetsAK8') ,
    JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
 
-   PairCollection            = cms.untracked.int32(1),
+   #----- MC Generation information --------------------------------------------------------------------
    genlabel                  = cms.VInputTag("prunedGenParticles"),
+   genevtlabel               = cms.VInputTag("generator"),
+   gtdigilabel               = cms.VInputTag("gtDigis"),
+
+   PairCollection            = cms.untracked.int32(1),
    hltlabel                  = cms.VInputTag("TriggerResults::HLT"),
    offlinePVlabel            = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
    offlinePVBSlabel          = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
    offlineBSlabel            = cms.VInputTag("offlineBeamSpot"),
    pfCands                   = cms.InputTag("packedPFCandidates"),
-   genevtlabel               = cms.VInputTag("generator"),
-   gtdigilabel               = cms.VInputTag("gtDigis"),
    puInfoLabel               = cms.VInputTag("addPileupInfo"),
    
    EIDMVAInputTags = cms.vstring(

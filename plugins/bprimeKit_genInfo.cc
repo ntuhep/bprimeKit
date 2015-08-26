@@ -69,11 +69,9 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       cands.push_back( &*it_gen ); }
 
    evWeight = 1.0 ;
-   iEvent.getByLabel( "generator", genEventInfo );
-   if ( genEventInfo.isValid() ) {
-      evWeight      = genEventInfo->weight();
-      EvtInfo.ptHat = genEventInfo->qScale();
-   }
+   iEvent.getByLabel( genevtlabel_ , genEventInfo );
+   evWeight      = genEventInfo->weight();
+   EvtInfo.ptHat = genEventInfo->qScale();
    GenInfo.Weight = evWeight;
 
    //-------------------------------------------------------------------------------------------------- 
