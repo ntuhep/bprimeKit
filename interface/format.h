@@ -20,7 +20,7 @@
 #define MAX_GENS           128
 #define MAX_Vertices       256
 #define MAX_BX             128
-#define N_TRIGGER_BOOKINGS 1508
+#define N_TRIGGER_BOOKINGS 1690
 
 class EvtInfoBranches {
 public:
