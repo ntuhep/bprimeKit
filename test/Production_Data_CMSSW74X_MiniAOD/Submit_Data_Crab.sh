@@ -12,7 +12,7 @@ fi
 
 #-----  Helper functions  --------------------------------------------------------------------------
 function getDataLabel () {
-   echo $1 | awk -F "/" '{print $2 }' 
+   echo $1 | awk -F "/" '{print $2_$3 }' 
 }
 
 function getSection(){
