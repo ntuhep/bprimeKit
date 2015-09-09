@@ -1,0 +1,3 @@
+[submodule "bpkProduction"]
+	path = bpkProduction
+	url = https://github.com/ntuhep/bpkProduction.git
