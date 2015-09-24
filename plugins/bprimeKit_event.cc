@@ -112,8 +112,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    for( it_met = METHandle->begin(); it_met != METHandle->end(); it_met++ ) {
       EvtInfo.PFMET              = it_met->pt()             ;
       EvtInfo.PFMETPhi           = it_met->phi()            ;
-      EvtInfo.PFRawMET           = it_met->uncorrectedPt()  ;
-      EvtInfo.PFRawMETPhi        = it_met->uncorrectedPhi() ;
+      EvtInfo.PFRawMET           = it_met->uncorPt()  ;
+      EvtInfo.PFRawMETPhi        = it_met->uncorPhi() ;
       EvtInfo.PFMETx             = it_met->px()             ; //Uly 2011-04-04
       EvtInfo.PFMETy             = it_met->py()             ; //Uly 2011-04-04
       EvtInfo.PFSumEt            = it_met->sumEt()          ;

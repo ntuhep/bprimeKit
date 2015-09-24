@@ -77,19 +77,23 @@ options.register('usePrivateSQLite',
                  opts.VarParsing.varType.bool,
                  'Take Corrections from private SQL file')
 
-
 options.register('forceResiduals',
                  None,
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.bool,
                  'Whether to force residuals to be applied')
 
-
 options.register('LHE',
                  False,
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.bool,
                  'Keep LHEProducts')
+
+options.register('Debug',
+                 0,
+                 opts.VarParsing.multiplicity.singleton,
+                 opts.VarParsing.varType.int,
+                 'Debugging output level' )
 
 options.parseArguments()
 
@@ -100,8 +104,7 @@ if(options.isData):options.LHE = False
 runOnData        = options.isData #data/MC switch
 useHFCandidates  = not options.useNoHFMET #create an additionnal NoHF slimmed MET collection if the option is set to false
 usePrivateSQlite = options.usePrivateSQLite #use external JECs (sqlite file)
-applyResiduals   = options.isData #application of residual corrections. Have to be set to True once the 13 TeV residual corrections are available. False to be kept meanwhile. Can be 
-kept to False later for private tests or for analysis checks and developments (not the official recommendation!).
+applyResiduals   = options.isData #application of residual corrections. Have to be set to True once the 13 TeV residual corrections are available. False to be kept meanwhile. Can be kept to False later for private tests or for analysis checks and developments (not the official recommendation!).
 #===================================================================
 
 if not (options.forceResiduals == None):
@@ -216,8 +219,6 @@ if usePrivateSQlite:
     else:
       era="Summer15_50nsV4_MC"
     dBFile = era+".db"
-#    print "dBFile"
-#    print dBFile
     process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
                                connect = cms.string( "sqlite_file:"+dBFile ),
                                toGet =  cms.VPSet(
@@ -247,12 +248,9 @@ if usePrivateSQlite:
     
     process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
     from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated, patJetsUpdated
-#    print "applying corrections: "
-#    print corrections
     process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
       rho = cms.InputTag("fixedGridRhoFastjetAll"),
       src = cms.InputTag("slimmedJets"),
-      
       levels = corrections )
     process.updatedPatJetsAK4 = patJetsUpdated.clone(
       jetSource = cms.InputTag("slimmedJets"),
@@ -349,20 +347,20 @@ if (applyResiduals == True):
     process.patJetCorrFactorsNoHF.levels = corrections 
 
 if not ( applyResiduals ==True):
-    process.patPFMetT1T2Corr.jetCorrLabelRes = cms.InputTag("L3Absolute")
-    process.patPFMetT1T2SmearCorr.jetCorrLabelRes = cms.InputTag("L3Absolute")
-    process.patPFMetT2Corr.jetCorrLabelRes = cms.InputTag("L3Absolute")
-    process.patPFMetT2SmearCorr.jetCorrLabelRes = cms.InputTag("L3Absolute")
+    process.patPFMetT1T2Corr.jetCorrLabelRes          = cms.InputTag("L3Absolute")
+    process.patPFMetT1T2SmearCorr.jetCorrLabelRes     = cms.InputTag("L3Absolute")
+    process.patPFMetT2Corr.jetCorrLabelRes            = cms.InputTag("L3Absolute")
+    process.patPFMetT2SmearCorr.jetCorrLabelRes       = cms.InputTag("L3Absolute")
     process.shiftedPatJetEnDown.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
-    process.shiftedPatJetEnUp.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
+    process.shiftedPatJetEnUp.jetCorrLabelUpToL3Res   = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
 
     if not useHFCandidates:
-          process.patPFMetT1T2CorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
-          process.patPFMetT1T2SmearCorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
-          process.patPFMetT2CorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
-          process.patPFMetT2SmearCorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
+          process.patPFMetT1T2CorrNoHF.jetCorrLabelRes          = cms.InputTag("L3Absolute")
+          process.patPFMetT1T2SmearCorrNoHF.jetCorrLabelRes     = cms.InputTag("L3Absolute")
+          process.patPFMetT2CorrNoHF.jetCorrLabelRes            = cms.InputTag("L3Absolute")
+          process.patPFMetT2SmearCorrNoHF.jetCorrLabelRes       = cms.InputTag("L3Absolute")
           process.shiftedPatJetEnDownNoHF.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
-          process.shiftedPatJetEnUpNoHF.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
+          process.shiftedPatJetEnUpNoHF.jetCorrLabelUpToL3Res   = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
 ### ------------------------------------------------------------------
 
 
@@ -406,6 +404,28 @@ process.skimmedPatJetsAK8 = cms.EDFilter(
     cut = cms.string("pt > 100 && abs(eta) < 5.")    
     )
 
+## Required for QG tagger
+process.jetUserData = cms.EDProducer(
+      'JetUserData',
+      jetLabel  = cms.InputTag(jLabel),
+      ### TTRIGGER ###
+      triggerResults = cms.InputTag(triggerResultsLabel,"","HLT"),
+      triggerSummary = cms.InputTag(triggerSummaryLabel,"","HLT"),
+      hltJetFilter       = cms.InputTag("hltSixCenJet20L1FastJet"),
+      hltPath            = cms.string("HLT_QuadJet60_DiJet20_v6"),
+      hlt2reco_deltaRmax = cms.double(0.2),
+      )
+
+process.jetUserDataNoHF = cms.EDProducer(
+      'JetUserData',
+      jetLabel  = cms.InputTag(jLabelNoHF),
+      ### TTRIGGER ###
+      triggerResults = cms.InputTag(triggerResultsLabel,"","HLT"),
+      triggerSummary = cms.InputTag(triggerSummaryLabel,"","HLT"),
+      hltJetFilter       = cms.InputTag("hltSixCenJet20L1FastJet"),
+      hltPath            = cms.string("HLT_QuadJet60_DiJet20_v6"),
+      hlt2reco_deltaRmax = cms.double(0.2),
+      )
 
 #------------------------------------------------------------------------------- 
 #   Settings for QGTagger
@@ -467,9 +487,9 @@ process.load("MyAna.bprimeKit.bprimeKit_cfi")
 process.bprimeKit.Debug=options.Debug
 
 process.endPath = cms.Path(
-   process.QGTagger * 
-   process.egmGsfElectronIDSequence * 
-   process.egmPhotonIDSequence *
-   process.bprimeKit
+#      process.QGTagger * 
+      process.egmGsfElectronIDSequence * 
+      process.egmPhotonIDSequence *
+      process.bprimeKit
 )
 

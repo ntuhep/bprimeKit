@@ -3,10 +3,23 @@ from MyAna.bprimeKit.ObjectParameters_cfi import *
 
 bprimeKit = cms.EDAnalyzer(
    "bprimeKit",
-   MCtag                     = cms.untracked.bool(False),
-   
+
+   #----- Operation paramters --------------------------------------------------------------------------
+   MCtag               = cms.untracked.bool(False),
+   PairCollection      = cms.untracked.int32(1),
+   IncludeL7           = cms.untracked.bool(False),
+   SelectionParameters = defaultObjectParameters.clone(),
+   Debug               = cms.untracked.int32(100),
+  
+   #----- Event level objects --------------------------------------------------------------------------
    rhoLabel                  = cms.InputTag("fixedGridRhoFastjetAll"), 
    metlabel                  = cms.VInputTag("slimmedMETs"),
+   hltlabel                  = cms.VInputTag("TriggerResults::HLT"),
+   offlinePVlabel            = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
+   offlinePVBSlabel          = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
+   offlineBSlabel            = cms.VInputTag("offlineBeamSpot"),
+   pfCands                   = cms.InputTag("packedPFCandidates"),
+   puInfoLabel               = cms.VInputTag("addPileupInfo"),
 
    #----- Photon information ------------------------------------------------------------------------ 
    PhoCollections            = cms.vstring('PhotonInfo'),
@@ -40,13 +53,6 @@ bprimeKit = cms.EDAnalyzer(
    genevtlabel               = cms.VInputTag("generator"),
    gtdigilabel               = cms.VInputTag("gtDigis"),
 
-   PairCollection            = cms.untracked.int32(1),
-   hltlabel                  = cms.VInputTag("TriggerResults::HLT"),
-   offlinePVlabel            = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
-   offlinePVBSlabel          = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
-   offlineBSlabel            = cms.VInputTag("offlineBeamSpot"),
-   pfCands                   = cms.InputTag("packedPFCandidates"),
-   puInfoLabel               = cms.VInputTag("addPileupInfo"),
    
    EIDMVAInputTags = cms.vstring(
       'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat1.weights.xml' ,
@@ -62,9 +68,5 @@ bprimeKit = cms.EDAnalyzer(
       'dataEIDMVA/Electrons_BDTG_TrigV0_Cat5.weights.xml'    ,
       'dataEIDMVA/Electrons_BDTG_TrigV0_Cat6.weights.xml'
    ),
-
-   IncludeL7           = cms.untracked.bool(False),
-   SelectionParameters = defaultObjectParameters.clone(),
-   Debug               = cms.untracked.int32(100),
 )
 

@@ -26,10 +26,10 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
    //----- EDM interaction variables  -----------------------------------------------------------------
 	JetHandlerList     JetHandle;
 	JetIterator        it_jet   ;
-   edm::Handle<edm::ValueMap<float>> qgLikelihoodHandle;
-   edm::Handle<edm::ValueMap<float>> qgaxis2Handle;
-   edm::Handle<edm::ValueMap<int  >> qgmultHandle;
-   edm::Handle<edm::ValueMap<float>> qgptDHandle;
+   // edm::Handle<edm::ValueMap<float>> qgLikelihoodHandle;
+   // edm::Handle<edm::ValueMap<float>> qgaxis2Handle;
+   // edm::Handle<edm::ValueMap<int  >> qgmultHandle;
+   // edm::Handle<edm::ValueMap<float>> qgptDHandle;
 
 	edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
    //----- Jet collection type handling  --------------------------------------------------------------
@@ -49,10 +49,10 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
    }
 
    if( debug_ > 10 ) {cout <<"Getting Q taggers" << endl;}
-   iEvent.getByToken(qgLikelihoodToken_ , qgLikelihoodHandle );
-   iEvent.getByToken(qgaxis2Token_      , qgaxis2Handle      );
-   iEvent.getByToken(qgmultToken_       , qgmultHandle       );
-   iEvent.getByToken(qgptDToken_        , qgptDHandle        );
+   // iEvent.getByToken( qgLikelihoodToken_ , qgLikelihoodHandle );
+   // iEvent.getByToken( qgaxis2Token_      , qgaxis2Handle      );
+   // iEvent.getByToken( qgmultToken_       , qgmultHandle       );
+   // iEvent.getByToken( qgptDToken_        , qgptDHandle        );
 
    if( debug_ > 10 ) {cout <<"Begin looping" << endl;}
 
@@ -121,11 +121,11 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          if( debug_ > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
          JetInfo[icoll].QGTagsLikelihood  [JetInfo[icoll].Size] = -1;
          if( pfjetcoll  ) {
-            edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll] , it_jet - JetHandle[icoll]->begin() ));
-            JetInfo[icoll].QGTagsLikelihood [JetInfo[icoll].Size] = (*qgLikelihoodHandle)[jetRef];
-            JetInfo[icoll].QGTagsAxis2      [JetInfo[icoll].Size] = (*qgaxis2Handle)[jetRef];
-            JetInfo[icoll].QGTagsMult       [JetInfo[icoll].Size] = (*qgmultHandle)[jetRef];
-            JetInfo[icoll].QGTagsPtD        [JetInfo[icoll].Size] = (*qgptDHandle)[jetRef];
+            // edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll] , it_jet - JetHandle[icoll]->begin() ));
+            // JetInfo[icoll].QGTagsLikelihood [JetInfo[icoll].Size] = (*qgLikelihoodHandle)[jetRef];
+            // JetInfo[icoll].QGTagsAxis2      [JetInfo[icoll].Size] = (*qgaxis2Handle)[jetRef];
+            // JetInfo[icoll].QGTagsMult       [JetInfo[icoll].Size] = (*qgmultHandle)[jetRef];
+            // JetInfo[icoll].QGTagsPtD        [JetInfo[icoll].Size] = (*qgptDHandle)[jetRef];
          }
          
          //----- Jet Uncertainty  ---------------------------------------------------------------------------

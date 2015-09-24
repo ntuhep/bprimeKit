@@ -99,12 +99,12 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
    
-   if( EIDMVAInputTags_.size() != 12 ) { cout << "EIDMVAInputTags array size (12) is not correct" << endl; }
-   StrList myManualCatWeigthsTrig;
-   for( int ie = 0; ie < 6; ie++ ) { 
-      myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
-   myMVATrig = new EGammaMvaEleEstimator();
-   myMVATrig->initialize( "BDT", EGammaMvaEleEstimator::kTrig, true, myManualCatWeigthsTrig );
+   // if( EIDMVAInputTags_.size() != 12 ) { cout << "EIDMVAInputTags array size (12) is not correct" << endl; }
+   // StrList myManualCatWeigthsTrig;
+   // for( int ie = 0; ie < 6; ie++ ) { 
+   //    myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
+   // myMVATrig = new EGammaMvaEleEstimator();
+   // myMVATrig->initialize( "BDT", EGammaMvaEleEstimator::kTrig, true, myManualCatWeigthsTrig );
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       HLTmaplist.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }

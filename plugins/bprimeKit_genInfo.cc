@@ -75,7 +75,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          cout << "GenEventInfo Is Valid " << genEventInfo->qScale() <<" " << genEventInfo->weight() << endl; } 
       evWeight      = genEventInfo->weight();
       EvtInfo.ptHat = genEventInfo->qScale();
-      cout <<"GenEventInfo: " <<  EvtInfo.ptHat << " " << genEventInfo->qScale() << endl ;
    } else {
       if( debug_ ){
          cout << "GenEventInfo Is Not Valid " << endl; } 
@@ -105,7 +104,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       
 
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
-      if( isValidGenParticle(it_gen) && GenInfo.Size < 30 ){
+      if( isValidGenParticle(it_gen) && GenInfo.Size < 60 ){
          if( debug_ ) { cout << "Enter GenInfo" << endl; } 
 
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()                ;
