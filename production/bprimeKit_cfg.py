@@ -449,20 +449,20 @@ process.jetUserDataAK8 = cms.EDProducer(
 
 process.electronUserData = cms.EDProducer(
       'ElectronUserData',
-      eleLabel   = cms.InputTag("skimmedPatElectrons"),
-      pv         = cms.InputTag(pvLabel),
-      packedPFCands = cms.InputTag("packedPFCandidates"),
-      conversion = cms.InputTag(convLabel),
-      rho        = cms.InputTag(rhoLabel),
-      triggerResults = cms.InputTag(triggerResultsLabel),
-      triggerSummary = cms.InputTag(triggerSummaryLabel),
-      hltElectronFilter  = cms.InputTag(hltElectronFilterLabel),  ##trigger matching code to be fixed!
+      eleLabel            = cms.InputTag("skimmedPatElectrons"),
+      pv                  = cms.InputTag(pvLabel),
+      packedPFCands       = cms.InputTag("packedPFCandidates"),
+      conversion          = cms.InputTag(convLabel),
+      rho                 = cms.InputTag(rhoLabel),
+      triggerResults      = cms.InputTag(triggerResultsLabel),
+      triggerSummary      = cms.InputTag(triggerSummaryLabel),
+      hltElectronFilter   = cms.InputTag(hltElectronFilterLabel),  ##trigger matching code to be fixed!
       hltPath             = cms.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL"),
-      electronVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-veto"),
-      electronLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"),
+      electronVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-veto"),
+      electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"),
       electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"),
-      electronTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-tight"),
-      electronHEEPIdMap = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60")
+      electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-tight"),
+      electronHEEPIdMap   = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60")
       )
 
 process.photonUserData = cms.EDProducer(
@@ -588,7 +588,7 @@ print """
 #------------------------------------------------------------------------------- 
 #   bprimeKit configuration importing 
 #------------------------------------------------------------------------------- """
-resultsFile = 'results.root'
+resultsFile = 'bprimeKit_ntuples.root'
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string( resultsFile )
 )
@@ -597,15 +597,16 @@ from MyAna.bprimeKit.ObjectParameters_cfi import *
 process.bprimeKit = cms.EDAnalyzer(
    "bprimeKit",
    #----- Operation paramters --------------------------------------------------------------------------
-   MCtag               = cms.untracked.bool(False),
+   MCtag               = cms.untracked.bool( not options.isData ),
    PairCollection      = cms.untracked.int32(1),
    IncludeL7           = cms.untracked.bool(False),
    SelectionParameters = defaultObjectParameters.clone(),
    Debug               = cms.untracked.int32( options.Debug ),
+   runOnB2G            = cms.untracked.bool( options.b2gPreprocess ),
   
    #----- Event level objects --------------------------------------------------------------------------
-   rhoLabel         = cms.InputTag( rhoLabel), 
-   metlabel         = cms.VInputTag("slimmedMETs"),
+   rhoLabel         = cms.InputTag( rhoLabel ), 
+   metlabel         = cms.VInputTag("slimmedMETs" ),
    hltlabel         = cms.VInputTag("TriggerResults::HLT"),
    offlinePVlabel   = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
    offlinePVBSlabel = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
@@ -619,10 +620,13 @@ process.bprimeKit = cms.EDAnalyzer(
    phoLooseIdMap             = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"     ) ,
    phoMediumIdMap            = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"    ) ,
    phoTightIdMap             = cms.InputTag( "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"     ) ,
-   #phoMVAValuesMap          = cms.InputTag( "photonMVAValueMapProducer:PhotonMVAEstimatorRun2Spring15NonTrigValues" ) ,
    phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
    phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
    phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
+   effAreaChHadFile          = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfChargedHadrons_V2.txt"),
+   effAreaNeuHadFile         = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfNeutralHadrons_V2.txt"),
+   effAreaPhoFile            = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfPhotons_V2.txt"),
+   full5x5SigmaIEtaIEtaMap   = cms.InputTag("photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta")
    
    #----- Lepton related information -------------------------------------------------------------------
    LepCollections  = cms.vstring( 'LepInfo'),
@@ -664,7 +668,6 @@ process.bprimeKit = cms.EDAnalyzer(
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
    process.QGTagger.srcJets = cms.InputTag( "slimmedJets")
-
    process.endPath = cms.Path(
          process.QGTagger * 
          process.egmGsfElectronIDSequence * 
@@ -673,14 +676,31 @@ if not options.b2gPreprocess:
          )
 else:
    print "Running with b2g defined filters"
-   process.bprimeKit.jetlabel = cms.VInputTag( "jetUserData" , "slimmedJetsAK8" , "slimmedJetsAK8" )
+   process.bprimeKit.muonlabel = cms.VInputTag("muonUserData")
+   process.bprimeKit.eleclabel = cms.VInputTag("electronUserData")
+   # process.bprimeKit.pholabel  = cms.VInputTag("photonUserData")
+   process.bprimeKit.jetlabel = cms.VInputTag( "jetUserData" , "jetUserDataAK8" , "jetUserDataAK8" )
    process.QGTagger.srcJets = cms.InputTag( "jetUserData" ) 
    process.endPath = cms.Path(
+         #----- Lepton User data -----------------------------------------------------------------------------
+         process.skimmedPatMuons *
+         process.muonUserData  *
+         process.skimmedPatElectrons *
+         process.electronUserData *
+         #----- Photon User data -----------------------------------------------------------------------------
+         # process.skimmedPatPhotons *
+         # process.photonUserData *
+         #----- jet sub routines -----------------------------------------------------------------------------
          process.patJetCorrFactorsReapplyJEC *
-         process.updatedPatJetsAK4 * 
+         process.patJetAK8CorrFactorsReapplyJEC * 
+         process.updatedPatJetsAK4 *
+         process.updatedPatJetsAK8 * 
          process.skimmedPatJets *
-         process.jetUserData * 
-         process.QGTagger * 
+         process.skimmedPatJetsAK8 * 
+         process.jetUserData *
+         process.jetUserDataAK8 *
+         #----- Originam routines ----------------------------------------------------------------------------
+         process.QGTagger *
          process.egmGsfElectronIDSequence * 
          process.egmPhotonIDSequence *
          process.bprimeKit

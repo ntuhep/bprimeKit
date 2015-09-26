@@ -215,14 +215,11 @@ private:
  
    //----- Configuration flags  -----------------------------------------------------------------------
    int  pairColl_      ;
-   bool getElectronID_ ;
-   bool getPhotonID_   ;
    bool skipGenInfo_   ;
    bool includeL7_     ;
    int  debug_         ;
+   bool runOnB2G       ;
    bool isData         ;
-
-   edm::ParameterSet SelectionParameters_;
    
    EGammaMvaEleEstimator* myMVATrig;
    std::vector<std::string> EIDMVAInputTags_;

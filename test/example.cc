@@ -1,7 +1,7 @@
+#include <iostream>
+#include <string.h>
 #include "TTree.h"
 #include "TChain.h"
-#include "iostream"
-#include "string.h"
 
 // Files that must be manually added!
 #include "format.h"
@@ -19,7 +19,7 @@ void example()
    checkEvt.makeJsonMap();
 
    TChain *root = new TChain("bprimeKit/root");
-   root->Add("bprimeKitTest.root");
+   root->Add("bprimeKit_ntuples.root");
 
    EvtInfoBranches EvtInfo ;  EvtInfo.Register(root);
    JetInfoBranches jetInfo ;  jetInfo.Register( root, "JetInfo" ); 
@@ -35,8 +35,9 @@ void example()
          cout << jetInfo.Pt[i] << endl;
       }
       for( int i = 0 ; i < wjetInfo.Size; ++i ) { // Loop over all jets in "AK8BosonJetInfo" collections
-         for( int j = 0 ; j < wjetInfo.NSubjets[i] ; ++j ){ // Loop over all subjets for jet i 
-            cout << wjetInfo.SubjetMass[ j + wjetInfo.SubjetsIdxStart[i] ] << endl ; 
+         for( int j = 0 ; j < wjetInfo.NSubjets[i] ; ++j ){ // Loop over all subjets for jet i
+            auto SubjetMass = *(wjetInfo.SubjetMass);
+            cout << SubjetMass[ wjetInfo.SubjetsIdxStart[i] + j  ] << endl ; 
          } 
       }
    }

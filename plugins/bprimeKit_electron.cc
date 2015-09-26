@@ -130,38 +130,39 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].ElEcalIso04[LepInfo[icoll].Size]  = it_el->dr04EcalRecHitSumEt();
       
       //----- Isolation variables  -----------------------------------------------------------------------
-      if( getElectronID_ ){
-         const auto el = gsfElecHandle->ptrAt( i );
-         LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[el]);
-         LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[el]);
-         LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[el]);
-         LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[el]);
-         LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[el]); 
+      const auto el = gsfElecHandle->ptrAt( i );
+      if( !runOnB2G ) {
+      LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[el]);
+      LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[el]);
+      LepInfo[icoll].EgammaCutBasedEleIdMEDIUM [LepInfo[icoll].Size] = (int)((*medium_id_decisions)[el]);
+      LepInfo[icoll].EgammaCutBasedEleIdTIGHT  [LepInfo[icoll].Size] = (int)((*tight_id_decisions)[el]);
+      LepInfo[icoll].EgammaCutBasedEleIdHEEP   [LepInfo[icoll].Size] = (int)((*heep_id_decisions)[el]); 
 //         LepInfo[icoll].EgammaMVANonTrig          [LepInfo[icoll].Size] = (*eleMVAValues)[el];
-         LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
-         LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
-         LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
-               
-         LepInfo[icoll].ElEcalE                     [LepInfo[icoll].Size] = el->ecalEnergy();
-         LepInfo[icoll].ElhcalOverEcalBc            [LepInfo[icoll].Size] = el->hcalOverEcalBc();
-         LepInfo[icoll].Eldr03HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth1TowerSumEtBc();
-         LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth2TowerSumEtBc();
-         LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth1TowerSumEtBc();
-         LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
-               
-         // cuts to match tight trigger requirements
-         trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
-         LepInfo[icoll].EgammaCutBasedEleIdTRIGGERTIGHT  [LepInfo[icoll].Size] = trigtight;
-         // for 2011 WP70 trigger
-         trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, *el );
-         LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
-               
-         rhoPrime = max( (double)(EvtInfo.Rho), 0.0 ); 
-         AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea( 
-               ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
-         LepInfo[icoll].IsoRhoCorrR03[LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
-            max( (double)(LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03), 0.0 );
+      } else {
+         // Still updating
       }
+      LepInfo[icoll].ChargedHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ; 
+      LepInfo[icoll].NeutralHadronIso          [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
+      LepInfo[icoll].PhotonIso                 [LepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
+      LepInfo[icoll].ElEcalE                     [LepInfo[icoll].Size] = el->ecalEnergy();
+      LepInfo[icoll].ElhcalOverEcalBc            [LepInfo[icoll].Size] = el->hcalOverEcalBc();
+      LepInfo[icoll].Eldr03HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth1TowerSumEtBc();
+      LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth2TowerSumEtBc();
+      LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth1TowerSumEtBc();
+      LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
+            
+      // cuts to match tight trigger requirements
+      trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
+      LepInfo[icoll].EgammaCutBasedEleIdTRIGGERTIGHT  [LepInfo[icoll].Size] = trigtight;
+      // for 2011 WP70 trigger
+      trigwp70 = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERWP70, *el );
+      LepInfo[icoll].EgammaCutBasedEleIdTRIGGERWP70 [LepInfo[icoll].Size] = trigwp70;
+            
+      rhoPrime = max( (double)(EvtInfo.Rho), 0.0 ); 
+      AEffR03 = ElectronEffectiveArea::GetElectronEffectiveArea( 
+            ElectronEffectiveArea::kEleGammaAndNeutralHadronIso03, LepInfo[icoll].Eta[LepInfo[icoll].Size], EATarget );
+      LepInfo[icoll].IsoRhoCorrR03[LepInfo[icoll].Size] = LepInfo[icoll].ChargedHadronIsoR03[LepInfo[icoll].Size] +
+         max( (double)(LepInfo[icoll].NeutralHadronIsoR03[LepInfo[icoll].Size] + LepInfo[icoll].PhotonIsoR03[LepInfo[icoll].Size] - rhoPrime * AEffR03), 0.0 );
      
       //----- Generation Monte Carlo information  --------------------------------------------------------
       if ( !isData && !skipGenInfo_ ) {

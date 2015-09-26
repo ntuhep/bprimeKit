@@ -26,15 +26,14 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
    edm::Handle<edm::ValueMap<float>> phoChargedIsolationMap;
    edm::Handle<edm::ValueMap<float>> phoNeutralHadronIsolationMap;
    edm::Handle<edm::ValueMap<float>> phoPhotonIsolationMap;
-   if(getPhotonID_){
-      iEvent.getByToken( phoLooseIdMapToken_             , loose_id_decisions           );
-      iEvent.getByToken( phoMediumIdMapToken_            , medium_id_decisions          );
-      iEvent.getByToken( phoTightIdMapToken_             , tight_id_decisions           );
-//      iEvent.getByToken( phoMVAValuesMapToken_           , mvaValues                    );
-      iEvent.getByToken( phoChargedIsolationToken_       , phoChargedIsolationMap       );
-      iEvent.getByToken( phoNeutralHadronIsolationToken_ , phoNeutralHadronIsolationMap );
-      iEvent.getByToken( phoPhotonIsolationToken_        , phoPhotonIsolationMap        );
-   }
+
+   iEvent.getByToken( phoLooseIdMapToken_             , loose_id_decisions           );
+   iEvent.getByToken( phoMediumIdMapToken_            , medium_id_decisions          );
+   iEvent.getByToken( phoTightIdMapToken_             , tight_id_decisions           );
+// iEvent.getByToken( phoMVAValuesMapToken_           , mvaValues                    );
+   iEvent.getByToken( phoChargedIsolationToken_       , phoChargedIsolationMap       );
+   iEvent.getByToken( phoNeutralHadronIsolationToken_ , phoNeutralHadronIsolationMap );
+   iEvent.getByToken( phoPhotonIsolationToken_        , phoPhotonIsolationMap        );
    
    for( unsigned il = 0; il < pholabel_.size(); il++ ) {
       PhoHandle.push_back( PhotonHandle() );
@@ -72,7 +71,7 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          PhotonInfo[icoll].passelectronveto     [PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
         
          //-----------------------  Filling in isolation information  ------------------------ 
-         if( getPhotonID_ ) {
+         if( !runOnB2G  ) {
             const auto pho = PhoHandle[icoll]->ptrAt( PhotonInfo[icoll].Size );
             PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = (*phoChargedIsolationMap)[pho] ; 
             PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = (*phoPhotonIsolationMap)[pho] ; 
@@ -81,6 +80,8 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = (*medium_id_decisions)[pho];
             PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = (*tight_id_decisions)[pho];
             //PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[pho];
+         }else {
+            // Still updatting
          } 
 
          //---------------------------  Generation MC information  ---------------------------
