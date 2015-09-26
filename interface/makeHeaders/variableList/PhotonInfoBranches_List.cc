@@ -1,0 +1,25 @@
+Int_t   Size;
+Float_t Pt                   [MAX_PHOTONS] ;
+Float_t Eta                  [MAX_PHOTONS] ;
+Float_t Phi                  [MAX_PHOTONS] ;
+Float_t HoverE               [MAX_PHOTONS] ;
+Float_t SigmaIetaIeta        [MAX_PHOTONS] ;
+Float_t hadTowOverEm         [MAX_PHOTONS] ;
+Float_t hcalIsoConeDR04_2012 [MAX_PHOTONS] ;
+Float_t phoPFChIso           [MAX_PHOTONS] ;
+Float_t phoPFNeuIso          [MAX_PHOTONS] ;
+Float_t phoPFPhoIso          [MAX_PHOTONS] ;
+Float_t phoIDMVA             [MAX_PHOTONS] ; 
+Bool_t  phoPassLoose         [MAX_PHOTONS] ;
+Bool_t  phoPassMedium        [MAX_PHOTONS] ;
+Bool_t  phoPassTight         [MAX_PHOTONS] ;
+Float_t r9                   [MAX_PHOTONS] ;
+Bool_t  passelectronveto     [MAX_PHOTONS] ;
+Float_t  EcalIso             [MAX_PHOTONS] ;
+Float_t  HcalIso             [MAX_PHOTONS] ;
+Float_t  TrackIso            [MAX_PHOTONS] ;
+Float_t GenPt                [MAX_PHOTONS] ;
+Float_t GenEta               [MAX_PHOTONS] ;
+Float_t GenPhi               [MAX_PHOTONS] ;
+Int_t   GenPdgID             [MAX_PHOTONS] ;
+
