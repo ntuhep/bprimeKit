@@ -265,6 +265,7 @@ public:
    Float_t ChargedHadronIso                      [MAX_LEPTONS] ;
    Float_t NeutralHadronIso                      [MAX_LEPTONS] ;
    Float_t PhotonIso                             [MAX_LEPTONS] ;
+   Float_t SumPUPt                               [MAX_LEPTONS] ;
    Float_t ChargedHadronIsoR03                   [MAX_LEPTONS] ;
    Float_t NeutralHadronIsoR03                   [MAX_LEPTONS] ;
    Float_t PhotonIsoR03                          [MAX_LEPTONS] ;
@@ -475,6 +476,7 @@ public:
       root->Branch( ( name + ".ChargedHadronIso" ).c_str(), ChargedHadronIso, ( name + ".ChargedHadronIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NeutralHadronIso" ).c_str(), NeutralHadronIso, ( name + ".NeutralHadronIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PhotonIso" ).c_str(), PhotonIso, ( name + ".PhotonIso[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".SumPUPt" ).c_str(), SumPUPt, ( name + ".SumPUPt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".ChargedHadronIsoR03" ).c_str(), ChargedHadronIsoR03, ( name + ".ChargedHadronIsoR03[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NeutralHadronIsoR03" ).c_str(), NeutralHadronIsoR03, ( name + ".NeutralHadronIsoR03[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PhotonIsoR03" ).c_str(), PhotonIsoR03, ( name + ".PhotonIsoR03[" + name + ".Size]/F" ).c_str() );
@@ -658,6 +660,7 @@ public:
       root->SetBranchAddress( ( name + ".ChargedHadronIso" ).c_str() , ChargedHadronIso ) ;
       root->SetBranchAddress( ( name + ".NeutralHadronIso" ).c_str() , NeutralHadronIso ) ;
       root->SetBranchAddress( ( name + ".PhotonIso" ).c_str() , PhotonIso ) ;
+      root->SetBranchAddress( ( name + ".SumPUPt" ).c_str() , SumPUPt ) ;
       root->SetBranchAddress( ( name + ".ChargedHadronIsoR03" ).c_str() , ChargedHadronIsoR03 ) ;
       root->SetBranchAddress( ( name + ".NeutralHadronIsoR03" ).c_str() , NeutralHadronIsoR03 ) ;
       root->SetBranchAddress( ( name + ".PhotonIsoR03" ).c_str() , PhotonIsoR03 ) ;

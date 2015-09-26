@@ -17,6 +17,7 @@ Float_t HcalIso                               [MAX_LEPTONS] ;
 Float_t ChargedHadronIso                      [MAX_LEPTONS] ;
 Float_t NeutralHadronIso                      [MAX_LEPTONS] ;
 Float_t PhotonIso                             [MAX_LEPTONS] ;
+Float_t SumPUPt                               [MAX_LEPTONS] ;
 Float_t ChargedHadronIsoR03                   [MAX_LEPTONS] ;
 Float_t NeutralHadronIsoR03                   [MAX_LEPTONS] ;
 Float_t PhotonIsoR03                          [MAX_LEPTONS] ;

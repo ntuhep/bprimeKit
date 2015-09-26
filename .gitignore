@@ -22,7 +22,8 @@ test/Production_MC_CMSSW74X_MiniAOD/MC_dataset_*
 test/Production_Data_CMSSW74X_MiniAOD/*/*
 test/Production_Data_CMSSW74X_MiniAOD/Data_dataset_*
 python/__init__.py
-
+interface/makeHeaders/format.h
+interface/makeHeaders/TriggerBooking.h
 
 # Specific file inclusion 
 # ![relative/path/to/file]

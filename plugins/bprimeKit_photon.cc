@@ -81,7 +81,12 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = (*tight_id_decisions)[pho];
             //PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[pho];
          }else {
-            // Still updatting
+            PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoC" );  
+            PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoP" );  
+            PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoN" );  
+            PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = it_pho->userFloat( "isLoose" ); 
+            PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = it_pho->userFloat( "isMedium" ); 
+            PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = it_pho->userFloat( "isTight" ); 
          } 
 
          //---------------------------  Generation MC information  ---------------------------
