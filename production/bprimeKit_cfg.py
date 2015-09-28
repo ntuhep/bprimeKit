@@ -605,14 +605,15 @@ process.bprimeKit = cms.EDAnalyzer(
    runOnB2G            = cms.untracked.bool( options.b2gPreprocess ),
   
    #----- Event level objects --------------------------------------------------------------------------
-   rhoLabel         = cms.InputTag( rhoLabel ), 
-   metlabel         = cms.VInputTag("slimmedMETs" ),
-   hltlabel         = cms.VInputTag("TriggerResults::HLT"),
-   offlinePVlabel   = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
-   offlinePVBSlabel = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
-   offlineBSlabel   = cms.VInputTag("offlineBeamSpot"),
-   pfCands          = cms.InputTag("packedPFCandidates"),
-   puInfoLabel      = cms.VInputTag("addPileupInfo"),
+   rhoLabel            = cms.InputTag( rhoLabel ),
+   metlabel            = cms.VInputTag("slimmedMETs" ),
+   hltlabel            = cms.VInputTag("TriggerResults::HLT"),
+   offlinePVlabel      = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
+   offlinePVBSlabel    = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
+   offlineBSlabel      = cms.VInputTag("offlineBeamSpot"),
+   pfCands             = cms.InputTag("packedPFCandidates"),
+   puInfoLabel         = cms.VInputTag("addPileupInfo"),
+   conversionsInputTag = cms.InputTag("reducedEgamma","reducedConversions"),
 
    #----- Photon information ------------------------------------------------------------------------ 
    PhoCollections            = cms.vstring('PhotonInfo'),

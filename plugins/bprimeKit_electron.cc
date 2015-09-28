@@ -37,6 +37,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    edm::Handle<edm::ValueMap<bool>>  heep_id_decisions   ;
 //   edm::Handle<edm::ValueMap<float>> eleMVAValues        ; 
    ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget;
+   edm::Handle<reco::ConversionCollection> conversions_h;
 
    float dist_     ,dcot_     , rhoPrime, AEffR03  ;
    bool  trigtight , trigwp70 ;
@@ -46,6 +47,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    //-------------------------------------------------------------------------------------------------- 
    iEvent.getByLabel( eleclabel_[icoll]     , elecHandle          ) ;
    iEvent.getByLabel( eleclabel_[icoll]     , gsfElecHandle       ) ;
+   iEvent.getByLabel( conversionsInputTag_  , conversions_h       ) ;
    iEvent.getByToken( eleVetoIdMapToken_    , veto_id_decisions   ) ;
    iEvent.getByToken( eleLooseIdMapToken_   , loose_id_decisions  ) ;
    iEvent.getByToken( eleMediumIdMapToken_  , medium_id_decisions ) ;
@@ -156,6 +158,8 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].Eldr03HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr03HcalDepth2TowerSumEtBc();
       LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth1TowerSumEtBc();
       LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
+      LepInfo[icoll].ElhasConv                   [LepInfo[icoll].Size] = 
+         ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
             
       // cuts to match tight trigger requirements
       trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );

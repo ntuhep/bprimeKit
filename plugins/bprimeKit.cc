@@ -87,12 +87,12 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    
    
    //----- Configuration flats  -----------------------------------------------------------------------
-   pairColl_            = iConfig.getUntrackedParameter<int>      ( "PairCollection" , 0     ) ;
-   skipGenInfo_         = iConfig.getUntrackedParameter<bool>     ( "SkipGenInfo"    , false ) ;
-   includeL7_           = iConfig.getUntrackedParameter<bool>     ( "IncludeL7"      , true  ) ;
-   debug_               = iConfig.getUntrackedParameter<int>      ( "Debug"          , 0     ) ;
-   runOnB2G             = iConfig.getUntrackedParameter<bool>     ( "runOnB2G"       , false ) ;
-   
+   pairColl_            = iConfig.getUntrackedParameter<int> ( "PairCollection" , 0     ) ;
+   skipGenInfo_         = iConfig.getUntrackedParameter<bool>( "SkipGenInfo"    , false ) ;
+   includeL7_           = iConfig.getUntrackedParameter<bool>( "IncludeL7"      , true  ) ;
+   debug_               = iConfig.getUntrackedParameter<int> ( "Debug"          , 0     ) ;
+   runOnB2G             = iConfig.getUntrackedParameter<bool>( "runOnB2G"       , false ) ;
+   conversionsInputTag_ = iConfig.getParameter<edm::InputTag>("conversionsInputTag"); 
    //----- 2015 cut based electron ID  ----------------------------------------------------------------
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
