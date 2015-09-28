@@ -36,7 +36,9 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    edm::Handle<edm::ValueMap<bool>>  tight_id_decisions  ;
    edm::Handle<edm::ValueMap<bool>>  heep_id_decisions   ;
 //   edm::Handle<edm::ValueMap<float>> eleMVAValues        ; 
+   edm::Handle<reco::ConversionCollection> conversions_h;
    ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget;
+
 
    float dist_     ,dcot_     , rhoPrime, AEffR03  ;
    bool  trigtight , trigwp70 ;
@@ -52,6 +54,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    iEvent.getByToken( eleTightIdMapToken_   , tight_id_decisions  ) ;
    iEvent.getByToken( eleHEEPIdMapToken_    , heep_id_decisions   ) ;
 //   iEvent.getByToken( eleMVAValuesMapToken_ , eleMVAValues        ) ;
+   iEvent.getByLabel( conversionsInputTag_  , conversions_h        ) ; 
    
    if( isData ) { 
       EATarget = ElectronEffectiveArea::kEleEAData2012; }
@@ -149,6 +152,8 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          LepInfo[icoll].Eldr04HcalDepth1TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth1TowerSumEtBc();
          LepInfo[icoll].Eldr04HcalDepth2TowerSumEtBc[LepInfo[icoll].Size] = el->dr04HcalDepth2TowerSumEtBc();
                
+         LepInfo[icoll].ElhasConv  [LepInfo[icoll].Size] 
+            = ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
          // cuts to match tight trigger requirements
          trigtight = EgammaCutBasedEleId::PassTriggerCuts( EgammaCutBasedEleId::TRIGGERTIGHT, *el );
          LepInfo[icoll].EgammaCutBasedEleIdTRIGGERTIGHT  [LepInfo[icoll].Size] = trigtight;
@@ -208,7 +213,6 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 //-------------------------------------------------------------------------------------------------- 
 //   Legacy code section
 //--------------------------------------------------------------------------------------------------
-//LepInfo[icoll].ElhasConv  [LepInfo[icoll].Size] = ConversionTools::hasMatchedConversion( *el, conversions_h, beamSpot.position() );
 //
 // convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
 // ConversionFinder convFinder;

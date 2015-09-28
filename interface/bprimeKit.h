@@ -207,6 +207,7 @@ private:
    edm::Handle<reco::BeamSpot>          beamSpotHandle ;
    edm::Handle<reco::VertexCollection>  VertexHandle   ;
    edm::Handle<reco::VertexCollection>  VertexHandleBS ; //Dmitry
+   edm::InputTag                        conversionsInputTag_ ;
    const TransientTrackBuilder*         transientTrackBuilder;
    const reco::VertexCollection*        pvCol;
    map<std::string,int>           HLTmaplist;

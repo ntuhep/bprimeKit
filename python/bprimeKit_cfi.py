@@ -39,6 +39,7 @@ bprimeKit = cms.EDAnalyzer(
    genlabel                  = cms.VInputTag("prunedGenParticles"),
    genevtlabel               = cms.VInputTag("generator"),
    gtdigilabel               = cms.VInputTag("gtDigis"),
+   conversionsInputTag       = cms.InputTag("reducedEgamma" , "reducedConversions"), 
 
    PairCollection            = cms.untracked.int32(1),
    hltlabel                  = cms.VInputTag("TriggerResults::HLT"),

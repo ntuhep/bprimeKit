@@ -94,7 +94,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    includeL7_           = iConfig.getUntrackedParameter<bool>     ( "IncludeL7"      , true  ) ;
    SelectionParameters_ = iConfig.getParameter<edm::ParameterSet> ( "SelectionParameters"    ) ;
    debug_               = iConfig.getUntrackedParameter<int>      ( "Debug"          , 0     ) ;
-   
+   conversionsInputTag_ = iConfig.getParameter<edm::InputTag>     ( "conversionsInputTag" );
    //----- 2015 cut based electron ID  ----------------------------------------------------------------
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
