@@ -112,8 +112,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    for( it_met = METHandle->begin(); it_met != METHandle->end(); it_met++ ) {
       EvtInfo.PFMET              = it_met->pt()             ;
       EvtInfo.PFMETPhi           = it_met->phi()            ;
-      EvtInfo.PFRawMET           = it_met->uncorrectedPt()  ;
-      EvtInfo.PFRawMETPhi        = it_met->uncorrectedPhi() ;
+      // EvtInfo.PFRawMET           = it_met->uncorrectedPt()  ;
+      // EvtInfo.PFRawMETPhi        = it_met->uncorrectedPhi() ;
       EvtInfo.PFMETx             = it_met->px()             ; //Uly 2011-04-04
       EvtInfo.PFMETy             = it_met->py()             ; //Uly 2011-04-04
       EvtInfo.PFSumEt            = it_met->sumEt()          ;
@@ -130,11 +130,11 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if( debug_ > 5 ) { cout << ">>>Evt: Get missing momentum corrections."<< endl; }
    if( pfMETHandle_TempPlus.isValid() ){
       for( it_met = pfMETHandle_TempPlus->begin(); it_met != pfMETHandle_TempPlus->end(); it_met++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_met->pt(); }
+         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp = it_met->pt(); }
    }
    if( pfMETHandle_TempDown.isValid() ){
       for( it_met = pfMETHandle_TempDown->begin() ; it_met != pfMETHandle_TempDown->end(); it_met++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_met->pt(); }
+         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown = it_met->pt(); }
    }
 
    //----- Generation information  --------------------------------------------------------------------
