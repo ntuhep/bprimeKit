@@ -34,7 +34,10 @@ static TFileDirectory results ;
 //------------------------------------------------------------------------------ 
 //   bprimeKit methods: constructor and destructor
 //------------------------------------------------------------------------------ 
-bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
+bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
+   effAreaChHadrons_  ((iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ),
+   effAreaNeuHadrons_ ((iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath()),
+   effAreaPhotons_    ((iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath()   )
 {
    results = TFileDirectory( fs->mkdir( "results" ) );
    //----- Event related  -----------------------------------------------------------------------------
@@ -82,10 +85,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    phoChargedIsolationToken_       = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoChargedIsolation"       )) ;
    phoNeutralHadronIsolationToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoNeutralHadronIsolation" )) ;
    phoPhotonIsolationToken_        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
-   effAreaChHadrons_               = (iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ;
-   effAreaNeuHadrons_              = (iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath() ;
-   effAreaPhotons_                 = (iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() ;
-   full5x5SigmaIEtaIEtaMapToken_   = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("full5x5SigmaIEtaIEtaMap")) ;
+   full5x5SigmaIEtaIEtaMapToken_   = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "full5x5SigmaIEtaIEtaMap"   )) ;
 
    //----- Configuration flats  -----------------------------------------------------------------------
    pairColl_            = iConfig.getUntrackedParameter<int> ( "PairCollection" , 0     ) ;

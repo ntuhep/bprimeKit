@@ -173,15 +173,13 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoLooseIdMapToken_             ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoMediumIdMapToken_            ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoTightIdMapToken_             ;
-   edm::EDGetTokenT<edm::ValueMap<float>> phoMVAValuesMapToken_           ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoChargedIsolationToken_       ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoNeutralHadronIsolationToken_ ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoPhotonIsolationToken_        ;
-   edm::EDGetTokenT<edm::ValueMap<float>> phoWorstChargedIsolationToken_  ;
    edm::EDGetTokenT<edm::ValueMap<float>> full5x5SigmaIEtaIEtaMapToken_  ;
-   reco::EffectiveAreas effAreaChHadrons_;
-   reco::EffectiveAreas effAreaNeuHadrons_;
-   reco::EffectiveAreas effAreaPhotons_;
+   EffectiveAreas effAreaChHadrons_;
+   EffectiveAreas effAreaNeuHadrons_;
+   EffectiveAreas effAreaPhotons_;
 
    //----- Lepton variable setup  ---------------------------------------------------------------------
    std::vector<std::string>    lepcollections_                  ;
