@@ -1,21 +1,21 @@
-### *****************************************************************************************
-### Usage:
-###
-### cmsRun b2gedmntuples_cfg.py maxEvts=N 
-###
-### The globalTag is automatically chosen according to the input 'DataProcessing' value. 
-### However it can be explictily specified to override the default option.
-###
-###  Running on 25 ns MC (default settings):
-###  cmsRun b2gedmntuples_cfg.py isData=False DataProcessing='MC25ns'
-###  Running on 25 ns data:
-###  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data25ns'
-###  Running on 50 ns MC:
-###  cmsRun b2gedmntuples_cfg.py isData=False DataProcessing='MC50ns'
-###  Running on 50 ns data:
-###  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data50ns'
-###
-### *****************************************************************************************
+# *****************************************************************************************
+# Usage:
+#
+# cmsRun bprimeKit_cfg.py maxEvts=N 
+#
+# The globalTag is automatically chosen according to the input 'DataProcessing' value. 
+# However it can be explictily specified to override the default option.
+#
+#  Running on 25 ns MC (default settings):
+#  cmsRun b2gedmntuples_cfg.py isData=False DataProcessing='MC25ns'
+#  Running on 25 ns data:
+#  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data25ns'
+#  Running on 50 ns MC:
+#  cmsRun b2gedmntuples_cfg.py isData=False DataProcessing='MC50ns'
+#  Running on 50 ns data:
+#  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data50ns'
+#
+# *****************************************************************************************
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as opts
 import copy
@@ -679,7 +679,7 @@ else:
    print "Running with b2g defined filters"
    process.bprimeKit.muonlabel = cms.VInputTag("muonUserData")
    process.bprimeKit.eleclabel = cms.VInputTag("electronUserData")
-   # process.bprimeKit.pholabel  = cms.VInputTag("photonUserData")
+   process.bprimeKit.pholabel  = cms.VInputTag("photonUserData")
    process.bprimeKit.jetlabel = cms.VInputTag( "jetUserData" , "jetUserDataAK8" , "jetUserDataAK8" )
    process.QGTagger.srcJets = cms.InputTag( "jetUserData" ) 
    process.endPath = cms.Path(
@@ -689,8 +689,8 @@ else:
          process.skimmedPatElectrons *
          process.electronUserData *
          #----- Photon User data -----------------------------------------------------------------------------
-         # process.skimmedPatPhotons *
-         # process.photonUserData *
+         process.skimmedPatPhotons *
+         process.photonUserData *
          #----- jet sub routines -----------------------------------------------------------------------------
          process.patJetCorrFactorsReapplyJEC *
          process.patJetAK8CorrFactorsReapplyJEC * 

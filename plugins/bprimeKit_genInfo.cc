@@ -88,16 +88,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       NMo    = it_gen->numberOfMothers();
       NDa    = it_gen->numberOfDaughters();
 
-      // Flushing daughter information 
-      // printf("%3ld:%8d (Mass:%5.5lf); Daughters(%2lu): ", 
-      //       it_gen - GenHandle->begin() , it_gen->pdgId() , it_gen->mass() , it_gen->numberOfDaughters() );
-      // for( size_t i = 0 ; i < it_gen->numberOfDaughters() ; ++i ){
-      //    found = find( cands.begin() , cands.end() , it_gen->daughter(i) ) ; 
-      //    printf("%4ld(%4d)" , found - cands.begin() , it_gen->daughter(i)->pdgId() ) ;
-      // }
-      // printf("\n");
-      
-
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
       if( isValidGenParticle(it_gen) && GenInfo.Size < 60 ){
          if( debug_ ) { cout << "Enter GenInfo" << endl; } 

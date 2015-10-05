@@ -19,17 +19,7 @@
 #ifndef __BPRIMEKIT_H__
 #define __BPRIMEKIT_H__
 
-
-//------------------------------------------------------------------------------ 
-//   Libraries 
-//------------------------------------------------------------------------------ 
-//--------------------------  Standard Template Libraries  --------------------------
-#include <map>
-
-//--------------------------------  ROOT Libraries  ---------------------------------
-#include "TTree.h"
-
-//----------------------------  CMS Software Libraries  -----------------------------
+//----- ED Analyzer requirements  ----------------------------------------------
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -43,13 +33,17 @@
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
+//----- CMS Software libraries for special variables  --------------------------
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h" 
 #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
-//--------------------------------  Custom Classes  ---------------------------------
+//----- Custom classes  --------------------------------------------------------
 #include "MyAna/bprimeKit/interface/format.h"
 #include "MyAna/bprimeKit/interface/TriggerBooking.h"
+#include <map>
+#include "TTree.h"
 
 
 //------------------------------------------------------------------------------ 
@@ -94,7 +88,6 @@ typedef std::vector<reco::GenParticle>::const_iterator GenIterator ;
 
 typedef std::vector<reco::Vertex>  VertexList;
 typedef VertexList::const_iterator VertexListCIT;
-
 
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
@@ -185,6 +178,10 @@ private:
    edm::EDGetTokenT<edm::ValueMap<float>> phoNeutralHadronIsolationToken_ ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoPhotonIsolationToken_        ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoWorstChargedIsolationToken_  ;
+   edm::EDGetTokenT<edm::ValueMap<float>> full5x5SigmaIEtaIEtaMapToken_  ;
+   reco::EffectiveAreas effAreaChHadrons_;
+   reco::EffectiveAreas effAreaNeuHadrons_;
+   reco::EffectiveAreas effAreaPhotons_;
 
    //----- Lepton variable setup  ---------------------------------------------------------------------
    std::vector<std::string>    lepcollections_                  ;
@@ -197,7 +194,7 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleTightIdMapToken_   ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleHEEPIdMapToken_    ;
    edm::EDGetTokenT<edm::ValueMap<float>> eleMVAValuesMapToken_ ;
-   
+
    //----- Inter-branch storage requirements  ---------------------------------------------------------
    edm::Handle<reco::GenParticleCollection>     GenHandle;
    double                               Signal_Vz      ;
@@ -213,7 +210,7 @@ private:
    map<std::string,int>           HLTmaplist;
    map<std::string,int>::iterator HLTmaplist_pr;
    HLTConfigProvider              hltConfig_;
- 
+
    //----- Configuration flags  -----------------------------------------------------------------------
    int  pairColl_      ;
    bool skipGenInfo_   ;
@@ -221,7 +218,7 @@ private:
    int  debug_         ;
    bool runOnB2G       ;
    bool isData         ;
-   
+
    EGammaMvaEleEstimator* myMVATrig;
    std::vector<std::string> EIDMVAInputTags_;
 };

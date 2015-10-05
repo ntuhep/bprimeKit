@@ -3,12 +3,10 @@
  *  Filename    : bprimeKit_photon.cc
  *  Description : Fill the ntuple with photon information 
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *    
  *
 *******************************************************************************/
 
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
-//------------------------  Photon specific CMSSW libraries  ------------------------
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
 //------------------------------------------------------------------------------ 
@@ -22,18 +20,18 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
    edm::Handle<edm::ValueMap<bool>>  loose_id_decisions;
    edm::Handle<edm::ValueMap<bool>>  medium_id_decisions;
    edm::Handle<edm::ValueMap<bool>>  tight_id_decisions;
-//   edm::Handle<edm::ValueMap<float>> mvaValues;
    edm::Handle<edm::ValueMap<float>> phoChargedIsolationMap;
    edm::Handle<edm::ValueMap<float>> phoNeutralHadronIsolationMap;
    edm::Handle<edm::ValueMap<float>> phoPhotonIsolationMap;
+   edm::Handle<edm::ValueMap<float>> full5x5SigmaIEtaIEtaMap;
 
    iEvent.getByToken( phoLooseIdMapToken_             , loose_id_decisions           );
    iEvent.getByToken( phoMediumIdMapToken_            , medium_id_decisions          );
    iEvent.getByToken( phoTightIdMapToken_             , tight_id_decisions           );
-// iEvent.getByToken( phoMVAValuesMapToken_           , mvaValues                    );
    iEvent.getByToken( phoChargedIsolationToken_       , phoChargedIsolationMap       );
    iEvent.getByToken( phoNeutralHadronIsolationToken_ , phoNeutralHadronIsolationMap );
    iEvent.getByToken( phoPhotonIsolationToken_        , phoPhotonIsolationMap        );
+   iEvent.getByToken(full5x5SigmaIEtaIEtaMapToken_    , full5x5SigmaIEtaIEtaMap);
    
    for( unsigned il = 0; il < pholabel_.size(); il++ ) {
       PhoHandle.push_back( PhotonHandle() );
@@ -51,7 +49,10 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
 
 
       for( it_pho = PhoHandle[icoll]->begin(); it_pho != PhoHandle[icoll]->end(); it_pho++ ) {//loop over photon in collection
-         if( debug_ > 11 ) { cout << "  Size " << PhotonInfo[icoll].Size << " photon pt,eta,phi " << it_pho->pt() << "," << it_pho->eta() << "," << it_pho->phi() << endl; }
+         if( debug_ > 11 ) { 
+            cout << "  Size " << PhotonInfo[icoll].Size << " photon pt,eta,phi " 
+               << it_pho->pt()  << "," << it_pho->eta() << "," << it_pho->phi() << endl; 
+         }
          if ( PhotonInfo[icoll].Size >= MAX_PHOTONS ) {
             cerr <<  "ERROR: number of photons exceeds the size of array." << endl; 
             break;//exit(0);
@@ -69,6 +70,7 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          PhotonInfo[icoll].hcalIsoConeDR04_2012 [PhotonInfo[icoll].Size] = it_pho->hcalTowerSumEtConeDR04() +
                ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
          PhotonInfo[icoll].passelectronveto     [PhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;  
+         PhotonInfo[icoll].r9                   [PhotonInfo[icoll].Size]  = it_pho->r9();
         
          //-----------------------  Filling in isolation information  ------------------------ 
          if( !runOnB2G  ) {
@@ -76,21 +78,31 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = (*phoChargedIsolationMap)[pho] ; 
             PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = (*phoPhotonIsolationMap)[pho] ; 
             PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = (*phoNeutralHadronIsolationMap)[pho] ;
+            PhotonInfo[icoll].sigmaIetaIeta [PhotonInfo[icoll].Size] = (*full5x5SigmaIEtaIEtaMap)[pho];
             PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = (*loose_id_decisions)[pho];
             PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = (*medium_id_decisions)[pho];
             PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = (*tight_id_decisions)[pho];
-            //PhotonInfo[icoll].phoIDMVA      [PhotonInfo[icoll].Size] = (*mvaValues)[pho];
-         }else {
-            PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoC" );  
-            PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoP" );  
-            PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoN" );  
-            PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = it_pho->userFloat( "isLoose" ); 
-            PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = it_pho->userFloat( "isMedium" ); 
-            PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = it_pho->userFloat( "isTight" ); 
+            PhotonInfo[icoll].isoChEffArea  [PhotonInfo[icoll].Size] 
+               = std::max( float(0.0) ,(*isoc_idvar)[pho] - rho_*effAreaChHadrons_.getEffectiveArea(abseta));
+            PhotonInfo[icoll].isoPhoEffArea [PhotonInfo[icoll].Size] 
+               = std::max( float(0.0) ,(*isop_idvar)[pho] - rho_*effAreaPhotons_.getEffectiveArea(abseta)) ;
+            PhotonInfo[icoll].isoNeuEffArea [PhotonInfo[icoll].Size] 
+               = std::max( float(0.0) ,(*ison_idvar)[pho] - rho_*effAreaNeuHadrons_.getEffectiveArea(abseta));
+         } else {
+            PhotonInfo[icoll].phoPFChIso    [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoC"       ) ;
+            PhotonInfo[icoll].phoPFPhoIso   [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoP"       ) ;
+            PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoN"       ) ;
+            PhotonInfo[icoll].phoPFNeuIso   [PhotonInfo[icoll].Size] = it_pho->userFloat( "sigmaIetaIeta" ) ;
+            PhotonInfo[icoll].phoPassLoose  [PhotonInfo[icoll].Size] = it_pho->userFloat( "isLoose"    ) ;
+            PhotonInfo[icoll].phoPassMedium [PhotonInfo[icoll].Size] = it_pho->userFloat( "isMedium"   ) ;
+            PhotonInfo[icoll].phoPassTight  [PhotonInfo[icoll].Size] = it_pho->userFloat( "isTight"    ) ;
+            PhotonInfo[icoll].isoChEffArea  [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoC_EAcor" ) ;
+            PhotonInfo[icoll].isoPhoEffArea [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoP_EAcor" ) ;
+            PhotonInfo[icoll].isoNeuEffArea [PhotonInfo[icoll].Size] = it_pho->userFloat( "isoN_EAcor" ) ;
          } 
 
-         //---------------------------  Generation MC information  ---------------------------
-         if ( !isData && !skipGenInfo_ ) { //MC
+         //----- Generation MC information  ---------------------------------------------
+         if ( !isData && !skipGenInfo_ ) {
             if( debug_ > 15 ) { cout << ">>> Photon >>> Getting MC information" << endl ; }
             const reco::Candidate* gen = it_pho->genPhoton();
             if ( gen != NULL ) {
@@ -101,7 +113,6 @@ bool bprimeKit::fillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             }
          }
 
-         PhotonInfo[icoll].r9             [PhotonInfo[icoll].Size]  = it_pho->r9();
          PhotonInfo[icoll].Size++;
       }
    }

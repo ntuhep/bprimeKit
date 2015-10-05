@@ -72,7 +72,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    eleMediumIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
    eleTightIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
    eleHEEPIdMapToken_    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
-//   eleMVAValuesMapToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "eleMVAValuesMap" )) ;
    
    //----- Photon related  ----------------------------------------------------------------------------
    phocollections_                 = iConfig.getParameter<StrList> ( "PhoCollections"     ) ; //branch names
@@ -80,12 +79,14 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    phoLooseIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoLooseIdMap"             )) ;
    phoMediumIdMapToken_            = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoMediumIdMap"            )) ;
    phoTightIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoTightIdMap"             )) ;
-//   phoMVAValuesMapToken_           = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoMVAValuesMap"           )) ;
    phoChargedIsolationToken_       = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoChargedIsolation"       )) ;
    phoNeutralHadronIsolationToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoNeutralHadronIsolation" )) ;
    phoPhotonIsolationToken_        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
-   
-   
+   effAreaChHadrons_               = (iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ;
+   effAreaNeuHadrons_              = (iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath() ;
+   effAreaPhotons_                 = (iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath() ;
+   full5x5SigmaIEtaIEtaMapToken_   = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>("full5x5SigmaIEtaIEtaMap")) ;
+
    //----- Configuration flats  -----------------------------------------------------------------------
    pairColl_            = iConfig.getUntrackedParameter<int> ( "PairCollection" , 0     ) ;
    skipGenInfo_         = iConfig.getUntrackedParameter<bool>( "SkipGenInfo"    , false ) ;
@@ -96,7 +97,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig )
    //----- 2015 cut based electron ID  ----------------------------------------------------------------
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
-   
+
    // if( EIDMVAInputTags_.size() != 12 ) { cout << "EIDMVAInputTags array size (12) is not correct" << endl; }
    // StrList myManualCatWeigthsTrig;
    // for( int ie = 0; ie < 6; ie++ ) { 
@@ -165,7 +166,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if( offlinePVlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVlabel_[0], VertexHandle ); }
    if( offlinePVBSlabel_.size() > 0 ) { iEvent.getByLabel( offlinePVBSlabel_[0], VertexHandleBS ); } //Offline primary vertices with Beam Spot constraint //Dmitry
    pvCol = VertexHandle.product();
-   
+
    edm::ESHandle<TransientTrackBuilder> builder;
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
    TransientTrackBuilder thebuilder = *( builder.product() );
@@ -191,7 +192,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    //   Leptons
    //------------------------------------------------------------------------------ 
    fillLepton( iEvent , iSetup ) ;
-   
+
    //------------------------------------------------------------------------------ 
    //   Photons
    //------------------------------------------------------------------------------ 
@@ -210,7 +211,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    fillJetPair( iEvent, iSetup ) ;
 #endif
 
-   
+
    //------------------------------------------------------------------------------ 
    //   Processing debugging messages and file writing
    //------------------------------------------------------------------------------ 
@@ -219,10 +220,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
          cout << "Lepton Collection " << i << "(" << lepcollections_[i] << "): size " << LepInfo[i].Size << endl;
          for( int j = 0; j < LepInfo[i].Size; j++ ){ 
             cout << "  Lep " << j << " type,pt,eta,phi " 
-                 << LepInfo[i].LeptonType[j] << "," 
-                 << LepInfo[i].Pt[j] << "," 
-                 << LepInfo[i].Eta[j] << "," 
-                 << LepInfo[i].Phi[j] << endl; 
+               << LepInfo[i].LeptonType[j] << "," 
+               << LepInfo[i].Pt[j] << "," 
+               << LepInfo[i].Eta[j] << "," 
+               << LepInfo[i].Phi[j] << endl; 
          }
       }
    }
@@ -235,10 +236,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
          cout << "After fill, Lepton Collection " << i << "(" << lepcollections_[i] << "): size " << LepInfo[i].Size << endl;
          for( int j = 0; j < LepInfo[i].Size; j++ ){ 
             cout << "  Lep " << j << " type,pt,eta,phi " 
-                 << LepInfo[i].LeptonType[j] << "," 
-                 << LepInfo[i].Pt[j] << "," 
-                 << LepInfo[i].Eta[j] << "," 
-                 << LepInfo[i].Phi[j] << endl;
+               << LepInfo[i].LeptonType[j] << "," 
+               << LepInfo[i].Pt[j] << "," 
+               << LepInfo[i].Eta[j] << "," 
+               << LepInfo[i].Phi[j] << endl;
          }
       }
    }

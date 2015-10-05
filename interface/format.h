@@ -1239,7 +1239,10 @@ public:
    Float_t phoPFChIso           [MAX_PHOTONS] ;
    Float_t phoPFNeuIso          [MAX_PHOTONS] ;
    Float_t phoPFPhoIso          [MAX_PHOTONS] ;
-   Float_t phoIDMVA             [MAX_PHOTONS] ;
+   Float_t sigmaIetaIeta        [MAX_PHOTONS] ;
+   Float_t isoChEffArea         [MAX_PHOTONS] ;
+   Float_t isoNeuEffArea        [MAX_PHOTONS] ;
+   Float_t isoPhoEffArea        [MAX_PHOTONS] ;
    Bool_t  phoPassLoose         [MAX_PHOTONS] ;
    Bool_t  phoPassMedium        [MAX_PHOTONS] ;
    Bool_t  phoPassTight         [MAX_PHOTONS] ;
@@ -1265,7 +1268,10 @@ public:
       root->Branch( ( name + ".phoPFChIso" ).c_str(), phoPFChIso, ( name + ".phoPFChIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".phoPFNeuIso" ).c_str(), phoPFNeuIso, ( name + ".phoPFNeuIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".phoPFPhoIso" ).c_str(), phoPFPhoIso, ( name + ".phoPFPhoIso[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".phoIDMVA" ).c_str(), phoIDMVA, ( name + ".phoIDMVA[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".sigmaIetaIeta" ).c_str(), sigmaIetaIeta, ( name + ".sigmaIetaIeta[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".isoChEffArea" ).c_str(), isoChEffArea, ( name + ".isoChEffArea[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".isoNeuEffArea" ).c_str(), isoNeuEffArea, ( name + ".isoNeuEffArea[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".isoPhoEffArea" ).c_str(), isoPhoEffArea, ( name + ".isoPhoEffArea[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".phoPassLoose" ).c_str(), phoPassLoose, ( name + ".phoPassLoose[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".phoPassMedium" ).c_str(), phoPassMedium, ( name + ".phoPassMedium[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".phoPassTight" ).c_str(), phoPassTight, ( name + ".phoPassTight[" + name + ".Size]/O" ).c_str() );
@@ -1291,7 +1297,10 @@ public:
       root->SetBranchAddress( ( name + ".phoPFChIso" ).c_str() , phoPFChIso ) ;
       root->SetBranchAddress( ( name + ".phoPFNeuIso" ).c_str() , phoPFNeuIso ) ;
       root->SetBranchAddress( ( name + ".phoPFPhoIso" ).c_str() , phoPFPhoIso ) ;
-      root->SetBranchAddress( ( name + ".phoIDMVA" ).c_str() , phoIDMVA ) ;
+      root->SetBranchAddress( ( name + ".sigmaIetaIeta" ).c_str() , sigmaIetaIeta ) ;
+      root->SetBranchAddress( ( name + ".isoChEffArea" ).c_str() , isoChEffArea ) ;
+      root->SetBranchAddress( ( name + ".isoNeuEffArea" ).c_str() , isoNeuEffArea ) ;
+      root->SetBranchAddress( ( name + ".isoPhoEffArea" ).c_str() , isoPhoEffArea ) ;
       root->SetBranchAddress( ( name + ".phoPassLoose" ).c_str() , phoPassLoose ) ;
       root->SetBranchAddress( ( name + ".phoPassMedium" ).c_str() , phoPassMedium ) ;
       root->SetBranchAddress( ( name + ".phoPassTight" ).c_str() , phoPassTight ) ;
