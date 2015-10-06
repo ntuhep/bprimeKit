@@ -2,14 +2,11 @@
 
 #-----  Defining constant variables  ---------------------------------------------------------------
 INPUT_FILE_LIST=(
-   "/store/data/Run2015B/Charmonium/AOD/PromptReco-v1/000/251/168/00000/1602316B-CF26-E511-BCBA-02163E011BF3.root"
-   "/store/data/Run2015C/SingleMuon/MINIAOD/PromptReco-v1/000/253/952/00000/C6F1C99F-4241-E511-A877-02163E01439D.root"
    "/store/data/Run2015D/SingleMuon/MINIAOD/PromptReco-v3/000/256/843/00000/201CB0C7-E560-E511-BB1F-02163E013425.root"
-   "/store/mc/RunIISpring15DR74/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/F884E560-CE09-E511-95DB-00266CF3DE70.root"
 )
 
 INPUT_FILE_PREFIX="root://eoscms//eos/cms/"
-DATA_GLOBAL_TAG="74X_dataRun2_Prompt_v0"
+DATA_GLOBAL_TAG="74X_dataRun2_Prompt_v3"
 MC_GLOBAL_TAG="MCRUN2_74_V9"
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 PYTHON_FILE="${DIR}/hltConfig/getHLTNames.py"

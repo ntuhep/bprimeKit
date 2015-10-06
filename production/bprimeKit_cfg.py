@@ -541,20 +541,19 @@ pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standal
 pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"
 pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"
 
-
-if options.DataProcessing=="MC50ns" or options.DataProcessing="MC25ns":
+if options.DataProcessing=="MC50ns" or options.DataProcessing=="MC25ns" :
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff' )
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
 elif options.DataProcessing=="Data50ns":
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff' )
-    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V2_cff' )
+    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
     elec_veto_id_label   = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-veto"
     elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"
     elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"
     elec_tight_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-tight"
-    pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V2-standalone-loose"
-    pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V2-standalone-medium"
-    pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V2-standalone-tight"
+    pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"
+    pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium"
+    pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight"
 elif options.DataProcessing=="Data25ns":
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' )
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff' )
@@ -571,7 +570,7 @@ else:
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
 
 
-for idmod in my_id_modules:
+for idmod in my_elid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
 for idmod in my_phoid_modules:
@@ -696,7 +695,7 @@ genlabel    = cms.VInputTag("prunedGenParticles"),
    )
 
 if not options.b2gPreprocess:
-    print "Running with original pat tuples"
+   print "Running with original pat tuples"
    process.QGTagger.srcJets = cms.InputTag( "slimmedJets")
    process.endPath = cms.Path(
            process.QGTagger * 
@@ -705,7 +704,7 @@ if not options.b2gPreprocess:
            process.bprimeKit
            )
 else:
-    print "Running with b2g defined filters"
+   print "Running with b2g defined filters"
    process.bprimeKit.muonlabel = cms.VInputTag("muonUserData")
    process.bprimeKit.eleclabel = cms.VInputTag("electronUserData")
    process.bprimeKit.pholabel  = cms.VInputTag("photonUserData")
