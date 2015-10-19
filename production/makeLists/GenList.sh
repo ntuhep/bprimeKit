@@ -62,7 +62,7 @@ for run in $RUNLIST ; do
    for tag in  $TAGLIST ; do 
       for dataSet in $SETLIST ; do
 
-         queryFormat="/${dataSet}/${run}-${tag}-*/$FORMAT"
+         queryFormat="/${dataSet}/*${run}*${tag}*/$FORMAT"
          queryCommand="das_client --query=\"dataset=$queryFormat\""
          queryCommand=${queryCommand}" --limit=10000"
          #Special case for QCD 

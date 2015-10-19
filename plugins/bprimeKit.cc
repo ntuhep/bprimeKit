@@ -98,13 +98,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
 
 
-   // if( EIDMVAInputTags_.size() != 12 ) { cout << "EIDMVAInputTags array size (12) is not correct" << endl; }
-   // StrList myManualCatWeigthsTrig;
-   // for( int ie = 0; ie < 6; ie++ ) { 
-   //    myManualCatWeigthsTrig.push_back( EIDMVAInputTags_[ie + 6].c_str() ); }
-   // myMVATrig = new EGammaMvaEleEstimator();
-   // myMVATrig->initialize( "BDT", EGammaMvaEleEstimator::kTrig, true, myManualCatWeigthsTrig );
-
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       HLTmaplist.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
 }
@@ -135,7 +128,6 @@ void bprimeKit::beginJob()
       JetInfo[i].RegisterTree( root, jetcollections_[i] );
    }
    if( pairColl_ >= 0 ) { PairInfo.RegisterTree( root ); }
-
 }
 void bprimeKit::endJob()
 {}
@@ -156,10 +148,10 @@ void bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )
 
 void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
+   if( debug_ > 0 ) { cout << "[0] Begin Analysis!!" << endl; }
    //----- Setting up common variables  ---------------------------------------------------------------
    edm::ESHandle<ParticleDataTable> pdt_;
    iSetup.getData( pdt_ );
-   if( debug_ > 0 ) { cout << "Begin Analyze" << endl; }
    isData = iEvent.isRealData();   // Add by Jacky
 
    if(!isData && genlabel_.size() > 0 ) iEvent.getByLabel( genlabel_[0], GenHandle);
@@ -173,10 +165,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    transientTrackBuilder = builder.product();
 
 
+   if( debug_ > 0 ) { cout << "[0] Entering subroutines..." << endl; }
    //------------------------------------------------------------------------------ 
    //   Generation and Event information
    //------------------------------------------------------------------------------  
-   if( debug_ > 5 ) { cout << "\tFill Gen and Event Info.\n"; }
    memset( &GenInfo, 0x00, sizeof( GenInfo ) );
    memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );
    fillGenInfo( iEvent , iSetup );
@@ -215,21 +207,10 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    //------------------------------------------------------------------------------ 
    //   Processing debugging messages and file writing
    //------------------------------------------------------------------------------ 
-   if( debug_ > 11 ) {
-      for( unsigned i = 0; i < lepcollections_.size(); i++ ) {
-         cout << "Lepton Collection " << i << "(" << lepcollections_[i] << "): size " << LepInfo[i].Size << endl;
-         for( int j = 0; j < LepInfo[i].Size; j++ ){ 
-            cout << "  Lep " << j << " type,pt,eta,phi " 
-               << LepInfo[i].LeptonType[j] << "," 
-               << LepInfo[i].Pt[j] << "," 
-               << LepInfo[i].Eta[j] << "," 
-               << LepInfo[i].Phi[j] << endl; 
-         }
-      }
-   }
-   if( debug_ > 5 ) { cout << "Fill tree with all information\n"; }
+   if( debug_ > 0 ) { cout << "[0] Filling tree with all information" << endl; }
    root->Fill();
-   if( debug_ > 10 ) { cout << "Filled event information: Run " << EvtInfo.RunNo << " Event " << EvtInfo.EvtNo << endl; }
+   if( debug_ > 0 ) { cout << "[0] Filled event information: Run " << EvtInfo.RunNo << " Event " << EvtInfo.EvtNo << endl; }
+   
    if( debug_ > 11 ) {
       root->Show( -1, 999 );
       for( size_t i = 0; i < lepcollections_.size(); i++ ) {

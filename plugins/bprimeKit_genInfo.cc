@@ -60,7 +60,8 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
 
    //-------------------------------------------------------------------------------------------------- 
    //   Setting up common variables
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
+   if( debug_ > 1 ) { cout << "\t[1] Entering GenInfo subroutine"  << endl;}
    for( int i = 0; i < 14; i++ ) { MCDaughters[i] = NULL; }
    if( isData || skipGenInfo_  ) return false;
    if( !isData && genlabel_.size() > 0 ) { iEvent.getByLabel( genlabel_[0], GenHandle ); }
@@ -79,6 +80,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    //-------------------------------------------------------------------------------------------------- 
    //   Begin main loop
    //-------------------------------------------------------------------------------------------------- 
+   if( debug_ > 1 ) { cout << "\t[1] Entering GenInfo main loop"  << endl;}
    for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); ++it_gen  ) {
 
       //----- Setting up common variable  ----------------------------------------------------------------
@@ -90,7 +92,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
 
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
       if( isValidGenParticle(it_gen) && GenInfo.Size < 60 ){
-         if( debug_ ) { cout << "Enter GenInfo" << endl; } 
+         if( debug_ > 2 ) { cout << "\t\t[2]GenInfo Particle" << endl; } 
 
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()                ;
          GenInfo.Eta            [GenInfo.Size] = it_gen->eta()               ;
@@ -116,7 +118,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
          GenInfo.GrandMo2Status [GenInfo.Size] = -1                          ;
 
          //----- Parent/Daughter information insertion  -----------------------------------------------------
-         if( debug_ ) { cout << ">>Gen>> Getting parent candidates" << endl;}
+         if( debug_ > 2 ) { cout << "\t\t[2] Getting parent candidates" << endl;}
 
          mother1 = find( cands.begin(), cands.end(), it_gen->mother(0) );
          if( mother1 != cands.end() ) { 
@@ -186,7 +188,7 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       if ( NMo >= 1 )
       { monId   = it_gen->mother( 0 )->pdgId(); }
 
-      if( debug_ ) { cout << "Getting decay mode" << endl; }
+      if( debug_ > 2 ) { cout << "\t\t[2]Getting decay mode" << endl; }
       //----- b' decay mode  -----------------------------------------------------------------------------
       // b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH
       if ( pdgId == +7 ) { 
@@ -392,8 +394,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
 
    return true;
 }
-
-
 
 /***************************************************************************************************
  *

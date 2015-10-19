@@ -24,7 +24,7 @@ import copy
 options = opts.VarParsing ('analysis')
 
 options.register('sample',
-                 '/store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root',
+                 'file:///wk_cms/yichen/miniAODs/Run2015_reMiniAOD/Run2015D_SingleMuon.root',
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
                  'Sample to analyze')
@@ -108,17 +108,17 @@ if options.globalTag != "":
   print "!!!!Warning: You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
 else: 
    if options.DataProcessing=="MC50ns":
-      options.globalTag="MCRUN2_74_V9A"
+      options.globalTag="74X_mcRun2_asymptotic50ns_v0"
    elif options.DataProcessing=="MC25ns":
-      options.globalTag="MCRUN2_74_V9"
+      options.globalTag="74X_mcRun2_asymptotic_v2"
    elif options.DataProcessing=="Data50ns":
-      options.globalTag="74X_dataRun2_Prompt_v0"
+      options.globalTag="74X_dataRun2_reMiniAOD_v0"
    elif options.DataProcessing=="Data25ns":
-      options.globalTag="74X_dataRun2_Prompt_v1"
+      options.globalTag="74X_dataRun2_reMiniAOD_v0"
    elif options.DataProcessing=="Data25nsv2":
-      options.globalTag="74X_dataRun2_Prompt_v2"
+      options.globalTag="74X_dataRun2_v4"
    else:
-      sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options for 'DataProcessing': 'MC50ns', 'MC25ns', 'Data50ns', 'Data25ns', 'Data25nsv2'\n") 
+      sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options for 'DataProcessing': 'MC50ns', 'MC25ns', 'Data_Run2015D', 'Data_ReMiniAOD', 'Data_ReMiniAOD_RunC_25ns'\n") 
 if "Data" in options.DataProcessing:
   print "!!!!Warning: You have chosen to run over data. lheLabel will be unset.\n"
   lheLabel = ""
@@ -210,7 +210,7 @@ if options.usePrivateSQLite:
     elif options.DataProcessing=="Data25nsv2":
       era="Summer15_25nsV2_DATA" 
     elif options.DataProcessing=="MC50ns":
-      era="Summer15_50nsV5_DATA" 
+      era="Summer15_50nsV5_MC" 
     elif options.DataProcessing=="MC25ns":
       era="Summer15_25nsV2_MC" 
     dBFile = era+".db"
@@ -639,9 +639,8 @@ process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
 #------------------------------------------------------------------------------- 
 #   bprimeKit configuration importing 
 #-------------------------------------------------------------------------------
-resultsFile = 'bprimeKit_ntuples.root'
 process.TFileService = cms.Service("TFileService",
-        fileName = cms.string( resultsFile )
+        fileName = cms.string( options.outputLabel )
         )
 
 from MyAna.bprimeKit.ObjectParameters_cfi import *

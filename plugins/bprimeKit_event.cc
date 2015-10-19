@@ -28,7 +28,7 @@ typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   if( debug_ > 0 ) { cout << "Begin filling EvtInfoBranches" << endl ;}
+   if( debug_ > 1 ) { cout << "\t[1] Entering EventInfo subroutine" << endl ;}
    //-------------------------------------------------------------------------------------------------- 
    //   Helper variables definition
    //-------------------------------------------------------------------------------------------------- 
@@ -44,7 +44,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    edm::Handle<double> rhoHandle;
    std::pair<int,int>  psValueCombo;
 
-   if( debug_ > 0 ){ cout <<">>>Evt: Getting variables"<< endl;}
+   if( debug_ > 1 ){ cout <<"\t[1] Getting Event variables"<< endl;}
    iEvent.getByToken( rhoLabel_ , rhoHandle );
    iEvent.getByLabel( metlabel_[0],  METHandle );
    iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
@@ -53,7 +53,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if( ! isData ) {
       iEvent.getByLabel( puInfoLabel_[0], PUInfo ); }
    
-   if( debug_ > 0 ){ cout <<">>>Evt: Inserting generic information"<< endl;}
+   if( debug_ > 1 ){ cout <<"\t[1] Inserting generic Event information"<< endl;}
    EvtInfo.RunNo    = iEvent.id().run();
    EvtInfo.EvtNo    = iEvent.id().event();
    EvtInfo.McFlag   = iEvent.isRealData() ? 0 : 1;
@@ -63,7 +63,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
    EvtInfo.Rho      = *(rhoHandle.product()) ; 
    
-   if( debug_ > 0 ){ cout <<">>>Evt: Inserting Pile up information information"<< endl;}
+   if( debug_ > 1 ){ cout <<"\t[1] Inserting Pile up information information"<< endl;}
    //----- Pile up information  -----------------------------------------------------------------------
    if( PUInfo.isValid() ) {
       for( PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI ) {
@@ -75,7 +75,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    }
    
    //----- Getting beamspot information  --------------------------------------------------------------
-   if( debug_ > 5 ) { cout << ">>>Evt: Get beam spot."<< endl; }
+   if( debug_ > 1 ) { cout << "\t[1] Get beam spot."<< endl; }
    if ( beamSpotHandle.isValid() ) {
       beamSpot = *beamSpotHandle.product();
       EvtInfo.BeamSpotX = beamSpot.position().x();
@@ -127,7 +127,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       }
    }
    //----- Missing momentum correction  ---------------------------------------------------------------
-   if( debug_ > 5 ) { cout << ">>>Evt: Get missing momentum corrections."<< endl; }
+   if( debug_ > 1 ) { cout << "\t[1] Get missing momentum corrections."<< endl; }
    if( pfMETHandle_TempPlus.isValid() ){
       for( it_met = pfMETHandle_TempPlus->begin(); it_met != pfMETHandle_TempPlus->end(); it_met++ ) {
          EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_met->pt(); }
@@ -152,7 +152,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    //----- High Level Trigger information  ------------------------------------------------------------
    bool with_TriggerResults = ( hltlabel_.size() > 0 ) ? iEvent.getByLabel( hltlabel_[0], TrgResultsHandle ) : false;
    if ( with_TriggerResults ) {
-      if( debug_ > 10 ) { cout << "Getting High Level Trigger" << endl; }
+      if( debug_ > 1 ) { cout << "\t[1] Getting High Level Trigger" << endl; }
       const edm::TriggerNames& TrgNames = iEvent.triggerNames( *TrgResultsHandle );
       EvtInfo.TrgCount = 0;
       for( size_t i = 0; i < N_TRIGGER_BOOKINGS; ++i ) {
@@ -175,16 +175,16 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       for( size_t i = 0; i < TrgNames.size(); ++i ) {
          EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
-         if( debug_ ) { cout << i <<"["<< EvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ; }
-         if( debug_ ) { cout << ">>Evt: Getting prescale set: " << hltConfig_.prescaleSet( iEvent , iSetup ) << endl; }
+         if( debug_ > 2 ) { cout << "\t\t[2] HLTInfo: "<< i <<"["<< EvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ; }
+         if( debug_ > 2 ) { cout << "\t\t[2] Getting prescale set: " << hltConfig_.prescaleSet( iEvent , iSetup ) << endl; }
          EvtInfo.HLTPrescaleFactor[i] = hltConfig_.prescaleValue( iEvent, iSetup, triggerName_ );
          HLTmaplist_pr = HLTmaplist.find( triggerName_ );
          if( HLTmaplist_pr != HLTmaplist.end() ) {
             EvtInfo.HLTName2enum[i] = HLTmaplist_pr->second ;
          } else {
             EvtInfo.HLTName2enum[i] = -1; }
-         if( debug_ ) { cout << ">>Evt: Getting prescale " << EvtInfo.HLTPrescaleFactor[i] << endl ; }
-         if( debug_ ) { cout << ">>Evt: Getting Trigger int label " << EvtInfo.HLTName2enum[i] << endl; }
+         if( debug_ > 2 ) { cout << "\t\t[2] Getting prescale " << EvtInfo.HLTPrescaleFactor[i] << endl ; }
+         if( debug_ > 2 ) { cout << "\t\t[2] Getting Trigger int label " << EvtInfo.HLTName2enum[i] << endl; }
       }
    }
 
@@ -195,7 +195,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       if ( ! dWord.empty() ) { // if board not there this is zero
          // loop over dec. bit to get total rate (no overlap)
          for ( int i = 0; i < 128; ++i ) {
-            if(dWord[i]!=0 && debug_ ){ cout <<"Dword: "<< i << " " << dWord[i] << ": ";}
+            if(dWord[i]!=0 && debug_ > 2  ){ cout <<"\t\t[2] Dword: "<< i << " " << dWord[i] << ": ";}
             EvtInfo.L1[i] = dWord[i];
          }
       }
