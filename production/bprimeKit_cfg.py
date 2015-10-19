@@ -16,21 +16,15 @@
 #  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data50ns'
 #
 # *****************************************************************************************
+import sys 
 import FWCore.ParameterSet.Config as cms
 import FWCore.ParameterSet.VarParsing as opts
 import copy
 
 options = opts.VarParsing ('analysis')
 
-options.register('maxEvts',
-                 1000, ## For all events processing use -1
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.int,
-                 'Number of events to process')
-
 options.register('sample',
-                 '/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-TTJets_madgraphMLM_25ns-40k_PAT.root',
-                 #'/store/cmst3/user/gpetrucc/miniAOD/Spring15MiniAODv2/CMSSW_7_4_12/miniAOD-data-SingleMuon-251252_PAT_job5.root', 
+                 '/store/mc/RunIISpring15MiniAODv2/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/00000/0014DC94-DC5C-E511-82FB-7845C4FC39F5.root',
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
                  'Sample to analyze')
@@ -42,28 +36,22 @@ options.register('lheLabel',
                  'LHE module label')
 
 options.register('outputLabel',
-                 'B2GEDMNtuple.root',
+                 'bpk_ntuples.root',
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
                  'Output label')
+
+options.register('DataProcessing',
+                 "",
+                 opts.VarParsing.multiplicity.singleton,
+                 opts.VarParsing.varType.string,
+                 'Data processing types. Options are: MC50ns, MC25ns, Data50ns, Data25ns Data25nsv2')
 
 options.register('globalTag',
                  '', ## Optional, could be decided automatically
                  opts.VarParsing.multiplicity.singleton,
                  opts.VarParsing.varType.string,
                  'Global Tag')
-
-options.register('isData',
-                 False,
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.bool,
-                 'Is data?')
-
-options.register('DataProcessing',
-                 "MC25ns",
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.string,
-                 'Data processing type')
 
 options.register('useNoHFMET',
                  True,
@@ -99,25 +87,60 @@ options.register('b2gPreprocess',
       False,
       opts.VarParsing.multiplicity.singleton,
       opts.VarParsing.varType.bool,
-      'Where to use the filters and producers defined by b2g group')
+      'Whether to use the filters and producers defined by b2g group')
 
+options.register('wantSummary',
+                 False,
+                 opts.VarParsing.multiplicity.singleton,
+                 opts.VarParsing.varType.bool,
+                 'Want summary report')
 
+options.setDefault('maxEvents', 10)
 options.parseArguments()
+
+#------------------------------------------------------------------------------- 
+#   Basic argument parsing
+#------------------------------------------------------------------------------- 
+if options.DataProcessing == "":
+  sys.exit("!!!!Error: Enter 'DataProcessing' period. Options are: 'MC50ns', 'MC25ns', 'Data50ns', 'Data25ns', 'Data25nsv2'.\n")
+
+if options.globalTag != "": 
+  print "!!!!Warning: You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
+else: 
+   if options.DataProcessing=="MC50ns":
+      options.globalTag="MCRUN2_74_V9A"
+   elif options.DataProcessing=="MC25ns":
+      options.globalTag="MCRUN2_74_V9"
+   elif options.DataProcessing=="Data50ns":
+      options.globalTag="74X_dataRun2_Prompt_v0"
+   elif options.DataProcessing=="Data25ns":
+      options.globalTag="74X_dataRun2_Prompt_v1"
+   elif options.DataProcessing=="Data25nsv2":
+      options.globalTag="74X_dataRun2_Prompt_v2"
+   else:
+      sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options for 'DataProcessing': 'MC50ns', 'MC25ns', 'Data50ns', 'Data25ns', 'Data25nsv2'\n") 
+if "Data" in options.DataProcessing:
+  print "!!!!Warning: You have chosen to run over data. lheLabel will be unset.\n"
+  lheLabel = ""
 
 #------------------------------------------------------------------------------- 
 #   Setting up input labels
 #-------------------------------------------------------------------------------
-rhoLabel               = "fixedGridRhoFastjetAll"
-muLabel                = 'slimmedMuons'
-elLabel                = 'slimmedElectrons'
-jLabel                 = 'slimmedJets'
-jLabelNoHF             = 'slimmedJets'
-jLabelAK8              = 'slimmedJetsAK8'
-pvLabel                = 'offlineSlimmedPrimaryVertices'
-convLabel              = 'reducedEgamma:reducedConversions'
-particleFlowLabel      = 'packedPFCandidates'
-metLabel               = 'slimmedMETs'
-metNoHFLabel           = 'slimmedMETsNoHF'
+###inputTag labels
+rhoLabel          = "fixedGridRhoFastjetAll"
+muLabel           = 'slimmedMuons'
+elLabel           = 'slimmedElectrons'
+jLabel            = 'slimmedJets'
+jLabelNoHF        = 'slimmedJets'
+jLabelAK8         = 'slimmedJetsAK8'
+
+rhoLabel          = 'fixedGridRhoFastjetAll'
+pvLabel           = 'offlineSlimmedPrimaryVertices'
+convLabel         = 'reducedEgamma:reducedConversions'
+particleFlowLabel = 'packedPFCandidates'
+metLabel          = 'slimmedMETs'
+metNoHFLabel      = 'slimmedMETsNoHF'
+
 triggerResultsLabel    = "TriggerResults"
 triggerSummaryLabel    = "hltTriggerSummaryAOD"
 hltMuonFilterLabel     = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f40QL3crIsoRhoFiltered0p15"
@@ -125,20 +148,16 @@ hltPathLabel           = "HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL"
 hltElectronFilterLabel = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8"
 lheLabel               = "externalLHEProducer"
 
+### Including QGL: ensuring the database onject can be accessed
+qgDatabaseVersion = 'v1' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
-#------------------------------------------------------------------------------- 
-#   Begin option parsing for process
-#-------------------------------------------------------------------------------
-if(options.isData):options.LHE = False
-runOnData        = options.isData           #data/MC switch
-useHFCandidates  = not options.useNoHFMET   #create an additionnal NoHF slimmed MET collection if the option is set to false
-usePrivateSQlite = options.usePrivateSQLite #use external JECs (sqlite file)
-applyResiduals   = options.isData           #application of residual corrections. 
-                                            #   Have to be set to True once the 13 TeV residual corrections are available. 
-                                            #   False to be kept meanwhile. Can be kept to False later for private tests
-                                            #   or for analysis checks and developments (not the official recommendation!).
-if not (options.forceResiduals == None):
-  applyResiduals = (options.forceResiduals == True)
+triggerResultsLabel    = "TriggerResults"
+triggerSummaryLabel    = "hltTriggerSummaryAOD"
+hltMuonFilterLabel     = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f40QL3crIsoRhoFiltered0p15"
+hltPathLabel           = "HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL"
+hltElectronFilterLabel = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8"
+
+print "\nRunning with DataProcessing option ", options.DataProcessing, " and with global tag", options.globalTag, "\n" 
 
 #####################################
 process = cms.Process("bprimeKit")
@@ -147,9 +166,11 @@ process = cms.Process("bprimeKit")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.FwkReport.reportEvery = 100
 process.MessageLogger.categories.append('HLTrigReport')
-
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvts) )
+### Output Report
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(options.wantSummary) )
+### Number of maximum events to process
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
+### Source file
 process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
         options.sample
@@ -163,48 +184,37 @@ process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
-
-if options.globalTag == "": 
-   if options.DataProcessing=="MC50ns":
-      process.GlobalTag.globaltag="MCRUN2_74_V9A"
-   elif options.DataProcessing=="MC25ns":
-      process.GlobalTag.globaltag="MCRUN2_74_V9"
-   elif options.DataProcessing=="Data50ns":
-      process.GlobalTag.globaltag="74X_dataRun2_Prompt_v0"
-   elif options.DataProcessing=="Data25ns":
-      process.GlobalTag.globaltag="74X_dataRun2_Prompt_v1"
-   else:
-      print "Choose any of the following options for 'DataProcessing'", "MC50ns,  MC25ns, Data50ns, Data25ns" 
-else: 
-   print "You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
-   process.GlobalTag.globaltag = options.globalTag 
-
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
+### Setting global tag 
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-
-if runOnData:
-  process.GlobalTag.globaltag = '74X_dataRun2_Prompt_v1'
-
+process.GlobalTag.globaltag = options.globalTag 
 
 #------------------------------------------------------------------------------- 
 #   External Jet Energy Corrections.
 #-------------------------------------------------------------------------------
 
 corrections = ['L1FastJet', 'L2Relative', 'L3Absolute']
-if (applyResiduals == True):
-  corrections = ['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']
+if ("Data" in options.DataProcessing and options.forceResiduals):
+  corrections.append['L2L3Residual']
 
-if usePrivateSQlite:
-    jLabel    = 'updatedPatJetsAK4'
+if options.usePrivateSQLite:
+    jLabel = 'updatedPatJetsAK4'
     jLabelAK8 = 'updatedPatJetsAK8'
     
     from CondCore.DBCommon.CondDBSetup_cfi import *
     import os
-    if runOnData:
-      era="Summer15_50nsV4_DATA"
-    else:
-      era="Summer15_50nsV4_MC"
+    if options.DataProcessing=="Data50ns":
+      era="Summer15_50nsV5_DATA" 
+    elif options.DataProcessing=="Data25ns":
+      era="Summer15_25nsV2_DATA" 
+    elif options.DataProcessing=="Data25nsv2":
+      era="Summer15_25nsV2_DATA" 
+    elif options.DataProcessing=="MC50ns":
+      era="Summer15_50nsV5_DATA" 
+    elif options.DataProcessing=="MC25ns":
+      era="Summer15_25nsV2_MC" 
     dBFile = era+".db"
+    print "\nUsing private SQLite file", dBFile, "\n"
     process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
                                connect = cms.string( "sqlite_file:"+dBFile ),
                                toGet =  cms.VPSet(
@@ -237,6 +247,7 @@ if usePrivateSQlite:
     process.patJetCorrFactorsReapplyJEC = patJetCorrFactorsUpdated.clone(
       rho = cms.InputTag("fixedGridRhoFastjetAll"),
       src = cms.InputTag("slimmedJets"),
+      
       levels = corrections )
     process.updatedPatJetsAK4 = patJetsUpdated.clone(
       jetSource = cms.InputTag("slimmedJets"),
@@ -247,17 +258,18 @@ if usePrivateSQlite:
       src = cms.InputTag("slimmedJetsAK8"),
       rho = cms.InputTag("fixedGridRhoFastjetAll"),
       levels = corrections )
+
     process.updatedPatJetsAK8 = patJetsUpdated.clone(
       jetSource = cms.InputTag("slimmedJetsAK8"),
       jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetAK8CorrFactorsReapplyJEC"))
       )
+
 jecUncertaintyFile="PhysicsTools/PatUtils/data/Summer15_50nsV4_DATA_UncertaintySources_AK4PFchs.txt"
 
-print """
 #------------------------------------------------------------------------------- 
 #   Since 7.4.0, only AK8 jets need to make gen jets, all others are stored 
 #   in MiniAOD directly
-#------------------------------------------------------------------------------- """
+#-------------------------------------------------------------------------------
 ## Filter out neutrinos from packed GenParticles
 process.packedGenParticlesForJetsNoNu = cms.EDFilter(
         "CandPtrSelector", 
@@ -266,7 +278,7 @@ process.packedGenParticlesForJetsNoNu = cms.EDFilter(
         )
 
 ## Fat GenJets
-if not options.isData : 
+if "MC" in options.DataProcessing : 
     from RecoJets.JetProducers.ak4GenJets_cfi import ak4GenJets
     process.ak8GenJetsNoNu = ak4GenJets.clone(
         rParam = cms.double(0.8),
@@ -288,11 +300,10 @@ if not options.isData :
         jetCollInstanceName=cms.string("SubJets")    
     )
 
-print """
 ### ---------------------------------------------------------------------------
 ### Removing the HF from the MET computation as from 7 Aug 2015 recommendations
-### ---------------------------------------------------------------------------"""
-if not useHFCandidates:
+### ---------------------------------------------------------------------------
+if options.useNoHFMET:
    process.noHFCands = cms.EDFilter(
            "CandPtrSelector",
            src=cms.InputTag("packedPFCandidates"),
@@ -308,13 +319,13 @@ from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMet
 #for a full met computation, remove the pfCandColl input
 runMetCorAndUncFromMiniAOD(
         process,
-        isData=runOnData,
+        isData=( "Data" in options.DataProcessing),
         )
 
-if not useHFCandidates:
+if options.useNoHFMET:
     runMetCorAndUncFromMiniAOD(
             process,
-            isData=runOnData,
+            isData=( "Data" in options.DataProcessing ),
             pfCandColl=cms.InputTag("noHFCands"),
             postfix="NoHF"
             )
@@ -323,21 +334,19 @@ if not useHFCandidates:
 #------------------------------------------------------------------------------- 
 #   The lines below remove the L2L3 residual corrections when processing data
 #------------------------------------------------------------------------------- 
-if (applyResiduals == True):
+if( "Data" in options.DataProcessing and options.forceResiduals):
   #Take new pat jets as input of the entuples
   process.patJetCorrFactors.levels = corrections 
-  if not useHFCandidates:
+  if options.useNoHFMET:
     process.patJetCorrFactorsNoHF.levels = corrections 
-
-if not ( applyResiduals ==True):
+else:
     process.patPFMetT1T2Corr.jetCorrLabelRes          = cms.InputTag("L3Absolute")
     process.patPFMetT1T2SmearCorr.jetCorrLabelRes     = cms.InputTag("L3Absolute")
     process.patPFMetT2Corr.jetCorrLabelRes            = cms.InputTag("L3Absolute")
     process.patPFMetT2SmearCorr.jetCorrLabelRes       = cms.InputTag("L3Absolute")
     process.shiftedPatJetEnDown.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
     process.shiftedPatJetEnUp.jetCorrLabelUpToL3Res   = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
-
-    if not useHFCandidates:
+    if options.useNoHFMET:
           process.patPFMetT1T2CorrNoHF.jetCorrLabelRes          = cms.InputTag("L3Absolute")
           process.patPFMetT1T2SmearCorrNoHF.jetCorrLabelRes     = cms.InputTag("L3Absolute")
           process.patPFMetT2CorrNoHF.jetCorrLabelRes            = cms.InputTag("L3Absolute")
@@ -353,12 +362,14 @@ process.skimmedPatMuons = cms.EDFilter(
     src = cms.InputTag(muLabel),
     cut = cms.string("pt > 0.0 && abs(eta) < 2.4")
     )
+
 process.skimmedPatPhotons = cms.EDFilter(
     "PATPhotonSelector",
     src = cms.InputTag("slimmedPhotons"),
     cut = cms.string("pt > 30 && abs(eta) < 2.4"),
 
 )
+
 process.skimmedPatElectrons = cms.EDFilter(
     "PATElectronSelector",
     src = cms.InputTag(elLabel),
@@ -366,12 +377,12 @@ process.skimmedPatElectrons = cms.EDFilter(
     )
 process.skimmedPatMET = cms.EDFilter(
     "PATMETSelector",
-    src = cms.InputTag(metLabel),
+    src = cms.InputTag(metLabel, "", "RECO"),
     cut = cms.string("")
     )
 process.skimmedPatMETNoHF = cms.EDFilter(
     "PATMETSelector",
-    src = cms.InputTag(metNoHFLabel),
+    src = cms.InputTag(metNoHFLabel , "", "RECO"),
     cut = cms.string("")
     )
 process.skimmedPatJets = cms.EDFilter(
@@ -457,7 +468,9 @@ process.electronUserData = cms.EDProducer(
       electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"),
       electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"),
       electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-tight"),
-      electronHEEPIdMap   = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60")
+      electronHEEPIdMap   = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),
+    eleMediumIdFullInfoMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
+    eleIdVerbose = cms.bool(True)
       )
 
 process.photonUserData = cms.EDProducer(
@@ -526,8 +539,8 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 
 dataFormat = DataFormat.MiniAOD
-switchOnVIDElectronIdProducer(process, dataFormat)
 switchOnVIDPhotonIdProducer(process, dataFormat)
+switchOnVIDElectronIdProducer(process, dataFormat)
 
 my_elid_modules  = ['RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff'] 
 my_phoid_modules = []
@@ -544,7 +557,7 @@ pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standal
 if options.DataProcessing=="MC50ns" or options.DataProcessing=="MC25ns" :
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff' )
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
-elif options.DataProcessing=="Data50ns":
+elif "Data50ns" in options.DataProcessing :
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff' )
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
     elec_veto_id_label   = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-veto"
@@ -554,16 +567,20 @@ elif options.DataProcessing=="Data50ns":
     pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"
     pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium"
     pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight"
-elif options.DataProcessing=="Data25ns":
+elif "Data25ns" in options.DataProcessing :
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' )
-    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff' )
+    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
+    #my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff' )
     elec_veto_id_label   = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"
     elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"
     elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"
     elec_tight_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"
-    pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"
-    pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"
-    pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"
+    pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"
+    pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"
+    pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"
+    #pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"
+    #pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"
+    #pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"
 else:
     print "Warning! E/G Cut based ID data type not specified, using PHYS14_PU20bx25_V2 as default (may misbehave with data)"
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff' )
@@ -590,6 +607,10 @@ process.eventShapePFVars.src = cms.InputTag(particleFlowLabel)
 process.eventShapePFJetVars = pfEventShapeVars.clone()
 process.eventShapePFJetVars.src = cms.InputTag("skimmedPatJets")
 
+process.centrality = cms.EDProducer("CentralityUserData",
+    src = cms.InputTag("skimmedPatJets")
+    )                                    
+
 process.TriggerUserData = cms.EDProducer(
         'TriggerUserData',
         bits = cms.InputTag("TriggerResults","","HLT"),
@@ -600,6 +621,8 @@ process.TriggerUserData = cms.EDProducer(
         )                                 
 
 hltProcForMETUserData = "PAT"
+if options.DataProcessing=="Data25nsv2":
+  hltProcForMETUserData = "RECO"
 
 process.METUserData = cms.EDProducer(
         'TriggerUserData',
@@ -613,10 +636,9 @@ process.METUserData = cms.EDProducer(
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
 
-print """
 #------------------------------------------------------------------------------- 
 #   bprimeKit configuration importing 
-#------------------------------------------------------------------------------- """
+#-------------------------------------------------------------------------------
 resultsFile = 'bprimeKit_ntuples.root'
 process.TFileService = cms.Service("TFileService",
         fileName = cms.string( resultsFile )
@@ -626,7 +648,7 @@ from MyAna.bprimeKit.ObjectParameters_cfi import *
 process.bprimeKit = cms.EDAnalyzer(
         "bprimeKit",
         #----- Operation paramters --------------------------------------------------------------------------
-        MCtag               = cms.untracked.bool( not options.isData ),
+        MCtag               = cms.untracked.bool( "Data" not in options.DataProcessing ),
         PairCollection      = cms.untracked.int32(1),
         IncludeL7           = cms.untracked.bool(False),
         SelectionParameters = defaultObjectParameters.clone(),
@@ -674,11 +696,11 @@ process.bprimeKit = cms.EDAnalyzer(
         JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
 
         #----- MC Generation information --------------------------------------------------------------------
-genlabel    = cms.VInputTag("prunedGenParticles"),
-   genevtlabel = cms.VInputTag("generator"),
-   gtdigilabel = cms.VInputTag("gtDigis"),
+      genlabel    = cms.VInputTag("prunedGenParticles"),
+      genevtlabel = cms.VInputTag("generator"),
+      gtdigilabel = cms.VInputTag("gtDigis"),
 
-   EIDMVAInputTags = cms.vstring(
+      EIDMVAInputTags = cms.vstring(
            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat1.weights.xml' ,
            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat2.weights.xml' ,
            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat3.weights.xml' ,
