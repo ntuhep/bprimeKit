@@ -12,7 +12,7 @@ Config_dir="./config/"
 
 function main() {
    RunPrequisites 
-   for data_set in $(cat Data_dataset.txt ) ; do
+   for data_set in $(cat Data_dataset ) ; do
       DataProcess=$( getDataProcess $data_set )
       DataDBFile=$( getDBFile $data_set )
       name=$( makeName $data_set )

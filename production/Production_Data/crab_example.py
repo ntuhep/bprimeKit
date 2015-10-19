@@ -8,10 +8,8 @@ config.General.transferLogs = True
 
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = '../bprimeKit_cfg.py'
-config.JobType.pyCfgParams 
-   = [ 'DataProcessing=DP' ]
-config.JobType.inputFiles
-   = [ '../DB_FILE' ] 
+config.JobType.pyCfgParams = [ 'DataProcessing=DP' ]
+config.JobType.inputFiles = [ '../DB_FILE' ] 
 
 config.Data.inputDataset = 'DATASET'
 
