@@ -98,9 +98,10 @@ options.register('wantSummary',
 options.setDefault('maxEvents', 10)
 options.parseArguments()
 
+print """
 #------------------------------------------------------------------------------- 
 #   Basic argument parsing
-#------------------------------------------------------------------------------- 
+#-------------------------------------------------------------------------------"""
 if options.DataProcessing == "":
   sys.exit("!!!!Error: Enter 'DataProcessing' period. Options are: 'MC50ns', 'MC25ns', 'Data50ns', 'Data25ns', 'Data25nsv2'.\n")
 
@@ -123,10 +124,10 @@ if "Data" in options.DataProcessing:
   print "!!!!Warning: You have chosen to run over data. lheLabel will be unset.\n"
   lheLabel = ""
 
+print """
 #------------------------------------------------------------------------------- 
 #   Setting up input labels
-#-------------------------------------------------------------------------------
-###inputTag labels
+#-------------------------------------------------------------------------------"""
 rhoLabel          = "fixedGridRhoFastjetAll"
 muLabel           = 'slimmedMuons'
 elLabel           = 'slimmedElectrons'
@@ -189,10 +190,10 @@ process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag.globaltag = options.globalTag 
 
-#------------------------------------------------------------------------------- 
-#   External Jet Energy Corrections.
+print """
 #-------------------------------------------------------------------------------
-
+#   External Jet Energy Corrections.
+#-------------------------------------------------------------------------------"""
 corrections = ['L1FastJet', 'L2Relative', 'L3Absolute']
 if ("Data" in options.DataProcessing and options.forceResiduals):
   corrections.append['L2L3Residual']
@@ -266,10 +267,11 @@ if options.usePrivateSQLite:
 
 jecUncertaintyFile="PhysicsTools/PatUtils/data/Summer15_50nsV4_DATA_UncertaintySources_AK4PFchs.txt"
 
+print """
 #------------------------------------------------------------------------------- 
 #   Since 7.4.0, only AK8 jets need to make gen jets, all others are stored 
 #   in MiniAOD directly
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------"""
 ## Filter out neutrinos from packed GenParticles
 process.packedGenParticlesForJetsNoNu = cms.EDFilter(
         "CandPtrSelector", 
@@ -300,9 +302,10 @@ if "MC" in options.DataProcessing :
         jetCollInstanceName=cms.string("SubJets")    
     )
 
+print """
 ### ---------------------------------------------------------------------------
 ### Removing the HF from the MET computation as from 7 Aug 2015 recommendations
-### ---------------------------------------------------------------------------
+### ---------------------------------------------------------------------------"""
 if options.useNoHFMET:
    process.noHFCands = cms.EDFilter(
            "CandPtrSelector",
@@ -331,9 +334,10 @@ if options.useNoHFMET:
             )
     jLabelNoHF = 'patJetsNoHF'
 
+print """
 #------------------------------------------------------------------------------- 
 #   The lines below remove the L2L3 residual corrections when processing data
-#------------------------------------------------------------------------------- 
+#------------------------------------------------------------------------------- """
 if( "Data" in options.DataProcessing and options.forceResiduals):
   #Take new pat jets as input of the entuples
   process.patJetCorrFactors.levels = corrections 
@@ -354,9 +358,10 @@ else:
           process.shiftedPatJetEnDownNoHF.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
           process.shiftedPatJetEnUpNoHF.jetCorrLabelUpToL3Res   = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
 
+print """
 #------------------------------------------------------------------------------- 
 #   B2GAnaFW EDFilter settings
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------"""
 process.skimmedPatMuons = cms.EDFilter(
     "PATMuonSelector",
     src = cms.InputTag(muLabel),
@@ -396,9 +401,10 @@ process.skimmedPatJetsAK8 = cms.EDFilter(
     cut = cms.string("pt > 100 && abs(eta) < 5.")    
     )
 
+print """
 #------------------------------------------------------------------------------- 
 #   B2GAnaFW EDProducer settings
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------"""
 process.eventUserData = cms.EDProducer(
       'EventUserData',
       pileup = cms.InputTag("slimmedAddPileupInfo"),
@@ -505,9 +511,10 @@ process.vertexInfo = cms.EDProducer(
       src  = cms.InputTag(pvLabel),
       )
 
+print """
 #------------------------------------------------------------------------------- 
 #   Settings for QGTagger
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------"""
 # Including QGL: ensuring the database object can be accessed
 qgDatabaseVersion = 'v1' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
@@ -531,10 +538,10 @@ process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs')  # Other options: see ht
 process.QGTaggerNoHF = copy.deepcopy(process.QGTagger)
 process.QGTaggerNoHF.srcJets  = cms.InputTag("jetUserDataNoHF")
 
-
+print """
 #------------------------------------------------------------------------------- 
 #   Settings for Egamma Identification
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------"""
 from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 
@@ -597,9 +604,10 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 ## Adapt primary vertex collection
 adaptPVs(process, pvCollection=cms.InputTag('offlineSlimmedPrimaryVertices'))
 
+print """
 #------------------------------------------------------------------------------- 
 #   Trigger and MET Settings
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------"""
 from PhysicsTools.CandAlgos.EventShapeVars_cff import *
 process.eventShapePFVars = pfEventShapeVars.clone()
 process.eventShapePFVars.src = cms.InputTag(particleFlowLabel)
@@ -636,9 +644,11 @@ process.METUserData = cms.EDProducer(
 process.load('CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi')
 process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
 
+print """
 #------------------------------------------------------------------------------- 
 #   bprimeKit configuration importing 
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------"""
+
 process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
