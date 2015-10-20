@@ -21,9 +21,7 @@ function main() {
       crab_file=$Config_dir/${name}.py
       cat "./crab_example.py" |
          sed "s@DATASET@$data_set@" |
-         sed "s@NAME@$name@" |
-         sed "s@DP@$DataProcess@" |
-         sed "s@DB_FILE@$DataDBFile@"  > $crab_file 
+         sed "s@NAME@$name@" > $crab_file 
       crab submit -c $crab_file
    done
 }
