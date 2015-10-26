@@ -74,7 +74,7 @@ typedef edm::Handle<PhotonList>        PhotonHandle;
 typedef std::vector<PhotonHandle>      PhotonHandleList;
 typedef PhotonList::const_iterator     PhotonIterator ;
 
-typedef edm::View<pat::Jet>          JetList;
+typedef edm::View<pat::Jet>            JetList;
 typedef edm::Handle<JetList>           JetHandler;
 typedef std::vector<JetHandler>        JetHandlerList;
 typedef JetList::const_iterator        JetIterator;
@@ -209,6 +209,9 @@ private:
    map<std::string,int>::iterator HLTmaplist_pr;
    HLTConfigProvider              hltConfig_;
 
+   //----- Helper variables for muon-jet cleaning  --------------------------------
+   std::vector<const pat::Muon*>  _mySelecMuons;
+   
    //----- Configuration flags  -----------------------------------------------------------------------
    int  pairColl_      ;
    bool skipGenInfo_   ;
