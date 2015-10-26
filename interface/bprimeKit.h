@@ -128,7 +128,7 @@ private:
    bool fillGenGeneric();
    bool fillPairInfo  ( const int , const int , math::XYZTLorentzVector& );
    bool fillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
-   bool passMuonJetClean( const pat::Jet* );
+   bool passMuonJetClean( const pat::Jet*,const edm::Event& );
 
    //-------------------------------------------------------------------------------------------------- 
    //   Private data members
