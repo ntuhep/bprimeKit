@@ -93,6 +93,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    includeL7_           = iConfig.getUntrackedParameter<bool>( "IncludeL7"      , true  ) ;
    debug_               = iConfig.getUntrackedParameter<int> ( "Debug"          , 0     ) ;
    runOnB2G             = iConfig.getUntrackedParameter<bool>( "runOnB2G"       , false ) ;
+   runMuonJetClean      = iConfig.getParameter<bool>( "runMuonJetClean" );
    conversionsInputTag_ = iConfig.getParameter<edm::InputTag>("conversionsInputTag"); 
    //----- 2015 cut based electron ID  ----------------------------------------------------------------
    EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;

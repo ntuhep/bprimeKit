@@ -83,6 +83,12 @@ options.register('Debug',
                  opts.VarParsing.varType.int,
                  'Debugging output level' )
 
+options.register('RunMuonJetClean', 
+      False,
+      opts.VarParsing.multiplicity.singleton,
+      opts.VarParsing.varType.bool,
+      "Whether to run Muon-Jet Cleaning")
+
 options.register('b2gPreprocess',
       False,
       opts.VarParsing.multiplicity.singleton,
@@ -663,6 +669,7 @@ process.bprimeKit = cms.EDAnalyzer(
         SelectionParameters = defaultObjectParameters.clone(),
         Debug               = cms.untracked.int32( options.Debug ),
         runOnB2G            = cms.untracked.bool( options.b2gPreprocess ),
+        runMuonJetClean     = cms.bool( options.RunMuonJetClean ),
 
         #----- Event level objects --------------------------------------------------------------------------
         rhoLabel            = cms.InputTag( rhoLabel ),

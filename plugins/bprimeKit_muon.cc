@@ -26,8 +26,9 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
    if( isData ) { EATarget = MuonEffectiveArea::kMuEAData2012; }
 
    if( debug_ > 10 ) { 
-      cout << " Muon collection size " << muonHandle->size() << endl; 
-   }
+      cout << " Muon collection size " << muonHandle->size() << endl;  }
+
+   _mySelecMuons.clear();
    for( MuonIterator it_mu = muonHandle->begin(); it_mu != muonHandle->end(); ++it_mu ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
@@ -170,6 +171,9 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
 
       LepInfo[icoll].CandRef [LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_mu );
       LepInfo[icoll].Size++;
+
+      if( it_mu->pt() > 40.0 && muon::isTightMuon( *muon, PrimVtx ) ){
+         _mySelecMuons.push_back( &*it_mu ); }
    }
    return true;
 }

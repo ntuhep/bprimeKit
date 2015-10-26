@@ -98,6 +98,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             break;//exit(0);
          }
          if ( it_jet->pt() <= 15. ) { continue; } // IMPORTANT: Only book jet with pt>15 GeV.
+         if( runMuonJetClean && !passMuonJetClean( &*it_jet ) ) { continue; }
          if( debug_ > 11 ) { cout << "  Size " << JetInfo[icoll].Size << " jet pt,eta,phi " << it_jet->pt() << "," << it_jet->eta() << "," << it_jet->phi() << endl; }
 
          //----- Generic Jet Information  -------------------------------------------------------------------

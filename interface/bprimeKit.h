@@ -128,6 +128,7 @@ private:
    bool fillGenGeneric();
    bool fillPairInfo  ( const int , const int , math::XYZTLorentzVector& );
    bool fillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
+   bool passMuonJetClean( const pat::Jet* );
 
    //-------------------------------------------------------------------------------------------------- 
    //   Private data members
@@ -219,6 +220,7 @@ private:
    int  debug_         ;
    bool runOnB2G       ;
    bool isData         ;
+   bool runMuonJetClean;
 
    EGammaMvaEleEstimator* myMVATrig;
    std::vector<std::string> EIDMVAInputTags_;
