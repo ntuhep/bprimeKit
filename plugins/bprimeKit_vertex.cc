@@ -20,28 +20,26 @@ bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
    memset( &VertexInfo, 0x00, sizeof( VertexInfo ) );
    
    //----- Vertices without beamspot constraints  -----------------------------------------------------
-   Signal_Vz = 0.;
    gotPrimVtx = false;
-   if( VertexHandle.isValid() && !VertexHandle.failedToGet() && VertexHandle->size() > 0 ) {
-      const VertexList Vertices = *VertexHandle;
-      PrimVtx = *( Vertices.begin() ); //Uly 2012-07-19: just get something valid to start with
-      for( VertexListCIT it_vtx = Vertices.begin();it_vtx != Vertices.end(); it_vtx++ ) {
+   if( _vertexHandle.isValid() && !_vertexHandle.failedToGet() && _vertexHandle->size() > 0 ) {
+      PrimVtx = *( _vertexHandle->begin() ); //Uly 2012-07-19: just get something valid to start with
+      for( VertexIterator it_vtx = _vertexHandle->begin(); it_vtx != _vertexHandle->end(); ++it_vtx ) {
          if ( VertexInfo.Size >= MAX_Vertices ) {
             cout << "PV " << VertexInfo.Size << endl;
-            cerr << "ERROR: number of  Tracks exceeds the size of array." << endl;
+            cerr << "ERROR: number of Tracks exceeds the size of array." << endl;
             break;
          }
-         VertexInfo.Type           [ VertexInfo.Size ] = 0                        ; //Vertices WITHOUT the Beam Spot constraint
-         VertexInfo.isValid        [ VertexInfo.Size ] = it_vtx->isValid()        ;
-         VertexInfo.isFake         [ VertexInfo.Size ] = it_vtx->isFake()         ; //Uly 2011-05-16
-         VertexInfo.Ndof           [ VertexInfo.Size ] = it_vtx->ndof()           ;
-         VertexInfo.NormalizedChi2 [ VertexInfo.Size ] = it_vtx->normalizedChi2() ;
-         VertexInfo.x              [ VertexInfo.Size ] = it_vtx->x()              ;
-         VertexInfo.y              [ VertexInfo.Size ] = it_vtx->y()              ;
-         VertexInfo.z              [ VertexInfo.Size ] = it_vtx->z()              ;
-         VertexInfo.Rho            [ VertexInfo.Size ] = it_vtx->position().Rho() ;
-         VertexInfo.Pt_Sum         [ VertexInfo.Size ] = 0.                       ;
-         VertexInfo.Pt_Sum2        [ VertexInfo.Size ] = 0.                       ;
+         VertexInfo.Type           [VertexInfo.Size] = 0                        ; //Vertices WITHOUT the Beam Spot constraint
+         VertexInfo.isValid        [VertexInfo.Size] = it_vtx->isValid()        ;
+         VertexInfo.isFake         [VertexInfo.Size] = it_vtx->isFake()         ; //Uly 2011-05-16
+         VertexInfo.Ndof           [VertexInfo.Size] = it_vtx->ndof()           ;
+         VertexInfo.NormalizedChi2 [VertexInfo.Size] = it_vtx->normalizedChi2() ;
+         VertexInfo.x              [VertexInfo.Size] = it_vtx->x()              ;
+         VertexInfo.y              [VertexInfo.Size] = it_vtx->y()              ;
+         VertexInfo.z              [VertexInfo.Size] = it_vtx->z()              ;
+         VertexInfo.Rho            [VertexInfo.Size] = it_vtx->position().Rho() ;
+         VertexInfo.Pt_Sum         [VertexInfo.Size] = 0.                       ;
+         VertexInfo.Pt_Sum2        [VertexInfo.Size] = 0.                       ;
 
          for ( auto it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
             VertexInfo.Pt_Sum  [ VertexInfo.Size ] += ( *it )->pt();
@@ -53,14 +51,12 @@ bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
          }
          VertexInfo.Size++;
       }
-      Signal_Vz = PrimVtx.z();
    }
 
    //----- Vertices with beamspot constraint  ---------------------------------------------------------
    PVBS_Pt_Max = -100. ; 
-   if( VertexHandleBS.isValid() && !VertexHandleBS.failedToGet() && VertexHandleBS->size() > 0 ) {
-      const VertexList VerticesBS = *VertexHandleBS;
-      for( VertexListCIT it_vtx = VerticesBS.begin();it_vtx != VerticesBS.end(); it_vtx++ ) {
+   if( _bsVertexHandle.isValid() && !_bsVertexHandle.failedToGet() && _bsVertexHandle->size() > 0 ) {
+      for( VertexIterator it_vtx = _bsVertexHandle->begin(); it_vtx != _bsVertexHandle->end(); ++it_vtx ) {
          if ( VertexInfo.Size >= MAX_Vertices ) {
             cout << "PVBS " << VertexInfo.Size << endl;
             cerr << "ERROR: number of  Vertices exceeds the size of array." << endl;

@@ -14,10 +14,7 @@
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillTau( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll ) 
 {
-   TauHandler tauHandle;
-   iEvent.getByLabel( taulabel_[icoll] , tauHandle ) ; 
-
-   for( TauIterator it_tau = tauHandle->begin(); it_tau != tauHandle->end(); it_tau++ ) { 
+   for( TauIterator it_tau = _tauHandleList[icoll]->begin(); it_tau != _tauHandleList[icoll]->end(); it_tau++ ) { 
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr<< "ERROR: number of leptons exceeds the size of array." << endl;
          break;

@@ -6,23 +6,6 @@
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
-//------------------------  Event specific CMSSW libraries  -------------------------
-#include "FWCore/Common/interface/TriggerNames.h"
-#include "DataFormats/PatCandidates/interface/MET.h"
-#include "DataFormats/Common/interface/TriggerResults.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
-#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
-
-//------------------------------------------------------------------------------ 
-//   Custom typedefs and enums
-//------------------------------------------------------------------------------ 
-typedef std::vector<pat::MET>   METList;
-typedef edm::Handle<METList>    METHandler;
-typedef METList::const_iterator METIterator;
-typedef edm::Handle<std::vector<PileupSummaryInfo>>      PileupHandle;
-typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
-
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 
@@ -32,26 +15,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    //-------------------------------------------------------------------------------------------------- 
    //   Helper variables definition
    //-------------------------------------------------------------------------------------------------- 
-   PileupHandle     PUInfo;
-   PileupIterator   PVI;
-   METHandler       METHandle;
-   METHandler       pfMETHandle_TempPlus;
-   METHandler       pfMETHandle_TempDown;
-   METIterator      it_met  ; 
-   edm::Handle<GenEventInfoProduct> GenEventInfoHandle;
-   edm::Handle<TriggerResults>      TrgResultsHandle;
-   edm::Handle<L1GlobalTriggerReadoutRecord> gtRecord;
-   edm::Handle<double> rhoHandle;
    std::pair<int,int>  psValueCombo;
 
-   if( debug_ > 1 ){ cout <<"\t[1] Getting Event variables"<< endl;}
-   iEvent.getByToken( rhoLabel_ , rhoHandle );
-   iEvent.getByLabel( metlabel_[0],  METHandle );
-   iEvent.getByLabel( offlineBSlabel_[0], beamSpotHandle );
-   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  pfMETHandle_TempPlus );
-   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  pfMETHandle_TempDown );
-   if( ! isData ) {
-      iEvent.getByLabel( puInfoLabel_[0], PUInfo ); }
    
    if( debug_ > 1 ){ cout <<"\t[1] Inserting generic Event information"<< endl;}
    EvtInfo.RunNo    = iEvent.id().run();
@@ -61,12 +26,12 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    EvtInfo.LumiNo   = iEvent.luminosityBlock();
    EvtInfo.Orbit    = iEvent.orbitNumber();
    EvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
-   EvtInfo.Rho      = *(rhoHandle.product()) ; 
+   EvtInfo.Rho      = *(_rhoHandle.product()) ; 
    
    if( debug_ > 1 ){ cout <<"\t[1] Inserting Pile up information information"<< endl;}
    //----- Pile up information  -----------------------------------------------------------------------
-   if( PUInfo.isValid() ) {
-      for( PVI = PUInfo->begin(); PVI != PUInfo->end(); ++PVI ) {
+   if( _pileupHandle.isValid() ) {
+      for( auto PVI = _pileupHandle->begin(); PVI != _pileupHandle->end(); ++PVI ) {
          EvtInfo.nPU[EvtInfo.nBX] = PVI->getPU_NumInteractions();
          EvtInfo.BXPU[EvtInfo.nBX] = PVI->getBunchCrossing();
          EvtInfo.TrueIT[EvtInfo.nBX] = PVI->getTrueNumInteractions();
@@ -76,8 +41,8 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    
    //----- Getting beamspot information  --------------------------------------------------------------
    if( debug_ > 1 ) { cout << "\t[1] Get beam spot."<< endl; }
-   if ( beamSpotHandle.isValid() ) {
-      beamSpot = *beamSpotHandle.product();
+   if ( _beamSpotHandle.isValid() ) {
+      const auto& beamSpot = *(_beamSpotHandle.product());
       EvtInfo.BeamSpotX = beamSpot.position().x();
       EvtInfo.BeamSpotY = beamSpot.position().y();
       EvtInfo.BeamSpotZ = beamSpot.position().z();
@@ -109,7 +74,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
 
    //----- Getting missing momentum information  ------------------------------------------------------
    if( debug_ > 5 ) { cout << ">>>Evt: Get missing momentum."<< endl; }
-   for( it_met = METHandle->begin(); it_met != METHandle->end(); it_met++ ) {
+   for( auto it_met = _metHandle->begin(); it_met != _metHandle->end(); it_met++ ) {
       EvtInfo.PFMET              = it_met->pt()             ;
       EvtInfo.PFMETPhi           = it_met->phi()            ;
       EvtInfo.PFRawMET           = it_met->uncorPt()  ;
@@ -128,52 +93,48 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    }
    //----- Missing momentum correction  ---------------------------------------------------------------
    if( debug_ > 1 ) { cout << "\t[1] Get missing momentum corrections."<< endl; }
-   if( pfMETHandle_TempPlus.isValid() ){
-      for( it_met = pfMETHandle_TempPlus->begin(); it_met != pfMETHandle_TempPlus->end(); it_met++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp           = it_met->pt(); }
+   if( _metHandle_TempPlus.isValid() ){
+      EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnUp = _metHandle_TempPlus->begin()->pt();
    }
-   if( pfMETHandle_TempDown.isValid() ){
-      for( it_met = pfMETHandle_TempDown->begin() ; it_met != pfMETHandle_TempDown->end(); it_met++ ) {
-         EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown           = it_met->pt(); }
+   if( _metHandle_TempDown.isValid() ){
+      EvtInfo.PFMETType1CorrectedPFMetUnclusteredEnDown = _metHandle_TempDown->begin()->pt();
    }
 
    //----- Generation information  --------------------------------------------------------------------
-   bool with_GenEventInfo = ( genevtlabel_.size() > 0 ) ? iEvent.getByLabel( genevtlabel_[0], GenEventInfoHandle ) : false;
-   if ( with_GenEventInfo && GenEventInfoHandle->hasPDF() ) {
-      EvtInfo.PDFid1   = GenEventInfoHandle->pdf()->id.first;
-      EvtInfo.PDFid2   = GenEventInfoHandle->pdf()->id.second;
-      EvtInfo.PDFx1    = GenEventInfoHandle->pdf()->x.first;
-      EvtInfo.PDFx2    = GenEventInfoHandle->pdf()->x.second;
-      EvtInfo.PDFscale = GenEventInfoHandle->pdf()->scalePDF;
-      EvtInfo.PDFv1    = GenEventInfoHandle->pdf()->xPDF.first;
-      EvtInfo.PDFv2    = GenEventInfoHandle->pdf()->xPDF.second;
+   iEvent.getByLabel( genevtLabel_ , _genInfoHandle ) ;
+   if ( _genInfoHandle.isValid() && _genInfoHandle->hasPDF() ) {
+      EvtInfo.PDFid1   = _genInfoHandle->pdf()->id.first;
+      EvtInfo.PDFid2   = _genInfoHandle->pdf()->id.second;
+      EvtInfo.PDFx1    = _genInfoHandle->pdf()->x.first;
+      EvtInfo.PDFx2    = _genInfoHandle->pdf()->x.second;
+      EvtInfo.PDFscale = _genInfoHandle->pdf()->scalePDF;
+      EvtInfo.PDFv1    = _genInfoHandle->pdf()->xPDF.first;
+      EvtInfo.PDFv2    = _genInfoHandle->pdf()->xPDF.second;
    }
 
    //----- High Level Trigger information  ------------------------------------------------------------
-   bool with_TriggerResults = ( hltlabel_.size() > 0 ) ? iEvent.getByLabel( hltlabel_[0], TrgResultsHandle ) : false;
-   if ( with_TriggerResults ) {
+   if ( _triggerHandle.isValid() ) {
       if( debug_ > 1 ) { cout << "\t[1] Getting High Level Trigger" << endl; }
-      const edm::TriggerNames& TrgNames = iEvent.triggerNames( *TrgResultsHandle );
+      const edm::TriggerNames& TrgNames = iEvent.triggerNames( *_triggerHandle );
       EvtInfo.TrgCount = 0;
       for( size_t i = 0; i < N_TRIGGER_BOOKINGS; ++i ) {
          unsigned int TrgIndex = TrgNames.triggerIndex( TriggerBooking[i] );
          if ( TrgIndex == TrgNames.size() ) {
             EvtInfo.TrgBook[i] = -4; // The trigger path is not known in this event.
-         } else if ( !TrgResultsHandle->wasrun( TrgIndex ) ) {
+         } else if ( !_triggerHandle->wasrun( TrgIndex ) ) {
             EvtInfo.TrgBook[i] = -3; // The trigger path was not included in this event.
-         } else if ( !TrgResultsHandle->accept( TrgIndex ) ) {
+         } else if ( !_triggerHandle->accept( TrgIndex ) ) {
             EvtInfo.TrgBook[i] = -2; // The trigger path was not accepted in this event.
-         } else if (  TrgResultsHandle->error ( TrgIndex ) ) {
+         } else if (  _triggerHandle->error ( TrgIndex ) ) {
             EvtInfo.TrgBook[i] = -1; // The trigger path has an error in this event.
          } else {
             EvtInfo.TrgBook[i] = +1; // It's triggered.
             EvtInfo.TrgCount++;
          }
       }
-
       EvtInfo.nHLT = TrgNames.size();
       for( size_t i = 0; i < TrgNames.size(); ++i ) {
-         EvtInfo.HLTbits[i] = ( TrgResultsHandle->accept( i ) == true ) ? 1 : 0;
+         EvtInfo.HLTbits[i] = ( _triggerHandle->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
          if( debug_ > 2 ) { cout << "\t\t[2] HLTInfo: "<< i <<"["<< EvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ; }
          if( debug_ > 2 ) { cout << "\t\t[2] Getting prescale set: " << hltConfig_.prescaleSet( iEvent , iSetup ) << endl; }
@@ -184,14 +145,13 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          } else {
             EvtInfo.HLTName2enum[i] = -1; }
          if( debug_ > 2 ) { cout << "\t\t[2] Getting prescale " << EvtInfo.HLTPrescaleFactor[i] << endl ; }
-         if( debug_ > 2 ) { cout << "\t\t[2] Getting Trigger int label " << EvtInfo.HLTName2enum[i] << endl; }
+         if( debug_ > 2 ) { cout << "\t\t[2] Getting Trigger int Label " << EvtInfo.HLTName2enum[i] << endl; }
       }
    }
 
    //----- Level 1 trigger and technical trigger bits  ------------------------------------------------
-   if( gtdigilabel_.size() > 0 ) { iEvent.getByLabel( gtdigilabel_[0], gtRecord ); }
-   if( gtRecord.isValid() ) {
-      DecisionWord dWord = gtRecord->decisionWord();
+   if( _gtRecord.isValid() ) {
+      DecisionWord dWord = _gtRecord->decisionWord();
       if ( ! dWord.empty() ) { // if board not there this is zero
          // loop over dec. bit to get total rate (no overlap)
          for ( int i = 0; i < 128; ++i ) {
@@ -199,7 +159,7 @@ bool bprimeKit::fillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
             EvtInfo.L1[i] = dWord[i];
          }
       }
-      TechnicalTriggerWord tw = gtRecord->technicalTriggerWord();
+      TechnicalTriggerWord tw = _gtRecord->technicalTriggerWord();
       if ( ! tw.empty() ) {
          // loop over dec. bit to get total rate (no overlap)
          for ( int i = 0; i < 64; ++i ) {

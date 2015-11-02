@@ -23,15 +23,6 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
-#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
-#include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/PatCandidates/interface/Tau.h"
-#include "DataFormats/PatCandidates/interface/Muon.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/Scalers/interface/DcsStatus.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 //----- CMS Software libraries for special variables  --------------------------
 #include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h" 
@@ -39,7 +30,15 @@
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
+//----- Jet Energy corrections  ------------------------------------------------
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+
 //----- Custom classes  --------------------------------------------------------
+#include "MyAna/bprimeKit/interface/Types.h"
 #include "MyAna/bprimeKit/interface/format.h"
 #include "MyAna/bprimeKit/interface/TriggerBooking.h"
 #include <map>
@@ -49,45 +48,6 @@
 //------------------------------------------------------------------------------ 
 //   Global typedefs, enums and macros 
 //------------------------------------------------------------------------------ 
-typedef std::vector<edm::Handle<edm::ValueMap<reco::IsoDeposit>>>   IsoDepositMaps;
-typedef std::vector<edm::Handle<edm::ValueMap<double>>>             IsoDepositVals;
-
-typedef edm::View<pat::Electron>       ElectronList        ;
-typedef edm::Handle<ElectronList>      ElectronHandler     ;
-typedef ElectronList::const_iterator   ElectronIterator    ;
-typedef edm::View<reco::GsfElectron>   GsfList             ;
-typedef edm::Handle<GsfList>           GsfHandler          ;
-typedef GsfList::const_iterator        GsfIterator         ;
-
-typedef edm::View<pat::Muon>           MuonList;
-typedef edm::Handle<MuonList>          MuonHandler;
-typedef std::vector<MuonHandler>       MuonHandlerList;
-typedef MuonList::const_iterator       MuonIterator ;
-
-typedef std::vector<pat::Tau>          TauList;
-typedef edm::Handle<TauList>           TauHandler;
-typedef std::vector<TauHandler>        TauHandlerList;
-typedef TauList::const_iterator        TauIterator;
-
-typedef edm::View<pat::Photon>         PhotonList; 
-typedef edm::Handle<PhotonList>        PhotonHandle;
-typedef std::vector<PhotonHandle>      PhotonHandleList;
-typedef PhotonList::const_iterator     PhotonIterator ;
-
-typedef edm::View<pat::Jet>            JetList;
-typedef edm::Handle<JetList>           JetHandler;
-typedef std::vector<JetHandler>        JetHandlerList;
-typedef JetList::const_iterator        JetIterator;
-
-typedef edm::Handle<reco::TrackCollection>          TrackHandler        ;
-typedef edm::Handle<reco::GsfElectronCollection>    GsfElectronHandle   ;
-typedef edm::Handle<reco::ConversionCollection>     ConversionHandle    ;
-typedef edm::Handle<DcsStatusCollection>            DcsStatusHandle     ;
-
-typedef std::vector<reco::GenParticle>::const_iterator GenIterator ;
-
-typedef std::vector<reco::Vertex>  VertexList;
-typedef VertexList::const_iterator VertexListCIT;
 
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
@@ -113,8 +73,13 @@ private:
 
    //-------------------------------------------------------------------------------------------------- 
    //   Helper Methods
-   //-------------------------------------------------------------------------------------------------- 
-   bool fillVertex    ( const edm::Event&, const edm::EventSetup& ) ;
+   //--------------------------------------------------------------------------------------------------
+   void initTree();
+   void clearTree();
+   void initJetEnergyCorrectors();
+   void clearJetEnergyCorrector();
+   void GetEdmObjects(const edm::Event&, const EventSetup& );
+   bool fillVertex   ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillPhoton    ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillLepton    ( const edm::Event&, const edm::EventSetup& ) ;
    bool fillMuon      ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
@@ -128,7 +93,8 @@ private:
    bool fillGenGeneric();
    bool fillPairInfo  ( const int , const int , math::XYZTLorentzVector& );
    bool fillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
-   bool passMuonJetClean( const pat::Jet*,const edm::Event& );
+   bool passMuonJetClean( JetIterator );
+   TLorentzVector correctJet(const pat::Jet&,  bool = false);
 
    //-------------------------------------------------------------------------------------------------- 
    //   Private data members
@@ -145,73 +111,125 @@ private:
    PairInfoBranches         PairInfo                       ;
    
    //----- Event variable setup  ----------------------------------------------------------------------
-   std::vector<edm::InputTag>  metlabel_    ;
-   edm::EDGetTokenT<double>    rhoLabel_    ;
-   std::vector<edm::InputTag>  hltlabel_    ;
-   std::vector<edm::InputTag>  puInfoLabel_ ;
+   edm::InputTag  metLabel_    ;
+   edm::InputTag  rhoLabel_    ;
+   edm::InputTag  hltLabel_    ;
+   edm::InputTag  puInfoLabel_ ;
    
    //----- Vertex variable setup  ---------------------------------------------------------------------
-   std::vector<edm::InputTag>  offlinePVlabel_   ;
-   std::vector<edm::InputTag>  offlinePVBSlabel_ ;
-   std::vector<edm::InputTag>  offlineBSlabel_   ;
+   edm::InputTag  offlinePVLabel_   ;
+   edm::InputTag  offlinePVBSLabel_ ;
+   edm::InputTag  offlineBSLabel_   ;
    
    //----- Generation variables setup  ----------------------------------------------------------------
-   std::vector<edm::InputTag>  genevtlabel_         ;
-   std::vector<edm::InputTag>  genlabel_            ;
-   std::vector<edm::InputTag>  gtdigilabel_         ;
+   edm::InputTag  genevtLabel_         ;
+   edm::InputTag  genLabel_            ;
+   edm::InputTag  gtdigiLabel_         ;
 
    //----- Jet variable setup  ------------------------------------------------------------------------
    std::vector<std::string>                jetcollections_ ;
-   std::vector<edm::InputTag>              jetlabel_       ;
+   std::vector<edm::InputTag>              jetLabel_       ;
    edm::EDGetTokenT<edm::ValueMap<float>>  qgLikelihoodToken_        ;
    edm::EDGetTokenT<edm::ValueMap<float>>  qgaxis2Token_ ;
    edm::EDGetTokenT<edm::ValueMap<int  >>  qgmultToken_  ;
    edm::EDGetTokenT<edm::ValueMap<float>>  qgptDToken_   ;
-   
+   JetCorrectorParameters*    L3JetPar_;
+   JetCorrectorParameters*    L2JetPar_;
+   JetCorrectorParameters*    L1JetPar_;
+   JetCorrectorParameters*    L3JetParAK8_;
+   JetCorrectorParameters*    L2JetParAK8_;
+   JetCorrectorParameters*    L1JetParAK8_;
+	JetCorrectionUncertainty*  jecUnc_;
+
    //----- Photon variable setup  ---------------------------------------------------------------------
-   std::vector<std::string>    phocollections_                            ;
-   std::vector<edm::InputTag>  pholabel_                                  ;
+   std::vector<std::string>               phocollections_                 ;
+   std::vector<edm::InputTag>             phoLabel_                       ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoLooseIdMapToken_             ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoMediumIdMapToken_            ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  phoTightIdMapToken_             ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoChargedIsolationToken_       ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoNeutralHadronIsolationToken_ ;
    edm::EDGetTokenT<edm::ValueMap<float>> phoPhotonIsolationToken_        ;
-   edm::EDGetTokenT<edm::ValueMap<float>> full5x5SigmaIEtaIEtaMapToken_  ;
-   EffectiveAreas effAreaChHadrons_;
-   EffectiveAreas effAreaNeuHadrons_;
-   EffectiveAreas effAreaPhotons_;
+   edm::EDGetTokenT<edm::ValueMap<float>> full5x5SigmaIEtaIEtaMapToken_   ;
+   EffectiveAreas effAreaChHadrons_                                       ;
+   EffectiveAreas effAreaNeuHadrons_                                      ;
+   EffectiveAreas effAreaPhotons_                                         ;
 
    //----- Lepton variable setup  ---------------------------------------------------------------------
-   std::vector<std::string>    lepcollections_                  ;
-   std::vector<edm::InputTag>  muonlabel_                       ;
-   std::vector<edm::InputTag>  eleclabel_                       ;
-   std::vector<edm::InputTag>  taulabel_                        ;
+   std::vector<std::string>               lepcollections_       ;
+   std::vector<edm::InputTag>             muonLabel_            ;
+   std::vector<edm::InputTag>             elecLabel_            ;
+   std::vector<edm::InputTag>             tauLabel_             ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleVetoIdMapToken_    ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleLooseIdMapToken_   ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleMediumIdMapToken_  ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleTightIdMapToken_   ;
    edm::EDGetTokenT<edm::ValueMap<bool>>  eleHEEPIdMapToken_    ;
    edm::EDGetTokenT<edm::ValueMap<float>> eleMVAValuesMapToken_ ;
+   edm::InputTag                          conversionsInputTag_;
 
-   //----- Inter-branch storage requirements  ---------------------------------------------------------
-   edm::Handle<reco::GenParticleCollection>     GenHandle;
-   double                               Signal_Vz      ;
+   //------------------------------------------------------------------------------ 
+   //   Edm Handles
+   //------------------------------------------------------------------------------
+   //----- Event Wide Handles  ----------------------------------------------------
+   edm::Handle<double> _rhoHandle;
+   METHandle           _metHandle;
+   METHandle           _metHandle_TempPlus;
+   METHandle           _metHandle_TempDown;
+   PileupHandle        _pileupHandle;
+   TriggerHandle       _triggerHandle;
+   BeamSpotHandle      _beamSpotHandle ;
+   RecordHandle        _gtRecord;
+  
+   //----- GenInfo Handles  -------------------------------------------------------
+   GenHandle           _genHandle;
+   GenInfoHandle       _genInfoHandle;
+  
+   //----- Vertex Handles  --------------------------------------------------------
+   VertexHandle        _vertexHandle   ;
+   VertexHandle        _bsVertexHandle ;
+  
+   //----- Jet related Handles  ---------------------------------------------------
+	JetHandleList     _jetHandleList;
+   edm::Handle<edm::ValueMap<float>> qgLikelihoodHandle;
+   edm::Handle<edm::ValueMap<float>> qgaxis2Handle;
+   edm::Handle<edm::ValueMap<int  >> qgmultHandle;
+   edm::Handle<edm::ValueMap<float>> qgptDHandle;
+
+   //----- Lepton related Handles  ------------------------------------------------
+   std::vector<MuonHandle>        _muonHandleList;
+   std::vector<ElectronHandle>    _elecHandleList;
+   std::vector<GsfHandle>         _gsfHandleList;
+   std::vector<TauHandle>         _tauHandleList;
+   edm::Handle<reco::ConversionCollection> conversions_h;
+   edm::Handle<edm::ValueMap<bool>>  veto_id_decisions   ;
+   edm::Handle<edm::ValueMap<bool>>  loose_id_decisions  ;
+   edm::Handle<edm::ValueMap<bool>>  medium_id_decisions ;
+   edm::Handle<edm::ValueMap<bool>>  tight_id_decisions  ;
+   edm::Handle<edm::ValueMap<bool>>  heep_id_decisions   ;
+
+   //----- Photon related Handles  ------------------------------------------------
+   std::vector<PhotonHandle>         _photonHandleList;
+   edm::Handle<edm::ValueMap<bool>>  _photonLooseID;
+   edm::Handle<edm::ValueMap<bool>>  _photonMediumID;
+   edm::Handle<edm::ValueMap<bool>>  _photonTightID;
+   edm::Handle<edm::ValueMap<float>> phoChargedIsolationMap;
+   edm::Handle<edm::ValueMap<float>> phoNeutralHadronIsolationMap;
+   edm::Handle<edm::ValueMap<float>> phoPhotonIsolationMap;
+   edm::Handle<edm::ValueMap<float>> full5x5SigmaIEtaIEtaMap;
+   
    reco::Vertex                         PrimVtx        ;
    reco::Vertex                         PrimVtx_BS     ;
    reco::BeamSpot                       beamSpot       ;
-   edm::Handle<reco::BeamSpot>          beamSpotHandle ;
-   edm::Handle<reco::VertexCollection>  VertexHandle   ;
-   edm::Handle<reco::VertexCollection>  VertexHandleBS ; //Dmitry
-   edm::InputTag                        conversionsInputTag_;
    const TransientTrackBuilder*         transientTrackBuilder;
-   const reco::VertexCollection*        pvCol;
-   map<std::string,int>           HLTmaplist;
-   map<std::string,int>::iterator HLTmaplist_pr;
-   HLTConfigProvider              hltConfig_;
+   map<std::string,int>                 HLTmaplist;
+   map<std::string,int>::iterator       HLTmaplist_pr;
+   HLTConfigProvider                    hltConfig_;
 
    //----- Helper variables for muon-jet cleaning  --------------------------------
    std::vector<const pat::Muon*>  _mySelecMuons;
+   FactorizedJetCorrector* JetCorrector;
+   FactorizedJetCorrector* JetCorrectorAK8;
    
    //----- Configuration flags  -----------------------------------------------------------------------
    int  pairColl_      ;

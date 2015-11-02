@@ -4,33 +4,18 @@
  *  Description : filling in generation information as well as some event info
  *
  *******************************************************************************/
-
-
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 #include "MyAna/bprimeKit/interface/bprimeKit_util.h"
-//-----------------------  GenInfo specific CMSSW libraries  ------------------------
-#include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
-
 
 //-------------------------------------------------------------------------------------------------- 
 //   Helper functions
 //-------------------------------------------------------------------------------------------------- 
-bool isHardProcesStatus( const int ) ;
-bool isGeneratorStatus(  const int ) ;
-bool isValidGenParticle( const GenIterator& ) ;
 bool hasTprimeDaughter( const GenIterator& ) ; 
-int  photonFlag( const GenIterator& ) ; 
-//------------------------------------------------------------------------------ 
-//   Typedefs and enums
-//------------------------------------------------------------------------------ 
-typedef vector<const reco::Candidate*>              CandidateList;
-typedef CandidateList::const_iterator                    CandidateIterator;
-typedef edm::Handle<GenEventInfoProduct>                 GenInfoHandle;
+int  photonFlag( const GenIterator& ) ;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 
-
 bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    //-------------------------------------------------------------------------------------------------- 
@@ -47,7 +32,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    CandidateIterator      gmother1 , gmother2;
    int NMo, NDa;
    int pdgId , dauId1 , dauId2 , monId ; 
-   double evWeight;
 
    bool isTZTZ = false;
    bool isTZTH = false;
@@ -64,24 +48,22 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    if( debug_ > 1 ) { cout << "\t[1] Entering GenInfo subroutine"  << endl;}
    for( int i = 0; i < 14; i++ ) { MCDaughters[i] = NULL; }
    if( isData || skipGenInfo_  ) return false;
-   if( !isData && genlabel_.size() > 0 ) { iEvent.getByLabel( genlabel_[0], GenHandle ); }
+   
 
-   for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
+   for( GenIterator it_gen = _genHandle->begin(); it_gen != _genHandle->end(); it_gen++ ) {
       cands.push_back( &*it_gen ); }
 
-   evWeight = 1.0 ;
-   iEvent.getByLabel( genevtlabel_[0] , genEventInfo );
-   if( genEventInfo.isValid() ) {
-      evWeight      = genEventInfo->weight();
-      EvtInfo.ptHat = genEventInfo->qScale();
+   GenInfo.Weight = 1.0 ;
+   if( _genInfoHandle.isValid() ) {
+      GenInfo.Weight = _genInfoHandle->weight();
+      EvtInfo.ptHat  = _genInfoHandle->qScale();
    }
-   GenInfo.Weight = evWeight;
 
    //-------------------------------------------------------------------------------------------------- 
    //   Begin main loop
    //-------------------------------------------------------------------------------------------------- 
    if( debug_ > 1 ) { cout << "\t[1] Entering GenInfo main loop"  << endl;}
-   for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); ++it_gen  ) {
+   for( GenIterator it_gen = _genHandle->begin(); it_gen != _genHandle->end(); ++it_gen  ) {
 
       //----- Setting up common variable  ----------------------------------------------------------------
       dauId1 = dauId2 = monId = 0;
@@ -91,9 +73,8 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
       NDa    = it_gen->numberOfDaughters();
 
       //----- GenInfo Branch insertion  ------------------------------------------------------------------
-      if( isValidGenParticle(it_gen) && GenInfo.Size < 60 ){
+      if( GenInfo.Size < 60 ){
          if( debug_ > 2 ) { cout << "\t\t[2]GenInfo Particle" << endl; } 
-
          GenInfo.Pt             [GenInfo.Size] = it_gen->pt()                ;
          GenInfo.Eta            [GenInfo.Size] = it_gen->eta()               ;
          GenInfo.Phi            [GenInfo.Size] = it_gen->phi()               ;
@@ -392,30 +373,6 @@ bool bprimeKit::fillGenInfo( const edm::Event& iEvent , const edm::EventSetup& i
    EvtInfo.McIsTHBW = isTHBW;
    EvtInfo.McIsBWBW = isBWBW;
 
-   return true;
-}
-
-/***************************************************************************************************
- *
- *  Note : Valid GenParticle Criteria,
- *
- *  Main reference: http://home.thep.lu.se/~torbjorn/pythia81html/ParticleProperties.html
- *
- ***************************************************************************************************/
-bool isGeneratorStatus( const int status ) 
-{
-   return true;
-}
-
-bool isHardProcesStatus( const int status ) 
-{
-   return true;
-}
-
-bool isValidGenParticle( const GenIterator& ) 
-{
-   // WZ H quarks(1-6) gluon leptons photons
-   // Stroe the first 50? How do we discard the extra hadrons.....
    return true;
 }
 

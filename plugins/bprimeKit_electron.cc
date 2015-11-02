@@ -28,42 +28,23 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    //-------------------------------------------------------------------------------------------------- 
    //   Helper variables definition
    //-------------------------------------------------------------------------------------------------- 
-   ElectronHandler elecHandle   ;
-   GsfHandler      gsfElecHandle;
-   edm::Handle<edm::ValueMap<bool>>  veto_id_decisions   ;
-   edm::Handle<edm::ValueMap<bool>>  loose_id_decisions  ;
-   edm::Handle<edm::ValueMap<bool>>  medium_id_decisions ;
-   edm::Handle<edm::ValueMap<bool>>  tight_id_decisions  ;
-   edm::Handle<edm::ValueMap<bool>>  heep_id_decisions   ;
    ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget;
-   edm::Handle<reco::ConversionCollection> conversions_h;
 
    float dist_     ,dcot_     , rhoPrime, AEffR03  ;
    bool  trigtight , trigwp70 ;
   
-   //-------------------------------------------------------------------------------------------------- 
-   //   Event wide variables setup
-   //-------------------------------------------------------------------------------------------------- 
-   iEvent.getByLabel( eleclabel_[icoll]     , elecHandle          ) ;
-   iEvent.getByLabel( eleclabel_[icoll]     , gsfElecHandle       ) ;
-   iEvent.getByLabel( conversionsInputTag_  , conversions_h       ) ;
-   iEvent.getByToken( eleVetoIdMapToken_    , veto_id_decisions   ) ;
-   iEvent.getByToken( eleLooseIdMapToken_   , loose_id_decisions  ) ;
-   iEvent.getByToken( eleMediumIdMapToken_  , medium_id_decisions ) ;
-   iEvent.getByToken( eleTightIdMapToken_   , tight_id_decisions  ) ;
-   iEvent.getByToken( eleHEEPIdMapToken_    , heep_id_decisions   ) ;
-   
    if( isData ) { 
       EATarget = ElectronEffectiveArea::kEleEAData2012; }
-   else {EATarget = ElectronEffectiveArea::kEleEAFall11MC;
+   else {
+      EATarget = ElectronEffectiveArea::kEleEAFall11MC;
    }
 
 
    //-------------------------------------------------------------------------------------------------- 
    //   Begin main loop
    //-------------------------------------------------------------------------------------------------- 
-   ElectronIterator it_el = elecHandle->begin();
-   for( size_t i = 0 ; i < elecHandle->size() ; ++i , ++it_el ) {
+   ElectronIterator it_el = _elecHandleList[icoll]->begin();
+   for( size_t i = 0 ; i < _elecHandleList[icoll]->size() ; ++i , ++it_el ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;
@@ -130,7 +111,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       LepInfo[icoll].ElEcalIso04[LepInfo[icoll].Size]  = it_el->dr04EcalRecHitSumEt();
       
       //----- Isolation variables  -----------------------------------------------------------------------
-      const auto el = gsfElecHandle->ptrAt( i );
+      const auto el = _gsfHandleList[icoll]->ptrAt( i );
       if( !runOnB2G ) {
          LepInfo[icoll].EgammaCutBasedEleIdVETO   [LepInfo[icoll].Size] = (int)((*veto_id_decisions)[el]);
          LepInfo[icoll].EgammaCutBasedEleIdLOOSE  [LepInfo[icoll].Size] = (int)((*loose_id_decisions)[el]);
@@ -178,9 +159,9 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             LepInfo[icoll].GenPdgID     [LepInfo[icoll].Size] = gen->pdgId();
             LepInfo[icoll].GenMCTag     [LepInfo[icoll].Size] = getGenMCTag( gen ) ;
          }
-         if( debug_ > 15 ) { cout << "Get GenHandle\n"; }
-         if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && GenHandle.isValid() ) {
-            for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end() ; it_gen++ ) {
+         if( debug_ > 15 ) { cout << "Get _genHandle\n"; }
+         if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && _genHandle.isValid() ) {
+            for( GenIterator it_gen = _genHandle->begin(); it_gen != _genHandle->end() ; it_gen++ ) {
                if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) break;
                LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_el )  ;
             }
@@ -191,7 +172,7 @@ bool bprimeKit::fillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //----- Impact parameter related  ------------------------------------------------------------------
       // Reference from UserCode/MitProd/TreeFiller/src/FillerElectrons.cc
       const reco::TransientTrack& tt = transientTrackBuilder->build( it_el->gsfTrack() );
-      reco::Vertex thevtx = pvCol->at( 0 );
+      reco::Vertex thevtx = (_vertexHandle.product())->at( 0 );
       const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
       const double gsfsign   = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
       LepInfo[icoll].Ip3dPV[LepInfo[icoll].Size] = gsfsign * ip3dpv.second.value();

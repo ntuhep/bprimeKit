@@ -24,12 +24,6 @@
 bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    //----- EDM interaction variables  -----------------------------------------------------------------
-	JetHandlerList     JetHandle;
-	JetIterator        it_jet   ;
-   edm::Handle<edm::ValueMap<float>> qgLikelihoodHandle;
-   edm::Handle<edm::ValueMap<float>> qgaxis2Handle;
-   edm::Handle<edm::ValueMap<int  >> qgmultHandle;
-   edm::Handle<edm::ValueMap<float>> qgptDHandle;
 
 	edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
    //----- Jet collection type handling  --------------------------------------------------------------
@@ -39,26 +33,11 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
    bool jetID      ;
 	char bufferJECU[32];
 	pat::strbitset ret ;
-	JetCorrectionUncertainty* jecUnc;
 	edm::ParameterSet* PS_Jets;
-
-   for( unsigned il = 0; il < jetlabel_.size(); il++ ) {
-      JetHandle.push_back( JetHandler() );
-      iEvent.getByLabel( jetlabel_[il], JetHandle[il] );
-      if( debug_ > 10 ) { cout << "jets " << il << " jetlabel " << jetlabel_[il] << " with " << JetHandle[il]->size() << " entries\n"; }
-   }
-
-   if( debug_ > 10 ) {cout <<"Getting Q taggers" << endl;}
-   iEvent.getByToken( qgLikelihoodToken_ , qgLikelihoodHandle );
-   iEvent.getByToken( qgaxis2Token_      , qgaxis2Handle      );
-   iEvent.getByToken( qgmultToken_       , qgmultHandle       );
-   iEvent.getByToken( qgptDToken_        , qgptDHandle        );
-
-   if( debug_ > 10 ) {cout <<"Begin looping" << endl;}
 
    for( unsigned icoll = 0; icoll < jetcollections_.size(); icoll++ ) { //loop over collections
       if( icoll >= MAX_JETCOLLECTIONS ) { cerr << "To many jets!!"; break; }
-      if( JetHandle.size() <= icoll ) {  cerr << "Size to large!"; continue ; }
+      if( _jetHandleList.size() <= icoll ) {  cerr << "Size to large!"; continue ; }
       if( debug_ > 10 ) { cout << "Fill jet info, collection " << icoll << " with name " << jetcollections_[icoll] << endl; }
 
       memset( &JetInfo[icoll], 0x00, sizeof( JetInfo[icoll] ) );
@@ -89,16 +68,16 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       }
 
       iSetup.get<JetCorrectionsRecord>().get( bufferJECU, JetCorParColl );
-      JetCorrectorParameters const& JetCorPar = ( *JetCorParColl )["Uncertainty"];
-      jecUnc = new JetCorrectionUncertainty( JetCorPar );
+      const JetCorrectorParameters& JetCorPar = ( *JetCorParColl )["Uncertainty"];
+      jecUnc_ = new JetCorrectionUncertainty( JetCorPar );
 
-      for( it_jet = JetHandle[icoll]->begin(); it_jet != JetHandle[icoll]->end(); it_jet++ ) {
+      for( JetIterator it_jet = _jetHandleList[icoll]->begin(); it_jet != _jetHandleList[icoll]->end(); it_jet++ ) {
          if ( JetInfo[icoll].Size >= MAX_JETS ) {
-            fprintf( stderr, "ERROR: number of jets exceeds the size of array.\n" );
-            break;//exit(0);
+            cerr << "ERROR: number of jets exceeds the size of array." << std::endl ;
+            break;
          }
          if ( it_jet->pt() <= 15. ) { continue; } // IMPORTANT: Only book jet with pt>15 GeV.
-         if( runMuonJetClean && !passMuonJetClean( &*it_jet, iEvent ) ) { continue; }
+         if( runMuonJetClean && !passMuonJetClean( it_jet ) ) { continue; }
          if( debug_ > 11 ) { cout << "  Size " << JetInfo[icoll].Size << " jet pt,eta,phi " << it_jet->pt() << "," << it_jet->eta() << "," << it_jet->phi() << endl; }
 
          //----- Generic Jet Information  -------------------------------------------------------------------
@@ -121,7 +100,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          // Official documentation is updating
          if( debug_ > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
          if( pfjetcoll  ) {
-            edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( JetHandle[icoll] , it_jet - JetHandle[icoll]->begin() ));
+            edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( _jetHandleList[icoll] , it_jet - _jetHandleList[icoll]->begin() ));
             JetInfo[icoll].QGTagsLikelihood [JetInfo[icoll].Size] = (*qgLikelihoodHandle)[jetRef];
             JetInfo[icoll].QGTagsAxis2      [JetInfo[icoll].Size] = (*qgaxis2Handle)[jetRef];
             JetInfo[icoll].QGTagsMult       [JetInfo[icoll].Size] = (*qgmultHandle)[jetRef];
@@ -130,10 +109,10 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          
          //----- Jet Uncertainty  ---------------------------------------------------------------------------
          if( debug_ > 10 ) { cout << ">>Jet>> Getting Uncertainty..." << endl ;}
-         jecUnc->setJetEta( it_jet->eta() );
-         jecUnc->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
+         jecUnc_->setJetEta( it_jet->eta() );
+         jecUnc_->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
          if( fabs( it_jet->eta() ) <= 5.0 ) { 
-            JetInfo[icoll].Unc[JetInfo[icoll].Size] = jecUnc->getUncertainty( true ); 
+            JetInfo[icoll].Unc[JetInfo[icoll].Size] = jecUnc_->getUncertainty( true ); 
          }
          
 
@@ -295,7 +274,7 @@ bool bprimeKit::fillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          JetInfo[icoll].CandRef [JetInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_jet );
          JetInfo[icoll].Size++;
       }
-      delete jecUnc;
+      delete jecUnc_;
    }
    return true;
 }

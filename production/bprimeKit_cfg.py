@@ -661,86 +661,88 @@ process.TFileService = cms.Service("TFileService",
 
 from MyAna.bprimeKit.ObjectParameters_cfi import *
 process.bprimeKit = cms.EDAnalyzer(
-        "bprimeKit",
-        #----- Operation paramters --------------------------------------------------------------------------
-        MCtag               = cms.untracked.bool( "Data" not in options.DataProcessing ),
-        PairCollection      = cms.untracked.int32(1),
-        IncludeL7           = cms.untracked.bool(False),
-        SelectionParameters = defaultObjectParameters.clone(),
-        Debug               = cms.untracked.int32( options.Debug ),
-        runOnB2G            = cms.untracked.bool( options.b2gPreprocess ),
-        runMuonJetClean     = cms.bool( options.RunMuonJetClean ),
+      "bprimeKit",
+      #----- Operation paramters --------------------------------------------------------------------------
+      MCtag               = cms.untracked.bool( "Data" not in options.DataProcessing ),
+      PairCollection      = cms.untracked.int32(1),
+      IncludeL7           = cms.untracked.bool(False),
+      SelectionParameters = defaultObjectParameters.clone(),
+      Debug               = cms.untracked.int32( options.Debug ),
+      runOnB2G            = cms.untracked.bool( options.b2gPreprocess ),
+      runMuonJetClean     = cms.bool( options.RunMuonJetClean ),
 
-        #----- Event level objects --------------------------------------------------------------------------
-        rhoLabel            = cms.InputTag( rhoLabel ),
-        metlabel            = cms.VInputTag("slimmedMETs" ),
-        hltlabel            = cms.VInputTag("TriggerResults::HLT"),
-        offlinePVlabel      = cms.VInputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
-        offlinePVBSlabel    = cms.VInputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
-        offlineBSlabel      = cms.VInputTag("offlineBeamSpot"),
-        pfCands             = cms.InputTag("packedPFCandidates"),
-        puInfoLabel         = cms.VInputTag("addPileupInfo"),
-        conversionsInputTag = cms.InputTag("reducedEgamma","reducedConversions"),
+      #----- Event level objects --------------------------------------------------------------------------
+      rhoLabel            = cms.InputTag( rhoLabel ),
+      hltLabel            = cms.InputTag("TriggerResults::HLT"),
+      metLabel            = cms.InputTag("slimmedMETs" ),
+      puInfoLabel         = cms.InputTag("slimmedAddPileupInfo"),
+      
+      #----- Vertex related  ------------------------------------------------------------------------------
+      offlinePVlLabel     = cms.InputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
+      offlinePVBSLabel    = cms.InputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
+      offlineBSLabel      = cms.InputTag("offlineBeamSpot"),
+      conversionsLabel    = cms.InputTag("reducedEgamma","reducedConversions"),
+      
+      #----- MC Generation information --------------------------------------------------------------------
+      genLabel    = cms.VInputTag("prunedGenParticles"),
+      genevtLabel = cms.VInputTag("generator"),
+      gtdigiLabel = cms.VInputTag("gtDigis"),
 
-        #----- Photon information ------------------------------------------------------------------------ 
-        PhoCollections            = cms.vstring('PhotonInfo'),
-        pholabel                  = cms.VInputTag('slimmedPhotons'),
-        phoLooseIdMap             = cms.InputTag( pho_loose_id_label     ) ,
-        phoMediumIdMap            = cms.InputTag( pho_medium_id_label    ) ,
-        phoTightIdMap             = cms.InputTag( pho_tight_id_label     ) ,
-        phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
-        phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
-        phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
-        full5x5SigmaIEtaIEtaMap   = cms.InputTag("photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta"),
-        effAreaChHadFile          = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfChargedHadrons_V2.txt"),
-        effAreaNeuHadFile         = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfNeutralHadrons_V2.txt"),
-        effAreaPhoFile            = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfPhotons_V2.txt"),
+      #----- Photon information ------------------------------------------------------------------------ 
+      PhoCollections            = cms.string('PhotonInfo'),
+      phoLabel                  = cms.InputTag('slimmedPhotons'),
+      phoLooseIdMap             = cms.InputTag( pho_loose_id_label     ) ,
+      phoMediumIdMap            = cms.InputTag( pho_medium_id_label    ) ,
+      phoTightIdMap             = cms.InputTag( pho_tight_id_label     ) ,
+      phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
+      phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
+      phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
+      full5x5SigmaIEtaIEtaMap   = cms.InputTag("photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta"),
+      effAreaChHadFile          = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfChargedHadrons_V2.txt"),
+      effAreaNeuHadFile         = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfNeutralHadrons_V2.txt"),
+      effAreaPhoFile            = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfPhotons_V2.txt"),
 
-        #----- Lepton related information -------------------------------------------------------------------
-        LepCollections  = cms.vstring( 'LepInfo'             ) ,
-        muonlabel       = cms.VInputTag('slimmedMuons'       ) ,
-        eleclabel       = cms.VInputTag('slimmedElectrons'   ) ,
-        taulabel        = cms.VInputTag('slimmedTaus'        ) ,
-        eleVetoIdMap    = cms.InputTag( elec_veto_id_label   ) ,
-        eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
-        eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
-        eleTightIdMap   = cms.InputTag( elec_tight_id_label  ) ,
-        eleHEEPIdMap    = cms.InputTag( elec_heep_id_label   ) ,
+      #----- Lepton related information -------------------------------------------------------------------
+      LepCollections  = cms.vstring( 'LepInfo'             ) ,
+      muonLabel       = cms.VInputTag('slimmedMuons'       ) ,
+      elecLabel       = cms.VInputTag('slimmedElectrons'   ) ,
+      tauLabel        = cms.VInputTag('slimmedTaus'        ) ,
+      eleVetoIdMap    = cms.InputTag( elec_veto_id_label   ) ,
+      eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
+      eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
+      eleTightIdMap   = cms.InputTag( elec_tight_id_label  ) ,
+      eleHEEPIdMap    = cms.InputTag( elec_heep_id_label   ) ,
 
-        #----- Jet Information ------------------------------------------------------------------------------
-        jetlabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8' , 'slimmedJetsAK8') ,
-        JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
+      #----- Jet Information ------------------------------------------------------------------------------
+      jetLabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8' , 'slimmedJetsAK8') ,
+      JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
 
-        #----- MC Generation information --------------------------------------------------------------------
-      genlabel    = cms.VInputTag("prunedGenParticles"),
-      genevtlabel = cms.VInputTag("generator"),
-      gtdigilabel = cms.VInputTag("gtDigis"),
 
       EIDMVAInputTags = cms.vstring(
-           'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat1.weights.xml' ,
-           'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat2.weights.xml' ,
-           'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat3.weights.xml' ,
-           'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat4.weights.xml' ,
-           'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat5.weights.xml' ,
-           'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat6.weights.xml' ,
-           'dataEIDMVA/Electrons_BDTG_TrigV0_Cat1.weights.xml'    ,
-           'dataEIDMVA/Electrons_BDTG_TrigV0_Cat2.weights.xml'    ,
-           'dataEIDMVA/Electrons_BDTG_TrigV0_Cat3.weights.xml'    ,
-           'dataEIDMVA/Electrons_BDTG_TrigV0_Cat4.weights.xml'    ,
-           'dataEIDMVA/Electrons_BDTG_TrigV0_Cat5.weights.xml'    ,
-           'dataEIDMVA/Electrons_BDTG_TrigV0_Cat6.weights.xml'
-           ),
-   )
+            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat1.weights.xml' ,
+            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat2.weights.xml' ,
+            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat3.weights.xml' ,
+            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat4.weights.xml' ,
+            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat5.weights.xml' ,
+            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat6.weights.xml' ,
+            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat1.weights.xml'    ,
+            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat2.weights.xml'    ,
+            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat3.weights.xml'    ,
+            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat4.weights.xml'    ,
+            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat5.weights.xml'    ,
+            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat6.weights.xml'
+            ),
+      )
 
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
    process.QGTagger.srcJets = cms.InputTag( "slimmedJets")
    process.endPath = cms.Path(
-           process.QGTagger * 
-           process.egmGsfElectronIDSequence * 
-           process.egmPhotonIDSequence * 
-           process.bprimeKit
-           )
+         process.QGTagger * 
+         process.egmGsfElectronIDSequence * 
+         process.egmPhotonIDSequence * 
+         process.bprimeKit
+         )
 else:
    print "Running with b2g defined filters"
    process.bprimeKit.muonlabel = cms.VInputTag("muonUserData")
@@ -749,27 +751,27 @@ else:
    process.bprimeKit.jetlabel = cms.VInputTag( "jetUserData" , "jetUserDataAK8" , "jetUserDataAK8" )
    process.QGTagger.srcJets = cms.InputTag( "jetUserData" ) 
    process.endPath = cms.Path(
-           #----- Lepton User data -----------------------------------------------------------------------------
-           process.skimmedPatMuons *
-           process.muonUserData  *
-           process.skimmedPatElectrons *
-           process.electronUserData *
-           #----- Photon User data -----------------------------------------------------------------------------
-           process.skimmedPatPhotons *
-           process.photonUserData *
-           #----- jet sub routines -----------------------------------------------------------------------------
-           process.patJetCorrFactorsReapplyJEC *
-           process.patJetAK8CorrFactorsReapplyJEC * 
-           process.updatedPatJetsAK4 *
-           process.updatedPatJetsAK8 * 
-           process.skimmedPatJets *
-           process.skimmedPatJetsAK8 * 
-           process.jetUserData *
-           process.jetUserDataAK8 *
-           #----- Originam routines ----------------------------------------------------------------------------
-           process.QGTagger *
-           process.egmGsfElectronIDSequence * 
-           process.egmPhotonIDSequence *
-           process.bprimeKit
-           )
+         #----- Lepton User data -----------------------------------------------------------------------------
+         process.skimmedPatMuons *
+         process.muonUserData  *
+         process.skimmedPatElectrons *
+         process.electronUserData *
+         #----- Photon User data -----------------------------------------------------------------------------
+         process.skimmedPatPhotons *
+         process.photonUserData *
+         #----- jet sub routines -----------------------------------------------------------------------------
+         process.patJetCorrFactorsReapplyJEC *
+         process.patJetAK8CorrFactorsReapplyJEC * 
+         process.updatedPatJetsAK4 *
+         process.updatedPatJetsAK8 * 
+         process.skimmedPatJets *
+         process.skimmedPatJetsAK8 * 
+         process.jetUserData *
+         process.jetUserDataAK8 *
+         #----- Originam routines ----------------------------------------------------------------------------
+         process.QGTagger *
+         process.egmGsfElectronIDSequence * 
+         process.egmPhotonIDSequence *
+         process.bprimeKit
+         )
 

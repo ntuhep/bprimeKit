@@ -19,17 +19,14 @@
 //------------------------------------------------------------------------------ 
 bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll )
 {
-   MuonHandler muonHandle;
-   iEvent.getByLabel( muonlabel_[icoll], muonHandle );
-         
    MuonEffectiveArea::MuonEffectiveAreaTarget EATarget = MuonEffectiveArea::kMuEAFall11MC;
    if( isData ) { EATarget = MuonEffectiveArea::kMuEAData2012; }
 
    if( debug_ > 10 ) { 
-      cout << " Muon collection size " << muonHandle->size() << endl;  }
+      cout << " Muon collection size " << _muonHandleList[icoll]->size() << endl;  }
 
    _mySelecMuons.clear();
-   for( MuonIterator it_mu = muonHandle->begin(); it_mu != muonHandle->end(); ++it_mu ) {
+   for( MuonIterator it_mu = _muonHandleList[icoll]->begin(); it_mu != _muonHandleList[icoll]->end(); ++it_mu ) {
       if ( LepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;
@@ -131,7 +128,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
 
          //----- Impact paramters  --------------------------------------------------------------------------
          const reco::TransientTrack& tt_mu = transientTrackBuilder->build( it_mu->track() );
-         reco::Vertex thevtx = pvCol->at( 0 );
+         reco::Vertex thevtx = (_vertexHandle.product())->at( 0 );
          const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
          const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) ) >= 0 ) ? 1. : -1.;
          LepInfo[icoll].Ip3dPV             [LepInfo[icoll].Size] = thesign * ip3dpv.second.value();
@@ -164,7 +161,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          }
       }
       if ( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] == 0 && !isData && !skipGenInfo_ ) {
-         for( GenIterator it_gen = GenHandle->begin(); it_gen != GenHandle->end(); it_gen++ ) {
+         for( GenIterator it_gen = _genHandle->begin(); it_gen != _genHandle->end(); it_gen++ ) {
             if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) { break; }
             LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_mu )  ; }
       }
@@ -172,7 +169,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
       LepInfo[icoll].CandRef [LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_mu );
       LepInfo[icoll].Size++;
 
-      if( it_mu->pt() > 40.0 && muon::isTightMuon( *muon, PrimVtx ) ){
+      if( it_mu->pt() > 40.0 && muon::isTightMuon( *it_mu , PrimVtx ) ){
          _mySelecMuons.push_back( &*it_mu ); }
    }
    return true;
