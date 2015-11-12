@@ -22,13 +22,22 @@
 //------------------------------------------------------------------------------ 
 //   Class method implementation
 //------------------------------------------------------------------------------
-bool bprimeKit::passMuonJetClean( JetIterator jet  )
+bool bprimeKit::isSelectedMuon( const MuonIterator& mu )
+{
+   if( mu->pt() < 40. ) { return false; }
+   if( !muon::isTightMuon( *mu ,  PrimVtx ) ) { return false; }
+   return true;
+}
+
+
+bool bprimeKit::passMuonJetClean( JetIterator jet )
 {
    if( debug_ ) { std::cout << "Checking Overlap" << std::endl; }
 
    TLorentzVector jetP4;
    pat::Jet tmpJet = jet->correctedJet( 0 );
    std::vector<reco::CandidatePtr> muDaughters;
+   bool hasClean = false ; 
 
    if ( _mySelecMuons.empty() ) { return true; } 
    if ( deltaR( _mySelecMuons[0]->p4(), jet->p4() ) > 0.6 ) { return true; }
@@ -55,20 +64,26 @@ bool bprimeKit::passMuonJetClean( JetIterator jet  )
             tmpJet.setP4( tmpJet.p4() - muDaughters[muI]->p4() );
             muDaughters.erase( muDaughters.begin() + muI );
             jetP4 = correctJet( tmpJet , false );
+            hasClean = true; 
             if ( debug_ ) { 
                printf("  Cleaned Jet: pT=%f eta=%f phi=%f\n", tmpJet.pt(), tmpJet.eta(), tmpJet.phi() );
                printf("Clean Raw Jet: pT=%f eta=%f phi-%f\n", tmpJet.correctedJet(0).pt(), tmpJet.correctedJet(0).eta(), tmpJet.correctedJet(0).phi() );
                printf("Corrected Jet: pt=%f eta=%f phi=%f\n", jetP4.Pt(),  jetP4.Eta(), jetP4.Phi() ) ; 
             } 
-            if( jetP4.Pt() > 15. && jetP4.Eta() < 4.7 ) { return true; }
-            else {return false;}
          }
       }
    }
+
+   //Applying addition correction if not already 
+   if( !hasClean ){ jetP4 = correctJet( *jet ); }
+
+   // Selection after cleaning has been applied 
+   if( jetP4.Pt() < 15. ) { return false; }
+   if( jetP4.Eta() > 4.7) { return false; }
    return true;
 }
 
-TLorentzVector bprimeKit::correctJet(const pat::Jet& jet , bool doAK8Corr)
+TLorentzVector bprimeKit::correctJet( const pat::Jet& jet , bool doAK8Corr )
 {
    pat::Jet correctedJet = jet.correctedJet(0);                 //copy original jet
 
@@ -134,7 +149,7 @@ TLorentzVector bprimeKit::correctJet(const pat::Jet& jet , bool doAK8Corr)
          ptscale = max(0.0, (reco_pt + deltapt) / reco_pt);
       }
 
-      if ( 1 ){ //|| mbPar["JECup"] || mbPar["JECdown"]) {
+      if ( 0 ){ //|| mbPar["JECup"] || mbPar["JECdown"]) {
          jecUnc_->setJetEta(jet.eta());
          jecUnc_->setJetPt(pt*ptscale);
 
@@ -194,14 +209,6 @@ TLorentzVector bprimeKit::correctJet(const pat::Jet& jet , bool doAK8Corr)
    TLorentzVector jetP4;
    jetP4.SetPtEtaPhiM(correctedJet.pt()*unc*ptscale, correctedJet.eta(),correctedJet.phi(), correctedJet.mass() );
 
-   // sanity check - save correction of the first jet
-   // if (mNCorrJets==0){
-   //    double _orig_pt = jet.pt();
-   //    if (fabs(_orig_pt)<0.000000001){
-   //       _orig_pt = 0.000000001;
-   //    }
-   //    ++mNCorrJets;
-   // }
    return jetP4;
 }
 

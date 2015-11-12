@@ -74,7 +74,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    eleMediumIdMapToken_ = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
    eleTightIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
    eleHEEPIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
-   conversionsInputTag_ = iConfig.getParameter<edm::InputTag>("conversionsInputTag");
+   conversionsInputTag_ = iConfig.getParameter<edm::InputTag>("conversionsLabel");
    
    //----- Photon related  ----------------------------------------------------------------------------
    phocollections_                 = iConfig.getParameter<StrList> ( "PhoCollections"     ) ; //branch names
@@ -140,8 +140,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    edm::ESHandle<ParticleDataTable> pdt_;
    iSetup.getData( pdt_ );
    isData = iEvent.isRealData();   // Add by Jacky
-
-   pvCol = _vertexHandle.product();
 
    edm::ESHandle<TransientTrackBuilder> builder;
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );

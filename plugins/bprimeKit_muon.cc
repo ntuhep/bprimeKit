@@ -4,8 +4,6 @@
  *  Description : Filling in the muon informations
  *
 *******************************************************************************/
-
-
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 #include "MyAna/bprimeKit/interface/bprimeKit_util.h"
 
@@ -169,7 +167,7 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
       LepInfo[icoll].CandRef [LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_mu );
       LepInfo[icoll].Size++;
 
-      if( it_mu->pt() > 40.0 && muon::isTightMuon( *it_mu , PrimVtx ) ){
+      if(isSelectedMuon(it_mu) ){
          _mySelecMuons.push_back( &*it_mu ); }
    }
    return true;

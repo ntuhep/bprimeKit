@@ -678,19 +678,19 @@ process.bprimeKit = cms.EDAnalyzer(
       puInfoLabel         = cms.InputTag("slimmedAddPileupInfo"),
       
       #----- Vertex related  ------------------------------------------------------------------------------
-      offlinePVlLabel     = cms.InputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
+      offlinePVLabel      = cms.InputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
       offlinePVBSLabel    = cms.InputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
       offlineBSLabel      = cms.InputTag("offlineBeamSpot"),
       conversionsLabel    = cms.InputTag("reducedEgamma","reducedConversions"),
       
       #----- MC Generation information --------------------------------------------------------------------
-      genLabel    = cms.VInputTag("prunedGenParticles"),
-      genevtLabel = cms.VInputTag("generator"),
-      gtdigiLabel = cms.VInputTag("gtDigis"),
+      genLabel    = cms.InputTag("prunedGenParticles"),
+      genevtLabel = cms.InputTag("generator"),
+      gtdigiLabel = cms.InputTag("gtDigis"),
 
       #----- Photon information ------------------------------------------------------------------------ 
-      PhoCollections            = cms.string('PhotonInfo'),
-      phoLabel                  = cms.InputTag('slimmedPhotons'),
+      PhoCollections            = cms.vstring('PhotonInfo'),
+      phoLabel                  = cms.VInputTag('slimmedPhotons'),
       phoLooseIdMap             = cms.InputTag( pho_loose_id_label     ) ,
       phoMediumIdMap            = cms.InputTag( pho_medium_id_label    ) ,
       phoTightIdMap             = cms.InputTag( pho_tight_id_label     ) ,
