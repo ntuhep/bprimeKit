@@ -163,12 +163,13 @@ bool bprimeKit::fillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
             if( LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] != 0 ) { break; }
             LepInfo[icoll].GenMCTag[LepInfo[icoll].Size] = getGenMCTag( it_gen , it_mu )  ; }
       }
+      
+      if( isSelectedMuon(it_mu) ){
+         _mySelecMuons.push_back( &*it_mu ); }
 
       LepInfo[icoll].CandRef [LepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_mu );
       LepInfo[icoll].Size++;
 
-      if(isSelectedMuon(it_mu) ){
-         _mySelecMuons.push_back( &*it_mu ); }
    }
    return true;
 }

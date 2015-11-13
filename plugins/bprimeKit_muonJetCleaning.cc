@@ -40,7 +40,10 @@ bool bprimeKit::passMuonJetClean( JetIterator jet )
    bool hasClean = false ; 
 
    if ( !_mySelecMuons.empty() && deltaR( _mySelecMuons[0]->p4(), jet->p4() ) < 0.6 ) {
-      if ( debug_ ) { 
+      if ( debug_ ) {
+         std::cout << "Jet Overlaps with the Muon... Cleaning jet..." << std::endl;
+         std::cout << "Lepton  : pT = " << _mySelecMuons[0]->pt() << " eta = " << _mySelecMuons[0]->eta() << " phi = " << _mySelecMuons[0]->phi() << std::endl;
+         std::cout << "Raw Jet : pT = " << jet->pt() << " eta = " << jet->eta() << " phi = " << jet->phi() << std::endl;
          std::cout << "Mu origin ref = " << _mySelecMuons[0]->originalObjectRef().key() << std::endl; 
       }
       for ( unsigned int isrc = 0; isrc < _mySelecMuons[0]->numberOfSourceCandidatePtrs(); ++isrc ) {
@@ -52,17 +55,12 @@ bool bprimeKit::passMuonJetClean( JetIterator jet )
          }
       }
    }
-   if ( debug_ ) {
-      std::cout << "Jet Overlaps with the Muon... Cleaning jet..." << std::endl;
-      std::cout << "Lepton : pT = " << _mySelecMuons[0]->pt() << " eta = " << _mySelecMuons[0]->eta() << " phi = " << _mySelecMuons[0]->phi() << std::endl;
-      std::cout << "      Raw Jet : pT = " << jet->pt() << " eta = " << jet->eta() << " phi = " << jet->phi() << std::endl;
-   }
 
    // Recasting to edm::Ptr<> is required!!
    const std::vector<edm::Ptr<reco::Candidate>> jet_contitutes = jet->daughterPtrVector();
-   for ( const auto& jet_const : jet_contitutes  ) {
-      if ( debug_ ) { std::cout << "Jet constituent ref = " << jet_const.key() << std::endl; }
-      for ( unsigned int muI = 0; muI < muDaughters.size(); muI++ ) {
+   for ( unsigned int muI = 0; muI < muDaughters.size(); muI++ ) {
+      for ( const auto& jet_const : jet_contitutes  ) {
+         if ( debug_ ) { std::cout << "Jet constituent ref = " << jet_const.key() << std::endl; }
          if ( jet_const.key() == muDaughters[muI].key() ) {
             tmpJet.setP4( tmpJet.p4() - muDaughters[muI]->p4() );
             muDaughters.erase( muDaughters.begin() + muI );
@@ -83,6 +81,8 @@ bool bprimeKit::passMuonJetClean( JetIterator jet )
    // Selection after cleaning has been applied 
    if( jetP4.Pt()  < 15.  ) { return false; }
    if( jetP4.Eta() >  4.7 ) { return false; }
+   if( debug_ ) {
+      std::cout << "Passed!" << std::endl;}
    return true;
 }
 
