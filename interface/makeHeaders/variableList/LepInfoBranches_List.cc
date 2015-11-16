@@ -152,52 +152,28 @@ Int_t TrgID                                   [MAX_LEPTONS] ;
 //------------------------------------------------------------------------------ 
 //   Tau information
 //------------------------------------------------------------------------------  
-Int_t   isPFTau                                      [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
-Bool_t   DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
-Bool_t   DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
-Bool_t   ByLooseElectronRejection                    [MAX_LEPTONS] ;
-Bool_t   ByMediumElectronRejection                   [MAX_LEPTONS] ;
-Bool_t   ByTightElectronRejection                    [MAX_LEPTONS] ;
-Bool_t   ByMVA5LooseElectronRejection                [MAX_LEPTONS] ;
-Bool_t   ByMVA5MediumElectronRejection               [MAX_LEPTONS] ;
-Bool_t   ByMVA5TightElectronRejection                [MAX_LEPTONS] ;
-Bool_t   ByMVA5VTightElectronRejection               [MAX_LEPTONS] ;
-Bool_t   ByLooseMuonRejection3                       [MAX_LEPTONS] ;
-Bool_t   ByTightMuonRejection3                       [MAX_LEPTONS] ;
-Bool_t   ByMVALooseMuonRejection                     [MAX_LEPTONS] ;
-Bool_t   ByMVAMediumMuonRejection                    [MAX_LEPTONS] ;
-Bool_t   ByMVATightMuonRejection                     [MAX_LEPTONS] ;
-Bool_t   ByLooseCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-Bool_t   ByMediumCombinedIsolationDeltaBetaCorr3Hits [MAX_LEPTONS] ;
-Bool_t   ByTightCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-Float_t   CombinedIsolationDeltaBetaCorrRaw3Hits     [MAX_LEPTONS] ;
-Bool_t   ByVLooseIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-Bool_t   ByLooseIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
-Bool_t   ByMediumIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-Bool_t   ByTightIsolationMVA3newDMwoLT               [MAX_LEPTONS] ;
-Bool_t   ByVTightIsolationMVA3newDMwoLT              [MAX_LEPTONS] ;
-Bool_t   ByVVTightIsolationMVA3newDMwoLT             [MAX_LEPTONS] ;
-Float_t   ByIsolationMVA3newDMwoLTraw                [MAX_LEPTONS] ;
-Bool_t   ByVLooseIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-Bool_t   ByLooseIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
-Bool_t   ByMediumIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-Bool_t   ByTightIsolationMVA3oldDMwLT                [MAX_LEPTONS] ;
-Bool_t   ByVTightIsolationMVA3oldDMwLT               [MAX_LEPTONS] ;
-Bool_t   ByVVTightIsolationMVA3oldDMwLT              [MAX_LEPTONS] ;
-Float_t   ByIsolationMVA3oldDMwLTraw                 [MAX_LEPTONS] ;
-Bool_t   ByVLooseIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
-Bool_t   ByLooseIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
-Bool_t   ByTightIsolationMVA3oldDMwoLT               [MAX_LEPTONS] ;
-Bool_t   ByVTightIsolationMVA3oldDMwoLT              [MAX_LEPTONS] ;
-Bool_t   ByVVTightIsolationMVA3oldDMwoLT             [MAX_LEPTONS] ;
-Float_t   ByIsolationMVA3oldDMwoLTraw                [MAX_LEPTONS] ;
-Bool_t   ByVLooseIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-Bool_t   ByLooseIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
-Bool_t   ByMediumIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-Bool_t   ByTightIsolationMVA3newDMwLT                [MAX_LEPTONS] ;
-Bool_t   ByVTightIsolationMVA3newDMwLT               [MAX_LEPTONS] ;
-Bool_t   ByVVTightIsolationMVA3newDMwLT              [MAX_LEPTONS] ;
-Float_t   ByIsolationMVA3newDMwLTraw                 [MAX_LEPTONS] ;
+Int_t    isPFTau                                     [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
+Float_t  DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
+Float_t  DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
+Float_t  ByLooseCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
+Float_t  ByMediumCombinedIsolationDeltaBetaCorr3Hits [MAX_LEPTONS] ;
+Float_t  ByTightCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
+Float_t  ByCombinedIsolationDeltaBetaCorrRaw3Hits    [MAX_LEPTONS] ;
+Float_t  ChargedIsoPtSum                             [MAX_LEPTONS] ;
+Float_t  NeutralIsoPtSum                             [MAX_LEPTONS] ;
+Float_t  PuCorrPtSum                                 [MAX_LEPTONS] ;
+Float_t  ByLoosePileupWeightedIsolation3Hits         [MAX_LEPTONS] ;
+Float_t  ByMediumPileupWeightedIsolation3Hits        [MAX_LEPTONS] ;
+Float_t  ByTightPileupWeightedIsolation3Hits         [MAX_LEPTONS] ;
+Float_t  ByPileupWeightedIsolationRaw3Hits           [MAX_LEPTONS] ;
+Float_t  NeutralIsoPtSumWeight                       [MAX_LEPTONS] ;
+Float_t  FootprintCorrection                         [MAX_LEPTONS] ;
+Float_t  PhotonPtSumOutsideSignalCone                [MAX_LEPTONS] ;
+Float_t  AgainstMuonLoose3                           [MAX_LEPTONS] ;
+Float_t  AgainstMuonTight3                           [MAX_LEPTONS] ;
+Float_t  AgainstElectronVLooseMVA5                   [MAX_LEPTONS] ;
+Float_t  AgainstElectronLooseMVA5                    [MAX_LEPTONS] ;
+Float_t  AgainstElectronMediumMVA5                   [MAX_LEPTONS] ;
 
 //----- Generation Monte Carlo information  --------------------------------------------------------
 Float_t GenPt                                 [MAX_LEPTONS] ;

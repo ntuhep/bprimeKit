@@ -17,91 +17,17 @@
 #
 # *****************************************************************************************
 import sys 
-import FWCore.ParameterSet.Config as cms
-import FWCore.ParameterSet.VarParsing as opts
 import copy
+import FWCore.ParameterSet.Config     as cms
+import FWCore.ParameterSet.VarParsing as opts
+import MyAna.bprimeKit.optionInit     as myOptions 
+import MyAna.bprimeKit.OptionParser   as myParser
 
 options = opts.VarParsing ('analysis')
 
-options.register('sample',
-                 'file:///wk_cms/yichen/miniAODs/Run2015_reMiniAOD/Run2015D_SingleMuon.root',
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.string,
-                 'Sample to analyze')
+myOptions.initB2GOptions( options )
+myOptions.initBPKOptions( options )
 
-options.register('lheLabel',
-                 'externalLHEProducer',
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.string,
-                 'LHE module label')
-
-options.register('outputLabel',
-                 'bpk_ntuples.root',
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.string,
-                 'Output label')
-
-options.register('DataProcessing',
-                 "",
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.string,
-                 'Data processing types. Options are: MC50ns, MC25ns, Data50ns, Data25ns Data25nsv2')
-
-options.register('globalTag',
-                 '', ## Optional, could be decided automatically
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.string,
-                 'Global Tag')
-
-options.register('useNoHFMET',
-                 True,
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.bool,
-                 'Adding met without HF and relative jets')
-
-options.register('usePrivateSQLite',
-                 True,
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.bool,
-                 'Take Corrections from private SQL file')
-
-options.register('forceResiduals',
-                 None,
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.bool,
-                 'Whether to force residuals to be applied')
-
-options.register('LHE',
-                 False,
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.bool,
-                 'Keep LHEProducts')
-
-options.register('Debug',
-                 0,
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.int,
-                 'Debugging output level' )
-
-options.register('RunMuonJetClean', 
-      False,
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.bool,
-      "Whether to run Muon-Jet Cleaning")
-
-options.register('b2gPreprocess',
-      False,
-      opts.VarParsing.multiplicity.singleton,
-      opts.VarParsing.varType.bool,
-      'Whether to use the filters and producers defined by b2g group')
-
-options.register('wantSummary',
-                 False,
-                 opts.VarParsing.multiplicity.singleton,
-                 opts.VarParsing.varType.bool,
-                 'Want summary report')
-
-options.setDefault('maxEvents', 10)
 options.parseArguments()
 
 print """
@@ -109,26 +35,17 @@ print """
 #   Basic argument parsing
 #-------------------------------------------------------------------------------"""
 if options.DataProcessing == "":
-  sys.exit("!!!!Error: Enter 'DataProcessing' period. Options are: 'MC50ns', 'MC25ns', 'Data50ns', 'Data25ns', 'Data25nsv2'.\n")
+   sys.exit("!!!!Error: Enter 'DataProcessing' period. Options are: 'MC25ns_MiniAODv2', 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4'.\n")
 
-if options.globalTag != "": 
-  print "!!!!Warning: You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
-else: 
-   if options.DataProcessing=="MC50ns":
-      options.globalTag="74X_mcRun2_asymptotic50ns_v0"
-   elif options.DataProcessing=="MC25ns":
-      options.globalTag="74X_mcRun2_asymptotic_v2"
-   elif options.DataProcessing=="Data50ns":
-      options.globalTag="74X_dataRun2_reMiniAOD_v0"
-   elif options.DataProcessing=="Data25ns":
-      options.globalTag="74X_dataRun2_reMiniAOD_v0"
-   elif options.DataProcessing=="Data25nsv2":
-      options.globalTag="74X_dataRun2_v4"
-   else:
-      sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options for 'DataProcessing': 'MC50ns', 'MC25ns', 'Data_Run2015D', 'Data_ReMiniAOD', 'Data_ReMiniAOD_RunC_25ns'\n") 
 if "Data" in options.DataProcessing:
   print "!!!!Warning: You have chosen to run over data. lheLabel will be unset.\n"
-  lheLabel = ""
+  options.lheLabel = ""
+
+if options.globalTag != "": 
+   print "!!!!Warning: You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
+else:
+   options.globalTag = myParser.getGlobalTag( options.DataProcessing ) 
+
 
 print """
 #------------------------------------------------------------------------------- 
@@ -210,16 +127,18 @@ if options.usePrivateSQLite:
     
     from CondCore.DBCommon.CondDBSetup_cfi import *
     import os
-    if options.DataProcessing=="Data50ns":
-      era="Summer15_50nsV5_DATA" 
-    elif options.DataProcessing=="Data25ns":
-      era="Summer15_25nsV2_DATA" 
-    elif options.DataProcessing=="Data25nsv2":
-      era="Summer15_25nsV2_DATA" 
-    elif options.DataProcessing=="MC50ns":
-      era="Summer15_50nsV5_MC" 
-    elif options.DataProcessing=="MC25ns":
-      era="Summer15_25nsV2_MC" 
+    if "Data50ns" in options.DataProcessing:
+      era = "Summer15_50nsV5_DATA"
+    elif "MC50ns" in options.DataProcessing:
+      era = "Summer15_50nsV5_MC"
+    elif "Data25ns" in options.DataProcessing:
+      era = "Summer15_25nsV6_DATA"
+    elif "MC25ns" in options.DataProcessing:
+      era = "Summer15_25nsV6_MC"
+    else:
+      sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options: "
+               "'MC25ns_MiniAODv2', 'MC25ns_MiniAODv2_FastSim', 'Data25ns_ReReco', 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4',\n"
+               "'MC50ns_MiniAODv2', 'Data50ns_MiniAODv2'\n")
     dBFile = era+".db"
     print "\nUsing private SQLite file", dBFile, "\n"
     process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
@@ -476,10 +395,10 @@ process.electronUserData = cms.EDProducer(
       triggerSummary      = cms.InputTag(triggerSummaryLabel),
       hltElectronFilter   = cms.InputTag(hltElectronFilterLabel),  ##trigger matching code to be fixed!
       hltPath             = cms.string("HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL"),
-      electronVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-veto"),
-      electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"),
-      electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"),
-      electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-tight"),
+      electronVetoIdMap   = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"),
+      electronLooseIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"),
+      electronMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
+      electronTightIdMap  = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
       electronHEEPIdMap   = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),
     eleMediumIdFullInfoMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
     eleIdVerbose = cms.bool(True)
@@ -555,45 +474,34 @@ dataFormat = DataFormat.MiniAOD
 switchOnVIDPhotonIdProducer(process, dataFormat)
 switchOnVIDElectronIdProducer(process, dataFormat)
 
-my_elid_modules  = ['RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff'] 
+my_elid_modules  = [] 
 my_phoid_modules = []
 
-elec_veto_id_label   = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto"
-elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-loose"
-elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-medium"
-elec_tight_id_label  = "egmGsfElectronIDs:cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-tight"
-elec_heep_id_label   = "egmGsfElectronIDs:heepElectronID-HEEPV51"
+my_elid_modules.append( myParser.getElectronIDModule( ""     , options.DataProcessing ) )
+my_elid_modules.append( myParser.getElectronIDModule( "heep" , options.DataProcessing ) )
+
+elec_veto_id_label   = myParser.getElectronIDLabel( "veto"   , options.DataProcessing )
+elec_loose_id_label  = myParser.getElectronIDLabel( "loose"  , options.DataProcessing )
+elec_medium_id_label = myParser.getElectronIDLabel( "medium" , options.DataProcessing )
+elec_tight_id_label  = myParser.getElectronIDLabel( "tight"  , options.DataProcessing )
+elec_heep_id_label   = myParser.getElectronIDLabel( "heep"   , options.DataProcessing )
+
 pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"
 pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"
 pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"
 
 if options.DataProcessing=="MC50ns" or options.DataProcessing=="MC25ns" :
-    my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff' )
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
 elif "Data50ns" in options.DataProcessing :
-    my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff' )
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
-    elec_veto_id_label   = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-veto"
-    elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"
-    elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"
-    elec_tight_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-tight"
     pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"
     pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium"
     pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight"
 elif "Data25ns" in options.DataProcessing :
-    my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff' )
     my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
-    #my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff' )
-    elec_veto_id_label   = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"
-    elec_loose_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"
-    elec_medium_id_label = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"
-    elec_tight_id_label  = "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"
     pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"
     pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"
     pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"
-    #pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"
-    #pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"
-    #pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"
 else:
     print "Warning! E/G Cut based ID data type not specified, using PHYS14_PU20bx25_V2 as default (may misbehave with data)"
     my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff' )

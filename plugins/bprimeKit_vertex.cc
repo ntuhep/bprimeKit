@@ -1,7 +1,7 @@
 /*******************************************************************************
  *
  *  Filename    : bprimeKit_vertex.cc
- *  Description : vertex info filling 
+ *  Description : vertex info Filling 
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
@@ -11,78 +11,78 @@
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 
-bool bprimeKit::fillVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
+bool bprimeKit::FillVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   bool   gotPrimVtx;
+   bool   gotfPrimaryVertex;
    double PVBS_Pt_Max;
       
-   if( debug_ > 5 ) { cout << "Fill Vertex Info.\n"; }
-   memset( &VertexInfo, 0x00, sizeof( VertexInfo ) );
+   if( fDebug > 5 ) { cout << "Fill Vertex Info.\n"; }
+   memset( &fVertexInfo, 0x00, sizeof( fVertexInfo ) );
    
    //----- Vertices without beamspot constraints  -----------------------------------------------------
-   gotPrimVtx = false;
-   if( _vertexHandle.isValid() && !_vertexHandle.failedToGet() && _vertexHandle->size() > 0 ) {
-      PrimVtx = *( _vertexHandle->begin() ); //Uly 2012-07-19: just get something valid to start with
-      for( VertexIterator it_vtx = _vertexHandle->begin(); it_vtx != _vertexHandle->end(); ++it_vtx ) {
-         if ( VertexInfo.Size >= MAX_Vertices ) {
-            cout << "PV " << VertexInfo.Size << endl;
+   gotfPrimaryVertex = false;
+   if( fVertex_H.isValid() && !fVertex_H.failedToGet() && fVertex_H->size() > 0 ) {
+      fPrimaryVertex = *( fVertex_H->begin() ); //Uly 2012-07-19: just get something valid to start with
+      for( VertexIterator it_vtx = fVertex_H->begin(); it_vtx != fVertex_H->end(); ++it_vtx ) {
+         if ( fVertexInfo.Size >= MAX_Vertices ) {
+            cout << "PV " << fVertexInfo.Size << endl;
             cerr << "ERROR: number of Tracks exceeds the size of array." << endl;
             break;
          }
-         VertexInfo.Type           [VertexInfo.Size] = 0                        ; //Vertices WITHOUT the Beam Spot constraint
-         VertexInfo.isValid        [VertexInfo.Size] = it_vtx->isValid()        ;
-         VertexInfo.isFake         [VertexInfo.Size] = it_vtx->isFake()         ; //Uly 2011-05-16
-         VertexInfo.Ndof           [VertexInfo.Size] = it_vtx->ndof()           ;
-         VertexInfo.NormalizedChi2 [VertexInfo.Size] = it_vtx->normalizedChi2() ;
-         VertexInfo.x              [VertexInfo.Size] = it_vtx->x()              ;
-         VertexInfo.y              [VertexInfo.Size] = it_vtx->y()              ;
-         VertexInfo.z              [VertexInfo.Size] = it_vtx->z()              ;
-         VertexInfo.Rho            [VertexInfo.Size] = it_vtx->position().Rho() ;
-         VertexInfo.Pt_Sum         [VertexInfo.Size] = 0.                       ;
-         VertexInfo.Pt_Sum2        [VertexInfo.Size] = 0.                       ;
+         fVertexInfo.Type           [fVertexInfo.Size] = 0                        ; //Vertices WITHOUT the Beam Spot constraint
+         fVertexInfo.isValid        [fVertexInfo.Size] = it_vtx->isValid()        ;
+         fVertexInfo.isFake         [fVertexInfo.Size] = it_vtx->isFake()         ; //Uly 2011-05-16
+         fVertexInfo.Ndof           [fVertexInfo.Size] = it_vtx->ndof()           ;
+         fVertexInfo.NormalizedChi2 [fVertexInfo.Size] = it_vtx->normalizedChi2() ;
+         fVertexInfo.x              [fVertexInfo.Size] = it_vtx->x()              ;
+         fVertexInfo.y              [fVertexInfo.Size] = it_vtx->y()              ;
+         fVertexInfo.z              [fVertexInfo.Size] = it_vtx->z()              ;
+         fVertexInfo.Rho            [fVertexInfo.Size] = it_vtx->position().Rho() ;
+         fVertexInfo.Pt_Sum         [fVertexInfo.Size] = 0.                       ;
+         fVertexInfo.Pt_Sum2        [fVertexInfo.Size] = 0.                       ;
 
          for ( auto it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
-            VertexInfo.Pt_Sum  [ VertexInfo.Size ] += ( *it )->pt();
-            VertexInfo.Pt_Sum2 [ VertexInfo.Size ] += ( ( *it )->pt() * ( *it )->pt() );
+            fVertexInfo.Pt_Sum  [ fVertexInfo.Size ] += ( *it )->pt();
+            fVertexInfo.Pt_Sum2 [ fVertexInfo.Size ] += ( ( *it )->pt() * ( *it )->pt() );
          }
-         if( !gotPrimVtx && ( !it_vtx->isFake() && it_vtx->ndof() >= 4. && it_vtx->z() <= 24. && it_vtx->position().Rho() <= 2. ) ) {
-            PrimVtx = *it_vtx;
-            gotPrimVtx = true;
+         if( !gotfPrimaryVertex && ( !it_vtx->isFake() && it_vtx->ndof() >= 4. && it_vtx->z() <= 24. && it_vtx->position().Rho() <= 2. ) ) {
+            fPrimaryVertex = *it_vtx;
+            gotfPrimaryVertex = true;
          }
-         VertexInfo.Size++;
+         fVertexInfo.Size++;
       }
    }
 
    //----- Vertices with beamspot constraint  ---------------------------------------------------------
    PVBS_Pt_Max = -100. ; 
-   if( _bsVertexHandle.isValid() && !_bsVertexHandle.failedToGet() && _bsVertexHandle->size() > 0 ) {
-      for( VertexIterator it_vtx = _bsVertexHandle->begin(); it_vtx != _bsVertexHandle->end(); ++it_vtx ) {
-         if ( VertexInfo.Size >= MAX_Vertices ) {
-            cout << "PVBS " << VertexInfo.Size << endl;
+   if( fVertexWithBeamSpot_H.isValid() && !fVertexWithBeamSpot_H.failedToGet() && fVertexWithBeamSpot_H->size() > 0 ) {
+      for( VertexIterator it_vtx = fVertexWithBeamSpot_H->begin(); it_vtx != fVertexWithBeamSpot_H->end(); ++it_vtx ) {
+         if ( fVertexInfo.Size >= MAX_Vertices ) {
+            cout << "PVBS " << fVertexInfo.Size << endl;
             cerr << "ERROR: number of  Vertices exceeds the size of array." << endl;
             break;//exit(0);
          }
-         VertexInfo.Type           [ VertexInfo.Size ] = 1                        ; //Vertices WITH the Beam Spot constraint
-         VertexInfo.isValid        [ VertexInfo.Size ] = it_vtx->isValid()        ;
-         VertexInfo.isFake         [ VertexInfo.Size ] = it_vtx->isFake()         ; //Uly 2011-05-16
-         VertexInfo.Ndof           [ VertexInfo.Size ] = it_vtx->ndof()           ;
-         VertexInfo.NormalizedChi2 [ VertexInfo.Size ] = it_vtx->normalizedChi2() ;
-         VertexInfo.x              [ VertexInfo.Size ] = it_vtx->x()              ;
-         VertexInfo.y              [ VertexInfo.Size ] = it_vtx->y()              ;
-         VertexInfo.z              [ VertexInfo.Size ] = it_vtx->z()              ;
-         VertexInfo.Rho            [ VertexInfo.Size ] = it_vtx->position().Rho() ;
-         VertexInfo.Pt_Sum         [ VertexInfo.Size ] = 0.                       ;
-         VertexInfo.Pt_Sum2        [ VertexInfo.Size ] = 0.                       ;
+         fVertexInfo.Type           [ fVertexInfo.Size ] = 1                        ; //Vertices WITH the Beam Spot constraint
+         fVertexInfo.isValid        [ fVertexInfo.Size ] = it_vtx->isValid()        ;
+         fVertexInfo.isFake         [ fVertexInfo.Size ] = it_vtx->isFake()         ; //Uly 2011-05-16
+         fVertexInfo.Ndof           [ fVertexInfo.Size ] = it_vtx->ndof()           ;
+         fVertexInfo.NormalizedChi2 [ fVertexInfo.Size ] = it_vtx->normalizedChi2() ;
+         fVertexInfo.x              [ fVertexInfo.Size ] = it_vtx->x()              ;
+         fVertexInfo.y              [ fVertexInfo.Size ] = it_vtx->y()              ;
+         fVertexInfo.z              [ fVertexInfo.Size ] = it_vtx->z()              ;
+         fVertexInfo.Rho            [ fVertexInfo.Size ] = it_vtx->position().Rho() ;
+         fVertexInfo.Pt_Sum         [ fVertexInfo.Size ] = 0.                       ;
+         fVertexInfo.Pt_Sum2        [ fVertexInfo.Size ] = 0.                       ;
 
          for ( auto it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ) {
-            VertexInfo.Pt_Sum  [ VertexInfo.Size ] += ( *it )->pt();
-            VertexInfo.Pt_Sum2 [ VertexInfo.Size ] += ( ( *it )->pt() * ( *it )->pt() );
+            fVertexInfo.Pt_Sum  [ fVertexInfo.Size ] += ( *it )->pt();
+            fVertexInfo.Pt_Sum2 [ fVertexInfo.Size ] += ( ( *it )->pt() * ( *it )->pt() );
          }
-         if( VertexInfo.Pt_Sum[VertexInfo.Size] >= PVBS_Pt_Max ) {
-            PVBS_Pt_Max = VertexInfo.Pt_Sum[VertexInfo.Size];
-            PrimVtx_BS = *it_vtx;
+         if( fVertexInfo.Pt_Sum[fVertexInfo.Size] >= PVBS_Pt_Max ) {
+            PVBS_Pt_Max = fVertexInfo.Pt_Sum[fVertexInfo.Size];
+            fPrimaryVertex_BS = *it_vtx;
          }
-         VertexInfo.Size++;
+         fVertexInfo.Size++;
       }
    }
    return true;

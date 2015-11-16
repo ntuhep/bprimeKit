@@ -6,7 +6,7 @@
 *******************************************************************************/
 #include "MyAna/bprimeKit/interface/bprimeKit.h"
 
-//---------------------  ROOT and standard template libraries  ----------------------
+//---------------------  fBaseTree and standard template libraries  ----------------------
 #include <string>
 #include <TFile.h>
 #include <TTree.h>
@@ -21,7 +21,7 @@
 //------------------------------------------------------------------------------ 
 //   Custom enums, typedefs and macros
 //------------------------------------------------------------------------------ 
-//#define FILL_DIJET_PAIRS 1      //Uncomment for jet pair processing
+//#define Fill_DIJET_PAIRS 1      //Uncomment for jet pair processing
 typedef std::vector<edm::InputTag> TagList;
 typedef std::vector<std::string>   StrList;
 
@@ -35,77 +35,78 @@ static TFileDirectory results ;
 //   bprimeKit methods: constructor and destructor
 //------------------------------------------------------------------------------ 
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
-   effAreaChHadrons_  ((iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ),
-   effAreaNeuHadrons_ ((iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath()),
-   effAreaPhotons_    ((iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath()   )
+   fPhotonEffectiveArea_ChargeHadron  ((iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ),
+   fPhotonEffectiveArea_NeutralHadron ((iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath()),
+   fPhotonEffectiveArea_Photons    ((iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath()   )
 {
    results = TFileDirectory( fs->mkdir( "results" ) );
+   //----- Configuration flags  ---------------------------------------------------
+   fPairCollectionType            = iConfig.getUntrackedParameter<int> ( "PairCollection" , 0     ) ;
+   fSkipfGenInfo         = iConfig.getUntrackedParameter<bool>( "SkipfGenInfo"    , false ) ;
+   fIncludeL7           = iConfig.getUntrackedParameter<bool>( "IncludeL7"      , true  ) ;
+   fDebug               = iConfig.getUntrackedParameter<int> ( "Debug"          , 0     ) ;
+   fRunOnB2G             = iConfig.getUntrackedParameter<bool>( "fRunOnB2G"       , false ) ;
+   fRunMuonJetCleaning      = iConfig.getParameter<bool>( "fRunMuonJetCleaning" );
+   
    //----- Event related  -----------------------------------------------------------------------------
-   rhoLabel_    = iConfig.getParameter<edm::InputTag> ( "rhoLabel"    ) ;
-   hltLabel_    = iConfig.getParameter<edm::InputTag> ( "hltLabel"    ) ; 
-   metLabel_    = iConfig.getParameter<edm::InputTag> ( "metLabel"    ) ;
-   puInfoLabel_ = iConfig.getParameter<edm::InputTag> ( "puInfoLabel" ) ;
+   fRhoLabel    = iConfig.getParameter<edm::InputTag> ( "rhoLabel"    ) ;
+   fHLTLabel    = iConfig.getParameter<edm::InputTag> ( "hltLabel"    ) ; 
+   fMETLabel    = iConfig.getParameter<edm::InputTag> ( "metLabel"    ) ;
+   fPileupLabel = iConfig.getParameter<edm::InputTag> ( "puInfoLabel" ) ;
    
    //----- Vertex related  ----------------------------------------------------------------------------
-   offlinePVLabel_   = iConfig.getParameter<edm::InputTag>( "offlinePVLabel"   ) ;
-   offlinePVBSLabel_ = iConfig.getParameter<edm::InputTag>( "offlinePVBSLabel" ) ;
-   offlineBSLabel_   = iConfig.getParameter<edm::InputTag>( "offlineBSLabel"   ) ;
+   fPrimaryVertexLabel   = iConfig.getParameter<edm::InputTag>( "offlinePVLabel"   ) ;
+   fPrimVertex_withBeamSpot_Label = iConfig.getParameter<edm::InputTag>( "offlinePVBSLabel" ) ;
+   fBeamspotLabel   = iConfig.getParameter<edm::InputTag>( "offlineBSLabel"   ) ;
    
-   //----- GenInfo related  ---------------------------------------------------------------------------
-   genevtLabel_ = iConfig.getParameter<edm::InputTag>( "genevtLabel" ) ;
-   genLabel_    = iConfig.getParameter<edm::InputTag>( "genLabel"    ) ;
-   gtdigiLabel_ = iConfig.getParameter<edm::InputTag>( "gtdigiLabel" ) ;
+   //----- fGenInfo related  ---------------------------------------------------------------------------
+   fGenEventLabel = iConfig.getParameter<edm::InputTag>( "genevtLabel" ) ;
+   fGenParticleLabel    = iConfig.getParameter<edm::InputTag>( "genLabel"    ) ;
+   fGenDigiLabel = iConfig.getParameter<edm::InputTag>( "gtdigiLabel" ) ;
 
    //----- Jet related  -------------------------------------------------------------------------------
-   jetcollections_    = iConfig.getParameter<StrList>( "JetCollections" ) ;
-   jetLabel_          = iConfig.getParameter<TagList>( "jetLabel"       ) ;
-   qgLikelihoodToken_ = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
-   qgaxis2Token_      = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
-   qgmultToken_       = consumes<edm::ValueMap<int  >>(edm::InputTag("QGTagger", "mult"));
-   qgptDToken_        = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
+   fJetCollections     = iConfig.getParameter<StrList>( "JetCollections" ) ;
+   fJetLabels          = iConfig.getParameter<TagList>( "jetLabel"       ) ;
+   fQGLikelihoodToken = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
+   fQGAxis2Token      = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
+   fQGMultiplicityToken       = consumes<edm::ValueMap<int  >>(edm::InputTag("QGTagger", "mult"));
+   fQGPtDToken        = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
    
    //----- Lepton related  ----------------------------------------------------------------------------
-   lepcollections_      = iConfig.getParameter<StrList>( "LepCollections"     ) ; //branch names
-   muonLabel_           = iConfig.getParameter<TagList>( "muonLabel"          ) ;
-   elecLabel_           = iConfig.getParameter<TagList>( "elecLabel"          ) ;
-   tauLabel_            = iConfig.getParameter<TagList>( "tauLabel"           ) ;
-   eleVetoIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
-   eleLooseIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
-   eleMediumIdMapToken_ = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
-   eleTightIdMapToken_  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
-   eleHEEPIdMapToken_   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
-   conversionsInputTag_ = iConfig.getParameter<edm::InputTag>("conversionsLabel");
+   fLeptonCollections      = iConfig.getParameter<StrList>( "LepCollections"     ) ; //branch names
+   fMuonLabels           = iConfig.getParameter<TagList>( "muonLabel"          ) ;
+   fElectronLabels           = iConfig.getParameter<TagList>( "elecLabel"          ) ;
+   fTauLabels            = iConfig.getParameter<TagList>( "fTauLabels"           ) ;
+   fElectronIDVetoToken   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
+   fElectronIDLooseToken  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
+   fElectronIDMediumToken = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
+   fElectronIDTightToken  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
+   fElectronIDHEEPToken   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
+   fConversionsTag = iConfig.getParameter<edm::InputTag>("conversionsLabel");
    
    //----- Photon related  ----------------------------------------------------------------------------
-   phocollections_                 = iConfig.getParameter<StrList> ( "PhoCollections"     ) ; //branch names
-   phoLabel_                       = iConfig.getParameter<TagList> ( "phoLabel"           ) ;
-   phoLooseIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoLooseIdMap"             )) ;
-   phoMediumIdMapToken_            = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoMediumIdMap"            )) ;
-   phoTightIdMapToken_             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoTightIdMap"             )) ;
-   phoChargedIsolationToken_       = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoChargedIsolation"       )) ;
-   phoNeutralHadronIsolationToken_ = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoNeutralHadronIsolation" )) ;
-   phoPhotonIsolationToken_        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
-   full5x5SigmaIEtaIEtaMapToken_   = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "full5x5SigmaIEtaIEtaMap"   )) ;
-
-   //----- Configuration flats  -----------------------------------------------------------------------
-   pairColl_            = iConfig.getUntrackedParameter<int> ( "PairCollection" , 0     ) ;
-   skipGenInfo_         = iConfig.getUntrackedParameter<bool>( "SkipGenInfo"    , false ) ;
-   includeL7_           = iConfig.getUntrackedParameter<bool>( "IncludeL7"      , true  ) ;
-   debug_               = iConfig.getUntrackedParameter<int> ( "Debug"          , 0     ) ;
-   runOnB2G             = iConfig.getUntrackedParameter<bool>( "runOnB2G"       , false ) ;
-   runMuonJetClean      = iConfig.getParameter<bool>( "runMuonJetClean" );
-   //----- 2015 cut based electron ID  ----------------------------------------------------------------
-   EIDMVAInputTags_     = iConfig.getParameter<StrList>       ( "EIDMVAInputTags"     ) ;
+   fPhotonCollections                 = iConfig.getParameter<StrList> ( "PhoCollections"     ) ; //branch names
+   fPhotonLabels                       = iConfig.getParameter<TagList> ( "phoLabel"           ) ;
+   fPhotonLooseIDToken             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoLooseIdMap"             )) ;
+   fPhotonMediumIDToken            = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoMediumIdMap"            )) ;
+   fPhotonTightIDToken             = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "phoTightIdMap"             )) ;
+   fPhotonIsolation_Charged_Token       = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoChargedIsolation"       )) ;
+   fPhotonIsolation_Neutral_Token = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoNeutralHadronIsolation" )) ;
+   fPhotonIsolation_Photon_Token        = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
+   fPhotonSignaIEtaIEtaToken   = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "fPhotonSigmaIEtaIEta_H"   )) ;
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
-      HLTmaplist.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
+      fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
    
-   initTree();
-   initJetEnergyCorrectors();
+  InitTree();
+  InitJetEnergyCorrectors();
 }
 
 bprimeKit::~bprimeKit()
-{}
+{
+   ClearTree();
+   ClearJetEnergyCorrector();
+}
 
 
 //------------------------------------------------------------------------------ 
@@ -125,7 +126,7 @@ void bprimeKit::beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup )
 {
    std::string processName_ = "HLT";
    bool changed =  true ;
-   hltConfig_.init( iRun, iSetup, processName_, changed );
+   fHighLevelTriggerConfig.init( iRun, iSetup, processName_, changed );
 }
 void bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )
 {}
@@ -133,113 +134,117 @@ void bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )
 
 void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   if( debug_ > 0 ) { cout << "[0] Begin Analysis!!" << endl; }
+   if( fDebug > 0 ) { cout << "[0] Begin Analysis!!" << endl; }
 
    GetEdmObjects( iEvent, iSetup );
    //----- Setting up common variables  ---------------------------------------------------------------
-   edm::ESHandle<ParticleDataTable> pdt_;
-   iSetup.getData( pdt_ );
-   isData = iEvent.isRealData();   // Add by Jacky
-
-   edm::ESHandle<TransientTrackBuilder> builder;
-   iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", builder );
-   TransientTrackBuilder thebuilder = *( builder.product() );
-   transientTrackBuilder = builder.product();
+   fIsData = iEvent.isRealData();   // Add by Jacky
 
 
-   if( debug_ > 0 ) { cout << "[0] Entering subroutines..." << endl; }
+
+   if( fDebug > 0 ) { cout << "[0] Entering subroutines..." << endl; }
    //------------------------------------------------------------------------------ 
    //   Generation and Event information
    //------------------------------------------------------------------------------  
-   memset( &GenInfo, 0x00, sizeof( GenInfo ) );
-   memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );
-   fillGenInfo( iEvent , iSetup );
-   fillEvent  ( iEvent , iSetup );
+   memset( &fGenInfo, 0x00, sizeof( fGenInfo ) );
+   memset( &fEvtInfo, 0x00, sizeof( fEvtInfo ) );
+   FillfGenInfo( iEvent , iSetup );
+   FillEvent  ( iEvent , iSetup );
 
-   // Start to fill the main root branches
+   // Start to Fill the main fBaseTree branches
    //------------------------------------------------------------------------------ 
-   //   VertexInfo added by Dmitry to help filter out pile up and bad events
+   //   fVertexInfo added by Dmitry to help filter out pile up and bad events
    //------------------------------------------------------------------------------ 
-   fillVertex( iEvent , iSetup ) ;
+   FillVertex( iEvent , iSetup ) ;
 
    //------------------------------------------------------------------------------ 
    //   Leptons
    //------------------------------------------------------------------------------ 
-   fillLepton( iEvent , iSetup ) ;
+   FillLepton( iEvent , iSetup ) ;
 
    //------------------------------------------------------------------------------ 
    //   Photons
    //------------------------------------------------------------------------------ 
-   fillPhoton( iEvent , iSetup );
+   FillPhoton( iEvent , iSetup );
 
    //------------------------------------------------------------------------------ 
    //   Jets
    //------------------------------------------------------------------------------  
-   fillJet( iEvent , iSetup ) ;
+   FillJet( iEvent , iSetup ) ;
 
    //------------------------------------------------------------------------------ 
    //   Pairs
    //------------------------------------------------------------------------------  
-   if( pairColl_ >= 0 ) { fillLepPair( iEvent , iSetup ) ; } 
-#ifdef FILL_DIJET_PAIRS
-   fillJetPair( iEvent, iSetup ) ;
+   if( fPairCollectionType >= 0 ) { FillLepPair( iEvent , iSetup ) ; } 
+#ifdef Fill_DIJET_PAIRS
+   FillJetPair( iEvent, iSetup ) ;
 #endif
 
 
    //------------------------------------------------------------------------------ 
    //   Processing debugging messages and file writing
    //------------------------------------------------------------------------------ 
-   if( debug_ > 0 ) { cout << "[0] Filling tree with all information" << endl; }
-   root->Fill();
-   if( debug_ > 0 ) { cout << "[0] Filled event information: Run " << EvtInfo.RunNo << " Event " << EvtInfo.EvtNo << endl; }
+   if( fDebug > 0 ) { cout << "[0] Filling tree with all information" << endl; }
+   fBaseTree->Fill();
+   if( fDebug > 0 ) { cout << "[0] Filled event information: Run " << fEvtInfo.RunNo << " Event " << fEvtInfo.EvtNo << endl; }
 
-   if( debug_ > 11 ) {
-      root->Show( -1, 999 );
-      for( size_t i = 0; i < lepcollections_.size(); i++ ) {
-         cout << "After fill, Lepton Collection " << i << "(" << lepcollections_[i] << "): size " << LepInfo[i].Size << endl;
-         for( int j = 0; j < LepInfo[i].Size; j++ ){ 
+   if( fDebug > 11 ) {
+      fBaseTree->Show( -1, 999 );
+      for( size_t i = 0; i < fLeptonCollections.size(); i++ ) {
+         cout << "After Fill, Lepton Collection " << i << "(" << fLeptonCollections[i] << "): size " << fLepInfo[i].Size << endl;
+         for( int j = 0; j < fLepInfo[i].Size; j++ ){ 
             cout << "  Lep " << j << " type,pt,eta,phi " 
-               << LepInfo[i].LeptonType[j] << "," 
-               << LepInfo[i].Pt[j] << "," 
-               << LepInfo[i].Eta[j] << "," 
-               << LepInfo[i].Phi[j] << endl;
+               << fLepInfo[i].LeptonType[j] << "," 
+               << fLepInfo[i].Pt[j] << "," 
+               << fLepInfo[i].Eta[j] << "," 
+               << fLepInfo[i].Phi[j] << endl;
          }
       }
    }
 }
 
-void bprimeKit::initTree()
+void bprimeKit::InitTree()
 {
-   root = new TTree( "root", "root" );
-   EvtInfo.RegisterTree( root );
-   VertexInfo.RegisterTree( root );
-   if( !skipGenInfo_ ) { GenInfo.RegisterTree( root ); } 
-   for( unsigned i = 0; i < lepcollections_.size(); i++ ) {
+   fBaseTree = new TTree( "root", "root" );
+   fEvtInfo.RegisterTree( fBaseTree );
+   fVertexInfo.RegisterTree( fBaseTree );
+   if( !fSkipfGenInfo ) { fGenInfo.RegisterTree( fBaseTree ); } 
+   for( unsigned i = 0; i < fLeptonCollections.size(); i++ ) {
       if( i >= MAX_LEPCOLLECTIONS ) { break; }
-      LepInfo[i].RegisterTree( root, lepcollections_[i] );
+      fLepInfo[i].RegisterTree( fBaseTree, fLeptonCollections[i] );
    }
-   for( unsigned i = 0; i < phocollections_.size(); i++ ) {
+   for( unsigned i = 0; i < fPhotonCollections.size(); i++ ) {
       if( i >= MAX_PHOCOLLECTIONS ) { break; }
-      PhotonInfo[i].RegisterTree( root, phocollections_[i] );
+      fPhotonInfo[i].RegisterTree( fBaseTree, fPhotonCollections[i] );
    }
-   for( unsigned i = 0; i < jetcollections_.size(); i++ ) {
+   for( unsigned i = 0; i < fJetCollections.size(); i++ ) {
       if( i >= MAX_JETCOLLECTIONS ) { break; }
-      JetInfo[i].RegisterTree( root, jetcollections_[i] );
+      fJetInfo[i].RegisterTree( fBaseTree, fJetCollections[i] );
    }
-   if( pairColl_ >= 0 ) { PairInfo.RegisterTree( root ); }
+   if( fPairCollectionType >= 0 ) { fPairInfo.RegisterTree( fBaseTree ); }
 }
 
-void bprimeKit::initJetEnergyCorrectors()
+//------------------------------------------------------------------------------ 
+//   Jet Energy correction
+//------------------------------------------------------------------------------
+static vector<JetCorrectorParameters> vPar;
+static vector<JetCorrectorParameters> vParAK8;
+static JetCorrectorParameters*    L3JetPar_;
+static JetCorrectorParameters*    L2JetPar_;
+static JetCorrectorParameters*    L1JetPar_;
+static JetCorrectorParameters*    L3JetParAK8_;
+static JetCorrectorParameters*    L2JetParAK8_;
+static JetCorrectorParameters*    L1JetParAK8_;
+
+void bprimeKit::InitJetEnergyCorrectors()
 {
-   vector<JetCorrectorParameters> vPar;
-   vector<JetCorrectorParameters> vParAK8;
    L3JetPar_    = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L3Absolute_AK8PFchs.txt");
    L2JetPar_    = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L2Relative_AK4PFchs.txt");
    L1JetPar_    = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L1FastJet_AK4PFchs.txt");
    L3JetParAK8_ = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L3Absolute_AK8PFchs.txt");
    L2JetParAK8_ = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L2Relative_AK8PFchs.txt");
    L1JetParAK8_ = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L1FastJet_AK8PFchs.txt");
-   // Load the JetCorrectorParameter objects into a vector,
+   
    // IMPORTANT: THE ORDER MATTERS HERE !!!! 
    vPar.push_back(*L1JetPar_);
    vPar.push_back(*L2JetPar_);
@@ -248,16 +253,16 @@ void bprimeKit::initJetEnergyCorrectors()
    vParAK8.push_back(*L2JetParAK8_);
    vParAK8.push_back(*L3JetParAK8_);
 
-   JetCorrector    = new FactorizedJetCorrector(vPar);
-   JetCorrectorAK8 = new FactorizedJetCorrector(vParAK8);
+   fJetCorrector    = new FactorizedJetCorrector(vPar);
+   fJetCorrectorAK8 = new FactorizedJetCorrector(vParAK8);
 }
 
-void bprimeKit::clearTree()
+void bprimeKit::ClearTree()
 {
-   delete root;
+   delete fBaseTree;
 }
 
-void bprimeKit::clearJetEnergyCorrector()
+void bprimeKit::ClearJetEnergyCorrector()
 {
    delete L3JetPar_;
    delete L2JetPar_;
@@ -265,76 +270,74 @@ void bprimeKit::clearJetEnergyCorrector()
    delete L3JetParAK8_;
    delete L2JetParAK8_;
    delete L1JetParAK8_;
-   delete JetCorrector;
-   delete JetCorrectorAK8;
+   delete fJetCorrector;
+   delete fJetCorrectorAK8;
 }
 
 
 void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   iEvent.getByLabel( rhoLabel_ , _rhoHandle );
-   iEvent.getByLabel( metLabel_,  _metHandle );
-   iEvent.getByLabel( offlineBSLabel_, _beamSpotHandle );
-   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  _metHandle_TempPlus );
-   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  _metHandle_TempDown ); 
-   iEvent.getByLabel( gtdigiLabel_, _gtRecord );
-   iEvent.getByLabel( hltLabel_ , _triggerHandle );
-   iEvent.getByLabel( offlinePVLabel_, _vertexHandle );
-   iEvent.getByLabel( offlinePVBSLabel_ , _bsVertexHandle );
+   iEvent.getByLabel( fRhoLabel , fRho_H );
+   iEvent.getByLabel( fMETLabel,  fMET_H );
+   iEvent.getByLabel( fBeamspotLabel, fBeamSpot_H );
+   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnUp",  fMETTempPlus_H );
+   iEvent.getByLabel( "patType1CorrectedPFMetUnclusteredEnDown",  fMETTempDown_H ); 
+   iEvent.getByLabel( fGenDigiLabel, fRecord_H );
+   iEvent.getByLabel( fHLTLabel , fTrigger_H );
+   iEvent.getByLabel( fPrimaryVertexLabel, fVertex_H );
+   iEvent.getByLabel( fPrimVertex_withBeamSpot_Label , fVertexWithBeamSpot_H );
    
    if( !iEvent.isRealData() ) { 
-      iEvent.getByLabel( puInfoLabel_, _pileupHandle ); 
-      if( !skipGenInfo_ ) { 
-         iEvent.getByLabel( genLabel_, _genHandle ); 
-         iEvent.getByLabel( genevtLabel_, _genInfoHandle );
+      iEvent.getByLabel( fPileupLabel, fPileup_H ); 
+      if( !fSkipfGenInfo ) { 
+         iEvent.getByLabel( fGenParticleLabel, fGenParticle_H ); 
+         iEvent.getByLabel( fGenEventLabel, fGenEvent_H );
       }
    }
    
-   for( unsigned i = 0; i < jetLabel_.size(); ++i ) {
-      _jetHandleList.push_back( JetHandle() );
-      iEvent.getByLabel( jetLabel_[i], _jetHandleList[i] );
-      if( debug_ > 10 ) { cout << "jets " << i << " jetLabel " << jetLabel_[i] << " with " << _jetHandleList[i]->size() << " entries\n"; }
+   for( unsigned i = 0; i < fJetLabels.size(); ++i ) {
+      fJetList_Hs.push_back( JetHandle() );
+      iEvent.getByLabel( fJetLabels[i], fJetList_Hs[i] );
+      if( fDebug > 10 ) { cout << "jets " << i << " jetLabel " << fJetLabels[i] << " with " << fJetList_Hs[i]->size() << " entries\n"; }
    }
 
-   if( debug_ > 10 ) {cout <<"Getting Q taggers" << endl;}
-   iEvent.getByToken( qgLikelihoodToken_ , qgLikelihoodHandle );
-   iEvent.getByToken( qgaxis2Token_      , qgaxis2Handle      );
-   iEvent.getByToken( qgmultToken_       , qgmultHandle       );
-   iEvent.getByToken( qgptDToken_        , qgptDHandle        );
+   if( fDebug > 10 ) {cout <<"Getting Q taggers" << endl;}
+   iEvent.getByToken( fQGLikelihoodToken , fQGLikelihood_H );
+   iEvent.getByToken( fQGAxis2Token      , fQGAxis2_H      );
+   iEvent.getByToken( fQGMultiplicityToken       , fQGMultiplicity_H       );
+   iEvent.getByToken( fQGPtDToken        , fQGPtD_H        );
 
-   for( unsigned i = 0 ; i < muonLabel_.size() ; ++i ){
-      _muonHandleList.push_back( MuonHandle() );
-      _elecHandleList.push_back( ElectronHandle() ) ;
-      _gsfHandleList.push_back( GsfHandle() );
-      _tauHandleList.push_back( TauHandle() );
-      iEvent.getByLabel( muonLabel_[i] , _muonHandleList[i] );
-      iEvent.getByLabel( elecLabel_[i] , _elecHandleList[i] );
-      iEvent.getByLabel( elecLabel_[i] , _gsfHandleList[i] );
-      iEvent.getByLabel( tauLabel_[i] , _tauHandleList[i] );
+   for( unsigned i = 0 ; i < fMuonLabels.size() ; ++i ){
+      fMuonList_Hs.push_back( MuonHandle() );
+      fElectronList_Hs.push_back( ElectronHandle() ) ;
+      fGsfElectronList_Hs.push_back( GsfHandle() );
+      fTauList_Hs.push_back( TauHandle() );
+      iEvent.getByLabel( fMuonLabels[i] , fMuonList_Hs[i] );
+      iEvent.getByLabel( fElectronLabels[i] , fElectronList_Hs[i] );
+      iEvent.getByLabel( fElectronLabels[i] , fGsfElectronList_Hs[i] );
+      iEvent.getByLabel( fTauLabels[i] , fTauList_Hs[i] );
    }
-   iEvent.getByLabel( conversionsInputTag_  , conversions_h       ) ;
-   iEvent.getByToken( eleVetoIdMapToken_    , veto_id_decisions   ) ;
-   iEvent.getByToken( eleLooseIdMapToken_   , loose_id_decisions  ) ;
-   iEvent.getByToken( eleMediumIdMapToken_  , medium_id_decisions ) ;
-   iEvent.getByToken( eleTightIdMapToken_   , tight_id_decisions  ) ;
-   iEvent.getByToken( eleHEEPIdMapToken_    , heep_id_decisions   ) ;
+   iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", fTrackBuilder_H );
+   iEvent.getByLabel( fConversionsTag  , fConversions_H       ) ;
+   iEvent.getByToken( fElectronIDVetoToken    , fElectronIDVeto_H   ) ;
+   iEvent.getByToken( fElectronIDLooseToken   , fElectronIDLoose_H  ) ;
+   iEvent.getByToken( fElectronIDMediumToken  , fElectronIDMedium_H ) ;
+   iEvent.getByToken( fElectronIDTightToken   , fElectronIDTight_H  ) ;
+   iEvent.getByToken( fElectronIDHEEPToken    , fElectronIDHEEP_H   ) ;
 
    
-   for( unsigned il = 0; il < phoLabel_.size(); il++ ) {
-      _photonHandleList.push_back( PhotonHandle() );
-      iEvent.getByLabel( phoLabel_[il], _photonHandleList[il] );
-      if( debug_ > 10 ) { cout << "photons " << il << " phoLabel " << phoLabel_[il] << " with " << _photonHandleList[il]->size() << " entries\n"; }
+   for( unsigned il = 0; il < fPhotonLabels.size(); il++ ) {
+      fPhotonList_Hs.push_back( PhotonHandle() );
+      iEvent.getByLabel( fPhotonLabels[il], fPhotonList_Hs[il] );
+      if( fDebug > 10 ) { cout << "photons " << il << " phoLabel " << fPhotonLabels[il] << " with " << fPhotonList_Hs[il]->size() << " entries\n"; }
    }
-   iEvent.getByToken( phoLooseIdMapToken_             , _photonLooseID           ) ;
-   iEvent.getByToken( phoMediumIdMapToken_            , _photonMediumID          ) ;
-   iEvent.getByToken( phoTightIdMapToken_             , _photonTightID           ) ;
-   iEvent.getByToken( phoChargedIsolationToken_       , phoChargedIsolationMap       ) ;
-   iEvent.getByToken( phoNeutralHadronIsolationToken_ , phoNeutralHadronIsolationMap ) ;
-   iEvent.getByToken( phoPhotonIsolationToken_        , phoPhotonIsolationMap        ) ;
-   iEvent.getByToken( full5x5SigmaIEtaIEtaMapToken_   , full5x5SigmaIEtaIEtaMap      ) ;
+   iEvent.getByToken( fPhotonLooseIDToken             , fPhotonIDLoose           ) ;
+   iEvent.getByToken( fPhotonMediumIDToken            , fPhotonIDMedium          ) ;
+   iEvent.getByToken( fPhotonTightIDToken             , fPhotonIDTight           ) ;
+   iEvent.getByToken( fPhotonIsolation_Charged_Token       , fPhotonIsolation_Charged_H       ) ;
+   iEvent.getByToken( fPhotonIsolation_Neutral_Token , fPhotonIsolation_Neutral_H ) ;
+   iEvent.getByToken( fPhotonIsolation_Photon_Token        , fPhotonIsolation_Photon_H        ) ;
+   iEvent.getByToken( fPhotonSignaIEtaIEtaToken   , fPhotonSigmaIEtaIEta_H      ) ;
 }
 
-
-
 DEFINE_FWK_MODULE( bprimeKit );
-

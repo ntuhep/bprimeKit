@@ -22,35 +22,35 @@
 //------------------------------------------------------------------------------ 
 //   Class method implementation
 //------------------------------------------------------------------------------
-bool bprimeKit::isSelectedMuon( const MuonIterator& mu )
+bool bprimeKit::IsSelectedMuon( const MuonIterator& mu )
 {
    if( mu->pt() < 40. ) { return false; }
-   if( !muon::isTightMuon( *mu ,  PrimVtx ) ) { return false; }
+   if( !muon::isTightMuon( *mu ,  fPrimaryVertex ) ) { return false; }
    return true;
 }
 
 
-bool bprimeKit::passMuonJetClean( JetIterator jet )
+bool bprimeKit::PassMuonJetClean( JetIterator jet )
 {
-   if( debug_ ) { std::cout << "Checking Overlap" << std::endl; }
+   if( fDebug ) { std::cout << "Checking Overlap" << std::endl; }
 
    TLorentzVector jetP4;
    pat::Jet tmpJet = jet->correctedJet( 0 );
    std::vector<reco::CandidatePtr> muDaughters;
    bool hasClean = false ; 
 
-   if ( !_mySelecMuons.empty() && deltaR( _mySelecMuons[0]->p4(), jet->p4() ) < 0.6 ) {
-      if ( debug_ ) {
+   if ( !fMySelectedMuons.empty() && deltaR( fMySelectedMuons[0]->p4(), jet->p4() ) < 0.6 ) {
+      if ( fDebug ) {
          std::cout << "Jet Overlaps with the Muon... Cleaning jet..." << std::endl;
-         std::cout << "Lepton  : pT = " << _mySelecMuons[0]->pt() << " eta = " << _mySelecMuons[0]->eta() << " phi = " << _mySelecMuons[0]->phi() << std::endl;
+         std::cout << "Lepton  : pT = " << fMySelectedMuons[0]->pt() << " eta = " << fMySelectedMuons[0]->eta() << " phi = " << fMySelectedMuons[0]->phi() << std::endl;
          std::cout << "Raw Jet : pT = " << jet->pt() << " eta = " << jet->eta() << " phi = " << jet->phi() << std::endl;
-         std::cout << "Mu origin ref = " << _mySelecMuons[0]->originalObjectRef().key() << std::endl; 
+         std::cout << "Mu origin ref = " << fMySelectedMuons[0]->originalObjectRef().key() << std::endl; 
       }
-      for ( unsigned int isrc = 0; isrc < _mySelecMuons[0]->numberOfSourceCandidatePtrs(); ++isrc ) {
-         if ( _mySelecMuons[0]->sourceCandidatePtr( isrc ).isAvailable() ) {
-            muDaughters.push_back( _mySelecMuons[0]->sourceCandidatePtr( isrc ) );
-            if ( debug_ ) { 
-               std::cout << "Mu daughter ref = " << _mySelecMuons[0]->sourceCandidatePtr( isrc ).key() << std::endl; 
+      for ( unsigned int isrc = 0; isrc < fMySelectedMuons[0]->numberOfSourceCandidatePtrs(); ++isrc ) {
+         if ( fMySelectedMuons[0]->sourceCandidatePtr( isrc ).isAvailable() ) {
+            muDaughters.push_back( fMySelectedMuons[0]->sourceCandidatePtr( isrc ) );
+            if ( fDebug ) { 
+               std::cout << "Mu daughter ref = " << fMySelectedMuons[0]->sourceCandidatePtr( isrc ).key() << std::endl; 
             }
          }
       }
@@ -60,13 +60,13 @@ bool bprimeKit::passMuonJetClean( JetIterator jet )
    const std::vector<edm::Ptr<reco::Candidate>> jet_contitutes = jet->daughterPtrVector();
    for ( unsigned int muI = 0; muI < muDaughters.size(); muI++ ) {
       for ( const auto& jet_const : jet_contitutes  ) {
-         if ( debug_ ) { std::cout << "Jet constituent ref = " << jet_const.key() << std::endl; }
+         if ( fDebug ) { std::cout << "Jet constituent ref = " << jet_const.key() << std::endl; }
          if ( jet_const.key() == muDaughters[muI].key() ) {
             tmpJet.setP4( tmpJet.p4() - muDaughters[muI]->p4() );
             muDaughters.erase( muDaughters.begin() + muI );
-            jetP4 = correctJet( tmpJet , false );
+            jetP4 = bprimeKit::CorrectJet( tmpJet , false );
             hasClean = true; 
-            if ( debug_ ) { 
+            if ( fDebug ) { 
                printf("  Cleaned Jet: pT=%f eta=%f phi=%f\n", tmpJet.pt(), tmpJet.eta(), tmpJet.phi() );
                printf("Clean Raw Jet: pT=%f eta=%f phi-%f\n", tmpJet.correctedJet(0).pt(), tmpJet.correctedJet(0).eta(), tmpJet.correctedJet(0).phi() );
                printf("Corrected Jet: pt=%f eta=%f phi=%f\n", jetP4.Pt(),  jetP4.Eta(), jetP4.Phi() ) ; 
@@ -76,17 +76,17 @@ bool bprimeKit::passMuonJetClean( JetIterator jet )
    }
 
    //Applying addition correction if not already 
-   if( !hasClean ){ jetP4 = correctJet( *jet ); }
+   if( !hasClean ){ jetP4 = bprimeKit::CorrectJet( *jet ); }
 
    // Selection after cleaning has been applied 
    if( jetP4.Pt()  < 15.  ) { return false; }
    if( jetP4.Eta() >  4.7 ) { return false; }
-   if( debug_ ) {
+   if( fDebug ) {
       std::cout << "Passed!" << std::endl;}
    return true;
 }
 
-TLorentzVector bprimeKit::correctJet( const pat::Jet& jet , bool doAK8Corr )
+TLorentzVector bprimeKit::CorrectJet( const pat::Jet& jet , bool doAK8Corr )
 {
    pat::Jet correctedJet = jet.correctedJet(0);                 //copy original jet
 
@@ -94,31 +94,31 @@ TLorentzVector bprimeKit::correctJet( const pat::Jet& jet , bool doAK8Corr )
    double unc = 1.0;
    double pt = correctedJet.pt();
    double correction = 1.0;
-   double rho = std::max( (double)EvtInfo.Rho , 0.0);
+   double rho = std::max( (double)fEvtInfo.Rho , 0.0);
 
-   if ( ! isData ){ 
+   if ( ! fIsData ){ 
       double pt_raw = jet.correctedJet(0).pt();
       if (doAK8Corr){
-         JetCorrectorAK8->setJetEta(jet.eta());
-         JetCorrectorAK8->setJetPt(pt_raw);
-         JetCorrectorAK8->setJetA(jet.jetArea());
-         JetCorrectorAK8->setRho(rho); 
+         fJetCorrectorAK8->setJetEta(jet.eta());
+         fJetCorrectorAK8->setJetPt(pt_raw);
+         fJetCorrectorAK8->setJetA(jet.jetArea());
+         fJetCorrectorAK8->setRho(rho); 
 
          try{
-            correction = JetCorrectorAK8->getCorrection();
+            correction = fJetCorrectorAK8->getCorrection();
          } catch(...){
             std::cout << "WARNING! Exception thrown by JetCorrectionUncertainty!" << std::endl;
             std::cout << "WARNING! Possibly, trying to correct a jet/MET outside correction range." << std::endl;
             std::cout << "WARNING! Jet/MET will remain uncorrected." << std::endl;
          }
       } else {
-         JetCorrector->setJetEta(jet.eta());
-         JetCorrector->setJetPt(pt_raw);
-         JetCorrector->setJetA(jet.jetArea());
-         JetCorrector->setRho(rho); 
+         fJetCorrector->setJetEta(jet.eta());
+         fJetCorrector->setJetPt(pt_raw);
+         fJetCorrector->setJetA(jet.jetArea());
+         fJetCorrector->setRho(rho); 
 
          try{
-            correction = JetCorrector->getCorrection();
+            correction = fJetCorrector->getCorrection();
          } catch(...){
             std::cout << "WARNING! Exception thrown by JetCorrectionUncertainty!" << std::endl;
             std::cout << "WARNING! Possibly, trying to correct a jet/MET outside correction range." << std::endl;
@@ -153,12 +153,12 @@ TLorentzVector bprimeKit::correctJet( const pat::Jet& jet , bool doAK8Corr )
       }
 
       if ( 0 ){ //|| mbPar["JECup"] || mbPar["JECdown"]) {
-         jecUnc_->setJetEta(jet.eta());
-         jecUnc_->setJetPt(pt*ptscale);
+         fJetCorrectionUncertainty->setJetEta(jet.eta());
+         fJetCorrectionUncertainty->setJetPt(pt*ptscale);
 
          if ( 1 ) { //|| mbPar["JECup"]) { 
             try{
-               unc = jecUnc_->getUncertainty(true);
+               unc = fJetCorrectionUncertainty->getUncertainty(true);
             } catch(...){ // catch all exceptions. Jet Uncertainty tool throws when binning out of range
                std::cout  << "WARNING! Exception thrown by JetCorrectionUncertainty!" << std::endl;
                std::cout  << "WARNING! Possibly, trying to correct a jet/MET outside correction range." << std::endl;
@@ -168,7 +168,7 @@ TLorentzVector bprimeKit::correctJet( const pat::Jet& jet , bool doAK8Corr )
             unc = 1 + unc; 
          } else { 
             try{
-               unc = jecUnc_->getUncertainty(false);
+               unc = fJetCorrectionUncertainty->getUncertainty(false);
             }
             catch(...){
                std::cout  << "WARNING! Exception thrown by JetCorrectionUncertainty!" << std::endl;
@@ -190,13 +190,13 @@ TLorentzVector bprimeKit::correctJet( const pat::Jet& jet , bool doAK8Corr )
          // We need to undo the default corrections and then apply the new ones
 
          double pt_raw = jet.correctedJet(0).pt();
-         JetCorrector->setJetEta(jet.eta());
-         JetCorrector->setJetPt(pt_raw);
-         JetCorrector->setJetA(jet.jetArea());
-         JetCorrector->setRho(rho); 
+         fJetCorrector->setJetEta(jet.eta());
+         fJetCorrector->setJetPt(pt_raw);
+         fJetCorrector->setJetA(jet.jetArea());
+         fJetCorrector->setRho(rho); 
 
          try{
-            correction = JetCorrector->getCorrection();
+            correction = fJetCorrector->getCorrection();
          }
          catch(...){
             std::cout  << "WARNING! Exception thrown by JetCorrectionUncertainty!" << std::endl;
