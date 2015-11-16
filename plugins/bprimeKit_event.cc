@@ -73,7 +73,7 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if ( mclep_count[0] == 2 && mclep_count[1] == 2 ) { fEvtInfo.McSigTag = 4; }
 
    //----- Getting missing momentum information  ------------------------------------------------------
-   if( fDebug > 5 ) { cout << ">>>Evt: Get missing momentum."<< endl; }
+   if( fDebug > 1 ) { cout << "\t[1]Evt: Get missing momentum."<< endl; }
    for( auto it_met = fMET_H->begin(); it_met != fMET_H->end(); it_met++ ) {
       fEvtInfo.PFMET              = it_met->pt()             ;
       fEvtInfo.PFMETPhi           = it_met->phi()            ;

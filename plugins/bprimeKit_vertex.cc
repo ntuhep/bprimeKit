@@ -16,7 +16,7 @@ bool bprimeKit::FillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
    bool   gotfPrimaryVertex;
    double PVBS_Pt_Max;
       
-   if( fDebug > 5 ) { cout << "Fill Vertex Info.\n"; }
+   if( fDebug > 1 ) { cout << "\t[1]Fill Vertex Info.\n"; }
    memset( &fVertexInfo, 0x00, sizeof( fVertexInfo ) );
    
    //----- Vertices without beamspot constraints  -----------------------------------------------------

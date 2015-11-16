@@ -38,19 +38,22 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
    for( unsigned icoll = 0; icoll < fJetCollections.size(); icoll++ ) { //loop over collections
       if( icoll >= MAX_JETCOLLECTIONS ) { cerr << "To many jets!!"; break; }
       if( fJetList_Hs.size() <= icoll ) {  cerr << "Size to large!"; continue ; }
-      if( fDebug > 10 ) { cout << "Fill jet info, collection " << icoll << " with name " << fJetCollections[icoll] << endl; }
+      if( fDebug > 1 ) { 
+         std::cerr << "\t[1]Fill jet  collection " << icoll 
+            << " with name " << fJetCollections[icoll] << std::endl; 
+      }
 
       memset( &fJetInfo[icoll], 0x00, sizeof( fJetInfo[icoll] ) );
 
-      pfjetcoll   = ( fJetCollections[icoll] == "fJetInfo" ) ;
+      pfjetcoll   = ( fJetCollections[icoll] == "JetInfo" ) ;
       calojetcoll = ( false ) ;
       CAjetcoll   = ( false ) ;
 
-      if( fJetCollections[icoll] =="AK8BosonfJetInfo" ) {
+      if( fJetCollections[icoll] =="AK8BosonJetInfo" ) {
          fatjetcoll = true;
          subjetName = "SoftDrop";
       }
-      else if( fJetCollections[icoll] == "CA8TopfJetInfo" ) {
+      else if( fJetCollections[icoll] == "CA8TopJetInfo" ) {
          fatjetcoll = true;
          subjetName = "CMSTopTag";
       }else{
@@ -78,7 +81,11 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          }
          if ( it_jet->pt() <= 15. ) { continue; } // IMPORTANT: Only book jet with pt>15 GeV.
          if( fRunMuonJetCleaning && !PassMuonJetClean( it_jet ) ) { continue; }
-         if( fDebug > 11 ) { cout << "  Size " << fJetInfo[icoll].Size << " jet pt,eta,phi " << it_jet->pt() << "," << it_jet->eta() << "," << it_jet->phi() << endl; }
+         if( fDebug > 2 ) { 
+            std::cerr << "\t\t[2]Jet: Size " << fJetInfo[icoll].Size 
+                      << " jet pt,eta,phi " << it_jet->pt() << "," 
+                      << it_jet->eta() << "," << it_jet->phi() << endl; 
+         }
 
          //----- Generic Jet Information  -------------------------------------------------------------------
          fJetInfo[icoll].Index         [fJetInfo[icoll].Size] = fJetInfo[icoll].Size               ;
@@ -97,8 +104,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          fJetInfo[icoll].Area          [fJetInfo[icoll].Size] = it_jet->jetArea()                 ;
   
          //----- QG Tagger information  ---------------------------------------------------------------------
-         // Official documentation is updating
-         if( fDebug > 10 ) { cout << ">>Jet>> Getting QGTags ..." << endl ;}
+         if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting QGTags ..." << endl ;}
          if( pfjetcoll  ) {
             edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( fJetList_Hs[icoll] , it_jet - fJetList_Hs[icoll]->begin() ));
             fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = (*fQGLikelihood_H)[jetRef];
@@ -108,7 +114,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          }
          
          //----- Jet Uncertainty  ---------------------------------------------------------------------------
-         if( fDebug > 10 ) { cout << ">>Jet>> Getting Uncertainty..." << endl ;}
+         if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet Getting Uncertainty..." << endl ;}
          fJetCorrectionUncertainty->setJetEta( it_jet->eta() );
          fJetCorrectionUncertainty->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
          if( fabs( it_jet->eta() ) <= 5.0 ) { 
@@ -118,7 +124,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
          //----- Particle flow information  -----------------------------------------------------------------
          if( pfjetcoll ) {
-            if( fDebug > 10 ) { cout << ">>Jet>> Getting Particle flow information ..." << endl ;}
+            if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Particle flow information ..." << endl ;}
             fJetInfo[icoll].NCH[fJetInfo[icoll].Size] = it_jet->chargedMultiplicity();
             fJetInfo[icoll].CEF[fJetInfo[icoll].Size] = it_jet->chargedEmEnergyFraction();
             fJetInfo[icoll].NHF[fJetInfo[icoll].Size] = it_jet->neutralHadronEnergyFraction();
@@ -128,7 +134,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
          //----- Jet Substructure  --------------------------------------------------------------------------
          if( fatjetcoll ) {
-            if( fDebug > 10 ) { cout << ">>Jet>> Getting Subjet information ..." << endl ;}
+            if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Subjet information ..." << endl ;}
 
             fJetInfo[icoll].NjettinessAK8tau1        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau1"       ) ;
             fJetInfo[icoll].NjettinessAK8tau2        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau2"       ) ;
@@ -165,7 +171,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          }
 
          //----- Jet ID string insertions  ------------------------------------------------------------------
-         if( fDebug > 10 ) { cout << ">>Jet>> Getting IDs ..." << endl ;}
+         if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting IDs ..." << endl ;}
          jetID = true;
          PS_Jets = new edm::ParameterSet ; 
          if( pfjetcoll == true ) {
@@ -189,45 +195,9 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          delete PS_Jets;
          fJetInfo[icoll].JetIDLOOSE[fJetInfo[icoll].Size] = ( jetID ) ?  1 : 0;
 
-         //----------------------------  Jet- track association  -----------------------------
-         //Turned off by Enoch Chen 2015-07-06, Fatal Error: PFJet constituent is not of PFCandidate type
-         //tracks_x     = 0.;
-         //tracks_y     = 0.;
-         //tracks_x_tot = 0.;
-         //tracks_y_tot = 0.;
-         //if( pfjetcoll ) { //pf jets
-         //   for ( unsigned i = 0;  i <  it_jet->numberOfDaughters (); i++ ) {
-         //      const reco::PFCandidatePtr pfcand = it_jet->getPFConstituent( i );
-         //      reco::TrackRef trackref = pfcand->trackRef();
-         //      if( trackref.isNonnull() ) {
-         //         tracks_x_tot += ( trackref )->px();
-         //         tracks_y_tot += ( trackref )->py();
-         //         if ( fabs( ( trackref )->vz() - Signal_Vz ) < 0.1 ) {
-         //            tracks_x += ( trackref )->px();
-         //            tracks_y += ( trackref )->py();
-         //         }
-         //      }
-         //   }
-         //} else { //calo jets
-         //   const reco::TrackRefVector& TrackCol = it_jet->associatedTracks();
-         //   for ( reco::TrackRefVector::const_iterator it = TrackCol.begin(); it != TrackCol.end (); it++ ) {
-         //      tracks_x_tot += ( *it )->px();
-         //      tracks_y_tot += ( *it )->py();
-         //      if ( fabs( ( *it )->vz() - Signal_Vz ) < 0.1 ) {
-         //         tracks_x += ( *it )->px();
-         //         tracks_y += ( *it )->py();
-         //      }
-         //   }
-         //}
-         //fJetInfo[icoll].JVAlpha[fJetInfo[icoll].Size] = sqrt( tracks_x * tracks_x + tracks_y * tracks_y ) / it_jet->pt();
-         //if ( tracks_x_tot != 0. || tracks_y_tot != 0. ) {
-         //   fJetInfo[icoll].JVBeta[fJetInfo[icoll].Size] = sqrt( tracks_x * tracks_x + tracks_y * tracks_y ) / sqrt( tracks_x_tot * tracks_x_tot + tracks_y_tot * tracks_y_tot );
-         //} else {
-         //   fJetInfo[icoll].JVBeta[fJetInfo[icoll].Size] = -1.;
-         //}
          
          //----- Jet Correction Information  ----------------------------------------------------------------
-         if( fDebug > 10 ) { cout << ">>Jet>> Getting b tags  ..." << endl ;}
+         if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting b tags  ..." << endl ;}
          fJetInfo[icoll].PtCorrRaw   [fJetInfo[icoll].Size] = it_jet->correctedJet( "Uncorrected"       ).pt();
          fJetInfo[icoll].PtCorrL2    [fJetInfo[icoll].Size] = it_jet->correctedJet( "L2Relative"        ).pt(); // L2(rel)
          fJetInfo[icoll].PtCorrL3    [fJetInfo[icoll].Size] = it_jet->correctedJet( "L3Absolute"        ).pt(); // L3(abs)
@@ -252,7 +222,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          fJetInfo[icoll].pfCombinedMVABJetTags                       [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedMVABJetTags"                       );
 
          //----- Generation MC Data  ------------------------------------------------------------------------
-         if( fDebug > 10 ) { cout << ">>Jet>> Getting MC data set ..." << endl ;} 
+         if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting MC data set ..." << endl ;} 
          if ( !fIsData && !fSkipfGenInfo ) {
             const reco::GenJet* genjet = it_jet->genJet();
             if ( genjet != NULL ) {
@@ -278,3 +248,42 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
    }
    return true;
 }
+
+
+//----------------------------  Jet- track association  -----------------------------
+//Turned off by Enoch Chen 2015-07-06, Fatal Error: PFJet constituent is not of PFCandidate type
+//tracks_x     = 0.;
+//tracks_y     = 0.;
+//tracks_x_tot = 0.;
+//tracks_y_tot = 0.;
+//if( pfjetcoll ) { //pf jets
+//   for ( unsigned i = 0;  i <  it_jet->numberOfDaughters (); i++ ) {
+//      const reco::PFCandidatePtr pfcand = it_jet->getPFConstituent( i );
+//      reco::TrackRef trackref = pfcand->trackRef();
+//      if( trackref.isNonnull() ) {
+//         tracks_x_tot += ( trackref )->px();
+//         tracks_y_tot += ( trackref )->py();
+//         if ( fabs( ( trackref )->vz() - Signal_Vz ) < 0.1 ) {
+//            tracks_x += ( trackref )->px();
+//            tracks_y += ( trackref )->py();
+//         }
+//      }
+//   }
+//} else { //calo jets
+//   const reco::TrackRefVector& TrackCol = it_jet->associatedTracks();
+//   for ( reco::TrackRefVector::const_iterator it = TrackCol.begin(); it != TrackCol.end (); it++ ) {
+//      tracks_x_tot += ( *it )->px();
+//      tracks_y_tot += ( *it )->py();
+//      if ( fabs( ( *it )->vz() - Signal_Vz ) < 0.1 ) {
+//         tracks_x += ( *it )->px();
+//         tracks_y += ( *it )->py();
+//      }
+//   }
+//}
+//fJetInfo[icoll].JVAlpha[fJetInfo[icoll].Size] = sqrt( tracks_x * tracks_x + tracks_y * tracks_y ) / it_jet->pt();
+//if ( tracks_x_tot != 0. || tracks_y_tot != 0. ) {
+//   fJetInfo[icoll].JVBeta[fJetInfo[icoll].Size] = sqrt( tracks_x * tracks_x + tracks_y * tracks_y ) / sqrt( tracks_x_tot * tracks_x_tot + tracks_y_tot * tracks_y_tot );
+//} else {
+//   fJetInfo[icoll].JVBeta[fJetInfo[icoll].Size] = -1.;
+//}
+

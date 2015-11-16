@@ -20,7 +20,10 @@ bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
          break;
       }
       if( it_tau->pt() < 20 ) { continue; } //Require PT > 20 GeV
-      if( fDebug > 11 ) { cout << "  Size " << fLepInfo[icoll].Size << " tau pt,eta,phi " << it_tau->pt() << "," << it_tau->eta() << "," << it_tau->phi() << endl; }
+      if( fDebug > 2 ) { 
+         std::cerr << "\t\t[2]Size " << fLepInfo[icoll].Size 
+                   << " tau pt,eta,phi " << it_tau->pt() << "," << it_tau->eta() << "," << it_tau->phi() << endl; 
+      }
       
       //----- Inserting generic information  -------------------------------------------------------------
       fLepInfo[icoll].Index            [fLepInfo[icoll].Size] = fLepInfo[icoll].Size        ;
@@ -63,11 +66,9 @@ bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       fLepInfo[icoll].AgainstElectronLooseMVA5                    [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronLooseMVA5" ) ;
       fLepInfo[icoll].AgainstElectronMediumMVA5                   [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronMediumMVA5" ) ;
 
-      //------------------------------  Tau ID information  -------------------------------
-
       //----------------------------  Generation information  -----------------------------
       if ( !fIsData && !fSkipfGenInfo ) {                                       
-         if( fDebug > 15 ) { cout << "   Getting MC information\n"; }         
+         if( fDebug > 3 ) { cout << "\t\t\t[3]Getting Tau MC information\n"; }         
          const reco::Candidate* gen = it_tau->genLepton();                    
          if ( gen != NULL ) {                                                 
             fLepInfo[icoll].GenPt        [fLepInfo[icoll].Size] = gen->pt();    

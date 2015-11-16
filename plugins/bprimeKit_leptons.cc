@@ -21,7 +21,10 @@ bool bprimeKit::FillLepton( const edm::Event& iEvent , const edm::EventSetup& iS
 {
    for( size_t icoll = 0; icoll < fLeptonCollections.size(); icoll++ ) { 
       if( icoll >= MAX_LEPCOLLECTIONS ) { break; }
-      if( fDebug > 5 ) { cout << "Fill lepton info, collection " << icoll << " with name " << fLeptonCollections[icoll] << endl; }
+      if( fDebug > 1 ) { 
+         std::cerr << "\t[1] Fill lepton info, collection " << icoll 
+                   << " with name " << fLeptonCollections[icoll] << std::endl; 
+      }
       memset( &fLepInfo[icoll], 0x00, sizeof( fLepInfo[icoll] ) ); 
       FillMuon( iEvent , iSetup , icoll ) ; 
       FillElectron( iEvent, iSetup , icoll ) ;

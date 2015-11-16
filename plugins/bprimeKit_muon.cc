@@ -20,8 +20,8 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
    MuonEffectiveArea::MuonEffectiveAreaTarget EATarget = MuonEffectiveArea::kMuEAFall11MC;
    if( fIsData ) { EATarget = MuonEffectiveArea::kMuEAData2012; }
 
-   if( fDebug > 10 ) { 
-      cout << " Muon collection size " << fMuonList_Hs[icoll]->size() << endl;  }
+   if( fDebug > 1 ) { 
+      cout << "\t[1]Muon collection size " << fMuonList_Hs[icoll]->size() << endl;  }
 
    fMySelectedMuons.clear();
    for( MuonIterator it_mu = fMuonList_Hs[icoll]->begin(); it_mu != fMuonList_Hs[icoll]->end(); ++it_mu ) {
@@ -29,8 +29,8 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;
       }
-      if( fDebug > 11 ) { 
-         cout << "  Size " << fLepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl; }
+      if( fDebug > 2 ) { 
+         cout << "\t\t[2] Size " << fLepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl; }
       
       fLepInfo[icoll].Index                     [fLepInfo[icoll].Size] = fLepInfo[icoll].Size              ;
       fLepInfo[icoll].LeptonType                [fLepInfo[icoll].Size] = 13                               ;

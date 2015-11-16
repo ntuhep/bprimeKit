@@ -14,7 +14,7 @@
 //------------------------------------------------------------------------------ 
 bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   if( fDebug > 0 ) { cout << "Entering photon sub-sequence" << endl; }
+   if( fDebug > 1 ) { cout << "\t[1]Entering photon sub-sequence" << endl; }
    PhotonIterator    it_pho ;
    
    for( unsigned icoll = 0; icoll < fPhotonCollections.size(); icoll++ ) {
@@ -22,13 +22,13 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
       if( fPhotonList_Hs.size() <= icoll   ) { continue ; }
 
       memset( &fPhotonInfo[icoll], 0x00, sizeof( fPhotonInfo[icoll] ) );
-      if( fDebug > 0 ) { 
-         cout << "Fill photon info, collection " << icoll << " with name " << fPhotonCollections[icoll] << endl
+      if( fDebug > 2 ) { 
+         cout << "\t\t[2]Fill photon info, collection " << icoll << " with name " << fPhotonCollections[icoll] << endl
               << " Photon collection size " << fPhotonList_Hs[icoll]->size() << endl; }
 
       for( PhotonIterator it_pho = fPhotonList_Hs[icoll]->begin(); it_pho != fPhotonList_Hs[icoll]->end(); it_pho++ ) {
-         if( fDebug > 1 ) { 
-            cout << "  Size " << fPhotonInfo[icoll].Size << " photon pt,eta,phi " 
+         if( fDebug > 2 ) { 
+            cout << "\t\t[2]Size " << fPhotonInfo[icoll].Size << " photon pt,eta,phi " 
                << it_pho->pt()  << "," << it_pho->eta() << "," << it_pho->phi() << endl; 
          }
          if ( fPhotonInfo[icoll].Size >= MAX_PHOTONS ) {
@@ -81,7 +81,7 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
 
          //----- Generation MC information  ---------------------------------------------
          if ( !fIsData && !fSkipfGenInfo ) {
-            if( fDebug > 15 ) { cout << ">>> Photon >>> Getting MC information" << endl ; }
+            if( fDebug > 3 ) { cout << "\t\t\t[3]Getting Photon MC information" << endl ; }
             const reco::Candidate* gen = it_pho->genPhoton();
             if ( gen != NULL ) {
                fPhotonInfo[icoll].GenPt        [fPhotonInfo[icoll].Size] = gen->pt();

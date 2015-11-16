@@ -28,7 +28,7 @@ bool bprimeKit::FillLepPair( const edm::Event& iEvent , const edm::EventSetup& i
    const reco::GenParticle* par1;
    const reco::GenParticle* par2;
 
-   if( fDebug > 5 ) { cout << "\tFill Pair Info."; }
+   if( fDebug > 1 ) { std::cerr << "\t[1]Fill Pair Info." << std::endl; }
    memset( &fPairInfo, 0x00, sizeof( fPairInfo ) );
 
    if( fPairCollectionType >= ( int )fLeptonCollections.size() ) { fPairCollectionType = 0; } //set to something that should be valid
