@@ -165,7 +165,7 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
       }
       
       if( IsSelectedMuon(it_mu) ){
-         fMySelectedMuons.push_back( &*it_mu ); }
+         fMySelectedMuons.push_back( fMuonList_Hs[icoll]->ptrAt(fLepInfo[icoll].Size) ); }
 
       fLepInfo[icoll].CandRef [fLepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_mu );
       fLepInfo[icoll].Size++;

@@ -155,6 +155,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    FillLepton( iEvent , iSetup ) ;
    FillPhoton( iEvent , iSetup );
    FillJet( iEvent , iSetup ) ;
+   
    if( fPairCollectionType >= 0 ) { FillLepPair( iEvent , iSetup ) ; } 
 #ifdef Fill_DIJET_PAIRS
    FillJetPair( iEvent, iSetup ) ;

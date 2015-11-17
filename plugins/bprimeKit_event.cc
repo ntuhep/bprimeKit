@@ -155,7 +155,7 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       if ( ! dWord.empty() ) { // if board not there this is zero
          // loop over dec. bit to get total rate (no overlap)
          for ( int i = 0; i < 128; ++i ) {
-            if(dWord[i]!=0 && fDebug > 2  ){ cout <<"\t\t[2] Dword: "<< i << " " << dWord[i] << ": ";}
+            if(dWord[i]!=0 && fDebug > 3  ){ cout <<"\t\t\t[3] Dword: "<< i << " " << dWord[i] << endl;}
             fEvtInfo.L1[i] = dWord[i];
          }
       }

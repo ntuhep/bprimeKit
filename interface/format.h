@@ -770,20 +770,25 @@ Float_t Mass                    [MAX_JETS] ;
 Float_t Area                    [MAX_JETS] ;
 Int_t   JetIDLOOSE              [MAX_JETS] ; //Add by Chiyi
 Float_t JetCharge               [MAX_JETS] ;
+Int_t   NConstituents           [MAX_JETS] ;
+//----- Lepton cleaned variables  ----------------------------------------------
+Float_t PtCleaned               [MAX_JETS] ;
+Float_t EtaCleaned              [MAX_JETS] ;
+Float_t PhiCleaned              [MAX_JETS] ;
+Float_t EnergyCleaned           [MAX_JETS] ;
+Float_t UncCleaned              [MAX_JETS] ;
+
 //----- QG tagger variables  -----------------------------------------------------------------------
 Float_t QGTagsLikelihood        [MAX_JETS] ;
 Float_t QGTagsAxis2             [MAX_JETS] ;
 Float_t QGTagsMult              [MAX_JETS] ;
 Float_t QGTagsPtD               [MAX_JETS] ; 
-Int_t   NConstituents           [MAX_JETS] ;
 
 Int_t   NCH                     [MAX_JETS] ;
 Float_t CEF                     [MAX_JETS] ;
 Float_t NHF                     [MAX_JETS] ;
 Float_t NEF                     [MAX_JETS] ;
 Float_t CHF                     [MAX_JETS] ;
-Float_t JVAlpha                 [MAX_JETS] ;
-Float_t JVBeta                  [MAX_JETS] ;
 
 //----- Jet Corrections information  ---------------------------------------------------------------
 Float_t PtCorrRaw                                    [MAX_JETS] ;
@@ -793,6 +798,7 @@ Float_t PtCorrL7g                                    [MAX_JETS] ;
 Float_t PtCorrL7uds                                  [MAX_JETS] ;
 Float_t PtCorrL7c                                    [MAX_JETS] ;
 Float_t PtCorrL7b                                    [MAX_JETS] ;
+
 //----- Btags  -------------------------------------------------------------------------------------
 Float_t combinedSecondaryVertexBJetTags              [MAX_JETS] ;
 Float_t pfJetBProbabilityBJetTags                    [MAX_JETS] ;
@@ -818,20 +824,20 @@ Int_t   GenFlavor               [MAX_JETS] ;
 Int_t   GenHadronFlavor         [MAX_JETS] ;
 Int_t   GenMCTag                [MAX_JETS] ; // 0: unknown, 1: decay from W, 2: decay from Z, (+10) from b', (+20) from t'
 
-//----- SubjetInformation  -------------------------------------------------------------------------
-Int_t NSubjets                    [MAX_JETS] ;
-Int_t SubjetsIdxStart             [MAX_JETS] ;
-Float_t NjettinessAK8tau1         [MAX_JETS] ;
-Float_t NjettinessAK8tau2         [MAX_JETS] ;
-Float_t NjettinessAK8tau3         [MAX_JETS] ;
-Float_t ak8PFJetsCHSSoftDropMass  [MAX_JETS] ;
-Float_t  ak8PFJetsCHSPrunedMass   [MAX_JETS] ;
-Float_t  ak8PFJetsCHSTrimmedMass  [MAX_JETS] ;
-Float_t  ak8PFJetsCHSFilteredMass [MAX_JETS] ;
+//----- Sub-jet Information  -------------------------------------------------------------------------
+Int_t   NSubjets                 [MAX_JETS] ;
+Int_t   SubjetsIdxStart          [MAX_JETS] ;
+Float_t NjettinessAK8tau1        [MAX_JETS] ;
+Float_t NjettinessAK8tau2        [MAX_JETS] ;
+Float_t NjettinessAK8tau3        [MAX_JETS] ;
+Float_t ak8PFJetsCHSSoftDropMass [MAX_JETS] ;
+Float_t ak8PFJetsCHSPrunedMass   [MAX_JETS] ;
+Float_t ak8PFJetsCHSTrimmedMass  [MAX_JETS] ;
+Float_t ak8PFJetsCHSFilteredMass [MAX_JETS] ;
 Float_t topJetMass [MAX_JETS];
 Float_t ca8TopMass [MAX_JETS];
 Float_t ca8MinMass [MAX_JETS];
-//----- Vector poInt_ter types used for reading  -----------------------------------------------------
+//----- Vector pointer types used for reading  -----------------------------------------------------
 std::vector<Float_t>* SubjetMass                ;
 std::vector<Float_t>* SubjetPt                  ;
 std::vector<Float_t>* SubjetEt                  ;
@@ -870,18 +876,21 @@ root->Branch((name+".Mass").c_str(),Mass,(name+".Mass["+name+".Size]/F").c_str()
 root->Branch((name+".Area").c_str(),Area,(name+".Area["+name+".Size]/F").c_str());
 root->Branch((name+".JetIDLOOSE").c_str(),JetIDLOOSE,(name+".JetIDLOOSE["+name+".Size]/I").c_str());
 root->Branch((name+".JetCharge").c_str(),JetCharge,(name+".JetCharge["+name+".Size]/F").c_str());
+root->Branch((name+".NConstituents").c_str(),NConstituents,(name+".NConstituents["+name+".Size]/I").c_str());
+root->Branch((name+".PtCleaned").c_str(),PtCleaned,(name+".PtCleaned["+name+".Size]/F").c_str());
+root->Branch((name+".EtaCleaned").c_str(),EtaCleaned,(name+".EtaCleaned["+name+".Size]/F").c_str());
+root->Branch((name+".PhiCleaned").c_str(),PhiCleaned,(name+".PhiCleaned["+name+".Size]/F").c_str());
+root->Branch((name+".EnergyCleaned").c_str(),EnergyCleaned,(name+".EnergyCleaned["+name+".Size]/F").c_str());
+root->Branch((name+".UncCleaned").c_str(),UncCleaned,(name+".UncCleaned["+name+".Size]/F").c_str());
 root->Branch((name+".QGTagsLikelihood").c_str(),QGTagsLikelihood,(name+".QGTagsLikelihood["+name+".Size]/F").c_str());
 root->Branch((name+".QGTagsAxis2").c_str(),QGTagsAxis2,(name+".QGTagsAxis2["+name+".Size]/F").c_str());
 root->Branch((name+".QGTagsMult").c_str(),QGTagsMult,(name+".QGTagsMult["+name+".Size]/F").c_str());
 root->Branch((name+".QGTagsPtD").c_str(),QGTagsPtD,(name+".QGTagsPtD["+name+".Size]/F").c_str());
-root->Branch((name+".NConstituents").c_str(),NConstituents,(name+".NConstituents["+name+".Size]/I").c_str());
 root->Branch((name+".NCH").c_str(),NCH,(name+".NCH["+name+".Size]/I").c_str());
 root->Branch((name+".CEF").c_str(),CEF,(name+".CEF["+name+".Size]/F").c_str());
 root->Branch((name+".NHF").c_str(),NHF,(name+".NHF["+name+".Size]/F").c_str());
 root->Branch((name+".NEF").c_str(),NEF,(name+".NEF["+name+".Size]/F").c_str());
 root->Branch((name+".CHF").c_str(),CHF,(name+".CHF["+name+".Size]/F").c_str());
-root->Branch((name+".JVAlpha").c_str(),JVAlpha,(name+".JVAlpha["+name+".Size]/F").c_str());
-root->Branch((name+".JVBeta").c_str(),JVBeta,(name+".JVBeta["+name+".Size]/F").c_str());
 root->Branch((name+".PtCorrRaw").c_str(),PtCorrRaw,(name+".PtCorrRaw["+name+".Size]/F").c_str());
 root->Branch((name+".PtCorrL2").c_str(),PtCorrL2,(name+".PtCorrL2["+name+".Size]/F").c_str());
 root->Branch((name+".PtCorrL3").c_str(),PtCorrL3,(name+".PtCorrL3["+name+".Size]/F").c_str());
@@ -948,18 +957,21 @@ root->SetBranchAddress( (name+".Mass").c_str() , Mass ) ;
 root->SetBranchAddress( (name+".Area").c_str() , Area ) ;
 root->SetBranchAddress( (name+".JetIDLOOSE").c_str() , JetIDLOOSE ) ;
 root->SetBranchAddress( (name+".JetCharge").c_str() , JetCharge ) ;
+root->SetBranchAddress( (name+".NConstituents").c_str() , NConstituents ) ;
+root->SetBranchAddress( (name+".PtCleaned").c_str() , PtCleaned ) ;
+root->SetBranchAddress( (name+".EtaCleaned").c_str() , EtaCleaned ) ;
+root->SetBranchAddress( (name+".PhiCleaned").c_str() , PhiCleaned ) ;
+root->SetBranchAddress( (name+".EnergyCleaned").c_str() , EnergyCleaned ) ;
+root->SetBranchAddress( (name+".UncCleaned").c_str() , UncCleaned ) ;
 root->SetBranchAddress( (name+".QGTagsLikelihood").c_str() , QGTagsLikelihood ) ;
 root->SetBranchAddress( (name+".QGTagsAxis2").c_str() , QGTagsAxis2 ) ;
 root->SetBranchAddress( (name+".QGTagsMult").c_str() , QGTagsMult ) ;
 root->SetBranchAddress( (name+".QGTagsPtD").c_str() , QGTagsPtD ) ;
-root->SetBranchAddress( (name+".NConstituents").c_str() , NConstituents ) ;
 root->SetBranchAddress( (name+".NCH").c_str() , NCH ) ;
 root->SetBranchAddress( (name+".CEF").c_str() , CEF ) ;
 root->SetBranchAddress( (name+".NHF").c_str() , NHF ) ;
 root->SetBranchAddress( (name+".NEF").c_str() , NEF ) ;
 root->SetBranchAddress( (name+".CHF").c_str() , CHF ) ;
-root->SetBranchAddress( (name+".JVAlpha").c_str() , JVAlpha ) ;
-root->SetBranchAddress( (name+".JVBeta").c_str() , JVBeta ) ;
 root->SetBranchAddress( (name+".PtCorrRaw").c_str() , PtCorrRaw ) ;
 root->SetBranchAddress( (name+".PtCorrL2").c_str() , PtCorrL2 ) ;
 root->SetBranchAddress( (name+".PtCorrL3").c_str() , PtCorrL3 ) ;

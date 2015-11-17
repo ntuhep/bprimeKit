@@ -95,9 +95,8 @@ private:
    bool FillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
 
    //----- Custom algorithms  -----------------------------------------------------
-   bool IsSelectedMuon( const MuonIterator& ); 
-   bool PassMuonJetClean( JetIterator );
-   TLorentzVector CorrectJet(const pat::Jet&,  bool = false);
+   bool IsSelectedMuon( const MuonIterator& );
+   TLorentzVector CleanedJetP4( JetIterator, bool = false );
 
    //-------------------------------------------------------------------------------------------------- 
    //   Private data members
@@ -222,7 +221,7 @@ private:
    HLTConfigProvider                    fHighLevelTriggerConfig;
 
    //----- Helper variables for muon-jet cleaning  --------------------------------
-   std::vector<const pat::Muon*>  fMySelectedMuons          ;
+   std::vector<edm::Ptr<pat::Muon>>  fMySelectedMuons          ;
    FactorizedJetCorrector*        fJetCorrector             ;
    FactorizedJetCorrector*        fJetCorrectorAK8          ;
 	JetCorrectionUncertainty*      fJetCorrectionUncertainty ;
