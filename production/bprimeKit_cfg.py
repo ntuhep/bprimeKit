@@ -486,33 +486,16 @@ elec_medium_id_label = myParser.getElectronIDLabel( "medium" , options.DataProce
 elec_tight_id_label  = myParser.getElectronIDLabel( "tight"  , options.DataProcessing )
 elec_heep_id_label   = myParser.getElectronIDLabel( "heep"   , options.DataProcessing )
 
-pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"
-pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"
-pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"
-
-if options.DataProcessing=="MC50ns" or options.DataProcessing=="MC25ns" :
-    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
-elif "Data50ns" in options.DataProcessing :
-    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
-    pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"
-    pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium"
-    pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight"
-elif "Data25ns" in options.DataProcessing :
-    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
-    pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"
-    pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"
-    pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"
-else:
-    print "Warning! E/G Cut based ID data type not specified, using PHYS14_PU20bx25_V2 as default (may misbehave with data)"
-    my_elid_modules.append( 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff' )
-    my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff' )
-
+my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
+pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"
+pho_medium_id_label  = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium"
+pho_tight_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight"
 
 for idmod in my_elid_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
 for idmod in my_phoid_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 from PhysicsTools.PatAlgos.tools.pfTools import *
 ## Adapt primary vertex collection

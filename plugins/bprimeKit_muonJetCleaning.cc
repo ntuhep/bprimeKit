@@ -43,12 +43,15 @@ TLorentzVector bprimeKit::CleanedJetP4( JetIterator jet , bool isAK4Jet )
    if( fDebug > 3 ) { std::cout << "\t\t\t[3]Checking Overlap" << std::endl; }
    
    for( const auto& muon : fMySelectedMuons ){
+      // Cleaning against muons in a delta R radius of 0.4
       if( deltaR( jet->p4() , muon->p4() ) > 0.4 ) { continue; }
       muonP4.SetPtEtaPhiE( muon->pt(), muon->eta(), muon->phi(), muon->energy() );
 
-      // Cleaning against muons in a delta R radius of 0.4
       for ( const auto& jet_const : jet_contitutes  ) {
-         if( fDebug ) { std::cout << "Jet constituent ref = " << jet_const.key() << std::endl; }  
+         if( fDebug > 3 ) { 
+            std::cout << "\t\t\t[3]Jet constituent ref = " << jet_const.key() << std::endl
+                      << "\t\t\t   Muon ref: " << muon.key() << std::endl;
+         }  
          if ( jet_const.key() == muon.key() ) {
             cleanedJetP4 -= muonP4;
             if ( fDebug > 3 ) { 
