@@ -90,12 +90,21 @@ private:
    bool FillJetPair   ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillfGenInfo   ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillEvent     ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillGenGeneric();
    bool FillfPairInfo  ( const int , const int , math::XYZTLorentzVector& );
    bool FillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
 
+   //----- Gen Info Helper functions  ---------------------------------------------
+   bool FillGenGeneric();
+   bool IsTprime( const int ) const ; // Defined in bprimeKit_utils
+   bool HasTprimeDaughter( const GenIterator& ) const ; 
+   int  PhotonFlag( const GenIterator& ) const ;
+   int  GetGenMCTag( const reco::GenParticle* ) const ;
+   int  GetGenMCTag( GenIterator& , ElectronIterator& ) const ;
+   int  GetGenMCTag( GenIterator& , MuonIterator&     ) const ;
+   int  GenGenMCTag( GenIterator& , JetIterator&      ) const ; 
+
    //----- Custom algorithms  -----------------------------------------------------
-   bool IsSelectedMuon( const MuonIterator& );
+   bool IsSelectedMuon( const MuonIterator& ) const ;
    TLorentzVector CleanedJetP4( JetIterator, bool = false );
 
    //-------------------------------------------------------------------------------------------------- 

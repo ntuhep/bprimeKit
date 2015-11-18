@@ -26,7 +26,7 @@
 //------------------------------------------------------------------------------ 
 //   Class method implementation
 //------------------------------------------------------------------------------
-bool bprimeKit::IsSelectedMuon( const MuonIterator& mu )
+bool bprimeKit::IsSelectedMuon( const MuonIterator& mu ) const
 {
    if( mu->pt() < 40. ) { return false; }
    if( !muon::isTightMuon( *mu ,  fPrimaryVertex ) ) { return false; }

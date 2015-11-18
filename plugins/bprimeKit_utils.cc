@@ -13,13 +13,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 
 //----- MC tag for pat particles  ------------------------------------------------------------------
-int getGenMCTag( const reco::GenParticle* );
 int getGenMCTag( GenIterator& , double , double , double ); //Required by the below
-int getGenMCTag( GenIterator& , ElectronIterator& );
-int getGenMCTag( GenIterator& , MuonIterator& ) ;
-
-//----- MC tag for GenParticles  -------------------------------------------------------------------
-bool isTprime( const int ) ; 
 
 //------------------------------------------------------------------------------ 
 //   MC tag for PAT particles
@@ -28,7 +22,7 @@ static const reco::Candidate* genCand ;
 static int bprimeTag;
 static int returnTag;
 
-int getGenMCTag( const reco::GenParticle* gen )
+int bprimeKit::GetGenMCTag( const reco::GenParticle* gen ) const
 {
    genCand    = gen;
    bprimeTag  = 0;  // 0: not b' or t'; 1: b'; 2:t'
@@ -75,12 +69,12 @@ int getGenMCTag( GenIterator& gen , double pEta , double pPhi , double pPt )
 }
 
 //-------------------  Dummy functions for function overloading  --------------------
-int getGenMCTag( GenIterator& gen , ElectronIterator& el )
+int bprimeKit::GetGenMCTag( GenIterator& gen , ElectronIterator& el ) const 
 {
    return getGenMCTag( gen , el->eta() , el->phi() , el->pt() ) ;
 }
 
-int getGenMCTag( GenIterator& gen , MuonIterator& mu ) 
+int bprimeKit::GetGenMCTag( GenIterator& gen , MuonIterator& mu ) const
 {
    return getGenMCTag( gen , mu->eta() , mu->phi() , mu->pt() ) ; 
 }
@@ -89,7 +83,7 @@ int getGenMCTag( GenIterator& gen , MuonIterator& mu )
 //-------------------------------------------------------------------------------------------------- 
 //   MC tag for GenParticles
 //--------------------------------------------------------------------------------------------------
-bool isTprime( const int pdgid ) 
+bool bprimeKit::IsTprime( const int pdgid ) const
 {
    if( abs(pdgid)== 8 ) return true;
    if( abs(pdgid)== 8000001 ) return true;

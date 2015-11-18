@@ -9,7 +9,6 @@
 //   Libraries
 //------------------------------------------------------------------------------ 
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit_util.h"
 
 //-----------------------  Electron specific CMSSW libraries  -----------------------
 #include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"
@@ -159,13 +158,13 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             fLepInfo[icoll].GenEta       [fLepInfo[icoll].Size] = gen->eta();
             fLepInfo[icoll].GenPhi       [fLepInfo[icoll].Size] = gen->phi();
             fLepInfo[icoll].GenPdgID     [fLepInfo[icoll].Size] = gen->pdgId();
-            fLepInfo[icoll].GenMCTag     [fLepInfo[icoll].Size] = getGenMCTag( gen ) ;
+            fLepInfo[icoll].GenMCTag     [fLepInfo[icoll].Size] = GetGenMCTag( gen ) ;
          }
          if( fDebug > 3 ) { cout << "\t\t\t[3]Get Electron Gen Particle\n"; }
          if ( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] == 0 && fGenParticle_H.isValid() ) {
             for( GenIterator it_gen = fGenParticle_H->begin(); it_gen != fGenParticle_H->end() ; it_gen++ ) {
                if( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] != 0 ) break;
-               fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = getGenMCTag( it_gen , it_el )  ;
+               fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = GetGenMCTag( it_gen , it_el )  ;
             }
          }
          if( fDebug > 3 ) { cout << "\t\t\t[3]Done getting MC information\n"; }

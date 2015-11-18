@@ -5,7 +5,6 @@
  *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit_util.h"
 
 //-------------------------  Muon specific CMSSW libraries  -------------------------
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
@@ -155,13 +154,13 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
             fLepInfo[icoll].GenEta   [fLepInfo[icoll].Size] = gen->eta();
             fLepInfo[icoll].GenPhi   [fLepInfo[icoll].Size] = gen->phi();
             fLepInfo[icoll].GenPdgID [fLepInfo[icoll].Size] = gen->pdgId();
-            fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = getGenMCTag( gen ) ;
+            fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = GetGenMCTag( gen ) ;
          }
       }
       if ( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] == 0 && !fIsData && !fSkipfGenInfo ) {
          for( GenIterator it_gen = fGenParticle_H->begin(); it_gen != fGenParticle_H->end(); it_gen++ ) {
             if( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] != 0 ) { break; }
-            fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = getGenMCTag( it_gen , it_mu )  ; }
+            fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = GetGenMCTag( it_gen , it_mu )  ; }
       }
       
       if( IsSelectedMuon(it_mu) ){

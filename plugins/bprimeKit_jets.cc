@@ -5,8 +5,6 @@
  *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit_util.h"
-#include <typeinfo>
 
 //----- Jet Specific CMSSW packages  ---------------------------------------------------------------
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -238,7 +236,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                fJetInfo[icoll].GenPdgID  [fJetInfo[icoll].Size] = parton->pdgId();
                fJetInfo[icoll].GenFlavor [fJetInfo[icoll].Size] = it_jet->partonFlavour();
                fJetInfo[icoll].GenHadronFlavor[fJetInfo[icoll].Size] = it_jet->hadronFlavour();
-               fJetInfo[icoll].GenMCTag  [fJetInfo[icoll].Size] = getGenMCTag( parton ) ;
+               fJetInfo[icoll].GenMCTag  [fJetInfo[icoll].Size] = GetGenMCTag( parton ) ;
             }
          }
          fJetInfo[icoll].CandRef [fJetInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_jet );

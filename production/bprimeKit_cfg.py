@@ -550,14 +550,12 @@ process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
 
-from bpkFrameWork.bprimeKit.ObjectParameters_cfi import *
 process.bprimeKit = cms.EDAnalyzer(
       "bprimeKit",
       #----- Operation paramters --------------------------------------------------------------------------
       MCtag               = cms.untracked.bool( "Data" not in options.DataProcessing ),
       PairCollection      = cms.untracked.int32(1),
       IncludeL7           = cms.untracked.bool(False),
-      SelectionParameters = defaultObjectParameters.clone(),
       Debug               = cms.untracked.int32( options.Debug ),
       runOnB2G            = cms.untracked.bool( options.b2gPreprocess ),
       runMuonJetClean     = cms.bool( options.RunMuonJetClean ),
@@ -607,22 +605,6 @@ process.bprimeKit = cms.EDAnalyzer(
       #----- Jet Information ------------------------------------------------------------------------------
       jetLabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8' , 'slimmedJetsAK8') ,
       JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
-
-
-      EIDMVAInputTags = cms.vstring(
-            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat1.weights.xml' ,
-            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat2.weights.xml' ,
-            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat3.weights.xml' ,
-            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat4.weights.xml' ,
-            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat5.weights.xml' ,
-            'dataEIDMVA/Electrons_BDTG_NonTrigV0_Cat6.weights.xml' ,
-            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat1.weights.xml'    ,
-            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat2.weights.xml'    ,
-            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat3.weights.xml'    ,
-            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat4.weights.xml'    ,
-            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat5.weights.xml'    ,
-            'dataEIDMVA/Electrons_BDTG_TrigV0_Cat6.weights.xml'
-            ),
       )
 
 if not options.b2gPreprocess:

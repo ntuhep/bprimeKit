@@ -5,13 +5,6 @@
  *
  *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit_util.h"
-
-//-------------------------------------------------------------------------------------------------- 
-//   Helper functions
-//-------------------------------------------------------------------------------------------------- 
-bool hasTprimeDaughter( const GenIterator& ) ; 
-int  photonFlag( const GenIterator& ) ;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
@@ -134,11 +127,11 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
          }
 
          //----- Photon Flag, see definition below  ---------------------------------------------------------
-         fGenInfo.PhotonFlag[fGenInfo.Size] = photonFlag( it_gen ) ;
+         fGenInfo.PhotonFlag[fGenInfo.Size] = PhotonFlag( it_gen ) ;
          ++fGenInfo.Size;
 
          //----- Getting information for ljmet algorithm  ---------------------------------------------------
-         if( !isTprime( it_gen->pdgId() ) || hasTprimeDaughter( it_gen ) ) { continue ; }
+         if( !IsTprime( it_gen->pdgId() ) || HasTprimeDaughter( it_gen ) ) { continue ; }
          for( size_t i = 0 ; i< it_gen->numberOfDaughters() ; ++i ){
             int daughterId = it_gen->daughter(i)->pdgId();
             if( abs(daughterId) == 5 || abs(daughterId) == 6 ){ 
@@ -396,7 +389,7 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
 #define ISR_PHOTON      2
 #define FSR_PHOTON      3
 
-int photonFlag( const GenIterator& particle )
+int bprimeKit::PhotonFlag( const GenIterator& particle ) const
 {
    int numMo = particle->numberOfMothers();
    if( particle->status() == 3 ) {
@@ -424,10 +417,10 @@ int photonFlag( const GenIterator& particle )
    return UNKNOWN_FLAG;
 }
 
-bool hasTprimeDaughter( const GenIterator& particle )
+bool bprimeKit::HasTprimeDaughter( const GenIterator& particle ) const
 {
    for( size_t i = 0 ; i < particle->numberOfDaughters() ; ++i ){
-      if( isTprime( particle->daughter(i)->pdgId() ) ){
+      if( IsTprime( particle->daughter(i)->pdgId() ) ){
          return true; }
    }
    return false;
