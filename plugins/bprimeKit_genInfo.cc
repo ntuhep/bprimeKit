@@ -4,8 +4,8 @@
  *  Description : Filling in generation information as well as some event info
  *
  *******************************************************************************/
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
-#include "MyAna/bprimeKit/interface/bprimeKit_util.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit_util.h"
 
 //-------------------------------------------------------------------------------------------------- 
 //   Helper functions

@@ -20,8 +20,8 @@ import sys
 import copy
 import FWCore.ParameterSet.Config     as cms
 import FWCore.ParameterSet.VarParsing as opts
-import MyAna.bprimeKit.optionInit     as myOptions 
-import MyAna.bprimeKit.OptionParser   as myParser
+import bpkFrameWork.bprimeKit.optionInit     as myOptions 
+import bpkFrameWork.bprimeKit.OptionParser   as myParser
 
 options = opts.VarParsing ('analysis')
 
@@ -550,7 +550,7 @@ process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
 
-from MyAna.bprimeKit.ObjectParameters_cfi import *
+from bpkFrameWork.bprimeKit.ObjectParameters_cfi import *
 process.bprimeKit = cms.EDAnalyzer(
       "bprimeKit",
       #----- Operation paramters --------------------------------------------------------------------------

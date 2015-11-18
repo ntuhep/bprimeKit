@@ -4,7 +4,7 @@
  *  Description : The virtual and explicit functions for the bprimeKit
  *
 *******************************************************************************/
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
 //---------------------  fBaseTree and standard template libraries  ----------------------
 #include <string>

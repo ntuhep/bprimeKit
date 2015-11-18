@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as  cms
-from MyAna.bprimeKit.ObjectParameters_cfi import *
+from bpkFrameWork.bprimeKit.ObjectParameters_cfi import *
 
 bprimeKit = cms.EDAnalyzer(
    "bprimeKit",

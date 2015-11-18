@@ -6,7 +6,7 @@
  *
 *******************************************************************************/
 
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
 //------------------------------------------------------------------------------ 

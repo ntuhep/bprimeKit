@@ -8,7 +8,7 @@
  *                information out of the miniAOD.
  *
 *******************************************************************************/
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"

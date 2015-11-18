@@ -13,7 +13,7 @@
 #ifndef __UTIL_BPRIMEKIT_H__
 #define __UTIL_BPRIMEKIT_H__
 
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
 //-------------------------------------------------------------------------------------------------- 
 //   MC Tag for particles

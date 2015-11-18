@@ -9,7 +9,7 @@
  *
 *******************************************************************************/
 
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
 //----- MC tag for pat particles  ------------------------------------------------------------------

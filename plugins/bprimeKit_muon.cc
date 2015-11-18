@@ -4,8 +4,8 @@
  *  Description : Filling in the muon informations
  *
 *******************************************************************************/
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
-#include "MyAna/bprimeKit/interface/bprimeKit_util.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit_util.h"
 
 //-------------------------  Muon specific CMSSW libraries  -------------------------
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"

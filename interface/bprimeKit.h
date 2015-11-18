@@ -38,9 +38,9 @@
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 
 //----- Custom classes  --------------------------------------------------------
-#include "MyAna/bprimeKit/interface/Types.h"
-#include "MyAna/bprimeKit/interface/format.h"
-#include "MyAna/bprimeKit/interface/TriggerBooking.h"
+#include "bpkFrameWork/bprimeKit/interface/Types.h"
+#include "bpkFrameWork/bprimeKit/interface/format.h"
+#include "bpkFrameWork/bprimeKit/interface/TriggerBooking.h"
 #include <map>
 #include <TTree.h>
 

@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-from MyAna.bprimeKit.ObjectParameters_cfi import *
+from bpkFrameWork.bprimeKit.ObjectParameters_cfi import *
 
 defaultEventParameters = cms.PSet(
     ObjectParameters = defaultObjectParameters.clone(),

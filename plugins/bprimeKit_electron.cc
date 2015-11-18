@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------ 
 //   Libraries
 //------------------------------------------------------------------------------ 
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
-#include "MyAna/bprimeKit/interface/bprimeKit_util.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit_util.h"
 
 //-----------------------  Electron specific CMSSW libraries  -----------------------
 #include "RecoEgamma/EgammaTools/interface/ConversionFinder.h"

@@ -4,7 +4,7 @@
  *  Description : Filling in event information
  *
 *******************************************************************************/
-#include "MyAna/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
@@ -47,7 +47,7 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       fEvtInfo.BeamSpotY = fBeamSpot.position().y();
       fEvtInfo.BeamSpotZ = fBeamSpot.position().z();
    } else {
-      edm::LogInfo( "MyAnalyzer" )
+      edm::LogInfo( "bpkFrameWorklyzer" )
             << "No beam spot available from EventSetup \n";
    }
 
