@@ -164,8 +164,7 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
       }
       
       if( IsSelectedMuon(it_mu) ){
-         if( fDebug ) { cout << "Muon Key:" << fMuonList_Hs[icoll]->ptrAt(fLepInfo[icoll].Size).key() << std::endl; }
-         fMySelectedMuons.push_back( fMuonList_Hs[icoll]->ptrAt(fLepInfo[icoll].Size) ); }
+         fMySelectedMuons.push_back( it_mu ); }
 
       fLepInfo[icoll].CandRef [fLepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_mu );
       fLepInfo[icoll].Size++;

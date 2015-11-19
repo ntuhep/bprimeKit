@@ -105,7 +105,8 @@ private:
 
    //----- Custom algorithms  -----------------------------------------------------
    bool IsSelectedMuon( const MuonIterator& ) const ;
-   TLorentzVector CleanedJetP4( JetIterator, bool = false );
+   TLorentzVector CleanAK4Jet( JetIterator );
+   TLorentzVector CleanAK8Jet( JetIterator );
 
    //-------------------------------------------------------------------------------------------------- 
    //   Private data members
@@ -230,10 +231,10 @@ private:
    HLTConfigProvider                    fHighLevelTriggerConfig;
 
    //----- Helper variables for muon-jet cleaning  --------------------------------
-   std::vector<edm::Ptr<pat::Muon>>  fMySelectedMuons          ;
-   FactorizedJetCorrector*        fJetCorrector             ;
-   FactorizedJetCorrector*        fJetCorrectorAK8          ;
-	JetCorrectionUncertainty*      fJetCorrectionUncertainty ;
+   std::vector<MuonIterator>   fMySelectedMuons          ;
+   FactorizedJetCorrector*     fJetCorrector             ;
+   FactorizedJetCorrector*     fJetCorrectorAK8          ;
+	JetCorrectionUncertainty*   fJetCorrectionUncertainty ;
    
    //----- Configuration flags  -----------------------------------------------------------------------
    int  fPairCollectionType ;

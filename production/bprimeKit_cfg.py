@@ -88,7 +88,9 @@ process = cms.Process("bprimeKit")
 #####################################
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 100
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
+if( options.Debug ):
+   process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.MessageLogger.categories.append('HLTrigReport')
 ### Output Report
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(options.wantSummary) )
