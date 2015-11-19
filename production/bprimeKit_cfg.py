@@ -121,7 +121,7 @@ print """
 #-------------------------------------------------------------------------------"""
 corrections = ['L1FastJet', 'L2Relative', 'L3Absolute']
 if ("Data" in options.DataProcessing and options.forceResiduals):
-  corrections.append['L2L3Residual']
+  corrections.append('L2L3Residual')
 
 if options.usePrivateSQLite:
     jLabel = 'updatedPatJetsAK4'

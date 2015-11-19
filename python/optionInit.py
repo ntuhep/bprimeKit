@@ -11,7 +11,7 @@ import FWCore.ParameterSet.VarParsing as opts
 def initB2GOptions( options ):
    options.register('sample',
          '/store/mc/RunIISpring15MiniAODv2/TprimeBToTH_M-1000_LH_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/30000/2464BD5B-B96D-E511-B740-0CC47A00934A.root', 
-         opts.VarParsing.multiplicity.singleton,
+         opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,
          'Sample to analyze')
 
