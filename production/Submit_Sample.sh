@@ -44,4 +44,4 @@ cat $PWD/crab_template.py |
    sed "s@NAME@${name}@" > $crab_file 
 
 ## Submitting crab job 
-#crab submit -c $crab_file
+crab submit -c $crab_file
