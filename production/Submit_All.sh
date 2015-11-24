@@ -7,7 +7,7 @@
 #
 #-------------------------------------------------------------------------------
 
-sampleList="Dataset_${USER}.txt"
+sampleList="MC_dataset_${USER}"
 
 if [[ ! -e $sampleList ]]; then
    echo "Error! File $sampleList not found!" 
