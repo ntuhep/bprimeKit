@@ -98,14 +98,10 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
    
-  InitTree();
-  InitJetEnergyCorrectors();
 }
 
 bprimeKit::~bprimeKit()
 {
-   ClearTree();
-   ClearJetEnergyCorrector();
 }
 
 
@@ -114,9 +110,14 @@ bprimeKit::~bprimeKit()
 //------------------------------------------------------------------------------ 
 void bprimeKit::beginJob()
 {
+  InitTree();
+  InitJetEnergyCorrectors();
 }
 void bprimeKit::endJob()
-{}
+{
+   ClearTree();
+   ClearJetEnergyCorrector();
+}
 
 
 //------------------------------------------------------------------------------ 
@@ -140,12 +141,11 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    //----- Setting up common variables  ---------------------------------------------------------------
    fIsData = iEvent.isRealData();   // Add by Jacky
 
-
-
    if( fDebug > 0 ) { cout << "[0] Entering subroutines..." << endl; }
+
    //------------------------------------------------------------------------------ 
-   //   Generation and Event information
-   //------------------------------------------------------------------------------  
+   //   Inserting Information
+   //------------------------------------------------------------------------------
    memset( &fGenInfo, 0x00, sizeof( fGenInfo ) );
    memset( &fEvtInfo, 0x00, sizeof( fEvtInfo ) );
    FillfGenInfo( iEvent , iSetup );

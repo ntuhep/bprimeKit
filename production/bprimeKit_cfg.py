@@ -88,7 +88,7 @@ process = cms.Process("bprimeKit")
 #####################################
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 10000
 if( options.Debug ):
    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.MessageLogger.categories.append('HLTrigReport')
@@ -551,6 +551,9 @@ print """
 process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
+
+if options.Debug > 0 : 
+   process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
 process.bprimeKit = cms.EDAnalyzer(
       "bprimeKit",

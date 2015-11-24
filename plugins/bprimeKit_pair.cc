@@ -74,7 +74,8 @@ bool bprimeKit::FillJetPair( const edm::Event& iEvent , const edm::EventSetup& i
       if ( fPairInfo.Size >= MAX_PAIRS ) {
          cerr << "ERROR: number of jet pairs exceeds the size of array." << endl ;
          index1 = index2 = fJetInfo[0].Size;
-         break; }
+         break;
+      }
       sum = fJetInfo[0].CandRef[index1]->p4() + fJetInfo[0].CandRef[index2]->p4();
 
       if ( fJetInfo[0].Pt[index1] > 25. && fJetInfo[0].Pt[index2] > 25. && sum.mag() < 200. ) {

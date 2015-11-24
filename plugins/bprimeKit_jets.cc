@@ -231,8 +231,6 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          delete PS_Jets;
          fJetInfo[icoll].JetIDLOOSE[fJetInfo[icoll].Size] = ( jetID ) ?  1 : 0;
 
-         
-
          //----- Generation MC Data  ------------------------------------------------------------------------
          if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting MC data set ..." << endl ;} 
          if ( !fIsData && !fSkipfGenInfo ) {

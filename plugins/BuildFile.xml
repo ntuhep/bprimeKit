@@ -22,5 +22,4 @@
 <use   name="HLTrigger/HLTcore"/>
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="RecoBTag/SecondaryVertex"/>
-
 <flags EDM_PLUGIN="1"/>
