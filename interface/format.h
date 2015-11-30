@@ -18,6 +18,7 @@
 #define MAX_PAIRS          512
 #define MAX_PHOTONS        128
 #define MAX_GENS           128
+#define MAX_LHE            256
 #define MAX_Vertices       256
 #define MAX_BX             128
 #define N_TRIGGER_BOOKINGS 2214
@@ -1107,7 +1108,12 @@ public:
    Int_t GrandMo2PdgID  [MAX_GENS] ;
    Int_t GrandMo1Status [MAX_GENS] ;
    Int_t GrandMo2Status [MAX_GENS] ;
-
+   //----- LHE related information  -----------------------------------------------
+   Float_t     LHENominalWeight;
+   Float_t     LHEOriginalWeight;
+   Int_t       LHESize;
+   Int_t       LHESystematicId      [MAX_LHE];
+   Float_t     LHESystematicWeights [MAX_LHE];
    void RegisterTree( TTree* root , std::string name = "GenInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".Weight" ).c_str(), &Weight, ( name + ".Weight/F" ).c_str() );
@@ -1134,6 +1140,11 @@ public:
       root->Branch( ( name + ".GrandMo2PdgID" ).c_str(), GrandMo2PdgID, ( name + ".GrandMo2PdgID[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo1Status" ).c_str(), GrandMo1Status, ( name + ".GrandMo1Status[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo2Status" ).c_str(), GrandMo2Status, ( name + ".GrandMo2Status[" + name + ".Size]/I" ).c_str() );
+      root->Branch( ( name + ".LHENominalWeight" ).c_str(), &LHENominalWeight, ( name + ".LHENominalWeight/F" ).c_str() );
+      root->Branch( ( name + ".LHEOriginalWeight" ).c_str(), &LHEOriginalWeight, ( name + ".LHEOriginalWeight/F" ).c_str() );
+      root->Branch( ( name + ".LHESize" ).c_str(), &LHESize, ( name + ".LHESize/I" ).c_str() );
+      root->Branch( ( name + ".LHESystematicId" ).c_str(), LHESystematicId, ( name + ".LHESystematicId[" + name + ".LHESize]/I" ).c_str() );
+      root->Branch( ( name + ".LHESystematicWeights" ).c_str(), LHESystematicWeights, ( name + ".LHESystematicWeights[" + name + ".LHESize]/F" ).c_str() );
    }
    void Register( TTree* root , std::string name = "GenInfo" ) {
       root->SetBranchAddress( ( name + ".Size" ).c_str() , &Size ) ;
@@ -1161,6 +1172,11 @@ public:
       root->SetBranchAddress( ( name + ".GrandMo2PdgID" ).c_str() , GrandMo2PdgID ) ;
       root->SetBranchAddress( ( name + ".GrandMo1Status" ).c_str() , GrandMo1Status ) ;
       root->SetBranchAddress( ( name + ".GrandMo2Status" ).c_str() , GrandMo2Status ) ;
+      root->SetBranchAddress( ( name + ".LHENominalWeight" ).c_str() , &LHENominalWeight ) ;
+      root->SetBranchAddress( ( name + ".LHEOriginalWeight" ).c_str() , &LHEOriginalWeight ) ;
+      root->SetBranchAddress( ( name + ".LHESize" ).c_str() , &LHESize ) ;
+      root->SetBranchAddress( ( name + ".LHESystematicId" ).c_str() , LHESystematicId ) ;
+      root->SetBranchAddress( ( name + ".LHESystematicWeights" ).c_str() , LHESystematicWeights ) ;
    }
 };
 class PhotonInfoBranches {

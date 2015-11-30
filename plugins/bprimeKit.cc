@@ -63,6 +63,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fGenEventLabel    = iConfig.getParameter<edm::InputTag>( "genevtLabel" ) ;
    fGenParticleLabel = iConfig.getParameter<edm::InputTag>( "genLabel"    ) ;
    fGenDigiLabel     = iConfig.getParameter<edm::InputTag>( "gtdigiLabel" ) ;
+   fLHELabel         = iConfig.getParameter<edm::InputTag>( "lheLabel"    ) ;
 
    //----- Jet related  -------------------------------------------------------------------------------
    fJetCollections      = iConfig.getParameter<StrList>( "JetCollections" ) ;
@@ -186,19 +187,19 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 void bprimeKit::InitTree()
 {
-   fBaseTree = new TTree( "root", "root" );
+   fBaseTree = fs->make<TTree>( "root", "root" );
    fEvtInfo.RegisterTree( fBaseTree );
    fVertexInfo.RegisterTree( fBaseTree );
    if( !fSkipfGenInfo ) { fGenInfo.RegisterTree( fBaseTree ); } 
-   for( unsigned i = 0; i < fLeptonCollections.size(); i++ ) {
+   for( unsigned i = 0; i < fLeptonCollections.size(); ++i ) {
       if( i >= MAX_LEPCOLLECTIONS ) { break; }
       fLepInfo[i].RegisterTree( fBaseTree, fLeptonCollections[i] );
    }
-   for( unsigned i = 0; i < fPhotonCollections.size(); i++ ) {
+   for( unsigned i = 0; i < fPhotonCollections.size(); ++i ) {
       if( i >= MAX_PHOCOLLECTIONS ) { break; }
       fPhotonInfo[i].RegisterTree( fBaseTree, fPhotonCollections[i] );
    }
-   for( unsigned i = 0; i < fJetCollections.size(); i++ ) {
+   for( unsigned i = 0; i < fJetCollections.size(); ++i ) {
       if( i >= MAX_JETCOLLECTIONS ) { break; }
       fJetInfo[i].RegisterTree( fBaseTree, fJetCollections[i] );
    }
@@ -274,6 +275,7 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
       if( !fSkipfGenInfo ) { 
          iEvent.getByLabel( fGenParticleLabel, fGenParticle_H ); 
          iEvent.getByLabel( fGenEventLabel, fGenEvent_H );
+         iEvent.getByLabel( fLHELabel , fLHEInfo_H );
       }
    }
    
@@ -306,7 +308,7 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
          std::cerr << "\t[t]Getting Lepton Collection" << i << std::endl
             << "\tMuon Label:" << fMuonLabels[i] << " with " << fMuonList_Hs[i]->size() << " entries" << std::endl 
             << "\tElectron Label:" << fElectronLabels[i] << " with " << fElectronList_Hs[i]->size() << " entries" << std::endl 
-            << "\tTau Label:" << fMuonLabels[i] << " with " << fTauList_Hs[i]->size() << " entries" << std::endl ;
+            << "\tTau Label:" << fTauLabels[i] << " with " << fTauList_Hs[i]->size() << " entries" << std::endl ;
       }
    }
    if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Electron ID maps" << std::endl;}

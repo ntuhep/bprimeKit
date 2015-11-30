@@ -581,6 +581,7 @@ process.bprimeKit = cms.EDAnalyzer(
       genLabel    = cms.InputTag("prunedGenParticles"),
       genevtLabel = cms.InputTag("generator"),
       gtdigiLabel = cms.InputTag("gtDigis"),
+      lheLabel    = cms.InputTag(options.lheLabel),
 
       #----- Photon information ------------------------------------------------------------------------ 
       PhoCollections            = cms.vstring('PhotonInfo'),

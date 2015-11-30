@@ -137,6 +137,7 @@ private:
    edm::InputTag  fGenEventLabel    ;
    edm::InputTag  fGenParticleLabel ;
    edm::InputTag  fGenDigiLabel     ;
+   edm::InputTag  fLHELabel         ;
 
    //----- Jet variable setup  ------------------------------------------------------------------------
    std::vector<std::string>                fJetCollections      ;
@@ -188,6 +189,7 @@ private:
    //----- fGenInfo Handles  -------------------------------------------------------
    GenHandle     fGenParticle_H;
    GenInfoHandle fGenEvent_H;
+   LHEHandle     fLHEInfo_H;
   
    //----- Vertex Handles  --------------------------------------------------------
    VertexHandle fVertex_H   ;

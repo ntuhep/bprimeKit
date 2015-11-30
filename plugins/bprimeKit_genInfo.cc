@@ -45,12 +45,30 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
    for( GenIterator it_gen = fGenParticle_H->begin(); it_gen != fGenParticle_H->end(); it_gen++ ) {
       cands.push_back( &*it_gen ); }
 
+   //------------------------------------------------------------------------------ 
+   //   Inserting Event wide variables
+   //------------------------------------------------------------------------------
    fGenInfo.Weight = 1.0 ;
    if( fGenEvent_H.isValid() ) {
       fGenInfo.Weight = fGenEvent_H->weight();
       fEvtInfo.ptHat  = fGenEvent_H->qScale();
    }
-
+   if( fLHEInfo_H.isValid() ){
+      if( fDebug > 1 ){ cout << "LHE Product is valid" << endl; }
+      fGenInfo.LHENominalWeight = fLHEInfo_H->hepeup().XWGTUP;
+      fGenInfo.LHEOriginalWeight = fLHEInfo_H->originalXWGTUP(); 
+      fGenInfo.LHESize = fLHEInfo_H->weights().size();
+      if( fDebug > 1 ){ cout << "LHE Product weight << " << fGenInfo.LHENominalWeight  << endl; }
+      for( unsigned i = 0 ; i < fLHEInfo_H->weights().size(); ++i ){
+         fGenInfo.LHESystematicWeights[i] = fLHEInfo_H->weights().at(i).wgt;
+         fGenInfo.LHESystematicId[i]      = std::stoi(fLHEInfo_H->weights().at(i).id.data());
+         if( fDebug > 1 ){ 
+            cout << "\t[1] "<< i<<"th LHE Product s weight: [" << fGenInfo.LHESystematicId[i]
+                 << "]: " << fGenInfo.LHESystematicWeights[i]  
+                 << endl; 
+         }
+      }
+   }
    //-------------------------------------------------------------------------------------------------- 
    //   Begin main loop
    //-------------------------------------------------------------------------------------------------- 
