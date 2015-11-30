@@ -227,7 +227,9 @@ void bprimeKit::InitJetEnergyCorrectors()
    L2JetParAK8_ = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L2Relative_AK8PFchs.txt");
    L1JetParAK8_ = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L1FastJet_AK8PFchs.txt");
    
-   // IMPORTANT: THE ORDER MATTERS HERE !!!! 
+   // IMPORTANT: THE ORDER MATTERS HERE !!!!
+   vPar.clear();
+   vParAK8.clear();
    vPar.push_back(*L1JetPar_);
    vPar.push_back(*L2JetPar_);
    vPar.push_back(*L3JetPar_);
@@ -237,21 +239,23 @@ void bprimeKit::InitJetEnergyCorrectors()
 
    fJetCorrector    = new FactorizedJetCorrector(vPar);
    fJetCorrectorAK8 = new FactorizedJetCorrector(vParAK8);
-}
 
-void bprimeKit::ClearTree()
-{
-   delete fBaseTree;
-}
-
-void bprimeKit::ClearJetEnergyCorrector()
-{
    delete L3JetPar_;
    delete L2JetPar_;
    delete L1JetPar_;
    delete L3JetParAK8_;
    delete L2JetParAK8_;
    delete L1JetParAK8_;
+}
+
+void bprimeKit::ClearTree()
+{
+   fBaseTree->Write();
+   delete fBaseTree;
+}
+
+void bprimeKit::ClearJetEnergyCorrector()
+{
    delete fJetCorrector;
    delete fJetCorrectorAK8;
 }
