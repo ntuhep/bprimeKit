@@ -9,6 +9,14 @@ function makeName(){
    echo $1 | awk -F "/" '{print $2"_"$3 }' 
 }
 
+function getLHELabel(){
+   if [[ $dataset == *"MINIAODSIM" ]]; then
+      echo "externalLHEProducer"
+   else
+      echo ""
+   fi
+}
+
 function getDataProcess() {
    local data_set=$1
    if [[ $data_set == *"RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"* ]]; then

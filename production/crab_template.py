@@ -11,7 +11,8 @@ config.JobType.psetName = './bprimeKit_cfg.py'
 
 ## Input parameters 
 config.JobType.pyCfgParams = [ 
-   'DataProcessing=PROCESS', 
+   'DataProcessing=PROCESS',
+   'lheLabel=THELHELABEL'
    'maxEvents=-1',
    'forceResiduals=false'
    ]

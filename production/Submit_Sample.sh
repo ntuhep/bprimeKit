@@ -34,13 +34,14 @@ dataset=$1
 ## Calling functions defined in scripts/common.sh
 name=$( makeName $dataset )
 process=$( getDataProcess $dataset )       
-
+lhelabel=$( getLHELabel $dataset )
 crab_file=${Config_dir}/${name}.py
 
 ## Making crab configuration file
 cat $PWD/crab_template.py |
-   sed "s@DATASET@${dataset}@" |
-   sed "s@PROCESS@${process}@" |
+   sed "s@DATASET@${dataset}@"      |
+   sed "s@PROCESS@${process}@"      |
+   sed "s@THELHELABEL@${lhelabel}@" |
    sed "s@NAME@${name}@" > $crab_file 
 
 ## Submitting crab job 

@@ -88,7 +88,7 @@ process = cms.Process("bprimeKit")
 #####################################
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 10000
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 if( options.Debug ):
    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.MessageLogger.categories.append('HLTrigReport')
