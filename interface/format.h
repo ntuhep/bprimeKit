@@ -764,6 +764,7 @@ public:
    Float_t Et            [MAX_JETS] ;
    Float_t Pt            [MAX_JETS] ;
    Float_t Unc           [MAX_JETS] ;
+   Float_t JesUnc        [MAX_JETS] ;
    Float_t Eta           [MAX_JETS] ;
    Float_t Phi           [MAX_JETS] ;
    Float_t Px            [MAX_JETS] ; //Uly 2011-04-04
@@ -840,6 +841,7 @@ public:
    Float_t topJetMass [MAX_JETS];
    Float_t ca8TopMass [MAX_JETS];
    Float_t ca8MinMass [MAX_JETS];
+
    //----- Vector pointer types used for reading  -----------------------------------------------------
    std::vector<Float_t>* SubjetMass                ;
    std::vector<Float_t>* SubjetPt                  ;
@@ -869,6 +871,7 @@ public:
       root->Branch( ( name + ".Et" ).c_str(), Et, ( name + ".Et[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Unc" ).c_str(), Unc, ( name + ".Unc[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".JesUnc" ).c_str(), JesUnc, ( name + ".JesUnc[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Phi" ).c_str(), Phi, ( name + ".Phi[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Px" ).c_str(), Px, ( name + ".Px[" + name + ".Size]/F" ).c_str() );
@@ -949,6 +952,7 @@ public:
       root->SetBranchAddress( ( name + ".Et" ).c_str() , Et ) ;
       root->SetBranchAddress( ( name + ".Pt" ).c_str() , Pt ) ;
       root->SetBranchAddress( ( name + ".Unc" ).c_str() , Unc ) ;
+      root->SetBranchAddress( ( name + ".JesUnc" ).c_str() , JesUnc ) ;
       root->SetBranchAddress( ( name + ".Eta" ).c_str() , Eta ) ;
       root->SetBranchAddress( ( name + ".Phi" ).c_str() , Phi ) ;
       root->SetBranchAddress( ( name + ".Px" ).c_str() , Px ) ;

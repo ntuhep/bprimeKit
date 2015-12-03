@@ -96,15 +96,6 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          fJetInfo[icoll].EtaUncleaned    [fJetInfo[icoll].Size] = it_jet->eta();
          fJetInfo[icoll].PhiUncleaned    [fJetInfo[icoll].Size] = it_jet->phi();
          fJetInfo[icoll].EnergyUncleaned [fJetInfo[icoll].Size] = it_jet->energy();
-         // Update to lepton Cleaned version
-         // fJetInfo[icoll].Eta             [fJetInfo[icoll].Size] = it_jet->eta()                     ;
-         // fJetInfo[icoll].Pt              [fJetInfo[icoll].Size] = it_jet->pt()                      ;
-         // fJetInfo[icoll].Et              [fJetInfo[icoll].Size] = it_jet->et()                      ;
-         // fJetInfo[icoll].Phi             [fJetInfo[icoll].Size] = it_jet->phi()                     ;
-         // fJetInfo[icoll].Px              [fJetInfo[icoll].Size] = it_jet->px()                      ; //Uly 2011-04-04
-         // fJetInfo[icoll].Py              [fJetInfo[icoll].Size] = it_jet->py()                      ; //Uly 2011-04-04
-         // fJetInfo[icoll].Pz              [fJetInfo[icoll].Size] = it_jet->pz()                      ; //Uly 2011-04-04
-         // fJetInfo[icoll].Energy          [fJetInfo[icoll].Size] = it_jet->energy()                  ; //Uly 2011-04-04
 
          //----- Cleaned Jet four momentum  ---------------------------------------------
          if( pfjetcoll ){
@@ -164,7 +155,9 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          fJetCorrectionUncertainty->setJetEta( it_jet->eta() );
          fJetCorrectionUncertainty->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
          if( fabs( it_jet->eta() ) <= 5.0 ) { 
-            fJetInfo[icoll].Unc[fJetInfo[icoll].Size] = fJetCorrectionUncertainty->getUncertainty( true ); 
+            float temp = fJetCorrectionUncertainty->getUncertainty(true);
+            fJetInfo[icoll].Unc[fJetInfo[icoll].Size]    = temp;
+            fJetInfo[icoll].JesUnc[fJetInfo[icoll].Size] = temp;
          }
          
 
