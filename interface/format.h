@@ -848,18 +848,24 @@ public:
    std::vector<Float_t>* SubjetEt                  ;
    std::vector<Float_t>* SubjetEta                 ;
    std::vector<Float_t>* SubjetPhi                 ;
-   std::vector<Float_t>* SubjetCombinedSVBJetTags  ;
-   std::vector<Float_t>* SubjetPtUncorr            ;
    std::vector<Float_t>* SubjetArea                ;
+   std::vector<Float_t>* SubjetPtUncorr            ;
+   std::vector<Float_t>* SubjetCombinedSVBJetTags  ;
+   std::vector<Float_t>* SubjetGenPdgId            ;
+   std::vector<Float_t>* SubjetGenFlavour          ;
+   std::vector<Float_t>* SubjetHadronFlavour       ;
    //----- Vector type used for writing  --------------------------------------------------------------
    std::vector<Float_t> SubjetMass_w               ;
    std::vector<Float_t> SubjetPt_w                 ;
    std::vector<Float_t> SubjetEt_w                 ;
    std::vector<Float_t> SubjetEta_w                ;
    std::vector<Float_t> SubjetPhi_w                ;
-   std::vector<Float_t> SubjetCombinedSVBJetTags_w ;
-   std::vector<Float_t> SubjetPtUncorr_w           ;
    std::vector<Float_t> SubjetArea_w               ;
+   std::vector<Float_t> SubjetPtUncorr_w           ;
+   std::vector<Float_t> SubjetCombinedSVBJetTags_w ;
+   std::vector<Float_t> SubjetGenPdgId_w           ;
+   std::vector<Float_t> SubjetGenFlavour_w         ;
+   std::vector<Float_t> SubjetHadronFlavour_w      ;
 
 #ifdef __BPRIMEKIT_H__
    reco::Candidate* CandRef[MAX_JETS]; // backward poInt_ter to the PAT objects
@@ -941,9 +947,12 @@ public:
       root->Branch( ( name + ".SubjetEt" ).c_str(), &SubjetEt_w );
       root->Branch( ( name + ".SubjetEta" ).c_str(), &SubjetEta_w );
       root->Branch( ( name + ".SubjetPhi" ).c_str(), &SubjetPhi_w );
-      root->Branch( ( name + ".SubjetCombinedSVBJetTags" ).c_str(), &SubjetCombinedSVBJetTags_w );
-      root->Branch( ( name + ".SubjetPtUncorr" ).c_str(), &SubjetPtUncorr_w );
       root->Branch( ( name + ".SubjetArea" ).c_str(), &SubjetArea_w );
+      root->Branch( ( name + ".SubjetPtUncorr" ).c_str(), &SubjetPtUncorr_w );
+      root->Branch( ( name + ".SubjetCombinedSVBJetTags" ).c_str(), &SubjetCombinedSVBJetTags_w );
+      root->Branch( ( name + ".SubjetGenPdgId" ).c_str(), &SubjetGenPdgId_w );
+      root->Branch( ( name + ".SubjetGenFlavour" ).c_str(), &SubjetGenFlavour_w );
+      root->Branch( ( name + ".SubjetHadronFlavour" ).c_str(), &SubjetHadronFlavour_w );
    }
    void Register( TTree* root , std::string name = "JetInfo" ) {
       root->SetBranchAddress( ( name + ".Size" ).c_str() , &Size ) ;
@@ -1027,12 +1036,18 @@ public:
       root->SetBranchAddress( ( name + ".SubjetEta" ).c_str() , &SubjetEta ) ;
       SubjetPhi = 0 ;
       root->SetBranchAddress( ( name + ".SubjetPhi" ).c_str() , &SubjetPhi ) ;
-      SubjetCombinedSVBJetTags = 0 ;
-      root->SetBranchAddress( ( name + ".SubjetCombinedSVBJetTags" ).c_str() , &SubjetCombinedSVBJetTags ) ;
-      SubjetPtUncorr = 0 ;
-      root->SetBranchAddress( ( name + ".SubjetPtUncorr" ).c_str() , &SubjetPtUncorr ) ;
       SubjetArea = 0 ;
       root->SetBranchAddress( ( name + ".SubjetArea" ).c_str() , &SubjetArea ) ;
+      SubjetPtUncorr = 0 ;
+      root->SetBranchAddress( ( name + ".SubjetPtUncorr" ).c_str() , &SubjetPtUncorr ) ;
+      SubjetCombinedSVBJetTags = 0 ;
+      root->SetBranchAddress( ( name + ".SubjetCombinedSVBJetTags" ).c_str() , &SubjetCombinedSVBJetTags ) ;
+      SubjetGenPdgId = 0 ;
+      root->SetBranchAddress( ( name + ".SubjetGenPdgId" ).c_str() , &SubjetGenPdgId ) ;
+      SubjetGenFlavour = 0 ;
+      root->SetBranchAddress( ( name + ".SubjetGenFlavour" ).c_str() , &SubjetGenFlavour ) ;
+      SubjetHadronFlavour = 0 ;
+      root->SetBranchAddress( ( name + ".SubjetHadronFlavour" ).c_str() , &SubjetHadronFlavour ) ;
    }
 };
 class PairInfoBranches {

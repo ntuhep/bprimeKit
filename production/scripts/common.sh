@@ -31,6 +31,8 @@ function getDataProcess() {
       echo "Data25ns_ReReco"
    elif [[ $data_set == *"Run2015"*"05Oct2015"* ]]; then
       echo "Data50ns_MiniAODv2"
+   elif [[ $data_set == *"RunIISpring15DR74"* ]]; then
+      echo "MC25ns_MiniAODv1"
    else
       echo ""
    fi

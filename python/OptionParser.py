@@ -21,9 +21,13 @@ def getGlobalTag( dataProcess ):
      return "74X_mcRun2_asymptotic50ns_v0"
    elif dataProcess=="Data50ns_MiniAODv2":
      return "74X_dataRun2_reMiniAOD_v0"
+   elif dataProcess=="MC25ns_MiniAODv1":
+      print( "Warning!! Running a unrecommended version of MC miniAOD, global tag MCRUN2_74_V9\n" ) 
+      return "MCRUN2_74_V9"
    else:
-     sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options: "
-           "'MC25ns_MiniAODv2', 'MC25ns_MiniAODv2_FastSim', 'Data25ns_ReReco', 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4',\n"
+     sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options:\n"
+           "'MC25ns_MiniAODv2', 'MC25ns_MiniAODv2_FastSim',\n"
+           "'Data25ns_ReReco' , 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4',\n"
            "'MC50ns_MiniAODv2', 'Data50ns_MiniAODv2'\n")
 
 def getElectronIDLabel( workingPoint , dataProcess ):

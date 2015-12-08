@@ -35,7 +35,11 @@ print """
 #   Basic argument parsing
 #-------------------------------------------------------------------------------"""
 if options.DataProcessing == "":
-   sys.exit("!!!!Error: Enter 'DataProcessing' period. Options are: 'MC25ns_MiniAODv2', 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4'.\n")
+   sys.exit("!!!!Error: Enter 'DataProcessing' period. Options are:\n"
+           "'MC25ns_MiniAODv2', 'MC25ns_MiniAODv2_FastSim', 'Data25ns_ReReco', 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4',\n"
+           "'MC50ns_MiniAODv2', 'Data50ns_MiniAODv2'\n"
+           "'MC25ns_MiniAODv1'\n"
+           )
 
 if "Data" in options.DataProcessing:
   print "!!!!Warning: You have chosen to run over data. lheLabel will be unset.\n"
