@@ -13,8 +13,6 @@
 
 //---------------------------  Specific CMSSW libraries  ----------------------------
 #include "FWCore/Framework/interface/MakerMacros.h"          // For plugin definition
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 
@@ -28,8 +26,6 @@ typedef std::vector<std::string>   StrList;
 //------------------------------------------------------------------------------ 
 //   Helper variables
 //------------------------------------------------------------------------------ 
-static edm::Service<TFileService> fs;
-static TFileDirectory results ;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit methods: constructor and destructor
@@ -98,7 +94,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
-   
+  
 }
 
 bprimeKit::~bprimeKit()
@@ -206,6 +202,12 @@ void bprimeKit::InitTree()
    if( fPairCollectionType >= 0 ) { fPairInfo.RegisterTree( fBaseTree ); }
 }
 
+void bprimeKit::ClearTree()
+{
+   fBaseTree->Write();
+   delete fBaseTree;
+}
+
 //------------------------------------------------------------------------------ 
 //   Jet Energy correction
 //------------------------------------------------------------------------------
@@ -227,7 +229,9 @@ void bprimeKit::InitJetEnergyCorrectors()
    L2JetParAK8_ = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L2Relative_AK8PFchs.txt");
    L1JetParAK8_ = new JetCorrectorParameters("./JECs/PHYS14_25_V2_L1FastJet_AK8PFchs.txt");
    
-   // IMPORTANT: THE ORDER MATTERS HERE !!!! 
+   // IMPORTANT: THE ORDER MATTERS HERE !!!!
+   vPar.clear();
+   vParAK8.clear();
    vPar.push_back(*L1JetPar_);
    vPar.push_back(*L2JetPar_);
    vPar.push_back(*L3JetPar_);
@@ -237,21 +241,18 @@ void bprimeKit::InitJetEnergyCorrectors()
 
    fJetCorrector    = new FactorizedJetCorrector(vPar);
    fJetCorrectorAK8 = new FactorizedJetCorrector(vParAK8);
-}
 
-void bprimeKit::ClearTree()
-{
-   delete fBaseTree;
-}
-
-void bprimeKit::ClearJetEnergyCorrector()
-{
    delete L3JetPar_;
    delete L2JetPar_;
    delete L1JetPar_;
    delete L3JetParAK8_;
    delete L2JetParAK8_;
    delete L1JetParAK8_;
+}
+
+
+void bprimeKit::ClearJetEnergyCorrector()
+{
    delete fJetCorrector;
    delete fJetCorrectorAK8;
 }

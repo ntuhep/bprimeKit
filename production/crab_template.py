@@ -13,6 +13,7 @@ config.JobType.psetName = './bprimeKit_cfg.py'
 config.JobType.pyCfgParams = [ 
    'DataProcessing=PROCESS',
    'lheLabel=THELHELABEL'
+   # 'RunMuonJetClean=false',
    'maxEvents=-1',
    'forceResiduals=false'
    ]

@@ -73,7 +73,7 @@ def initBPKOptions( options ):
          'Debugging output level' )
 
    options.register('RunMuonJetClean', 
-         False,
+         True,
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.bool,
          "Whether to run Muon-Jet Cleaning")
