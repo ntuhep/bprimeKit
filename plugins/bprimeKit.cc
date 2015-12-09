@@ -13,8 +13,6 @@
 
 //---------------------------  Specific CMSSW libraries  ----------------------------
 #include "FWCore/Framework/interface/MakerMacros.h"          // For plugin definition
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 
@@ -28,8 +26,6 @@ typedef std::vector<std::string>   StrList;
 //------------------------------------------------------------------------------ 
 //   Helper variables
 //------------------------------------------------------------------------------ 
-static edm::Service<TFileService> fs;
-static TFileDirectory results ;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit methods: constructor and destructor
@@ -98,7 +94,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
-   
+  
 }
 
 bprimeKit::~bprimeKit()
@@ -206,6 +202,12 @@ void bprimeKit::InitTree()
    if( fPairCollectionType >= 0 ) { fPairInfo.RegisterTree( fBaseTree ); }
 }
 
+void bprimeKit::ClearTree()
+{
+   fBaseTree->Write();
+   delete fBaseTree;
+}
+
 //------------------------------------------------------------------------------ 
 //   Jet Energy correction
 //------------------------------------------------------------------------------
@@ -248,11 +250,6 @@ void bprimeKit::InitJetEnergyCorrectors()
    delete L1JetParAK8_;
 }
 
-void bprimeKit::ClearTree()
-{
-   fBaseTree->Write();
-   delete fBaseTree;
-}
 
 void bprimeKit::ClearJetEnergyCorrector()
 {
