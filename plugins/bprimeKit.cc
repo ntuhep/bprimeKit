@@ -15,6 +15,8 @@
 #include "FWCore/Framework/interface/MakerMacros.h"          // For plugin definition
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 //------------------------------------------------------------------------------ 
 //   Custom enums, typedefs and macros
@@ -23,9 +25,6 @@
 typedef std::vector<edm::InputTag> TagList;
 typedef std::vector<std::string>   StrList;
 
-//------------------------------------------------------------------------------ 
-//   Helper variables
-//------------------------------------------------------------------------------ 
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit methods: constructor and destructor
@@ -35,7 +34,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fPhotonEffectiveArea_NeutralHadron ((iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath()),
    fPhotonEffectiveArea_Photons    ((iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath()   )
 {
-   results = TFileDirectory( fs->mkdir( "results" ) );
    //----- Configuration flags  ---------------------------------------------------
    fPairCollectionType = iConfig.getUntrackedParameter<int> ( "PairCollection" , 0     ) ;
    fSkipfGenInfo       = iConfig.getUntrackedParameter<bool>( "SkipGenInfo"    , false ) ;
@@ -95,6 +93,8 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
   
+   edm::Service<TFileService> fs;
+   fBaseTree = fs->make<TTree>( "root", "root" );
 }
 
 bprimeKit::~bprimeKit()
@@ -183,7 +183,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 void bprimeKit::InitTree()
 {
-   fBaseTree = fs->make<TTree>( "root", "root" );
    fEvtInfo.RegisterTree( fBaseTree );
    fVertexInfo.RegisterTree( fBaseTree );
    if( !fSkipfGenInfo ) { fGenInfo.RegisterTree( fBaseTree ); } 

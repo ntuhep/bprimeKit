@@ -23,8 +23,6 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
-#include "FWCore/ServiceRegistry/interface/Service.h"
-#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 //----- CMS Software libraries for special variables  --------------------------
 #include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h" 
@@ -115,8 +113,6 @@ private:
    //-------------------------------------------------------------------------------------------------- 
 
    //----- Ntuple interaction variables  --------------------------------------------------------------
-   edm::Service<TFileService> fs;
-   TFileDirectory results ;
    TTree*             fBaseTree                      ;
    EvtInfoBranches    fEvtInfo                       ;
    GenInfoBranches    fGenInfo                       ;
