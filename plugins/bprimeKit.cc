@@ -3,15 +3,14 @@
  *  Filename    : bprimeKit.cc
  *  Description : The virtual and explicit functions for the bprimeKit
  *
+ *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
-//---------------------  fBaseTree and standard template libraries  ----------------------
 #include <string>
 #include <TFile.h>
 #include <TTree.h>
 
-//---------------------------  Specific CMSSW libraries  ----------------------------
 #include "FWCore/Framework/interface/MakerMacros.h"          // For plugin definition
 #include "SimGeneral/HepPDTRecord/interface/ParticleDataTable.h"
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
@@ -92,11 +91,12 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
       fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
-  
+
+   /***** MADITORY!! DO NOTE REMOVE  *********************************************/
    edm::Service<TFileService> fs;
    TFileDirectory subDir = fs->mkdir( "mySubDirectory" );
-  
-   
+   /*****   **********************************************************************/ 
+    
    InitJetEnergyCorrectors();
 }
 
@@ -106,15 +106,24 @@ bprimeKit::~bprimeKit()
 }
 
 
-//------------------------------------------------------------------------------ 
-//   bprimeKit begin and end processes methods
-//------------------------------------------------------------------------------ 
+/*******************************************************************************
+ *
+ *  Note : 
+ *    1. All writing objects (TTrees, TH1Fs) MUST be created here and 
+ *       not in the analyzer constructor!!
+ *    2. Do not use the WRITE functions and delete operator!! These are 
+ *       automatically handled by the TFileService instance.
+ *
+*******************************************************************************/
 void bprimeKit::beginJob()
 {
+   fBaseTree = new TTree( "root", "root" );
    InitTree();
 }
 void bprimeKit::endJob()
 {
+   // fBaseTree->Write();
+   // delete fBaseTree;
    ClearTree();
 }
 
@@ -137,7 +146,6 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    if( fDebug > 0 ) { cout << "[0] Begin Analysis!!" << endl; }
 
    GetEdmObjects( iEvent, iSetup );
-   //----- Setting up common variables  ---------------------------------------------------------------
    fIsData = iEvent.isRealData();   // Add by Jacky
 
    if( fDebug > 0 ) { cout << "[0] Entering subroutines..." << endl; }
@@ -183,9 +191,11 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    }
 }
 
+//------------------------------------------------------------------------------ 
+//   Tree set-up options
+//------------------------------------------------------------------------------
 void bprimeKit::InitTree()
 {
-   fBaseTree = new TTree( "root", "root" );
    fEvtInfo.RegisterTree( fBaseTree );
    fVertexInfo.RegisterTree( fBaseTree );
    if( !fSkipfGenInfo ) { fGenInfo.RegisterTree( fBaseTree ); } 
@@ -206,8 +216,6 @@ void bprimeKit::InitTree()
 
 void bprimeKit::ClearTree()
 {
-   // NO NEED To Add Write Functions!! This is handled by TFileService Automatically
-   // fBaseTree->Write();
 }
 
 //------------------------------------------------------------------------------ 
@@ -316,7 +324,7 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
    }
    if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Electron ID maps" << std::endl;}
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", fTrackBuilder_H );
-   iEvent.getByLabel( fConversionsTag        , fConversions_H       ) ;
+   iEvent.getByLabel( fConversionsTag        , fConversions_H      ) ;
    iEvent.getByToken( fElectronIDVetoToken   , fElectronIDVeto_H   ) ;
    iEvent.getByToken( fElectronIDLooseToken  , fElectronIDLoose_H  ) ;
    iEvent.getByToken( fElectronIDMediumToken , fElectronIDMedium_H ) ;
