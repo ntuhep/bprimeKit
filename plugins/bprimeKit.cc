@@ -94,11 +94,15 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
       fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
   
    edm::Service<TFileService> fs;
-   fBaseTree = fs->make<TTree>( "root", "root" );
+   TFileDirectory subDir = fs->mkdir( "mySubDirectory" );
+  
+   
+   InitJetEnergyCorrectors();
 }
 
 bprimeKit::~bprimeKit()
 {
+   ClearJetEnergyCorrector();
 }
 
 
@@ -107,13 +111,11 @@ bprimeKit::~bprimeKit()
 //------------------------------------------------------------------------------ 
 void bprimeKit::beginJob()
 {
-  InitTree();
-  InitJetEnergyCorrectors();
+   InitTree();
 }
 void bprimeKit::endJob()
 {
    ClearTree();
-   ClearJetEnergyCorrector();
 }
 
 
@@ -183,6 +185,7 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 
 void bprimeKit::InitTree()
 {
+   fBaseTree = new TTree( "root", "root" );
    fEvtInfo.RegisterTree( fBaseTree );
    fVertexInfo.RegisterTree( fBaseTree );
    if( !fSkipfGenInfo ) { fGenInfo.RegisterTree( fBaseTree ); } 
@@ -203,8 +206,8 @@ void bprimeKit::InitTree()
 
 void bprimeKit::ClearTree()
 {
-   fBaseTree->Write();
-   delete fBaseTree;
+   // NO NEED To Add Write Functions!! This is handled by TFileService Automatically
+   // fBaseTree->Write();
 }
 
 //------------------------------------------------------------------------------ 
