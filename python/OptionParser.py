@@ -70,6 +70,13 @@ def getElectronIDModule( workingPoint , dataProcess ):
    else :
       return ""
 
+def getPileUpLabel( dataProcess ):
+   if dataProcess=="MC25ns_MiniAODv1":
+      return "addPileupInfo"
+   elif "Data" in dataProcess :
+      return ""
+   else:
+      return "slimmedAddPileupInfo"
 
 
 
