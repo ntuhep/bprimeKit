@@ -573,7 +573,7 @@ process.bprimeKit = cms.EDAnalyzer(
       rhoLabel            = cms.InputTag( rhoLabel ),
       hltLabel            = cms.InputTag("TriggerResults::HLT"),
       metLabel            = cms.InputTag("slimmedMETs" ),
-      puInfoLabel         = cms.InputTag("slimmedAddPileupInfo"),
+      puInfoLabel         = cms.InputTag( myParser.getPileUpLabel(options.DataProcessing) ),
       
       #----- Vertex related  ------------------------------------------------------------------------------
       offlinePVLabel      = cms.InputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),

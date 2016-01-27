@@ -28,7 +28,7 @@ def initB2GOptions( options ):
          'Data processing types. Options are: MC25ns_MiniAODv2, Data25ns_MiniAODv2, Data25ns_PromptRecov4')
 
    options.register('lheLabel',
-         "",
+         "externalLHEProducer",
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.string,
          'LHE module label, MC sample specific. Can be: externalLHEProducer')
