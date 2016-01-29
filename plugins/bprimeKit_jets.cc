@@ -122,6 +122,11 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             fJetInfo[icoll].Pz[fJetInfo[icoll].Size]     = it_jet->pz();
             fJetInfo[icoll].Et[fJetInfo[icoll].Size]     = it_jet->et();
          }
+         if( fDebug > 2 ){
+            cout << "\t\t[2]Cleaned  Jet Pt:" << cleanedJet.Pt() << endl; 
+            cout << "\t\t[2]Original Jet Pt:" << it_jet->pt() << endl; 
+            cout << "\t\t[2]Recorded Jet Pt:" << fJetInfo[icoll].Pt[fJetInfo[icoll].Size] << endl; 
+         }
 
 
          //----- Jet Correction Information  ----------------------------------------------------------------

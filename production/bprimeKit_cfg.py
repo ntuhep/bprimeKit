@@ -18,11 +18,15 @@
 # *****************************************************************************************
 import sys 
 import copy
+import ConfigParser
 import FWCore.ParameterSet.Config     as cms
 import FWCore.ParameterSet.VarParsing as opts
 import bpkFrameWork.bprimeKit.optionInit     as myOptions 
-import bpkFrameWork.bprimeKit.OptionParser   as myParser
+import bpkFrameWork.bprimeKit.OptionParser
 
+#------------------------------------------------------------------------------- 
+#   Declaring variables 
+#-------------------------------------------------------------------------------
 options = opts.VarParsing ('analysis')
 
 myOptions.initB2GOptions( options )
@@ -30,26 +34,7 @@ myOptions.initBPKOptions( options )
 
 options.parseArguments()
 
-print """
-#------------------------------------------------------------------------------- 
-#   Basic argument parsing
-#-------------------------------------------------------------------------------"""
-if options.DataProcessing == "":
-   sys.exit("!!!!Error: Enter 'DataProcessing' period. Options are:\n"
-           "'MC25ns_MiniAODv2', 'MC25ns_MiniAODv2_FastSim', 'Data25ns_ReReco', 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4',\n"
-           "'MC50ns_MiniAODv2', 'Data50ns_MiniAODv2'\n"
-           "'MC25ns_MiniAODv1'\n"
-           )
-
-if "Data" in options.DataProcessing:
-  print "!!!!Warning: You have chosen to run over data. lheLabel will be unset.\n"
-  options.lheLabel = ""
-
-if options.globalTag != "": 
-   print "!!!!Warning: You have chosen globalTag as", options.globalTag, ". Please check if this corresponds to your dataset."
-else:
-   options.globalTag = myParser.getGlobalTag( options.DataProcessing ) 
-
+myParser = bpkFrameWork.bprimeKit.OptionParser.OptionParser( options )
 
 print """
 #------------------------------------------------------------------------------- 
@@ -74,7 +59,6 @@ triggerSummaryLabel    = "hltTriggerSummaryAOD"
 hltMuonFilterLabel     = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f40QL3crIsoRhoFiltered0p15"
 hltPathLabel           = "HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL"
 hltElectronFilterLabel = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8"
-lheLabel               = "externalLHEProducer"
 
 ### Including QGL: ensuring the database onject can be accessed
 qgDatabaseVersion = 'v1' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
@@ -85,14 +69,14 @@ hltMuonFilterLabel     = "hltL3crIsoL1sMu16Eta2p1L1f0L2f16QL3f40QL3crIsoRhoFilte
 hltPathLabel           = "HLT_Mu8_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL"
 hltElectronFilterLabel = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8"
 
-print "\nRunning with DataProcessing option ", options.DataProcessing, " and with global tag", options.globalTag, "\n" 
+print "\nRunning with DataProcessing option ", myParser.GetProcess(), " and with global tag", myParser.GetSetting('GlobalTag'), "\n" 
 
 #####################################
 process = cms.Process("bprimeKit")
 #####################################
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 if( options.Debug ):
    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 process.MessageLogger.categories.append('HLTrigReport')
@@ -117,7 +101,7 @@ process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
 ### Setting global tag 
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag.globaltag = options.globalTag 
+process.GlobalTag.globaltag = myParser.GetSetting('GlobalTag')
 
 print """
 #-------------------------------------------------------------------------------
@@ -483,14 +467,14 @@ switchOnVIDElectronIdProducer(process, dataFormat)
 my_elid_modules  = [] 
 my_phoid_modules = []
 
-my_elid_modules.append( myParser.getElectronIDModule( ""     , options.DataProcessing ) )
-my_elid_modules.append( myParser.getElectronIDModule( "heep" , options.DataProcessing ) )
+my_elid_modules.append( myParser.GetElectronIDModule( "other"     ) )
+my_elid_modules.append( myParser.GetElectronIDModule( "heep" ) )
 
-elec_veto_id_label   = myParser.getElectronIDLabel( "veto"   , options.DataProcessing )
-elec_loose_id_label  = myParser.getElectronIDLabel( "loose"  , options.DataProcessing )
-elec_medium_id_label = myParser.getElectronIDLabel( "medium" , options.DataProcessing )
-elec_tight_id_label  = myParser.getElectronIDLabel( "tight"  , options.DataProcessing )
-elec_heep_id_label   = myParser.getElectronIDLabel( "heep"   , options.DataProcessing )
+elec_veto_id_label   = myParser.GetElectronIDLabel( "veto"   )
+elec_loose_id_label  = myParser.GetElectronIDLabel( "loose"  )
+elec_medium_id_label = myParser.GetElectronIDLabel( "medium" )
+elec_tight_id_label  = myParser.GetElectronIDLabel( "tight"  )
+elec_heep_id_label   = myParser.GetElectronIDLabel( "heep"   )
 
 my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
 pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"
@@ -503,8 +487,8 @@ for idmod in my_elid_modules:
 for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-from PhysicsTools.PatAlgos.tools.pfTools import *
 ## Adapt primary vertex collection
+from PhysicsTools.PatAlgos.tools.pfTools import *
 adaptPVs(process, pvCollection=cms.InputTag('offlineSlimmedPrimaryVertices'))
 
 print """
@@ -559,6 +543,10 @@ process.TFileService = cms.Service("TFileService",
 if options.Debug > 0 : 
    process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
+#------------------------------------------------------------------------------- 
+#   For Default Label settings, see the "bprimeKit/data/Process*.cfg" files
+#------------------------------------------------------------------------------- 
+
 process.bprimeKit = cms.EDAnalyzer(
       "bprimeKit",
       #----- Operation paramters --------------------------------------------------------------------------
@@ -570,10 +558,10 @@ process.bprimeKit = cms.EDAnalyzer(
       runMuonJetClean     = cms.bool( options.RunMuonJetClean ),
 
       #----- Event level objects --------------------------------------------------------------------------
-      rhoLabel            = cms.InputTag( rhoLabel ),
-      hltLabel            = cms.InputTag("TriggerResults::HLT"),
-      metLabel            = cms.InputTag("slimmedMETs" ),
-      puInfoLabel         = cms.InputTag( myParser.getPileUpLabel(options.DataProcessing) ),
+      rhoLabel            = cms.InputTag( myParser.GetSetting('RhoLabel') ),
+      hltLabel            = cms.InputTag( myParser.GetSetting('HLTLabel') ),
+      metLabel            = cms.InputTag( myParser.GetSetting('MetLabel') ),
+      puInfoLabel         = cms.InputTag( myParser.GetSetting('PileUpLabel') ),
       
       #----- Vertex related  ------------------------------------------------------------------------------
       offlinePVLabel      = cms.InputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
@@ -585,11 +573,11 @@ process.bprimeKit = cms.EDAnalyzer(
       genLabel    = cms.InputTag("prunedGenParticles"),
       genevtLabel = cms.InputTag("generator"),
       gtdigiLabel = cms.InputTag("gtDigis"),
-      lheLabel    = cms.InputTag(options.lheLabel),
+      lheLabel    = cms.InputTag(myParser.GetSetting('LHELabel') ),
 
       #----- Photon information ------------------------------------------------------------------------ 
       PhoCollections            = cms.vstring('PhotonInfo'),
-      phoLabel                  = cms.VInputTag('slimmedPhotons'),
+      phoLabel                  = cms.VInputTag( myParser.GetSetting('PhotonLabel') ),
       phoLooseIdMap             = cms.InputTag( pho_loose_id_label     ) ,
       phoMediumIdMap            = cms.InputTag( pho_medium_id_label    ) ,
       phoTightIdMap             = cms.InputTag( pho_tight_id_label     ) ,
@@ -603,9 +591,9 @@ process.bprimeKit = cms.EDAnalyzer(
 
       #----- Lepton related information -------------------------------------------------------------------
       LepCollections  = cms.vstring( 'LepInfo'             ) ,
-      muonLabel       = cms.VInputTag('slimmedMuons'       ) ,
-      elecLabel       = cms.VInputTag('slimmedElectrons'   ) ,
-      tauLabel        = cms.VInputTag('slimmedTaus'        ) ,
+      muonLabel       = cms.VInputTag( myParser.GetSetting('MuonLabel')       ) ,
+      elecLabel       = cms.VInputTag( myParser.GetSetting('ElectronLabel')   ) ,
+      tauLabel        = cms.VInputTag( myParser.GetSetting('TauLabel')        ) ,
       eleVetoIdMap    = cms.InputTag( elec_veto_id_label   ) ,
       eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
       eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
@@ -613,13 +601,13 @@ process.bprimeKit = cms.EDAnalyzer(
       eleHEEPIdMap    = cms.InputTag( elec_heep_id_label   ) ,
 
       #----- Jet Information ------------------------------------------------------------------------------
-      jetLabel       = cms.VInputTag( 'slimmedJets' , 'slimmedJetsAK8' , 'slimmedJetsAK8') ,
       JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
+      jetLabel       = cms.VInputTag( myParser.GetSetting('JetLabel') , myParser.GetSetting('FatJetLabel') , myParser.GetSetting('FatJetLabel')) ,
       )
 
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
-   process.QGTagger.srcJets = cms.InputTag( "slimmedJets")
+   process.QGTagger.srcJets = cms.InputTag( myParser.GetSetting('JetLabel'))
    process.endPath = cms.Path(
          process.QGTagger * 
          process.egmGsfElectronIDSequence * 
