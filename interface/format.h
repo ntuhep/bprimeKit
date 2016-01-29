@@ -781,6 +781,7 @@ public:
    Float_t EtaUncleaned    [MAX_JETS] ;
    Float_t PhiUncleaned    [MAX_JETS] ;
    Float_t EnergyUncleaned [MAX_JETS] ;
+   Float_t MassUncleaned   [MAX_JETS] ;
 
    //----- QG tagger variables  -----------------------------------------------------------------------
    Float_t QGTagsLikelihood        [MAX_JETS] ;
@@ -904,6 +905,7 @@ public:
       root->Branch( ( name + ".EtaUncleaned" ).c_str(), EtaUncleaned, ( name + ".EtaUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PhiUncleaned" ).c_str(), PhiUncleaned, ( name + ".PhiUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".EnergyUncleaned" ).c_str(), EnergyUncleaned, ( name + ".EnergyUncleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".MassUncleaned" ).c_str(), MassUncleaned, ( name + ".MassUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsLikelihood" ).c_str(), QGTagsLikelihood, ( name + ".QGTagsLikelihood[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsAxis2" ).c_str(), QGTagsAxis2, ( name + ".QGTagsAxis2[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsMult" ).c_str(), QGTagsMult, ( name + ".QGTagsMult[" + name + ".Size]/F" ).c_str() );
@@ -990,6 +992,7 @@ public:
       root->SetBranchAddress( ( name + ".EtaUncleaned" ).c_str() , EtaUncleaned ) ;
       root->SetBranchAddress( ( name + ".PhiUncleaned" ).c_str() , PhiUncleaned ) ;
       root->SetBranchAddress( ( name + ".EnergyUncleaned" ).c_str() , EnergyUncleaned ) ;
+      root->SetBranchAddress( ( name + ".MassUncleaned" ).c_str() , MassUncleaned ) ;
       root->SetBranchAddress( ( name + ".QGTagsLikelihood" ).c_str() , QGTagsLikelihood ) ;
       root->SetBranchAddress( ( name + ".QGTagsAxis2" ).c_str() , QGTagsAxis2 ) ;
       root->SetBranchAddress( ( name + ".QGTagsMult" ).c_str() , QGTagsMult ) ;

@@ -90,12 +90,12 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          fJetInfo[icoll].NTracks         [fJetInfo[icoll].Size] = it_jet->associatedTracks().size() ;
          fJetInfo[icoll].JetCharge       [fJetInfo[icoll].Size] = it_jet->jetCharge()               ;
          fJetInfo[icoll].NConstituents   [fJetInfo[icoll].Size] = it_jet->numberOfDaughters()       ;
-         fJetInfo[icoll].Mass            [fJetInfo[icoll].Size] = it_jet->mass()                    ;
          fJetInfo[icoll].Area            [fJetInfo[icoll].Size] = it_jet->jetArea()                 ;
          fJetInfo[icoll].PtUncleaned     [fJetInfo[icoll].Size] = it_jet->pt();
          fJetInfo[icoll].EtaUncleaned    [fJetInfo[icoll].Size] = it_jet->eta();
          fJetInfo[icoll].PhiUncleaned    [fJetInfo[icoll].Size] = it_jet->phi();
          fJetInfo[icoll].EnergyUncleaned [fJetInfo[icoll].Size] = it_jet->energy();
+         fJetInfo[icoll].MassUncleaned   [fJetInfo[icoll].Size] = it_jet->mass();
 
          //----- Cleaned Jet four momentum  ---------------------------------------------
          if( pfjetcoll ){
@@ -103,25 +103,15 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          } else if( fatjetcoll ){
             cleanedJet = CleanAK8Jet( it_jet  );
          }
-         if( fRunMuonJetCleaning ) {
-            fJetInfo[icoll].Pt[fJetInfo[icoll].Size]     = cleanedJet.Pt();
-            fJetInfo[icoll].Eta[fJetInfo[icoll].Size]    = cleanedJet.Eta();
-            fJetInfo[icoll].Phi[fJetInfo[icoll].Size]    = cleanedJet.Phi();
-            fJetInfo[icoll].Energy[fJetInfo[icoll].Size] = cleanedJet.Energy();
-            fJetInfo[icoll].Px[fJetInfo[icoll].Size]     = cleanedJet.Px();
-            fJetInfo[icoll].Py[fJetInfo[icoll].Size]     = cleanedJet.Py();
-            fJetInfo[icoll].Pz[fJetInfo[icoll].Size]     = cleanedJet.Pz();
-            fJetInfo[icoll].Et[fJetInfo[icoll].Size]     = cleanedJet.Et();
-         } else {
-            fJetInfo[icoll].Pt[fJetInfo[icoll].Size]     = it_jet->pt(); 
-            fJetInfo[icoll].Eta[fJetInfo[icoll].Size]    = it_jet->eta();
-            fJetInfo[icoll].Phi[fJetInfo[icoll].Size]    = it_jet->phi();
-            fJetInfo[icoll].Energy[fJetInfo[icoll].Size] = it_jet->energy();
-            fJetInfo[icoll].Px[fJetInfo[icoll].Size]     = it_jet->px();
-            fJetInfo[icoll].Py[fJetInfo[icoll].Size]     = it_jet->py();
-            fJetInfo[icoll].Pz[fJetInfo[icoll].Size]     = it_jet->pz();
-            fJetInfo[icoll].Et[fJetInfo[icoll].Size]     = it_jet->et();
-         }
+         fJetInfo[icoll].Pt[fJetInfo[icoll].Size]     = cleanedJet.Pt();
+         fJetInfo[icoll].Eta[fJetInfo[icoll].Size]    = cleanedJet.Eta();
+         fJetInfo[icoll].Phi[fJetInfo[icoll].Size]    = cleanedJet.Phi();
+         fJetInfo[icoll].Energy[fJetInfo[icoll].Size] = cleanedJet.Energy();
+         fJetInfo[icoll].Px[fJetInfo[icoll].Size]     = cleanedJet.Px();
+         fJetInfo[icoll].Py[fJetInfo[icoll].Size]     = cleanedJet.Py();
+         fJetInfo[icoll].Pz[fJetInfo[icoll].Size]     = cleanedJet.Pz();
+         fJetInfo[icoll].Et[fJetInfo[icoll].Size]     = cleanedJet.Et();
+         fJetInfo[icoll].Mass[fJetInfo[icoll].Size]   = cleanedJet.Mag();
 
 
          //----- Jet Correction Information  ----------------------------------------------------------------
