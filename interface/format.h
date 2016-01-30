@@ -781,6 +781,7 @@ public:
    Float_t EtaUncleaned    [MAX_JETS] ;
    Float_t PhiUncleaned    [MAX_JETS] ;
    Float_t EnergyUncleaned [MAX_JETS] ;
+   Float_t MassUncleaned   [MAX_JETS] ;
 
    //----- QG tagger variables  -----------------------------------------------------------------------
    Float_t QGTagsLikelihood        [MAX_JETS] ;
@@ -842,7 +843,7 @@ public:
    Float_t ca8TopMass [MAX_JETS];
    Float_t ca8MinMass [MAX_JETS];
 
-   //----- Vector pointer types used for reading  -----------------------------------------------------
+   //----- Vector pointer types used for reading  --------------------------------
    std::vector<Float_t>* SubjetMass                ;
    std::vector<Float_t>* SubjetPt                  ;
    std::vector<Float_t>* SubjetEt                  ;
@@ -854,7 +855,7 @@ public:
    std::vector<Float_t>* SubjetGenPdgId            ;
    std::vector<Float_t>* SubjetGenFlavour          ;
    std::vector<Float_t>* SubjetHadronFlavour       ;
-   //----- Vector type used for writing  --------------------------------------------------------------
+   //----- Vector type used for writing  -----------------------------------------
    std::vector<Float_t> SubjetMass_w               ;
    std::vector<Float_t> SubjetPt_w                 ;
    std::vector<Float_t> SubjetEt_w                 ;
@@ -867,14 +868,16 @@ public:
    std::vector<Float_t> SubjetGenFlavour_w         ;
    std::vector<Float_t> SubjetHadronFlavour_w      ;
 
+   //----- Legacy variables  ------------------------------------------------------
+   Float_t JVAlpha                 [MAX_JETS] ;
+   Float_t JVBeta                  [MAX_JETS] ;
+
+   //----- CMSSW Objects  ---------------------------------------------------------
 #ifdef __BPRIMEKIT_H__
    reco::Candidate* CandRef[MAX_JETS]; // backward pointer to pat:: object
 #endif
 
 
-   //----- Legacy variables  ------------------------------------------------------
-   Float_t JVAlpha                 [MAX_JETS] ;
-   Float_t JVBeta                  [MAX_JETS] ;
 
 
 
@@ -902,6 +905,7 @@ public:
       root->Branch( ( name + ".EtaUncleaned" ).c_str(), EtaUncleaned, ( name + ".EtaUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PhiUncleaned" ).c_str(), PhiUncleaned, ( name + ".PhiUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".EnergyUncleaned" ).c_str(), EnergyUncleaned, ( name + ".EnergyUncleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".MassUncleaned" ).c_str(), MassUncleaned, ( name + ".MassUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsLikelihood" ).c_str(), QGTagsLikelihood, ( name + ".QGTagsLikelihood[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsAxis2" ).c_str(), QGTagsAxis2, ( name + ".QGTagsAxis2[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsMult" ).c_str(), QGTagsMult, ( name + ".QGTagsMult[" + name + ".Size]/F" ).c_str() );
@@ -962,6 +966,8 @@ public:
       root->Branch( ( name + ".SubjetGenPdgId" ).c_str(), &SubjetGenPdgId_w );
       root->Branch( ( name + ".SubjetGenFlavour" ).c_str(), &SubjetGenFlavour_w );
       root->Branch( ( name + ".SubjetHadronFlavour" ).c_str(), &SubjetHadronFlavour_w );
+      root->Branch( ( name + ".JVAlpha" ).c_str(), JVAlpha, ( name + ".JVAlpha[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".JVBeta" ).c_str(), JVBeta, ( name + ".JVBeta[" + name + ".Size]/F" ).c_str() );
    }
    void Register( TTree* root , std::string name = "JetInfo" ) {
       root->SetBranchAddress( ( name + ".Size" ).c_str() , &Size ) ;
@@ -986,6 +992,7 @@ public:
       root->SetBranchAddress( ( name + ".EtaUncleaned" ).c_str() , EtaUncleaned ) ;
       root->SetBranchAddress( ( name + ".PhiUncleaned" ).c_str() , PhiUncleaned ) ;
       root->SetBranchAddress( ( name + ".EnergyUncleaned" ).c_str() , EnergyUncleaned ) ;
+      root->SetBranchAddress( ( name + ".MassUncleaned" ).c_str() , MassUncleaned ) ;
       root->SetBranchAddress( ( name + ".QGTagsLikelihood" ).c_str() , QGTagsLikelihood ) ;
       root->SetBranchAddress( ( name + ".QGTagsAxis2" ).c_str() , QGTagsAxis2 ) ;
       root->SetBranchAddress( ( name + ".QGTagsMult" ).c_str() , QGTagsMult ) ;
@@ -1057,6 +1064,8 @@ public:
       root->SetBranchAddress( ( name + ".SubjetGenFlavour" ).c_str() , &SubjetGenFlavour ) ;
       SubjetHadronFlavour = 0 ;
       root->SetBranchAddress( ( name + ".SubjetHadronFlavour" ).c_str() , &SubjetHadronFlavour ) ;
+      root->SetBranchAddress( ( name + ".JVAlpha" ).c_str() , JVAlpha ) ;
+      root->SetBranchAddress( ( name + ".JVBeta" ).c_str() , JVBeta ) ;
    }
 };
 class PairInfoBranches {
