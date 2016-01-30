@@ -127,7 +127,7 @@ corrections = ['L1FastJet', 'L2Relative', 'L3Absolute']
 if ("Data" in options.DataProcessing and options.forceResiduals):
   corrections.append('L2L3Residual')
 
-if options.usePrivateSQLite:
+if options.usePrivateSQLite and False:
     jLabel = 'updatedPatJetsAK4'
     jLabelAK8 = 'updatedPatJetsAK8'
     
@@ -573,7 +573,7 @@ process.bprimeKit = cms.EDAnalyzer(
       rhoLabel            = cms.InputTag( rhoLabel ),
       hltLabel            = cms.InputTag("TriggerResults::HLT"),
       metLabel            = cms.InputTag("slimmedMETs" ),
-      puInfoLabel         = cms.InputTag( myParser.getPileUpLabel(options.DataProcessing) ),
+      puInfoLabel         = cms.InputTag( 'addPileupInfo' ),
       
       #----- Vertex related  ------------------------------------------------------------------------------
       offlinePVLabel      = cms.InputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
