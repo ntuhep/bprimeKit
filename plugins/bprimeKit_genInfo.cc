@@ -68,6 +68,9 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
                  << endl; 
          }
       }
+   } else {
+      cout << "LHE Prodcut invalid!" << endl;
+      cout << fLHELabel << endl;
    }
    //-------------------------------------------------------------------------------------------------- 
    //   Begin main loop
