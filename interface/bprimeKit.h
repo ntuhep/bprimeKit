@@ -78,7 +78,7 @@ private:
    void ClearTree();
    void InitJetEnergyCorrectors();
    void ClearJetEnergyCorrector();
-   void GetEdmObjects (const edm::Event&, const EventSetup& );
+   void GetEdmObjects (const edm::Event&, const edm::EventSetup& );
    bool FillVertex    ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillPhoton    ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillLepton    ( const edm::Event&, const edm::EventSetup& ) ;
@@ -123,55 +123,56 @@ private:
    PairInfoBranches   fPairInfo                       ;
    
    //----- Event variable setup  ----------------------------------------------------------------------
-   edm::InputTag  fMETLabel    ;
-   edm::InputTag  fRhoLabel    ;
-   edm::InputTag  fHLTLabel    ;
-   edm::InputTag  fPileupLabel ;
+   edm::EDGetTokenT<double>  fRhoToken    ;
+   edm::EDGetTokenT<METList>  fMETToken    ;
+   edm::EDGetTokenT<edm::TriggerResults>  fHLTToken    ;
+   edm::EDGetTokenT<PileupList>  fPileupToken ;
    
    //----- Vertex variable setup  ---------------------------------------------------------------------
-   edm::InputTag  fPrimaryVertexLabel            ;
-   edm::InputTag  fPrimVertex_withBeamSpot_Label ;
-   edm::InputTag  fBeamspotLabel                 ;
+   edm::EDGetTokenT<VertexList>      fPrimaryVertexToken            ;
+   edm::EDGetTokenT<VertexList>      fPrimVertex_withBeamSpot_Token ;
+   edm::EDGetTokenT<reco::BeamSpot>  fBeamspotToken                 ;
    
    //----- Generation variables setup  ----------------------------------------------------------------
-   edm::InputTag  fGenEventLabel    ;
-   edm::InputTag  fGenParticleLabel ;
-   edm::InputTag  fGenDigiLabel     ;
-   edm::InputTag  fLHELabel         ;
+   edm::EDGetTokenT<GenEventInfoProduct>            fGenEventToken    ;
+   edm::EDGetTokenT<GenList>                        fGenParticleToken ;
+   edm::EDGetTokenT<L1GlobalTriggerReadoutRecord>   fGenDigiToken     ;
+   edm::EDGetTokenT<LHEEventProduct>                fLHEToken         ;
 
    //----- Jet variable setup  ------------------------------------------------------------------------
    std::vector<std::string>                fJetCollections      ;
-   std::vector<edm::InputTag>              fJetLabels           ;
+   std::vector<edm::EDGetTokenT<JetList>>  fJetTokens           ;
+   std::vector<edm::EDGetTokenT<JetList>>  fSubJetTokens        ;
    edm::EDGetTokenT<edm::ValueMap<float>>  fQGLikelihoodToken   ;
    edm::EDGetTokenT<edm::ValueMap<float>>  fQGAxis2Token        ;
    edm::EDGetTokenT<edm::ValueMap<int  >>  fQGMultiplicityToken ;
    edm::EDGetTokenT<edm::ValueMap<float>>  fQGPtDToken          ;
 
    //----- Photon variable setup  ---------------------------------------------------------------------
-   std::vector<std::string>               fPhotonCollections                 ;
-   std::vector<edm::InputTag>             fPhotonLabels                      ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fPhotonLooseIDToken                ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fPhotonMediumIDToken               ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fPhotonTightIDToken                ;
-   edm::EDGetTokenT<edm::ValueMap<float>> fPhotonIsolation_Charged_Token     ;
-   edm::EDGetTokenT<edm::ValueMap<float>> fPhotonIsolation_Neutral_Token     ;
-   edm::EDGetTokenT<edm::ValueMap<float>> fPhotonIsolation_Photon_Token      ;
-   edm::EDGetTokenT<edm::ValueMap<float>> fPhotonSignaIEtaIEtaToken          ;
-   EffectiveAreas                         fPhotonEffectiveArea_ChargeHadron  ;
-   EffectiveAreas                         fPhotonEffectiveArea_NeutralHadron ;
-   EffectiveAreas                         fPhotonEffectiveArea_Photons       ;
+   std::vector<std::string>                   fPhotonCollections                 ;
+   std::vector<edm::EDGetTokenT<PhotonList>>  fPhotonTokens                      ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>      fPhotonLooseIDToken                ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>      fPhotonMediumIDToken               ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>      fPhotonTightIDToken                ;
+   edm::EDGetTokenT<edm::ValueMap<float>>     fPhotonIsolation_Charged_Token     ;
+   edm::EDGetTokenT<edm::ValueMap<float>>     fPhotonIsolation_Neutral_Token     ;
+   edm::EDGetTokenT<edm::ValueMap<float>>     fPhotonIsolation_Photon_Token      ;
+   edm::EDGetTokenT<edm::ValueMap<float>>     fPhotonSignaIEtaIEtaToken          ;
+   EffectiveAreas                             fPhotonEffectiveArea_ChargeHadron  ;
+   EffectiveAreas                             fPhotonEffectiveArea_NeutralHadron ;
+   EffectiveAreas                             fPhotonEffectiveArea_Photons       ;
 
    //----- Lepton variable setup  ---------------------------------------------------------------------
-   std::vector<std::string>               fLeptonCollections     ;
-   std::vector<edm::InputTag>             fMuonLabels            ;
-   std::vector<edm::InputTag>             fElectronLabels        ;
-   std::vector<edm::InputTag>             fTauLabels             ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fElectronIDVetoToken   ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fElectronIDLooseToken  ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fElectronIDMediumToken ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fElectronIDTightToken  ;
-   edm::EDGetTokenT<edm::ValueMap<bool>>  fElectronIDHEEPToken   ;
-   edm::InputTag                          fConversionsTag        ;
+   std::vector<std::string>                      fLeptonCollections     ;
+   std::vector<edm::EDGetTokenT<MuonList>>       fMuonTokens            ;
+   std::vector<edm::EDGetTokenT<ElectronList>>   fElectronTokens        ;
+   std::vector<edm::EDGetTokenT<TauList>>        fTauTokens             ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDVetoToken   ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDLooseToken  ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDMediumToken ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDTightToken  ;
+   edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDHEEPToken   ;
+   edm::EDGetTokenT<reco::ConversionCollection>  fConversionsTag        ;
 
    //------------------------------------------------------------------------------ 
    //   EDM Handles
@@ -197,6 +198,7 @@ private:
   
    //----- Jet related Handles  ---------------------------------------------------
 	JetHandleList     fJetList_Hs;
+   JetHandleList     fSubJetList_Hs;
    edm::Handle<edm::ValueMap<float>> fQGLikelihood_H;
    edm::Handle<edm::ValueMap<float>> fQGAxis2_H;
    edm::Handle<edm::ValueMap<int  >> fQGMultiplicity_H;
@@ -205,7 +207,6 @@ private:
    //----- Lepton related Handles  ------------------------------------------------
    std::vector<MuonHandle>      fMuonList_Hs;
    std::vector<ElectronHandle>  fElectronList_Hs;
-   std::vector<GsfHandle>       fGsfElectronList_Hs;
    std::vector<TauHandle>       fTauList_Hs;
    edm::Handle<reco::ConversionCollection> fConversions_H;
    edm::ESHandle<TransientTrackBuilder>    fTrackBuilder_H;
@@ -228,8 +229,8 @@ private:
    reco::Vertex                         fPrimaryVertex        ;
    reco::Vertex                         fPrimaryVertex_BS     ;
    reco::BeamSpot                       fBeamSpot       ;
-   map<std::string,int>                 fHighLevelTriggerMap;
-   map<std::string,int>::iterator       fHighLevelTriggerMap_pr;
+   std::map<std::string,int>            fHighLevelTriggerMap;
+   std::map<std::string,int>::iterator  fHighLevelTriggerMap_pr;
    HLTConfigProvider                    fHighLevelTriggerConfig;
 
    //----- Helper variables for muon-jet cleaning  --------------------------------

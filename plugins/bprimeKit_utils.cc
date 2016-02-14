@@ -12,6 +12,8 @@
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
+using namespace std;
+
 //----- MC tag for pat particles  ------------------------------------------------------------------
 int getGenMCTag( GenIterator& , double , double , double ); //Required by the below
 

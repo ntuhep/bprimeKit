@@ -24,8 +24,7 @@ def ListAllProcesses():
       processList = cfg_file.replace( cfg_dir , '' )
       processList = processList.replace( 'Process_' , '' )
       processList = processList.replace( '.cfg' , '' )
-      print "ProcessList=", processList
-      print "File: $CMSSW_BASE/%s" % cfg_file.replace( cmssw_base , '' )
+      print "ProcessList=", processList, ", File: $CMSSW_BASE/%s" % cfg_file.replace( cmssw_base , '' )
       cfg = ConfigParser.ConfigParser()
       cfg.optionxform=str
       cfg.read( cfg_file ) 
@@ -49,7 +48,7 @@ class OptionParser:
          ListAllProcesses()
          sys.exit()
 
-      self.DataProcessing = options.DataProcessing
+      self.DataProcessing = options.DataProcessing.strip()
       for processfile in options.ProcessList :
          fullpath = cfg_dir + "/Process_" + processfile + ".cfg"
          if not os.path.isfile( fullpath ):
@@ -63,7 +62,7 @@ class OptionParser:
             break
       
       if len(self.cfgSettings) == 0 :
-         print "Error! Illegal Data processing options! Look at candidates in bprimeKit/data/Process*.cfg"
+         print "Error! Illegal Data processing options (",options.DataProcessing, ")! Look at candidates in bprimeKit/data/Process*.cfg"
          ListAllProcesses()
          sys.exit()
      

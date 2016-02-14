@@ -12,6 +12,7 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
+using namespace std;
 //------------------------------------------------------------------------------ 
 //   Helper functions
 //------------------------------------------------------------------------------ 

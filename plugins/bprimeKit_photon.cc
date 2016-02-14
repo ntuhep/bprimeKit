@@ -9,6 +9,8 @@
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 
+
+using namespace std;
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation 
 //------------------------------------------------------------------------------ 

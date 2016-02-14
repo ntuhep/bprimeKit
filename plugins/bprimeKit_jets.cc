@@ -18,6 +18,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 
+using namespace std;
 //------------------------------------------------------------------------------ 
 //   Method implementation 
 //------------------------------------------------------------------------------
@@ -156,8 +157,9 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
 
          //----- QG Tagger information  ---------------------------------------------------------------------
+         /***** TODO: Disabled in CMSSW_7_6_3  *****************************************/
          if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting QGTags ..." << endl ;}
-         if( pfjetcoll  ) {
+         if( pfjetcoll && false ) {
             edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( fJetList_Hs[icoll] , it_jet - fJetList_Hs[icoll]->begin() ));
             fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = (*fQGLikelihood_H)[jetRef];
             fJetInfo[icoll].QGTagsAxis2      [fJetInfo[icoll].Size] = (*fQGAxis2_H)[jetRef];
@@ -189,14 +191,14 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          //----- Jet Substructure  --------------------------------------------------------------------------
          if( fatjetcoll ) {
             if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Subjet information ..." << endl ;}
-            fJetInfo[icoll].NjettinessAK8tau1        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau1"       ) ;
-            fJetInfo[icoll].NjettinessAK8tau2        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau2"       ) ;
-            fJetInfo[icoll].NjettinessAK8tau3        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau3"       ) ;
+            fJetInfo[icoll].NjettinessAK8tau1        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8CHS:tau1"       ) ;
+            fJetInfo[icoll].NjettinessAK8tau2        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8CHS:tau2"       ) ;
+            fJetInfo[icoll].NjettinessAK8tau3        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8CHS:tau3"       ) ;
             fJetInfo[icoll].ak8PFJetsCHSSoftDropMass [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSSoftDropMass" ) ;
             fJetInfo[icoll].ak8PFJetsCHSPrunedMass   [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSPrunedMass"   ) ;
             fJetInfo[icoll].ak8PFJetsCHSTrimmedMass  [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSTrimmedMass"  ) ;
             fJetInfo[icoll].ak8PFJetsCHSFilteredMass [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSFilteredMass" ) ;
-            fJetInfo[icoll].topJetMass               [fJetInfo[icoll].Size]=it_jet->userFloat( "cmsTopTagPFJetsCHSLinksAK8" ) ;
+            // fJetInfo[icoll].topJetMass               [fJetInfo[icoll].Size]=it_jet->userFloat( "cmsTopTagPFJetsCHSLinksAK8" ) ;
 
             const reco::CATopJetTagInfo* tagInfo =  dynamic_cast<const reco::CATopJetTagInfo*>( it_jet->tagInfo("caTop"));
             if ( tagInfo != 0 ) {
@@ -209,20 +211,28 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             for( int idx_pre = 0; idx_pre < fJetInfo[icoll].Size; ++idx_pre ){ 
                fJetInfo[icoll].SubjetsIdxStart[fJetInfo[icoll].Size] += fJetInfo[icoll].NSubjets[idx_pre]; }
 
-            for ( auto const & subjet : it_jet->subjets( subjetName ) ) {
-               ++fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] ;
-               fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
-               fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
-               fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
-               fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
-               fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
-               fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
-               fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
-               fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
-               if( !fIsData && !fSkipfGenInfo ){
-                  fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
-                  fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
-                  fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+            if( fSubJetList_Hs[icoll].isValid() ){
+               for( JetIterator subjet_bunch = fSubJetList_Hs[icoll]->begin() ; subjet_bunch != fSubJetList_Hs[icoll]->end() ; ++subjet_bunch ){
+                  if( reco::deltaR2( it_jet->eta(), it_jet->phi(), subjet_bunch->eta(), subjet_bunch->phi() ) < 0.8 ){
+                     for ( unsigned i = 0 ; i < subjet_bunch->numberOfDaughters() ; ++i  ) {
+                        const pat::Jet* subjet = (const pat::Jet*) subjet_bunch->daughter(i);
+                        ++fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] ;
+                        fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
+                        fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
+                        fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
+                        fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
+                        fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
+                        fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
+                        fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
+                        fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
+                        if( !fIsData && !fSkipfGenInfo ){
+                           fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
+                           fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
+                           fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+                        }
+                     }
+                  }
+                  break;
                }
             }
          }

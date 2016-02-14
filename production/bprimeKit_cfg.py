@@ -428,30 +428,72 @@ process.vertexInfo = cms.EDProducer(
 
 print """
 #------------------------------------------------------------------------------- 
-#   Settings for QGTagger
-#-------------------------------------------------------------------------------"""
-# Including QGL: ensuring the database object can be accessed
-qgDatabaseVersion = 'v1' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
+#   Reprocessing Jets
+#------------------------------------------------------------------------------- 
+"""
+process.load('CommonTools/PileupAlgos/Puppi_cff')
+process.puppi.candName = cms.InputTag('packedPFCandidates')
+process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
 
-from CondCore.DBCommon.CondDBSetup_cfi import *
-QGPoolDBESSource = cms.ESSource("PoolDBESSource",
-      CondDBSetup,
-      toGet = cms.VPSet(),
-      connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
-)
+from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
+process.puppiOnTheFly = process.puppi.clone()
+process.puppiOnTheFly.useExistingWeights = True
 
-for type in ['AK4PFchs','AK4PFchs_antib']:
-   QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
-      record = cms.string('QGLikelihoodRcd'),
-      tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
-      label  = cms.untracked.string('QGL_'+type)
-   )))
+ak4Cut='pt>25&&abs(eta)<5.'
+ak8Cut='pt>100&&abs(eta)<5.'
 
-process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets  = cms.InputTag("jetUserData")  # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)
-process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs')  # Other options: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
-process.QGTaggerNoHF = copy.deepcopy(process.QGTagger)
-process.QGTaggerNoHF.srcJets  = cms.InputTag("jetUserDataNoHF")
+run_on_data = ('Data' in options.DataProcessing )
+
+listBtagDiscriminators = [ 
+		'pfJetProbabilityBJetTags',
+		'pfCombinedInclusiveSecondaryVertexV2BJetTags',
+		'pfCombinedMVAV2BJetTags',
+		'pfBoostedDoubleSecondaryVertexAK8BJetTags',
+		'pfCombinedCvsLJetTags',
+		'pfCombinedCvsBJetTags'
+		]
+
+print "Add AK4 Jets"
+jetToolbox( process, 'ak4', 'sequence', 'edmOut', 
+      runOnMC            = run_on_data ,
+      addQGTagger        = True,
+      bTagDiscriminators = listBtagDiscriminators ,
+      Cut                = ak4Cut )
+
+print "Add AK8 Jets, soft drop"
+jetToolbox( process, 'ak8', 'sequence', 'edmOut', 
+      runOnMC            = run_on_data ,
+      addSoftDropSubjets = True,
+      addTrimming        = True,
+      rFiltTrim          = 0.1, addPruning = True,
+      addFiltering       = True,
+      addSoftDrop        = True,
+      addNsub            = True,
+      bTagDiscriminators = listBtagDiscriminators , 
+      Cut                = ak8Cut )
+
+print "Add AK8 Jets, top tag"
+jetToolbox( process, 'ca8', 'sequence', 'edmOut', 
+      runOnMC            = run_on_data ,
+      addCMSTopTagger    = True,
+      bTagDiscriminators = listBtagDiscriminators ,
+      Cut                = ak8Cut )
+
+print "Add ak8 jets, puppi"
+jetToolbox( process, 'ak8', 'sequence', 'edmOut', 
+      runOnMC             = run_on_data ,
+      PUMethod            = 'Puppi',
+      newPFCollection     = True,
+      nameNewPFCollection = 'puppiOnTheFly',
+      addSoftDropSubjets  = True,
+      addTrimming         = True,
+      addPruning          = True,
+      addFiltering        = True,
+      addSoftDrop         = True,
+      addNsub             = True,
+      bTagDiscriminators  = listBtagDiscriminators ,
+      Cut                 = ak8Cut )
+
 
 print """
 #------------------------------------------------------------------------------- 
@@ -470,11 +512,6 @@ my_phoid_modules = []
 my_elid_modules.append( myParser.GetElectronIDModule( "other"     ) )
 my_elid_modules.append( myParser.GetElectronIDModule( "heep" ) )
 
-elec_veto_id_label   = myParser.GetElectronIDLabel( "veto"   )
-elec_loose_id_label  = myParser.GetElectronIDLabel( "loose"  )
-elec_medium_id_label = myParser.GetElectronIDLabel( "medium" )
-elec_tight_id_label  = myParser.GetElectronIDLabel( "tight"  )
-elec_heep_id_label   = myParser.GetElectronIDLabel( "heep"   )
 
 my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
 pho_loose_id_label   = "egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"
@@ -564,10 +601,10 @@ process.bprimeKit = cms.EDAnalyzer(
       puInfoLabel         = cms.InputTag( myParser.GetSetting('PileUpLabel') ),
       
       #----- Vertex related  ------------------------------------------------------------------------------
-      offlinePVLabel      = cms.InputTag("offlineSlimmedPrimaryVertices"),#CMSSW73X "offlinePrimaryVertices"),
-      offlinePVBSLabel    = cms.InputTag("offlinePrimaryVerticesWithBS"),# CMSSW73X"offlinePrimaryVerticesWithBS"),
-      offlineBSLabel      = cms.InputTag("offlineBeamSpot"),
-      conversionsLabel    = cms.InputTag("reducedEgamma","reducedConversions"),
+      offlinePVLabel      = cms.InputTag( myParser.GetSetting('PVLabel')),#CMSSW73X "offlinePrimaryVertices",
+      offlinePVBSLabel    = cms.InputTag( myParser.GetSetting('PVBSLabel')),# CMSSW73X"offlinePrimaryVerticesWithBS",
+      offlineBSLabel      = cms.InputTag( myParser.GetSetting('BSLabel')),
+      conversionsLabel    = cms.InputTag( *myParser.GetMultiSetting('ConversionsLabel') ),
       
       #----- MC Generation information --------------------------------------------------------------------
       genLabel    = cms.InputTag("prunedGenParticles"),
@@ -584,7 +621,7 @@ process.bprimeKit = cms.EDAnalyzer(
       phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
       phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
       phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
-      full5x5SigmaIEtaIEtaMap   = cms.InputTag("photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta"),
+      full5x5SigmaIEtaIEtaMap   = cms.InputTag( "photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta"),
       effAreaChHadFile          = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfChargedHadrons_V2.txt"),
       effAreaNeuHadFile         = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfNeutralHadrons_V2.txt"),
       effAreaPhoFile            = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfPhotons_V2.txt"),
@@ -594,24 +631,136 @@ process.bprimeKit = cms.EDAnalyzer(
       muonLabel       = cms.VInputTag( myParser.GetSetting('MuonLabel')       ) ,
       elecLabel       = cms.VInputTag( myParser.GetSetting('ElectronLabel')   ) ,
       tauLabel        = cms.VInputTag( myParser.GetSetting('TauLabel')        ) ,
-      eleVetoIdMap    = cms.InputTag( elec_veto_id_label   ) ,
-      eleLooseIdMap   = cms.InputTag( elec_loose_id_label  ) ,
-      eleMediumIdMap  = cms.InputTag( elec_medium_id_label ) ,
-      eleTightIdMap   = cms.InputTag( elec_tight_id_label  ) ,
-      eleHEEPIdMap    = cms.InputTag( elec_heep_id_label   ) ,
+      eleVetoIdMap    = cms.InputTag( myParser.GetElectronIDLabel( "veto"   )  ) ,
+      eleLooseIdMap   = cms.InputTag( myParser.GetElectronIDLabel( "loose"  )  ) ,
+      eleMediumIdMap  = cms.InputTag( myParser.GetElectronIDLabel( "medium" )  ) ,
+      eleTightIdMap   = cms.InputTag( myParser.GetElectronIDLabel( "tight"  )  ) ,
+      eleHEEPIdMap    = cms.InputTag( myParser.GetElectronIDLabel( "heep"   )  ) ,
 
       #----- Jet Information ------------------------------------------------------------------------------
-      JetCollections = cms.vstring  ( 'JetInfo'     , 'AK8BosonJetInfo', 'CA8TopJetInfo' ) ,
-      jetLabel       = cms.VInputTag( myParser.GetSetting('JetLabel') , myParser.GetSetting('FatJetLabel') , myParser.GetSetting('FatJetLabel')) ,
+      JetSettings = cms.VPSet(
+         cms.PSet(
+            collection = cms.string( 'JetInfo' ),
+            jetLabel   = cms.InputTag( myParser.GetSetting('JetLabel') ),
+            subjetLabel = cms.InputTag('') ## No tag for this collection..
+            ),
+         cms.PSet(
+            collection = cms.string( 'AK8BosonJetInfo' ),
+            jetLabel   = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
+            subjetLabel = cms.InputTag( myParser.GetSetting('addSoftDropSubjets') ) 
+            ),
+         cms.PSet(
+            collection = cms.string( 'CA8TopJetInfo' ),
+            jetLabel   = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
+            subjetLabel = cms.InputTag(myParser.GetSetting('TopSubJetLabel') ) 
+            ),
+
+            )
       )
+
+process.edmOut = cms.OutputModule(
+    "PoolOutputModule",
+    fileName = cms.untracked.string('edmout.root'),
+    outputCommands = cms.untracked.vstring( "drop *"),
+    dropMetaData = cms.untracked.string('ALL'),
+    )
 
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
-   process.QGTagger.srcJets = cms.InputTag( myParser.GetSetting('JetLabel'))
-   process.endPath = cms.Path(
-         process.QGTagger * 
-         process.egmGsfElectronIDSequence * 
-         process.egmPhotonIDSequence * 
+   # process.QGTagger.srcJets = cms.InputTag( myParser.GetSetting('JetLabel'))
+   process.Path = cms.Path(
+         # process.QGTagger                  *
+         process.chs                         *
+         process.puppiOnTheFly *
+
+         process.ak4PFJetsCHS                *
+         process.ak8PFJetsCHS                *
+         process.ak8PFJetsPuppi *
+
+         process.patJetCorrFactorsAK4PFCHS   *
+         process.patJetCorrFactorsAK8PFCHS   *
+         process.patJetCorrFactorsAK8PFPuppi *
+         
+         process.pfImpactParameterTagInfosAK4PFCHS   *
+         process.pfImpactParameterTagInfosAK8PFCHS   *
+         process.pfImpactParameterTagInfosAK8PFPuppi *
+         process.pfJetProbabilityBJetTagsAK4PFCHS    *
+         process.pfJetProbabilityBJetTagsAK8PFCHS    *
+         process.pfJetProbabilityBJetTagsAK8PFPuppi  *
+         
+         process.pfInclusiveSecondaryVertexFinderTagInfosAK4PFCHS       *
+         process.pfInclusiveSecondaryVertexFinderTagInfosAK8PFCHS       *
+         process.pfInclusiveSecondaryVertexFinderTagInfosAK8PFPuppi     *
+         process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK4PFCHS   *
+         process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK8PFCHS   *
+         process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK8PFPuppi *
+
+         process.pfSecondaryVertexTagInfosAK4PFCHS   *
+         process.pfSecondaryVertexTagInfosAK8PFCHS   *
+         process.pfSecondaryVertexTagInfosAK8PFPuppi *
+         process.softPFMuonsTagInfosAK4PFCHS         *
+         process.softPFMuonsTagInfosAK8PFCHS         *
+         process.softPFMuonsTagInfosAK8PFPuppi       *
+         process.softPFElectronsTagInfosAK4PFCHS     *
+         process.softPFElectronsTagInfosAK8PFCHS     *
+         process.softPFElectronsTagInfosAK8PFPuppi   *
+         process.pfCombinedMVAV2BJetTagsAK4PFCHS     *
+         process.pfCombinedMVAV2BJetTagsAK8PFCHS     *
+         process.pfCombinedMVAV2BJetTagsAK8PFPuppi   *
+
+         process.pfImpactParameterTagInfosAK8AK4PFCHS                  *
+         process.pfImpactParameterTagInfosAK8AK8PFCHS                  *
+         process.pfImpactParameterTagInfosAK8AK8PFPuppi                *
+         process.pfInclusiveSecondaryVertexFinderTagInfosAK8AK4PFCHS   *
+         process.pfInclusiveSecondaryVertexFinderTagInfosAK8AK8PFCHS   *
+         process.pfInclusiveSecondaryVertexFinderTagInfosAK8AK8PFPuppi *
+         process.pfBoostedDoubleSecondaryVertexAK8BJetTagsAK4PFCHS     *
+         process.pfBoostedDoubleSecondaryVertexAK8BJetTagsAK8PFCHS     *
+         process.pfBoostedDoubleSecondaryVertexAK8BJetTagsAK8PFPuppi   *
+
+         process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK4PFCHS   *
+         process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK8PFCHS   *
+         process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK8PFPuppi *
+         process.pfCombinedCvsLJetTagsAK4PFCHS                          *
+         process.pfCombinedCvsLJetTagsAK8PFCHS                          *
+         process.pfCombinedCvsLJetTagsAK8PFPuppi                        *
+         
+         process.pfCombinedCvsBJetTagsAK4PFCHS   *
+         process.pfCombinedCvsBJetTagsAK8PFCHS   *
+         process.pfCombinedCvsBJetTagsAK8PFPuppi *
+
+         process.QGTaggerAK4PFCHS *
+
+         process.ak8PFJetsCHSConstituents *
+         process.ak8PFJetsCHSSoftDrop     *
+         process.ak8PFJetsCHSSoftDropMass *
+         process.ak8PFJetsCHSPruned       *
+         process.ak8PFJetsCHSPrunedMass   *
+         process.ak8PFJetsCHSTrimmed      *
+         process.ak8PFJetsCHSTrimmedMass  *
+         process.ak8PFJetsCHSFiltered     *
+         process.ak8PFJetsCHSFilteredMass *
+         process.NjettinessAK8CHS         *
+
+         process.ak8PFJetsPuppiConstituents *
+         process.ak8PFJetsPuppiSoftDrop     *
+         process.ak8PFJetsPuppiSoftDropMass *
+         process.ak8PFJetsPuppiPruned       *
+         process.ak8PFJetsPuppiPrunedMass   *
+         process.ak8PFJetsPuppiTrimmed      *
+         process.ak8PFJetsPuppiTrimmedMass  *
+         process.ak8PFJetsPuppiFiltered     *
+         process.ak8PFJetsPuppiFilteredMass *
+         process.NjettinessAK8Puppi         *
+
+         process.patJetsAK4PFCHS                                      *
+         process.patJetsAK8PFCHS                                      *
+         process.patJetsAK8PFPuppi *
+         process.selectedPatJetsAK4PFCHS                              *
+         process.selectedPatJetsAK8PFCHS                              *
+         process.selectedPatJetsAK8PFPuppi                            *
+         process.egmGsfElectronIDSequence                             *
+         process.egmPhotonIDSequence                                  *
          process.bprimeKit
          )
 else:

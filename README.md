@@ -8,13 +8,13 @@ The configuration files for the particle selections are based on the [B2GAnaFW b
 
 
 ```
-cmsrel CMSSW_7_4_12_patch2
-cd CMSSW_7_4_12_patch2/src
+cmsrel CMSSW_7_6_3_patch2
+cd CMSSW_7_6_3_patch2/src
 cmsenv 
 
-git cms-merge-topic ikrav:egm_id_747_v1
-git clone https://github.com/cmsb2g/B2GAnaFW -b CMSSW_7_4_12 Analysis/B2GAnaFW 
+git clone https://github.com/cmsb2g/B2GAnaFW -b CMSSW_7_6_X_V0 Analysis/B2GAnaFW 
 git clone https://github.com/ETHZ/sixie-Muon-MuonAnalysisTools.git UserCode/sixie/Muon/MuonAnalysisTools
+git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_763
 git clone https://github.com/ntuhep/bprimeKit.git -b CMSSW_7_4_7 MyAna/bprimeKit
 
 scram b

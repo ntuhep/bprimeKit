@@ -5,6 +5,7 @@
  *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+using namespace std;
 
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
@@ -101,7 +102,6 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    }
 
    //----- Generation information  --------------------------------------------------------------------
-   iEvent.getByLabel( fGenEventLabel , fGenEvent_H ) ;
    if ( fGenEvent_H.isValid() && fGenEvent_H->hasPDF() ) {
       fEvtInfo.PDFid1   = fGenEvent_H->pdf()->id.first;
       fEvtInfo.PDFid2   = fGenEvent_H->pdf()->id.second;
@@ -137,8 +137,9 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          fEvtInfo.HLTbits[i] = ( fTrigger_H->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
          if( fDebug > 2 ) { cout << "\t\t[2] HLTInfo: "<< i <<"["<< fEvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ; }
-         if( fDebug > 2 ) { cout << "\t\t[2] Getting prescale set: " << fHighLevelTriggerConfig.prescaleSet( iEvent , iSetup ) << endl; }
-         fEvtInfo.HLTPrescaleFactor[i] = fHighLevelTriggerConfig.prescaleValue( iEvent, iSetup, triggerName_ );
+         // TODO Assuming prescale set = 0 , check.
+         // Enoch 2016-02-04
+         fEvtInfo.HLTPrescaleFactor[i] = fHighLevelTriggerConfig.prescaleValue( 0 , triggerName_ );
          fHighLevelTriggerMap_pr = fHighLevelTriggerMap.find( triggerName_ );
          if( fHighLevelTriggerMap_pr != fHighLevelTriggerMap.end() ) {
             fEvtInfo.HLTName2enum[i] = fHighLevelTriggerMap_pr->second ;

@@ -28,10 +28,11 @@ typedef std::vector<pat::MET>   METList;
 typedef edm::Handle<METList>    METHandle;
 typedef METList::const_iterator METIterator;
 
-typedef edm::Handle<std::vector<PileupSummaryInfo>>      PileupHandle;
-typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
+typedef std::vector<PileupSummaryInfo> PileupList;
+typedef edm::Handle<PileupList>        PileupHandle;
+typedef PileupList::const_iterator     PileupIterator;
    
-typedef edm::Handle<TriggerResults>                TriggerHandle;
+typedef edm::Handle<edm::TriggerResults>                TriggerHandle;
 typedef edm::Handle<L1GlobalTriggerReadoutRecord>  RecordHandle;
 typedef edm::Handle<reco::BeamSpot>                BeamSpotHandle ;
 
@@ -51,9 +52,6 @@ typedef std::vector<edm::Handle<edm::ValueMap<double>>>             IsoDepositVa
 typedef edm::View<pat::Electron>       ElectronList        ;
 typedef edm::Handle<ElectronList>      ElectronHandle      ;
 typedef ElectronList::const_iterator   ElectronIterator    ;
-typedef edm::View<reco::GsfElectron>   GsfList             ;
-typedef edm::Handle<GsfList>           GsfHandle           ;
-typedef GsfList::const_iterator        GsfIterator         ;
 
 typedef edm::View<pat::Muon>     MuonList;
 typedef edm::Handle<MuonList>    MuonHandle;
@@ -79,7 +77,7 @@ typedef edm::Handle<reco::TrackCollection>       TrackHandle        ;
 typedef edm::Handle<reco::ConversionCollection>  ConversionHandle    ;
 typedef edm::Handle<DcsStatusCollection>         DcsStatusHandle     ;
 
-typedef vector<const reco::Candidate*>   CandidateList;
+typedef std::vector<const reco::Candidate*>   CandidateList;
 typedef CandidateList::const_iterator    CandidateIterator;
 
 

@@ -10,7 +10,7 @@
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 
-
+using namespace std;
 //------------------------------------------------------------------------------ 
 //   Begin bprimeKit muon method implementaion
 //------------------------------------------------------------------------------ 

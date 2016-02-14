@@ -20,6 +20,8 @@
 #include "TLorentzVector.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+
+using namespace std;
 //------------------------------------------------------------------------------ 
 //   Helper static functions
 //------------------------------------------------------------------------------
@@ -56,14 +58,15 @@ TLorentzVector bprimeKit::CleanAK4Jet( JetIterator jet )
       }
    }
 
+   //----- TODO: Disabled for CMSSW_7_6_3  ----------------------------------------
    // Run correction regardless of clean operation (?)
-   fJetCorrector->setJetEta( cleanedJetP4.Eta() );
-   fJetCorrector->setJetPt( cleanedJetP4.Pt() );
-   fJetCorrector->setJetE( cleanedJetP4.Energy() );
-   fJetCorrector->setJetA( jet->jetArea() );
-   fJetCorrector->setRho( *(fRho_H.product()) );
-   fJetCorrector->setNPV( fVertex_H->size() ); 
-   cleanedJetP4 *= fJetCorrector->getCorrection();
+   // fJetCorrector->setJetEta( cleanedJetP4.Eta() );
+   // fJetCorrector->setJetPt( cleanedJetP4.Pt() );
+   // fJetCorrector->setJetE( cleanedJetP4.Energy() );
+   // fJetCorrector->setJetA( jet->jetArea() );
+   // fJetCorrector->setRho( *(fRho_H.product()) );
+   // fJetCorrector->setNPV( fVertex_H->size() ); 
+   // cleanedJetP4 *= fJetCorrector->getCorrection();
    
    //printf( "AK4 Cleaning\n" );
    //printf( "Before cleaning:\t%lf\t%lf\t%lf\t%lf\n", jet->pt(), jet->eta(), jet->phi(), jet->energy() );
@@ -113,14 +116,15 @@ TLorentzVector bprimeKit::CleanAK8Jet( JetIterator fatjet )
       }
    }
 
+   //----- TODO: Disabled for CMSSW_7_6_3  ----------------------------------------
    // Run corrector regardless of clean operation (?)
-   fJetCorrectorAK8->setJetEta( cleanedJetP4.Eta() );
-   fJetCorrectorAK8->setJetPt( cleanedJetP4.Pt() );
-   fJetCorrectorAK8->setJetE( cleanedJetP4.Energy() );
-   fJetCorrectorAK8->setJetA( fatjet->jetArea() );
-   fJetCorrectorAK8->setRho( *(fRho_H.product()) );
-   fJetCorrectorAK8->setNPV( fVertex_H->size() ); 
-   cleanedJetP4 *= fJetCorrectorAK8->getCorrection();
+   // fJetCorrectorAK8->setJetEta( cleanedJetP4.Eta() );
+   // fJetCorrectorAK8->setJetPt( cleanedJetP4.Pt() );
+   // fJetCorrectorAK8->setJetE( cleanedJetP4.Energy() );
+   // fJetCorrectorAK8->setJetA( fatjet->jetArea() );
+   // fJetCorrectorAK8->setRho( *(fRho_H.product()) );
+   // fJetCorrectorAK8->setNPV( fVertex_H->size() ); 
+   // cleanedJetP4 *= fJetCorrectorAK8->getCorrection();
    
    //printf( "AK8 Cleaning\n" );
    //printf( "Before cleaning:\t%lf\t%lf\t%lf\t%lf\n", fatjet->pt(), fatjet->eta(), fatjet->phi(), fatjet->energy() );
