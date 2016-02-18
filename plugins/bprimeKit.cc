@@ -58,7 +58,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fGenParticleToken = consumes<GenList>                      ( iConfig.getParameter<edm::InputTag> ( "genLabel"    )  ) ;
    fGenDigiToken     = consumes<L1GlobalTriggerReadoutRecord> ( iConfig.getParameter<edm::InputTag> ( "gtdigiLabel" )  ) ;
    fLHEToken         = consumes<LHEEventProduct>              ( iConfig.getParameter<edm::InputTag> ( "lheLabel"    )  ) ;
-   fLHERunToken      = consumes<LHERunInfoProduct>            ( iConfig.getParameter<edm::InputTag> ( "lheRunLabel"    )  ) ;
+   fLHERunToken      = consumes<LHERunInfoProduct,edm::InRun>   ( iConfig.getParameter<edm::InputTag> ( "lheRunLabel"    )  ) ;
 
    //----- Jet related  -------------------------------------------------------------------------------
    for( const auto& jetsetting : iConfig.getParameter<std::vector<edm::ParameterSet>>( "JetSettings" ) ){
@@ -150,9 +150,13 @@ void bprimeKit::beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
 }
 void bprimeKit::endRun( const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
-   iRun.getByLabel( edm::InputTag("externalLHEProduct") , fLHERunInfo_H );
+   iRun.getByToken<LHERunInfoProduct>( fLHERunToken , fLHERunInfo_H );
    if( fLHERunInfo_H.isValid() ){
-      fGenInfo.PdfID = fLHERunInfo_H->heprup().PDFSUP.first; 
+      fRunInfo.PdfID = fLHERunInfo_H->heprup().PDFSUP.first;
+      cout << "PDFID: " << fRunInfo.PdfID << endl; 
+      cout << "PDFID: " << fLHERunInfo_H->heprup().PDFSUP.first << endl;
+   } else {
+      cout << "Invalid handle!" << endl;
    }
 
    fRunTree->Fill();

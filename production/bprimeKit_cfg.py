@@ -611,7 +611,7 @@ process.bprimeKit = cms.EDAnalyzer(
       genevtLabel = cms.InputTag("generator"),
       gtdigiLabel = cms.InputTag("gtDigis"),
       lheLabel    = cms.InputTag(myParser.GetSetting('LHELabel') ),
-      lheRunLabel = cms.InputTag(myParser.GetSetting('LHELabel') ),
+      lheRunLabel = cms.InputTag( "externalLHEProducer" ),
 
       #----- Photon information ------------------------------------------------------------------------ 
       PhoCollections            = cms.vstring('PhotonInfo'),
