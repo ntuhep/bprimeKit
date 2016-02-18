@@ -611,6 +611,7 @@ process.bprimeKit = cms.EDAnalyzer(
       genevtLabel = cms.InputTag("generator"),
       gtdigiLabel = cms.InputTag("gtDigis"),
       lheLabel    = cms.InputTag(myParser.GetSetting('LHELabel') ),
+      lheRunLabel = cms.InputTag(myParser.GetSetting('LHELabel') ),
 
       #----- Photon information ------------------------------------------------------------------------ 
       PhoCollections            = cms.vstring('PhotonInfo'),
@@ -640,19 +641,24 @@ process.bprimeKit = cms.EDAnalyzer(
       #----- Jet Information ------------------------------------------------------------------------------
       JetSettings = cms.VPSet(
          cms.PSet(
-            collection = cms.string( 'JetInfo' ),
-            jetLabel   = cms.InputTag( myParser.GetSetting('JetLabel') ),
-            subjetLabel = cms.InputTag('') ## No tag for this collection..
+            jetCollection = cms.string( 'JetInfo' ),
+            jetLabel      = cms.InputTag( myParser.GetSetting('JetLabel') ),
+            subjetLabel   = cms.InputTag(''), ## No tag for this collection..
             ),
          cms.PSet(
-            collection = cms.string( 'AK8BosonJetInfo' ),
-            jetLabel   = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
-            subjetLabel = cms.InputTag( myParser.GetSetting('addSoftDropSubjets') ) 
+            jetCollection = cms.string( 'AK8BosonJetInfo' ),
+            jetLabel      = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
+            subjetLabel   = cms.InputTag( myParser.GetSetting('SoftDropSubJetLabel') )
             ),
          cms.PSet(
-            collection = cms.string( 'CA8TopJetInfo' ),
-            jetLabel   = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
-            subjetLabel = cms.InputTag(myParser.GetSetting('TopSubJetLabel') ) 
+            jetCollection = cms.string( 'CA8TopJetInfo' ),
+            jetLabel      = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
+            subjetLabel   = cms.InputTag(myParser.GetSetting('TopSubJetLabel') )
+            ),
+         cms.PSet(
+            jetCollection = cms.string( 'AK8BosonJetInfoPuppi' ),
+            jetLabel      = cms.InputTag( myParser.GetSetting('PuppiFatJetLabel') ),
+            subjetLabel   = cms.InputTag('selectedPatJetsAK8PFPuppiSoftDropPacked')
             ),
 
             )
@@ -665,69 +671,17 @@ process.edmOut = cms.OutputModule(
     dropMetaData = cms.untracked.string('ALL'),
     )
 
+import bpkFrameWork.bprimeKit.PathMaker as myPath
+
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
-   # process.QGTagger.srcJets = cms.InputTag( myParser.GetSetting('JetLabel'))
    process.Path = cms.Path(
-         # process.QGTagger                  *
-         process.chs                         *
+         process.chs           *
          process.puppiOnTheFly *
 
          process.ak4PFJetsCHS                *
          process.ak8PFJetsCHS                *
          process.ak8PFJetsPuppi *
-
-         process.patJetCorrFactorsAK4PFCHS   *
-         process.patJetCorrFactorsAK8PFCHS   *
-         process.patJetCorrFactorsAK8PFPuppi *
-         
-         process.pfImpactParameterTagInfosAK4PFCHS   *
-         process.pfImpactParameterTagInfosAK8PFCHS   *
-         process.pfImpactParameterTagInfosAK8PFPuppi *
-         process.pfJetProbabilityBJetTagsAK4PFCHS    *
-         process.pfJetProbabilityBJetTagsAK8PFCHS    *
-         process.pfJetProbabilityBJetTagsAK8PFPuppi  *
-         
-         process.pfInclusiveSecondaryVertexFinderTagInfosAK4PFCHS       *
-         process.pfInclusiveSecondaryVertexFinderTagInfosAK8PFCHS       *
-         process.pfInclusiveSecondaryVertexFinderTagInfosAK8PFPuppi     *
-         process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK4PFCHS   *
-         process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK8PFCHS   *
-         process.pfCombinedInclusiveSecondaryVertexV2BJetTagsAK8PFPuppi *
-
-         process.pfSecondaryVertexTagInfosAK4PFCHS   *
-         process.pfSecondaryVertexTagInfosAK8PFCHS   *
-         process.pfSecondaryVertexTagInfosAK8PFPuppi *
-         process.softPFMuonsTagInfosAK4PFCHS         *
-         process.softPFMuonsTagInfosAK8PFCHS         *
-         process.softPFMuonsTagInfosAK8PFPuppi       *
-         process.softPFElectronsTagInfosAK4PFCHS     *
-         process.softPFElectronsTagInfosAK8PFCHS     *
-         process.softPFElectronsTagInfosAK8PFPuppi   *
-         process.pfCombinedMVAV2BJetTagsAK4PFCHS     *
-         process.pfCombinedMVAV2BJetTagsAK8PFCHS     *
-         process.pfCombinedMVAV2BJetTagsAK8PFPuppi   *
-
-         process.pfImpactParameterTagInfosAK8AK4PFCHS                  *
-         process.pfImpactParameterTagInfosAK8AK8PFCHS                  *
-         process.pfImpactParameterTagInfosAK8AK8PFPuppi                *
-         process.pfInclusiveSecondaryVertexFinderTagInfosAK8AK4PFCHS   *
-         process.pfInclusiveSecondaryVertexFinderTagInfosAK8AK8PFCHS   *
-         process.pfInclusiveSecondaryVertexFinderTagInfosAK8AK8PFPuppi *
-         process.pfBoostedDoubleSecondaryVertexAK8BJetTagsAK4PFCHS     *
-         process.pfBoostedDoubleSecondaryVertexAK8BJetTagsAK8PFCHS     *
-         process.pfBoostedDoubleSecondaryVertexAK8BJetTagsAK8PFPuppi   *
-
-         process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK4PFCHS   *
-         process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK8PFCHS   *
-         process.pfInclusiveSecondaryVertexFinderCvsLTagInfosAK8PFPuppi *
-         process.pfCombinedCvsLJetTagsAK4PFCHS                          *
-         process.pfCombinedCvsLJetTagsAK8PFCHS                          *
-         process.pfCombinedCvsLJetTagsAK8PFPuppi                        *
-         
-         process.pfCombinedCvsBJetTagsAK4PFCHS   *
-         process.pfCombinedCvsBJetTagsAK8PFCHS   *
-         process.pfCombinedCvsBJetTagsAK8PFPuppi *
 
          process.QGTaggerAK4PFCHS *
 
@@ -753,14 +707,37 @@ if not options.b2gPreprocess:
          process.ak8PFJetsPuppiFilteredMass *
          process.NjettinessAK8Puppi         *
 
-         process.patJetsAK4PFCHS                                      *
-         process.patJetsAK8PFCHS                                      *
-         process.patJetsAK8PFPuppi *
-         process.selectedPatJetsAK4PFCHS                              *
-         process.selectedPatJetsAK8PFCHS                              *
-         process.selectedPatJetsAK8PFPuppi                            *
-         process.egmGsfElectronIDSequence                             *
-         process.egmPhotonIDSequence                                  *
+         myPath.JetCommon( process, 'AK4PFCHS' )                *
+         myPath.JetCommon( process, 'AK8PFCHS' )                *
+         myPath.JetCommon( process, 'AK8PFPuppi' )              *
+         myPath.JetCommon( process, 'AK8PFCHSSoftDropSubjets' ) *
+         process.patJetCorrFactorsAK8PFCHSSoftDrop              *
+         process.patJetsAK8PFCHSSoftDrop                        *
+         process.selectedPatJetsAK8PFCHSSoftDrop                *
+         process.selectedPatJetsAK8PFCHSSoftDropPacked          *
+         
+         myPath.JetCommon( process, 'AK8PFPuppiSoftDropSubjets' ) *
+         process.patJetCorrFactorsAK8PFPuppiSoftDrop              *
+         process.patJetsAK8PFPuppiSoftDrop                        *
+         process.selectedPatJetsAK8PFPuppiSoftDrop                *
+         process.selectedPatJetsAK8PFPuppiSoftDropPacked          *
+    
+         process.ca8PFJetsCHS                          *
+         process.ca8PFJetsCHSConstituents              *
+         process.cmsTopTagPFJetsCHS                    *
+         myPath.JetBTagPath( process, 'CMSTopTagCHS' ) *
+         process.cmsTopTagPFJetsCHS                    *
+         process.patJetCorrFactorsCMSTopTagCHS         *
+         process.CATopTagInfos                         *
+         process.patJetsCMSTopTagCHS                   *
+         
+         myPath.JetBTagPath( process, 'CMSTopTagCHSSubjets' ) *
+         process.patJetCorrFactorsCMSTopTagCHSSubjets *
+         process.patJetsCMSTopTagCHSSubjets *
+         process.patJetsCMSTopTagCHSPacked *
+         
+         process.egmGsfElectronIDSequence  *
+         process.egmPhotonIDSequence       * 
          process.bprimeKit
          )
 else:

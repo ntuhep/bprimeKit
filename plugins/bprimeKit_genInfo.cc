@@ -54,11 +54,13 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
       fGenInfo.Weight = fGenEvent_H->weight();
       fEvtInfo.ptHat  = fGenEvent_H->qScale();
    }
+   
+
    if( fLHEInfo_H.isValid() ){
       if( fDebug > 1 ){ cout << "LHE Product is valid" << endl; }
-      fGenInfo.LHENominalWeight = fLHEInfo_H->hepeup().XWGTUP;
-      fGenInfo.LHEOriginalWeight = fLHEInfo_H->originalXWGTUP(); 
-      fGenInfo.LHESize = fLHEInfo_H->weights().size();
+      fGenInfo.LHENominalWeight  = fLHEInfo_H->hepeup().XWGTUP;
+      fGenInfo.LHEOriginalWeight = fLHEInfo_H->originalXWGTUP();
+      fGenInfo.LHESize           = fLHEInfo_H->weights().size();
       if( fDebug > 1 ){ cout << "LHE Product weight << " << fGenInfo.LHENominalWeight  << endl; }
       for( unsigned i = 0 ; i < fLHEInfo_H->weights().size(); ++i ){
          fGenInfo.LHESystematicWeights[i] = fLHEInfo_H->weights().at(i).wgt;

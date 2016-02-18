@@ -84,6 +84,7 @@ class OptionParser:
       if x in self.cfgSettings:
          return self.cfgSettings[x]
       else:
+         print "Warning! Setting (",x,") not found!"
          return ''
 
    def GetMultiSetting( self,x ):

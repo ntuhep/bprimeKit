@@ -54,16 +54,17 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fBeamspotToken                 = consumes<reco::BeamSpot> (iConfig.getParameter<edm::InputTag>( "offlineBSLabel"   ) );
    
    //----- fGenInfo related  ---------------------------------------------------------------------------
-   fGenEventToken    = consumes<GenEventInfoProduct> (iConfig.getParameter<edm::InputTag>( "genevtLabel" ) );
-   fGenParticleToken = consumes<GenList> (iConfig.getParameter<edm::InputTag>( "genLabel"    ) );
-   fGenDigiToken     = consumes<L1GlobalTriggerReadoutRecord> (iConfig.getParameter<edm::InputTag>( "gtdigiLabel" ) );
-   fLHEToken         = consumes<LHEEventProduct> (iConfig.getParameter<edm::InputTag>( "lheLabel"    ) );
+   fGenEventToken    = consumes<GenEventInfoProduct>          ( iConfig.getParameter<edm::InputTag> ( "genevtLabel" )  ) ;
+   fGenParticleToken = consumes<GenList>                      ( iConfig.getParameter<edm::InputTag> ( "genLabel"    )  ) ;
+   fGenDigiToken     = consumes<L1GlobalTriggerReadoutRecord> ( iConfig.getParameter<edm::InputTag> ( "gtdigiLabel" )  ) ;
+   fLHEToken         = consumes<LHEEventProduct>              ( iConfig.getParameter<edm::InputTag> ( "lheLabel"    )  ) ;
+   fLHERunToken      = consumes<LHERunInfoProduct>            ( iConfig.getParameter<edm::InputTag> ( "lheRunLabel"    )  ) ;
 
    //----- Jet related  -------------------------------------------------------------------------------
    for( const auto& jetsetting : iConfig.getParameter<std::vector<edm::ParameterSet>>( "JetSettings" ) ){
-      fJetCollections.push_back( jetsetting.getParameter<std::string>( "collection" ) ) ;
+      fJetCollections.push_back( jetsetting.getParameter<std::string>( "jetCollection" ) ) ;
       fJetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("jetLabel") ) ); 
-      fSubJetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("subjetLabel") ) );
+      fSubjetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("subjetLabel") ) );
    }
    fQGLikelihoodToken   = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
    fQGAxis2Token        = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
@@ -130,6 +131,7 @@ bprimeKit::~bprimeKit()
 void bprimeKit::beginJob()
 {
    fBaseTree = new TTree( "root", "root" );
+   fRunTree  = new TTree( "run" , "run"  );
    InitTree();
 }
 void bprimeKit::endJob()
@@ -143,10 +145,18 @@ void bprimeKit::endJob()
 //------------------------------------------------------------------------------ 
 //   bprimeKit event based analysis methods
 //------------------------------------------------------------------------------ 
-void bprimeKit::beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup )
-{}
-void bprimeKit::endRun( edm::Run const&, edm::EventSetup const& )
-{}
+void bprimeKit::beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
+{
+}
+void bprimeKit::endRun( const edm::Run& iRun, const edm::EventSetup& iSetup)
+{
+   iRun.getByLabel( edm::InputTag("externalLHEProduct") , fLHERunInfo_H );
+   if( fLHERunInfo_H.isValid() ){
+      fGenInfo.PdfID = fLHERunInfo_H->heprup().PDFSUP.first; 
+   }
+
+   fRunTree->Fill();
+}
 
 
 void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
@@ -220,10 +230,14 @@ void bprimeKit::InitTree()
       fJetInfo[i].RegisterTree( fBaseTree, fJetCollections[i] );
    }
    if( fPairCollectionType >= 0 ) { fPairInfo.RegisterTree( fBaseTree ); }
+
+   //----- Setting the Run Information tree  --------------------------------------
+   fRunInfo.RegisterTree( fRunTree );
 }
 
 void bprimeKit::ClearTree()
 {
+   /***** DO NOT DELETE TREES!  **************************************************/
 }
 
 //------------------------------------------------------------------------------ 
@@ -286,7 +300,6 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
    
    if( !iEvent.isRealData() ) { 
       iEvent.getByToken( fPileupToken, fPileup_H ); 
-      iEvent.getByToken( fGenEventToken , fGenEvent_H ) ;
       if( !fSkipfGenInfo ) { 
          iEvent.getByToken( fGenParticleToken, fGenParticle_H ); 
          iEvent.getByToken( fGenEventToken, fGenEvent_H );
@@ -296,21 +309,18 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
    
    for( unsigned i = 0; i < fJetTokens.size(); ++i ) {
       fJetList_Hs.push_back( JetHandle() );
-      fSubJetList_Hs.push_back( JetHandle() );
+      fSubjetList_Hs.push_back( JetHandle() );
       iEvent.getByToken( fJetTokens[i], fJetList_Hs[i] );
-      iEvent.getByToken( fSubJetTokens[i] , fSubJetList_Hs[i] );
+      iEvent.getByToken( fSubjetTokens[i] , fSubjetList_Hs[i] );
       if( fDebug > 1 ) { 
-         std::cout << "\t[1]Getting Jet Collection" << i << std::endl
-            << fJetList_Hs[i]->size() << " entries" << std::endl ; 
+         std::cout << "\t[1]Getting Jet Collection " << i << " : "
+            << fJetList_Hs[i]->size() << " entries" << std::endl ;
+         if( fSubjetList_Hs[i].isValid() ){
+            std::cout << "\t[1]Getting Subhet Collection " << i << " : "
+               << fSubjetList_Hs[i]->size() << " entries" << std::endl ; 
+         }
       }
    }
-
-   /***** TODO: Dsiabled in CMSSW_7_6_3  *****************************************/
-   // if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Q taggers" << endl;}
-   // iEvent.getByToken( fQGLikelihoodToken   , fQGLikelihood_H   ) ;
-   // iEvent.getByToken( fQGAxis2Token        , fQGAxis2_H        ) ;
-   // iEvent.getByToken( fQGMultiplicityToken , fQGMultiplicity_H ) ;
-   // iEvent.getByToken( fQGPtDToken          , fQGPtD_H          ) ;
 
    for( unsigned i = 0 ; i < fMuonTokens.size() ; ++i ){
       fMuonList_Hs.push_back( MuonHandle() );
@@ -335,7 +345,7 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
    iEvent.getByToken( fElectronIDTightToken  , fElectronIDTight_H  ) ;
    iEvent.getByToken( fElectronIDHEEPToken   , fElectronIDHEEP_H   ) ;
 
-   
+
    for( unsigned il = 0; il < fPhotonTokens.size(); il++ ) {
       fPhotonList_Hs.push_back( PhotonHandle() );
       iEvent.getByToken( fPhotonTokens[il], fPhotonList_Hs[il] );

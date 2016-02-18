@@ -23,6 +23,7 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 
 typedef std::vector<pat::MET>   METList;
 typedef edm::Handle<METList>    METHandle;
@@ -41,6 +42,7 @@ typedef std::vector<reco::GenParticle>   GenList;
 typedef edm::Handle<GenList>             GenHandle;
 typedef GenList::const_iterator          GenIterator ;
 typedef edm::Handle<LHEEventProduct>     LHEHandle;
+typedef edm::Handle<LHERunInfoProduct>   LHERunInfoHandle;
 
 typedef std::vector<reco::Vertex>  VertexList;
 typedef edm::Handle<VertexList>    VertexHandle   ;
@@ -68,7 +70,7 @@ typedef edm::Handle<PhotonList>    PhotonHandle;
 typedef std::vector<PhotonHandle>  PhotonHandleList;
 typedef PhotonList::const_iterator PhotonIterator ;
 
-typedef edm::View<pat::Jet>     JetList;
+typedef std::vector<pat::Jet>     JetList;
 typedef edm::Handle<JetList>    JetHandle;
 typedef std::vector<JetHandle>  JetHandleList;
 typedef JetList::const_iterator JetIterator;

@@ -28,7 +28,8 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 	edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
    //----- Jet collection type handling  --------------------------------------------------------------
    bool        pfjetcoll, fatjetcoll  ;
-   std::string subjetName;
+   std::string userFloat_name;
+   std::string userFloat_prefix; 
    std::string jetCorrectionUncertaintyTag;
 	
    //----- Algorithm specific helper functions  -------------------------------------------------------
@@ -50,24 +51,19 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       if( fJetCollections[icoll]== "JetInfo" ) {
          pfjetcoll  = true ;
          fatjetcoll = false;
-         subjetName = "";
          jetCorrectionUncertaintyTag = "AK4PFchs";
-      } else if( fJetCollections[icoll] =="AK8BosonJetInfo" ) {
+      } else { 
          pfjetcoll  = false;
          fatjetcoll = true;
-         subjetName = "SoftDrop";
          jetCorrectionUncertaintyTag = "AK8PFchs";
-      } else if( fJetCollections[icoll] == "CA8TopJetInfo" ) {
-         pfjetcoll  = false;
-         fatjetcoll = true;
-         subjetName = "CMSTopTag";
-         jetCorrectionUncertaintyTag = "AK8PFchs";
+      }
+
+      if( fJetCollections[icoll].find( "Puppi" ) != std::string::npos ){
+         userFloat_name   = "AK8Puppi" ; 
+         userFloat_prefix = "ak8PFJetsPuppi";
       } else {
-         std::cerr << "Warning! Unknown Jet collection type! Program may misbehave" << std::endl;
-         pfjetcoll  = false;
-         fatjetcoll = false;
-         subjetName = "";
-         jetCorrectionUncertaintyTag = "";
+         userFloat_name   = "AK8CHS" ;
+         userFloat_prefix = "ak8PFJetsCHS" ;
       }
 
       iSetup.get<JetCorrectionsRecord>().get( jetCorrectionUncertaintyTag.c_str() , JetCorParColl );
@@ -85,7 +81,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                       << " jet pt,eta,phi " << it_jet->pt() << "," 
                       << it_jet->eta() << "," << it_jet->phi() << endl; 
          }
-         
+
          //----- Generic Jet Information  -------------------------------------------------------------------
          fJetInfo[icoll].Index           [fJetInfo[icoll].Size] = fJetInfo[icoll].Size              ;
          fJetInfo[icoll].NTracks         [fJetInfo[icoll].Size] = it_jet->associatedTracks().size() ;
@@ -97,6 +93,31 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          fJetInfo[icoll].EtaUncleaned    [fJetInfo[icoll].Size] = it_jet->eta();
          fJetInfo[icoll].PhiUncleaned    [fJetInfo[icoll].Size] = it_jet->phi();
          fJetInfo[icoll].EnergyUncleaned [fJetInfo[icoll].Size] = it_jet->energy();
+         
+         //----- Jet Correction Information  ----------------------------------------------------------------
+         fJetInfo[icoll].PtCorrRaw   [fJetInfo[icoll].Size] = it_jet->correctedJet( "Uncorrected"       ).pt();
+         fJetInfo[icoll].PtCorrL2    [fJetInfo[icoll].Size] = it_jet->correctedJet( "L2Relative"        ).pt(); // L2(rel)
+         fJetInfo[icoll].PtCorrL3    [fJetInfo[icoll].Size] = it_jet->correctedJet( "L3Absolute"        ).pt(); // L3(abs)
+         if( fIncludeL7 ) {
+            fJetInfo[icoll].PtCorrL7g   [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "gluon" ).pt(); // L7(gluon)
+            fJetInfo[icoll].PtCorrL7uds [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "uds"   ).pt(); // L7(uds-jet)
+            fJetInfo[icoll].PtCorrL7c   [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "charm" ).pt(); // L7(c-jet)
+            fJetInfo[icoll].PtCorrL7b   [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "bottom" ).pt(); // L7(b-jet)
+         }
+
+         //----- B Tagging discriminators  ------------------------------------------------------------------
+         if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting b tags  ..." << endl ;}
+         fJetInfo[icoll].combinedSecondaryVertexBJetTags             [fJetInfo[icoll].Size] = it_jet->bDiscriminator("combinedSecondaryVertexBJetTags"              );
+         fJetInfo[icoll].pfJetBProbabilityBJetTags                   [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfJetBProbabilityBJetTags"                    );
+         fJetInfo[icoll].pfJetProbabilityBJetTags                    [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfJetProbabilityBJetTags"                     );
+         fJetInfo[icoll].pfTrackCountingHighPurBJetTags              [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfTrackCountingHighPurBJetTags"               );
+         fJetInfo[icoll].pfTrackCountingHighEffBJetTags              [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfTrackCountingHighEffBJetTags"               );
+         fJetInfo[icoll].pfSimpleSecondaryVertexHighEffBJetTags      [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfSimpleSecondaryVertexHighEffBJetTags"       );
+         fJetInfo[icoll].pfSimpleSecondaryVertexHighPurBJetTags      [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"       );
+         fJetInfo[icoll].pfCombinedSecondaryVertexV2BJetTags         [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedSecondaryVertexV2BJetTags"          );
+         fJetInfo[icoll].pfCombinedInclusiveSecondaryVertexV2BJetTags[fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags" );
+         fJetInfo[icoll].pfCombinedSecondaryVertexSoftLeptonBJetTags [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedSecondaryVertexSoftLeptonBJetTags"  );
+         fJetInfo[icoll].pfCombinedMVABJetTags                       [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedMVABJetTags"                       );
 
          //----- Cleaned Jet four momentum  ---------------------------------------------
          if( pfjetcoll ){
@@ -128,115 +149,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             cout << "\t\t[2]Original Jet Pt:" << it_jet->pt() << endl; 
             cout << "\t\t[2]Recorded Jet Pt:" << fJetInfo[icoll].Pt[fJetInfo[icoll].Size] << endl; 
          }
-
-
-         //----- Jet Correction Information  ----------------------------------------------------------------
-         if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting b tags  ..." << endl ;}
-         fJetInfo[icoll].PtCorrRaw   [fJetInfo[icoll].Size] = it_jet->correctedJet( "Uncorrected"       ).pt();
-         fJetInfo[icoll].PtCorrL2    [fJetInfo[icoll].Size] = it_jet->correctedJet( "L2Relative"        ).pt(); // L2(rel)
-         fJetInfo[icoll].PtCorrL3    [fJetInfo[icoll].Size] = it_jet->correctedJet( "L3Absolute"        ).pt(); // L3(abs)
-         if( fIncludeL7 ) {
-            fJetInfo[icoll].PtCorrL7g   [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "gluon" ).pt(); // L7(gluon)
-            fJetInfo[icoll].PtCorrL7uds [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "uds"   ).pt(); // L7(uds-jet)
-            fJetInfo[icoll].PtCorrL7c   [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "charm" ).pt(); // L7(c-jet)
-            fJetInfo[icoll].PtCorrL7b   [fJetInfo[icoll].Size] = it_jet->correctedJet( "L7Parton", "bottom" ).pt(); // L7(b-jet)
-         }
-
-         //----- B Tagging discriminators  ------------------------------------------------------------------
-         fJetInfo[icoll].combinedSecondaryVertexBJetTags             [fJetInfo[icoll].Size] = it_jet->bDiscriminator("combinedSecondaryVertexBJetTags"              );
-         fJetInfo[icoll].pfJetBProbabilityBJetTags                   [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfJetBProbabilityBJetTags"                    );
-         fJetInfo[icoll].pfJetProbabilityBJetTags                    [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfJetProbabilityBJetTags"                     );
-         fJetInfo[icoll].pfTrackCountingHighPurBJetTags              [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfTrackCountingHighPurBJetTags"               );
-         fJetInfo[icoll].pfTrackCountingHighEffBJetTags              [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfTrackCountingHighEffBJetTags"               );
-         fJetInfo[icoll].pfSimpleSecondaryVertexHighEffBJetTags      [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfSimpleSecondaryVertexHighEffBJetTags"       );
-         fJetInfo[icoll].pfSimpleSecondaryVertexHighPurBJetTags      [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"       );
-         fJetInfo[icoll].pfCombinedSecondaryVertexV2BJetTags         [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedSecondaryVertexV2BJetTags"          );
-         fJetInfo[icoll].pfCombinedInclusiveSecondaryVertexV2BJetTags[fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags" );
-         fJetInfo[icoll].pfCombinedSecondaryVertexSoftLeptonBJetTags [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedSecondaryVertexSoftLeptonBJetTags"  );
-         fJetInfo[icoll].pfCombinedMVABJetTags                       [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedMVABJetTags"                       );
-
-
-         //----- QG Tagger information  ---------------------------------------------------------------------
-         /***** TODO: Disabled in CMSSW_7_6_3  *****************************************/
-         if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting QGTags ..." << endl ;}
-         if( pfjetcoll && false ) {
-            edm::RefToBase<pat::Jet> jetRef( edm::Ref<JetList>( fJetList_Hs[icoll] , it_jet - fJetList_Hs[icoll]->begin() ));
-            fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = (*fQGLikelihood_H)[jetRef];
-            fJetInfo[icoll].QGTagsAxis2      [fJetInfo[icoll].Size] = (*fQGAxis2_H)[jetRef];
-            fJetInfo[icoll].QGTagsMult       [fJetInfo[icoll].Size] = (*fQGMultiplicity_H)[jetRef];
-            fJetInfo[icoll].QGTagsPtD        [fJetInfo[icoll].Size] = (*fQGPtD_H)[jetRef];
-         }
-
-         //----- Jet Uncertainty  ---------------------------------------------------------------------------
-         if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet Getting Uncertainty..." << endl ;}
-         fJetCorrectionUncertainty->setJetEta( it_jet->eta() );
-         fJetCorrectionUncertainty->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
-         if( fabs( it_jet->eta() ) <= 5.0 ) { 
-            float temp = fJetCorrectionUncertainty->getUncertainty(true);
-            fJetInfo[icoll].Unc[fJetInfo[icoll].Size]    = temp;
-            fJetInfo[icoll].JesUnc[fJetInfo[icoll].Size] = temp;
-         }
-
-
-         //----- Particle flow information  -----------------------------------------------------------------
-         if( pfjetcoll ) {
-            if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Particle flow information ..." << endl ;}
-            fJetInfo[icoll].NCH[fJetInfo[icoll].Size] = it_jet->chargedMultiplicity();
-            fJetInfo[icoll].CEF[fJetInfo[icoll].Size] = it_jet->chargedEmEnergyFraction();
-            fJetInfo[icoll].NHF[fJetInfo[icoll].Size] = it_jet->neutralHadronEnergyFraction();
-            fJetInfo[icoll].NEF[fJetInfo[icoll].Size] = it_jet->neutralEmEnergyFraction();
-            fJetInfo[icoll].CHF[fJetInfo[icoll].Size] = it_jet->chargedHadronEnergyFraction();
-         }
-
-         //----- Jet Substructure  --------------------------------------------------------------------------
-         if( fatjetcoll ) {
-            if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Subjet information ..." << endl ;}
-            fJetInfo[icoll].NjettinessAK8tau1        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8CHS:tau1"       ) ;
-            fJetInfo[icoll].NjettinessAK8tau2        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8CHS:tau2"       ) ;
-            fJetInfo[icoll].NjettinessAK8tau3        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8CHS:tau3"       ) ;
-            fJetInfo[icoll].ak8PFJetsCHSSoftDropMass [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSSoftDropMass" ) ;
-            fJetInfo[icoll].ak8PFJetsCHSPrunedMass   [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSPrunedMass"   ) ;
-            fJetInfo[icoll].ak8PFJetsCHSTrimmedMass  [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSTrimmedMass"  ) ;
-            fJetInfo[icoll].ak8PFJetsCHSFilteredMass [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSFilteredMass" ) ;
-            // fJetInfo[icoll].topJetMass               [fJetInfo[icoll].Size]=it_jet->userFloat( "cmsTopTagPFJetsCHSLinksAK8" ) ;
-
-            const reco::CATopJetTagInfo* tagInfo =  dynamic_cast<const reco::CATopJetTagInfo*>( it_jet->tagInfo("caTop"));
-            if ( tagInfo != 0 ) {
-               fJetInfo[icoll].ca8MinMass [fJetInfo[icoll].Size] = tagInfo->properties().minMass;
-               fJetInfo[icoll].ca8TopMass [fJetInfo[icoll].Size] = tagInfo->properties().topMass;
-            }
-
-            fJetInfo[icoll].NSubjets        [fJetInfo[icoll].Size] = 0;
-            fJetInfo[icoll].SubjetsIdxStart [fJetInfo[icoll].Size] = 0;
-            for( int idx_pre = 0; idx_pre < fJetInfo[icoll].Size; ++idx_pre ){ 
-               fJetInfo[icoll].SubjetsIdxStart[fJetInfo[icoll].Size] += fJetInfo[icoll].NSubjets[idx_pre]; }
-
-            if( fSubJetList_Hs[icoll].isValid() ){
-               for( JetIterator subjet_bunch = fSubJetList_Hs[icoll]->begin() ; subjet_bunch != fSubJetList_Hs[icoll]->end() ; ++subjet_bunch ){
-                  if( reco::deltaR2( it_jet->eta(), it_jet->phi(), subjet_bunch->eta(), subjet_bunch->phi() ) < 0.8 ){
-                     for ( unsigned i = 0 ; i < subjet_bunch->numberOfDaughters() ; ++i  ) {
-                        const pat::Jet* subjet = (const pat::Jet*) subjet_bunch->daughter(i);
-                        ++fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] ;
-                        fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
-                        fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
-                        fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
-                        fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
-                        fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
-                        fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
-                        fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
-                        fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
-                        if( !fIsData && !fSkipfGenInfo ){
-                           fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
-                           fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
-                           fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
-                        }
-                     }
-                  }
-                  break;
-               }
-            }
-         }
-
+         
          //----- Jet ID string insertions  ------------------------------------------------------------------
          if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting IDs ..." << endl ;}
          jetID = true;
@@ -253,6 +166,82 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          }
          delete PS_Jets;
          fJetInfo[icoll].JetIDLOOSE[fJetInfo[icoll].Size] = ( jetID ) ?  1 : 0;
+         
+         //----- Jet Uncertainty  ---------------------------------------------------------------------------
+         if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet Getting Uncertainty..." << endl ;}
+         fJetCorrectionUncertainty->setJetEta( it_jet->eta() );
+         fJetCorrectionUncertainty->setJetPt( it_jet->pt() ); // here you must use the CORRECTED jet pt
+         if( fabs( it_jet->eta() ) <= 5.0 ) { 
+            float temp = fJetCorrectionUncertainty->getUncertainty(true);
+            fJetInfo[icoll].Unc[fJetInfo[icoll].Size]    = temp;
+            fJetInfo[icoll].JesUnc[fJetInfo[icoll].Size] = temp;
+         }
+
+         //------------------------------------------------------------------------------ 
+         //   AK4 Jet Specific variables 
+         //------------------------------------------------------------------------------
+         if( pfjetcoll ) {
+            if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting QGTags ..." << endl ;}
+            fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = it_jet->userFloat("QGTaggerAK4PFCHS:qgLikelihood");
+
+            //----- Particle flow information  -----------------------------------------------------------------
+            if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Particle flow information ..." << endl ;}
+            fJetInfo[icoll].NCH[fJetInfo[icoll].Size] = it_jet->chargedMultiplicity();
+            fJetInfo[icoll].CEF[fJetInfo[icoll].Size] = it_jet->chargedEmEnergyFraction();
+            fJetInfo[icoll].NHF[fJetInfo[icoll].Size] = it_jet->neutralHadronEnergyFraction();
+            fJetInfo[icoll].NEF[fJetInfo[icoll].Size] = it_jet->neutralEmEnergyFraction();
+            fJetInfo[icoll].CHF[fJetInfo[icoll].Size] = it_jet->chargedHadronEnergyFraction();
+         }
+
+         //------------------------------------------------------------------------------ 
+         //   AK8 Jet Specific variables
+         //------------------------------------------------------------------------------
+         if( fatjetcoll ) {
+            if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Subjet information ..." << endl ;}
+            fJetInfo[icoll].NjettinessAK8tau1        [fJetInfo[icoll].Size]=it_jet->userFloat( "Njettiness" + userFloat_name + ":tau1"       ) ;
+            fJetInfo[icoll].NjettinessAK8tau2        [fJetInfo[icoll].Size]=it_jet->userFloat( "Njettiness" + userFloat_name + ":tau2"       ) ;
+            fJetInfo[icoll].NjettinessAK8tau3        [fJetInfo[icoll].Size]=it_jet->userFloat( "Njettiness" + userFloat_name + ":tau3"       ) ;
+            fJetInfo[icoll].ak8PFJetsCHSSoftDropMass [fJetInfo[icoll].Size]=it_jet->userFloat( userFloat_prefix+ "SoftDropMass" ) ;
+            fJetInfo[icoll].ak8PFJetsCHSPrunedMass   [fJetInfo[icoll].Size]=it_jet->userFloat( userFloat_prefix+ "PrunedMass"   ) ;
+            fJetInfo[icoll].ak8PFJetsCHSTrimmedMass  [fJetInfo[icoll].Size]=it_jet->userFloat( userFloat_prefix+ "TrimmedMass"  ) ;
+            fJetInfo[icoll].ak8PFJetsCHSFilteredMass [fJetInfo[icoll].Size]=it_jet->userFloat( userFloat_prefix+ "FilteredMass" ) ;
+            // fJetInfo[icoll].topJetMass               [fJetInfo[icoll].Size]=it_jet->userFloat( "cmsTopTagPFJetsCHSLinksAK8" ) ;
+
+            const reco::CATopJetTagInfo* tagInfo =  dynamic_cast<const reco::CATopJetTagInfo*>( it_jet->tagInfo("caTop"));
+            if ( tagInfo != 0 ) {
+               fJetInfo[icoll].ca8MinMass [fJetInfo[icoll].Size] = tagInfo->properties().minMass;
+               fJetInfo[icoll].ca8TopMass [fJetInfo[icoll].Size] = tagInfo->properties().topMass;
+            }
+
+            fJetInfo[icoll].NSubjets        [fJetInfo[icoll].Size] = 0;
+            fJetInfo[icoll].SubjetsIdxStart [fJetInfo[icoll].Size] = 0;
+            for( int idx_pre = 0; idx_pre < fJetInfo[icoll].Size; ++idx_pre ){ 
+               fJetInfo[icoll].SubjetsIdxStart[fJetInfo[icoll].Size] += fJetInfo[icoll].NSubjets[idx_pre]; }
+
+            for( JetIterator subjet_bunch = fSubjetList_Hs[icoll]->begin() ; subjet_bunch != fSubjetList_Hs[icoll]->end() ; ++subjet_bunch  ) {
+               if( reco::deltaR2( it_jet->eta(), it_jet->phi() , subjet_bunch->eta(), subjet_bunch->phi() ) < 0.8 ) {
+                  cout << "Number of subjet: " << subjet_bunch->numberOfDaughters() << endl;
+                  ++fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = subjet_bunch->numberOfDaughters() ; 
+                  for( unsigned i = 0 ; i < subjet_bunch->numberOfDaughters() ; ++i ){
+                     const pat::Jet* subjet = (pat::Jet*) subjet_bunch->daughter(i);
+                     fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
+                     fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
+                     fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
+                     fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
+                     fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
+                     fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
+                     fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
+                     fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
+                     if( !fIsData && !fSkipfGenInfo ){
+                        fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
+                        fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
+                        fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+                     }
+                  }
+               break;
+               }
+            }
+         }
 
          //----- Generation MC Data  ------------------------------------------------------------------------
          if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting MC data set ..." << endl ;} 

@@ -50,7 +50,7 @@
 //------------------------------------------------------------------------------ 
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
-#define MAX_JETCOLLECTIONS 3
+#define MAX_JETCOLLECTIONS 5
 
 //------------------------------------------------------------------------------ 
 //   BprimeKit definitions 
@@ -67,8 +67,8 @@ private:
    virtual void beginJob() ;
    virtual void analyze( const edm::Event&, const edm::EventSetup& ) ;
    virtual void endJob() ;
-   virtual void beginRun( edm::Run const& iRun, edm::EventSetup const& iSetup );
-   virtual void endRun( edm::Run const&, edm::EventSetup const& );
+   virtual void beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup );
+   virtual void endRun( const edm::Run&, const edm::EventSetup& );
 
    //-------------------------------------------------------------------------------------------------- 
    //   Helper Methods
@@ -121,12 +121,15 @@ private:
    JetInfoBranches    fJetInfo   [MAX_JETCOLLECTIONS] ;
    VertexInfoBranches fVertexInfo                     ;
    PairInfoBranches   fPairInfo                       ;
+
+   TTree* fRunTree ; 
+   RunInfoBranches fRunInfo;
    
    //----- Event variable setup  ----------------------------------------------------------------------
-   edm::EDGetTokenT<double>  fRhoToken    ;
-   edm::EDGetTokenT<METList>  fMETToken    ;
-   edm::EDGetTokenT<edm::TriggerResults>  fHLTToken    ;
-   edm::EDGetTokenT<PileupList>  fPileupToken ;
+   edm::EDGetTokenT<double>              fRhoToken    ;
+   edm::EDGetTokenT<METList>             fMETToken    ;
+   edm::EDGetTokenT<edm::TriggerResults> fHLTToken    ;
+   edm::EDGetTokenT<PileupList>          fPileupToken ;
    
    //----- Vertex variable setup  ---------------------------------------------------------------------
    edm::EDGetTokenT<VertexList>      fPrimaryVertexToken            ;
@@ -138,11 +141,12 @@ private:
    edm::EDGetTokenT<GenList>                        fGenParticleToken ;
    edm::EDGetTokenT<L1GlobalTriggerReadoutRecord>   fGenDigiToken     ;
    edm::EDGetTokenT<LHEEventProduct>                fLHEToken         ;
+   edm::EDGetTokenT<LHERunInfoProduct>              fLHERunToken      ;
 
    //----- Jet variable setup  ------------------------------------------------------------------------
    std::vector<std::string>                fJetCollections      ;
    std::vector<edm::EDGetTokenT<JetList>>  fJetTokens           ;
-   std::vector<edm::EDGetTokenT<JetList>>  fSubJetTokens        ;
+   std::vector<edm::EDGetTokenT<JetList>>  fSubjetTokens        ;
    edm::EDGetTokenT<edm::ValueMap<float>>  fQGLikelihoodToken   ;
    edm::EDGetTokenT<edm::ValueMap<float>>  fQGAxis2Token        ;
    edm::EDGetTokenT<edm::ValueMap<int  >>  fQGMultiplicityToken ;
@@ -191,14 +195,15 @@ private:
    GenHandle     fGenParticle_H;
    GenInfoHandle fGenEvent_H;
    LHEHandle     fLHEInfo_H;
+   LHERunInfoHandle fLHERunInfo_H; 
   
    //----- Vertex Handles  --------------------------------------------------------
    VertexHandle fVertex_H   ;
    VertexHandle fVertexWithBeamSpot_H ;
   
    //----- Jet related Handles  ---------------------------------------------------
-	JetHandleList     fJetList_Hs;
-   JetHandleList     fSubJetList_Hs;
+   JetHandleList     fJetList_Hs;
+   JetHandleList     fSubjetList_Hs;
    edm::Handle<edm::ValueMap<float>> fQGLikelihood_H;
    edm::Handle<edm::ValueMap<float>> fQGAxis2_H;
    edm::Handle<edm::ValueMap<int  >> fQGMultiplicity_H;

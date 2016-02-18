@@ -10,7 +10,7 @@ import FWCore.ParameterSet.VarParsing as opts
 
 def initB2GOptions( options ):
    options.register('sample',
-         'file:///wk_cms/yichen/miniAODs/MC_MiniAOD_76X/TTJets_mtop1755_TuneCUETP8M1.root', 
+         'file:///wk_cms/yichen/miniAODs/MC_MiniAOD_76X/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root', 
          opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,
          'Sample to analyze')

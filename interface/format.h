@@ -1143,11 +1143,12 @@ public:
    Int_t GrandMo1Status [MAX_GENS] ;
    Int_t GrandMo2Status [MAX_GENS] ;
    //----- LHE related information  -----------------------------------------------
-   Float_t     LHENominalWeight;
-   Float_t     LHEOriginalWeight;
-   Int_t       LHESize;
-   Int_t       LHESystematicId      [MAX_LHE];
-   Float_t     LHESystematicWeights [MAX_LHE];
+   Int_t    PdfID;
+   Float_t  LHENominalWeight;
+   Float_t  LHEOriginalWeight;
+   Int_t    LHESize;
+   Int_t    LHESystematicId      [MAX_LHE];
+   Float_t  LHESystematicWeights [MAX_LHE];
    void RegisterTree( TTree* root , std::string name = "GenInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".Weight" ).c_str(), &Weight, ( name + ".Weight/F" ).c_str() );
@@ -1174,6 +1175,7 @@ public:
       root->Branch( ( name + ".GrandMo2PdgID" ).c_str(), GrandMo2PdgID, ( name + ".GrandMo2PdgID[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo1Status" ).c_str(), GrandMo1Status, ( name + ".GrandMo1Status[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo2Status" ).c_str(), GrandMo2Status, ( name + ".GrandMo2Status[" + name + ".Size]/I" ).c_str() );
+      root->Branch( ( name + ".PdfID" ).c_str(), &PdfID, ( name + ".PdfID/I" ).c_str() );
       root->Branch( ( name + ".LHENominalWeight" ).c_str(), &LHENominalWeight, ( name + ".LHENominalWeight/F" ).c_str() );
       root->Branch( ( name + ".LHEOriginalWeight" ).c_str(), &LHEOriginalWeight, ( name + ".LHEOriginalWeight/F" ).c_str() );
       root->Branch( ( name + ".LHESize" ).c_str(), &LHESize, ( name + ".LHESize/I" ).c_str() );
@@ -1206,6 +1208,7 @@ public:
       root->SetBranchAddress( ( name + ".GrandMo2PdgID" ).c_str() , GrandMo2PdgID ) ;
       root->SetBranchAddress( ( name + ".GrandMo1Status" ).c_str() , GrandMo1Status ) ;
       root->SetBranchAddress( ( name + ".GrandMo2Status" ).c_str() , GrandMo2Status ) ;
+      root->SetBranchAddress( ( name + ".PdfID" ).c_str() , &PdfID ) ;
       root->SetBranchAddress( ( name + ".LHENominalWeight" ).c_str() , &LHENominalWeight ) ;
       root->SetBranchAddress( ( name + ".LHEOriginalWeight" ).c_str() , &LHEOriginalWeight ) ;
       root->SetBranchAddress( ( name + ".LHESize" ).c_str() , &LHESize ) ;
@@ -1343,6 +1346,17 @@ public:
       root->SetBranchAddress( ( name + ".y" ).c_str() , y ) ;
       root->SetBranchAddress( ( name + ".z" ).c_str() , z ) ;
       root->SetBranchAddress( ( name + ".Rho" ).c_str() , Rho ) ;
+   }
+};
+class RunInfoBranches {
+public:
+   //----- GenInformation  --------------------------------------------------------
+   Int_t  PdfID;
+   void RegisterTree( TTree* root , std::string name = "RunInfo" ) {
+      root->Branch( ( name + ".PdfID" ).c_str(), &PdfID, ( name + ".PdfID/I" ).c_str() );
+   }
+   void Register( TTree* root , std::string name = "RunInfo" ) {
+      root->SetBranchAddress( ( name + ".PdfID" ).c_str() , &PdfID ) ;
    }
 };
 #endif // __BPRIMEKIT_FORMAT_H__
