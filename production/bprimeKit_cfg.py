@@ -255,23 +255,23 @@ process.bprimeKit = cms.EDAnalyzer(
       JetSettings = cms.VPSet(
          cms.PSet(
             jetCollection = cms.string( 'JetInfo' ),
-            jetLabel      = cms.InputTag( myParser.GetSetting('JetLabel') ),
+            jetLabel      = cms.InputTag( 'selectedPatJetsAK4PFCHS' ),
             subjetLabel   = cms.InputTag(''), ## No tag for this collection..
             ),
          cms.PSet(
             jetCollection = cms.string( 'AK8BosonJetInfo' ),
-            jetLabel      = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
-            subjetLabel   = cms.InputTag( *myParser.GetMultiSetting('SoftDropSubJetLabel') ),
+            jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFCHS' ),
+            subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFCHSSoftDropPacked' ),
             ),
          cms.PSet(
             jetCollection = cms.string( 'CA8TopJetInfo' ),
-            jetLabel      = cms.InputTag( myParser.GetSetting('FatJetLabel') ),
-            subjetLabel   = cms.InputTag( *myParser.GetMultiSetting('TopSubJetLabel') ),
+            jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFCHS' ),
+            subjetLabel   = cms.InputTag( 'patJetsCMSTopTagCHSPacked' ),
             ),
          cms.PSet(
             jetCollection = cms.string( 'AK8BosonJetInfoPuppi' ),
-            jetLabel      = cms.InputTag( myParser.GetSetting('PuppiFatJetLabel') ),
-            subjetLabel   = cms.InputTag( *myParser.GetMultiSetting('PuppiSoftDropSubJetLabel') ),
+            jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFPuppi' ),
+            subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFPuppiSoftDropPacked' ),
             ),
             )
       )
