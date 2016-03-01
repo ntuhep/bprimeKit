@@ -6,7 +6,7 @@
 ##**************************************************************************************************
 
 def JetBTagPath( process , jetname ):
-   ans = ( 
+   ans = (
          getattr( process, 'pfImpactParameterTagInfos'                    + jetname ) *
          getattr( process, 'pfJetProbabilityBJetTags'                     + jetname ) *
          getattr( process, 'pfInclusiveSecondaryVertexFinderTagInfos'     + jetname ) *
@@ -27,7 +27,7 @@ def JetBTagPath( process , jetname ):
 def JetCommon( process , jetname ):
    ans = (
          getattr( process , 'patJetCorrFactors' + jetname ) *
-         JetBTagPath( process , jetname )* 
+         JetBTagPath( process , jetname )*
          getattr( process , 'patJets'           + jetname ) *
          getattr( process , 'selectedPatJets'   + jetname )
          )

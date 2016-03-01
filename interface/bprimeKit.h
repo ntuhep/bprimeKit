@@ -2,7 +2,7 @@
  *
  *  Filename    : bprimeKit.h
  *  Description : The b' analysis kit
- *  Details     : Strips the standard CMSSW data format into a standalone 
+ *  Details     : Strips the standard CMSSW data format into a standalone
  *                fBaseTree ntuple
  *  Authors     : May 31, 2015 - Split info mutifile format by Enoch.
  *                Jul 05, 2010 - Add Electron ID by Jacky, Add PFMet by Chiyi
@@ -19,13 +19,17 @@
 #ifndef __BPRIMEKIT_H__
 #define __BPRIMEKIT_H__
 
+#ifndef __CMSSW__
+#define __CMSSW__
+#endif
+
 //----- ED Analyzer requirements  ----------------------------------------------
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 
 //----- CMS Software libraries for special variables  --------------------------
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h" 
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include "EgammaAnalysis/ElectronTools/interface/PFIsolationEstimator.h"
 #include "EgammaAnalysis/ElectronTools/interface/EGammaMvaEleEstimator.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
@@ -45,32 +49,32 @@
 #include <TTree.h>
 
 
-//------------------------------------------------------------------------------ 
-//   Global typedefs, enums and macros 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
+//   Global typedefs, enums and macros
+//------------------------------------------------------------------------------
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
 #define MAX_JETCOLLECTIONS 5
 
-//------------------------------------------------------------------------------ 
-//   BprimeKit definitions 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
+//   BprimeKit definitions
+//------------------------------------------------------------------------------
 class bprimeKit : public edm::EDAnalyzer {
 public:
    explicit bprimeKit( const edm::ParameterSet& ) ;
    ~bprimeKit();
 
 private:
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Inheritance methods
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    virtual void beginJob() ;
    virtual void analyze( const edm::Event&, const edm::EventSetup& ) ;
    virtual void endJob() ;
    virtual void beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup );
    virtual void endRun( const edm::Run&, const edm::EventSetup& );
 
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Helper Methods
    //--------------------------------------------------------------------------------------------------
    //----- Ntuplization functions  ------------------------------------------------
@@ -78,39 +82,43 @@ private:
    void ClearTree();
    void InitJetEnergyCorrectors();
    void ClearJetEnergyCorrector();
-   void GetEdmObjects (const edm::Event&, const edm::EventSetup& );
-   bool FillVertex    ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillPhoton    ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillLepton    ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillMuon      ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
-   bool FillElectron  ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
-   bool FillTau       ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
-   bool FillJet       ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillLepPair   ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillJetPair   ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillfGenInfo   ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillEvent     ( const edm::Event&, const edm::EventSetup& ) ;
+   void GetEventObjects ( const edm::Event&, const edm::EventSetup& );
+   bool FillVertex      ( const edm::Event&, const edm::EventSetup& ) ;
+   bool FillPhoton      ( const edm::Event&, const edm::EventSetup& ) ;
+   bool FillLepton      ( const edm::Event&, const edm::EventSetup& ) ;
+   bool FillMuon        ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
+   bool FillElectron    ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
+   bool FillTau         ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
+   bool FillJet         ( const edm::Event&, const edm::EventSetup& ) ;
+   bool FillLepPair     ( const edm::Event&, const edm::EventSetup& ) ;
+   bool FillJetPair     ( const edm::Event&, const edm::EventSetup& ) ;
+   bool FillfGenInfo    ( const edm::Event&, const edm::EventSetup& ) ;
+   bool FillEvent       ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillfPairInfo  ( const int , const int , math::XYZTLorentzVector& );
    bool FillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
+
+   //----- RunInfo, See bprimeKit/plugins/bprimeKit_runInfo.cc  -------------------
+   void GetRunObjects( const edm::Run&, const edm::EventSetup& );
+   void FillRunInfo();
 
    //----- Gen Info Helper functions  ---------------------------------------------
    bool FillGenGeneric();
    bool IsTprime( const int ) const ; // Defined in bprimeKit_utils
-   bool HasTprimeDaughter( const GenIterator& ) const ; 
+   bool HasTprimeDaughter( const GenIterator& ) const ;
    int  PhotonFlag( const GenIterator& ) const ;
    int  GetGenMCTag( const reco::GenParticle* ) const ;
    int  GetGenMCTag( GenIterator& , ElectronIterator& ) const ;
    int  GetGenMCTag( GenIterator& , MuonIterator&     ) const ;
-   int  GenGenMCTag( GenIterator& , JetIterator&      ) const ; 
+   int  GenGenMCTag( GenIterator& , JetIterator&      ) const ;
 
    //----- Custom algorithms  -----------------------------------------------------
    bool IsSelectedMuon( const MuonIterator& ) const ;
    TLorentzVector CleanAK4Jet( JetIterator );
    TLorentzVector CleanAK8Jet( JetIterator );
 
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Private data members
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
 
    //----- Ntuple interaction variables  --------------------------------------------------------------
    TTree*             fBaseTree                      ;
@@ -122,20 +130,20 @@ private:
    VertexInfoBranches fVertexInfo                     ;
    PairInfoBranches   fPairInfo                       ;
 
-   TTree* fRunTree ; 
+   TTree* fRunTree ;
    RunInfoBranches fRunInfo;
-   
+
    //----- Event variable setup  ----------------------------------------------------------------------
    edm::EDGetTokenT<double>              fRhoToken    ;
    edm::EDGetTokenT<METList>             fMETToken    ;
    edm::EDGetTokenT<edm::TriggerResults> fHLTToken    ;
    edm::EDGetTokenT<PileupList>          fPileupToken ;
-   
+
    //----- Vertex variable setup  ---------------------------------------------------------------------
    edm::EDGetTokenT<VertexList>      fPrimaryVertexToken            ;
    edm::EDGetTokenT<VertexList>      fPrimVertex_withBeamSpot_Token ;
    edm::EDGetTokenT<reco::BeamSpot>  fBeamspotToken                 ;
-   
+
    //----- Generation variables setup  ----------------------------------------------------------------
    edm::EDGetTokenT<GenEventInfoProduct>            fGenEventToken    ;
    edm::EDGetTokenT<GenList>                        fGenParticleToken ;
@@ -178,7 +186,7 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDHEEPToken   ;
    edm::EDGetTokenT<reco::ConversionCollection>  fConversionsTag        ;
 
-   //------------------------------------------------------------------------------ 
+   //------------------------------------------------------------------------------
    //   EDM Handles
    //------------------------------------------------------------------------------
    //----- Event Wide Handles  ----------------------------------------------------
@@ -190,17 +198,17 @@ private:
    TriggerHandle       fTrigger_H;
    BeamSpotHandle      fBeamSpot_H ;
    RecordHandle        fRecord_H;
-  
+
    //----- fGenInfo Handles  -------------------------------------------------------
    GenHandle     fGenParticle_H;
    GenInfoHandle fGenEvent_H;
    LHEHandle     fLHEInfo_H;
-   LHERunInfoHandle fLHERunInfo_H; 
-  
+   LHERunInfoHandle fLHERunInfo_H;
+
    //----- Vertex Handles  --------------------------------------------------------
    VertexHandle fVertex_H   ;
    VertexHandle fVertexWithBeamSpot_H ;
-  
+
    //----- Jet related Handles  ---------------------------------------------------
    JetHandleList     fJetList_Hs;
    JetHandleList     fSubjetList_Hs;
@@ -230,7 +238,7 @@ private:
    edm::Handle<edm::ValueMap<float>> fPhotonIsolation_Neutral_H;
    edm::Handle<edm::ValueMap<float>> fPhotonIsolation_Photon_H;
    edm::Handle<edm::ValueMap<float>> fPhotonSigmaIEtaIEta_H;
-   
+
    reco::Vertex                         fPrimaryVertex        ;
    reco::Vertex                         fPrimaryVertex_BS     ;
    reco::BeamSpot                       fBeamSpot       ;
@@ -243,7 +251,7 @@ private:
    FactorizedJetCorrector*     fJetCorrector             ;
    FactorizedJetCorrector*     fJetCorrectorAK8          ;
 	JetCorrectionUncertainty*   fJetCorrectionUncertainty ;
-   
+
    //----- Configuration flags  -----------------------------------------------------------------------
    int  fPairCollectionType ;
    bool fSkipfGenInfo        ;

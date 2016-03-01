@@ -4,7 +4,7 @@
  *  Description : Implementation of functions given in interface/bprimeKit_utils.h
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
- *  Details     : All static global variables will be specified by the function 
+ *  Details     : All static global variables will be specified by the function
  *                sections
  *
 *******************************************************************************/
@@ -17,10 +17,10 @@ using namespace std;
 //----- MC tag for pat particles  ------------------------------------------------------------------
 int getGenMCTag( GenIterator& , double , double , double ); //Required by the below
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   MC tag for PAT particles
-//------------------------------------------------------------------------------ 
-static const reco::Candidate* genCand ; 
+//------------------------------------------------------------------------------
+static const reco::Candidate* genCand ;
 static int bprimeTag;
 static int returnTag;
 
@@ -58,7 +58,7 @@ int getGenMCTag( GenIterator& gen , double pEta , double pPhi , double pPt )
 
    if( r > 0.5 ) return 0;
    if( fabs( gen->pt() - pPt ) / gen->pt() > 0.5 ) return 0;
-   
+
    if ( ( abs( gen->pdgId() ) <= 5 || abs( gen->pdgId() ) == 21 ) ){
       if( gen->status() != 3 ) return 0;
       return  5; // matched to a parton (q,g)
@@ -71,18 +71,18 @@ int getGenMCTag( GenIterator& gen , double pEta , double pPhi , double pPt )
 }
 
 //-------------------  Dummy functions for function overloading  --------------------
-int bprimeKit::GetGenMCTag( GenIterator& gen , ElectronIterator& el ) const 
+int bprimeKit::GetGenMCTag( GenIterator& gen , ElectronIterator& el ) const
 {
    return getGenMCTag( gen , el->eta() , el->phi() , el->pt() ) ;
 }
 
 int bprimeKit::GetGenMCTag( GenIterator& gen , MuonIterator& mu ) const
 {
-   return getGenMCTag( gen , mu->eta() , mu->phi() , mu->pt() ) ; 
+   return getGenMCTag( gen , mu->eta() , mu->phi() , mu->pt() ) ;
 }
 
 
-//-------------------------------------------------------------------------------------------------- 
+//--------------------------------------------------------------------------------------------------
 //   MC tag for GenParticles
 //--------------------------------------------------------------------------------------------------
 bool bprimeKit::IsTprime( const int pdgid ) const

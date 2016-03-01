@@ -32,7 +32,7 @@ typedef METList::const_iterator METIterator;
 typedef std::vector<PileupSummaryInfo> PileupList;
 typedef edm::Handle<PileupList>        PileupHandle;
 typedef PileupList::const_iterator     PileupIterator;
-   
+
 typedef edm::Handle<edm::TriggerResults>                TriggerHandle;
 typedef edm::Handle<L1GlobalTriggerReadoutRecord>  RecordHandle;
 typedef edm::Handle<reco::BeamSpot>                BeamSpotHandle ;
@@ -65,7 +65,7 @@ typedef edm::Handle<TauList>    TauHandle;
 typedef std::vector<TauHandle>  TauHandleList;
 typedef TauList::const_iterator TauIterator;
 
-typedef edm::View<pat::Photon>     PhotonList; 
+typedef edm::View<pat::Photon>     PhotonList;
 typedef edm::Handle<PhotonList>    PhotonHandle;
 typedef std::vector<PhotonHandle>  PhotonHandleList;
 typedef PhotonList::const_iterator PhotonIterator ;

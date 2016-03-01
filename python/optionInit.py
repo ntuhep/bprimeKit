@@ -10,7 +10,7 @@ import FWCore.ParameterSet.VarParsing as opts
 
 def initB2GOptions( options ):
    options.register('sample',
-         'file:///wk_cms/yichen/miniAODs/MC_MiniAOD_76X/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root', 
+         'file:///wk_cms/yichen/miniAODs/MC_MiniAOD_76X/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root',
          opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,
          'Sample to analyze')
@@ -77,7 +77,7 @@ def initBPKOptions( options ):
          opts.VarParsing.varType.string,
          'Get Registered Settings for CMSSW cmsRun')
 
-   options.register('RunMuonJetClean', 
+   options.register('RunMuonJetClean',
          True,
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.bool,
@@ -89,5 +89,11 @@ def initBPKOptions( options ):
          opts.VarParsing.varType.bool,
          'Whether to use the filters and producers defined by b2g group')
 
-   options.setDefault('maxEvents', 1000 )
+   options.register('runJetToolKit',
+        True,
+        opts.VarParsing.multiplicity.singleton,
+        opts.VarParsing.varType.bool,
+        'Whether to use the jet tool kit to recluster jets'
+    )
 
+   options.setDefault('maxEvents', 1000 )

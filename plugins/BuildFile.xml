@@ -22,4 +22,6 @@
 <use   name="HLTrigger/HLTcore"/>
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="RecoBTag/SecondaryVertex"/>
+
+<use name="bpkFrameWork/bprimeKit"/>
 <flags EDM_PLUGIN="1"/>

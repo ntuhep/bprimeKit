@@ -18,17 +18,17 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 using namespace std;
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Custom enums, typedefs and macros
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //#define Fill_DIJET_PAIRS 1      //Uncomment for jet pair processing
 typedef std::vector<edm::InputTag> TagList;
 typedef std::vector<std::string>   StrList;
 
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   bprimeKit methods: constructor and destructor
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fPhotonEffectiveArea_ChargeHadron  ((iConfig.getParameter<edm::FileInPath>("effAreaChHadFile")).fullPath() ),
    fPhotonEffectiveArea_NeutralHadron ((iConfig.getParameter<edm::FileInPath>("effAreaNeuHadFile")).fullPath()),
@@ -41,18 +41,18 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fDebug              = iConfig.getUntrackedParameter<int> ( "Debug"          , 0     ) ;
    fRunOnB2G           = iConfig.getUntrackedParameter<bool>( "runOnB2G"       , false ) ;
    fRunMuonJetCleaning = iConfig.getParameter<bool>( "runMuonJetClean" );
-   
+
    //----- Event related  -----------------------------------------------------------------------------
    fRhoToken    = consumes<double>(iConfig.getParameter<edm::InputTag>("rhoLabel"));
-   fHLTToken    = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag> ( "hltLabel"    ) ); 
+   fHLTToken    = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag> ( "hltLabel"    ) );
    fMETToken    = consumes<METList>(iConfig.getParameter<edm::InputTag> ( "metLabel"    ) );
    fPileupToken = consumes<PileupList>(iConfig.getParameter<edm::InputTag> ( "puInfoLabel" ) );
-   
+
    //----- Vertex related  ----------------------------------------------------------------------------
    fPrimaryVertexToken            = consumes<VertexList> (iConfig.getParameter<edm::InputTag>( "offlinePVLabel"   ) );
    fPrimVertex_withBeamSpot_Token = consumes<VertexList> (iConfig.getParameter<edm::InputTag>( "offlinePVBSLabel" ) );
    fBeamspotToken                 = consumes<reco::BeamSpot> (iConfig.getParameter<edm::InputTag>( "offlineBSLabel"   ) );
-   
+
    //----- fGenInfo related  ---------------------------------------------------------------------------
    fGenEventToken    = consumes<GenEventInfoProduct>          ( iConfig.getParameter<edm::InputTag> ( "genevtLabel" )  ) ;
    fGenParticleToken = consumes<GenList>                      ( iConfig.getParameter<edm::InputTag> ( "genLabel"    )  ) ;
@@ -63,14 +63,17 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    //----- Jet related  -------------------------------------------------------------------------------
    for( const auto& jetsetting : iConfig.getParameter<std::vector<edm::ParameterSet>>( "JetSettings" ) ){
       fJetCollections.push_back( jetsetting.getParameter<std::string>( "jetCollection" ) ) ;
-      fJetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("jetLabel") ) ); 
+      fJetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("jetLabel") ) );
       fSubjetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("subjetLabel") ) );
+      cout << fJetCollections.back() << ": "
+           << jetsetting.getParameter<edm::InputTag>("jetLabel") << " ,"
+           << jetsetting.getParameter<edm::InputTag>("subjetLabel") << endl;
    }
    fQGLikelihoodToken   = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
    fQGAxis2Token        = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
    fQGMultiplicityToken = consumes<edm::ValueMap<int  >>(edm::InputTag("QGTagger", "mult"));
    fQGPtDToken          = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
-   
+
    //----- Lepton related  ----------------------------------------------------------------------------
    fLeptonCollections      = iConfig.getParameter<StrList>( "LepCollections" ) ; //branch names
    const auto muontag_list = iConfig.getParameter<TagList>( "muonLabel"      ) ;
@@ -87,7 +90,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fElectronIDTightToken   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
    fElectronIDHEEPToken    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
    fConversionsTag         = consumes<reco::ConversionCollection>( iConfig.getParameter<edm::InputTag>("conversionsLabel") );
-   
+
    //----- Photon related  ----------------------------------------------------------------------------
    fPhotonCollections     = iConfig.getParameter<StrList> ( "PhoCollections" ) ; //branch names
    const auto photag_list = iConfig.getParameter<TagList> ( "phoLabel"       ) ;
@@ -101,14 +104,14 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fPhotonIsolation_Photon_Token  = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "phoPhotonIsolation"        )) ;
    fPhotonSignaIEtaIEtaToken      = consumes<edm::ValueMap<float>>(iConfig.getParameter<edm::InputTag>( "full5x5SigmaIEtaIEtaMap"   )) ;
 
-   for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) { 
+   for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ) {
       fHighLevelTriggerMap.insert( pair<std::string,int>( TriggerBooking[i], i ) ) ; }
 
    /***** MADITORY!! DO NOTE REMOVE  *********************************************/
    edm::Service<TFileService> fs;
    TFileDirectory subDir = fs->mkdir( "mySubDirectory" );
-   /******************************************************************************/ 
-    
+   /******************************************************************************/
+
    InitJetEnergyCorrectors();
    if( fDebug ) { cout << "[0] Finished creating bprimeKit class" << endl; }
 }
@@ -121,10 +124,10 @@ bprimeKit::~bprimeKit()
 
 /*******************************************************************************
  *
- *  Note : 
- *    1. All writing objects (TTrees, TH1Fs) MUST be created here and 
+ *  Note :
+ *    1. All writing objects (TTrees, TH1Fs) MUST be created here and
  *       not in the analyzer constructor!!
- *    2. Do not use the WRITE functions and delete operator!! These are 
+ *    2. Do not use the WRITE functions and delete operator!! These are
  *       automatically handled by the TFileService instance.
  *
 *******************************************************************************/
@@ -142,23 +145,16 @@ void bprimeKit::endJob()
 }
 
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   bprimeKit event based analysis methods
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 void bprimeKit::beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
 {
 }
 void bprimeKit::endRun( const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
-   iRun.getByToken<LHERunInfoProduct>( fLHERunToken , fLHERunInfo_H );
-   if( fLHERunInfo_H.isValid() ){
-      fRunInfo.PdfID = fLHERunInfo_H->heprup().PDFSUP.first;
-      cout << "PDFID: " << fRunInfo.PdfID << endl; 
-      cout << "PDFID: " << fLHERunInfo_H->heprup().PDFSUP.first << endl;
-   } else {
-      cout << "Invalid handle!" << endl;
-   }
-
+   GetRunObjects( iRun, iSetup );
+   FillRunInfo();
    fRunTree->Fill();
 }
 
@@ -167,12 +163,12 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
 {
    if( fDebug > 0 ) { cout << "[0] Begin Analysis!!" << endl; }
 
-   GetEdmObjects( iEvent, iSetup );
+   GetEventObjects( iEvent, iSetup );
    fIsData = iEvent.isRealData();   // Add by Jacky
 
    if( fDebug > 0 ) { cout << "[0] Entering subroutines..." << endl; }
 
-   //------------------------------------------------------------------------------ 
+   //------------------------------------------------------------------------------
    //   Inserting Information
    //------------------------------------------------------------------------------
    memset( &fGenInfo, 0x00, sizeof( fGenInfo ) );
@@ -184,16 +180,16 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
    FillLepton( iEvent , iSetup ) ;
    FillPhoton( iEvent , iSetup );
    FillJet( iEvent , iSetup ) ;
-   
-   if( fPairCollectionType >= 0 ) { FillLepPair( iEvent , iSetup ) ; } 
+
+   if( fPairCollectionType >= 0 ) { FillLepPair( iEvent , iSetup ) ; }
 #ifdef Fill_DIJET_PAIRS
    FillJetPair( iEvent, iSetup ) ;
 #endif
 
 
-   //------------------------------------------------------------------------------ 
+   //------------------------------------------------------------------------------
    //   Processing debugging messages and file writing
-   //------------------------------------------------------------------------------ 
+   //------------------------------------------------------------------------------
    if( fDebug > 0 ) { cout << "[0] Filling tree with all information" << endl; }
    fBaseTree->Fill();
    if( fDebug > 0 ) { cout << "[0] Filled event information: Run " << fEvtInfo.RunNo << " Event " << fEvtInfo.EvtNo << endl; }
@@ -202,25 +198,25 @@ void bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup
       fBaseTree->Show( -1, 999 );
       for( size_t i = 0; i < fLeptonCollections.size(); i++ ) {
          cout << "After Fill, Lepton Collection " << i << "(" << fLeptonCollections[i] << "): size " << fLepInfo[i].Size << endl;
-         for( int j = 0; j < fLepInfo[i].Size; j++ ){ 
-            cout << "  Lep " << j << " type,pt,eta,phi " 
-               << fLepInfo[i].LeptonType[j] << "," 
-               << fLepInfo[i].Pt[j] << "," 
-               << fLepInfo[i].Eta[j] << "," 
+         for( int j = 0; j < fLepInfo[i].Size; j++ ){
+            cout << "  Lep " << j << " type,pt,eta,phi "
+               << fLepInfo[i].LeptonType[j] << ","
+               << fLepInfo[i].Pt[j] << ","
+               << fLepInfo[i].Eta[j] << ","
                << fLepInfo[i].Phi[j] << endl;
          }
       }
    }
 }
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Tree set-up options
 //------------------------------------------------------------------------------
 void bprimeKit::InitTree()
 {
    fEvtInfo.RegisterTree( fBaseTree );
    fVertexInfo.RegisterTree( fBaseTree );
-   if( !fSkipfGenInfo ) { fGenInfo.RegisterTree( fBaseTree ); } 
+   if( !fSkipfGenInfo ) { fGenInfo.RegisterTree( fBaseTree ); }
    for( unsigned i = 0; i < fLeptonCollections.size(); ++i ) {
       if( i >= MAX_LEPCOLLECTIONS ) { break; }
       fLepInfo[i].RegisterTree( fBaseTree, fLeptonCollections[i] );
@@ -244,7 +240,7 @@ void bprimeKit::ClearTree()
    /***** DO NOT DELETE TREES!  **************************************************/
 }
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Jet Energy correction
 //------------------------------------------------------------------------------
 void bprimeKit::InitJetEnergyCorrectors()
@@ -256,10 +252,10 @@ void bprimeKit::InitJetEnergyCorrectors()
    JetCorrectorParameters L3JetParAK8_ ("./JECs/PHYS14_25_V2_L3Absolute_AK8PFchs.txt" );
    JetCorrectorParameters L2JetParAK8_ ("./JECs/PHYS14_25_V2_L2Relative_AK8PFchs.txt" );
    JetCorrectorParameters L1JetParAK8_ ("./JECs/PHYS14_25_V2_L1FastJet_AK8PFchs.txt"  );
-  
+
    if( fDebug ) { cout << "[0] Finished Making Jet Corrector Parameters" << endl; }
    // IMPORTANT: THE ORDER MATTERS HERE !!!!
-   
+
    vector<JetCorrectorParameters> vPar;
    vector<JetCorrectorParameters> vParAK8;
 
@@ -286,7 +282,7 @@ void bprimeKit::ClearJetEnergyCorrector()
 }
 
 
-void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup& iSetup )
+void bprimeKit::GetEventObjects( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    if( fDebug > 1 ){ std::cerr << "\t[1]Getting Event Wide Handles" << std::endl; }
    iEvent.getByToken( fRhoToken                                 , fRho_H                ) ;
@@ -301,27 +297,27 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
 
    bool changed = true;
    fHighLevelTriggerConfig.init( iEvent.getRun(), iSetup, "HLT", changed );
-   
-   if( !iEvent.isRealData() ) { 
-      iEvent.getByToken( fPileupToken, fPileup_H ); 
-      if( !fSkipfGenInfo ) { 
-         iEvent.getByToken( fGenParticleToken, fGenParticle_H ); 
+
+   if( !iEvent.isRealData() ) {
+      iEvent.getByToken( fPileupToken, fPileup_H );
+      if( !fSkipfGenInfo ) {
+         iEvent.getByToken( fGenParticleToken, fGenParticle_H );
          iEvent.getByToken( fGenEventToken, fGenEvent_H );
          iEvent.getByToken( fLHEToken , fLHEInfo_H );
       }
    }
-   
+
    for( unsigned i = 0; i < fJetTokens.size(); ++i ) {
       fJetList_Hs.push_back( JetHandle() );
       fSubjetList_Hs.push_back( JetHandle() );
       iEvent.getByToken( fJetTokens[i], fJetList_Hs[i] );
       iEvent.getByToken( fSubjetTokens[i] , fSubjetList_Hs[i] );
-      if( fDebug > 1 ) { 
+      if( fDebug > 1 ) {
          std::cout << "\t[1]Getting Jet Collection " << i << " : "
             << fJetList_Hs[i]->size() << " entries" << std::endl ;
          if( fSubjetList_Hs[i].isValid() ){
             std::cout << "\t[1]Getting Subhet Collection " << i << " : "
-               << fSubjetList_Hs[i]->size() << " entries" << std::endl ; 
+               << fSubjetList_Hs[i]->size() << " entries" << std::endl ;
          }
       }
    }
@@ -333,7 +329,7 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
       iEvent.getByToken( fMuonTokens[i] , fMuonList_Hs[i] );
       iEvent.getByToken( fElectronTokens[i] , fElectronList_Hs[i] );
       iEvent.getByToken( fTauTokens[i] , fTauList_Hs[i] );
-      if( fDebug > 1 ) { 
+      if( fDebug > 1 ) {
          std::cerr << "\t[1]Getting Lepton Collection" << i << std::endl
             << "\tMuon      Handle:" << fMuonList_Hs[      i]->size() << "  entries" <<  std::endl
             << "\tElectron  Handle"  << fElectronList_Hs[  i]->size() << "  entries" <<  std::endl
@@ -353,8 +349,8 @@ void bprimeKit::GetEdmObjects( const edm::Event& iEvent , const edm::EventSetup&
    for( unsigned il = 0; il < fPhotonTokens.size(); il++ ) {
       fPhotonList_Hs.push_back( PhotonHandle() );
       iEvent.getByToken( fPhotonTokens[il], fPhotonList_Hs[il] );
-      if( fDebug > 1 ) { 
-         std::cout << "\t[1]photons " << il  
+      if( fDebug > 1 ) {
+         std::cout << "\t[1]photons " << il
             << " with " << fPhotonList_Hs[il]->size() << " entries" << endl; }
    }
    if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Photon ID maps" << std::endl;}

@@ -430,10 +430,9 @@ public:
    Float_t GenPhi                                [MAX_LEPTONS] ;
    Int_t   GenPdgID                              [MAX_LEPTONS] ;
    Int_t   GenMCTag                              [MAX_LEPTONS] ;
-#ifdef __BPRIMEKIT_H__
+#ifdef __CMSSW__
    reco::Candidate* CandRef[MAX_LEPTONS]; // backward poInt_ter to the PAT objects
 #endif
-
    void RegisterTree( TTree* root , std::string name = "LepInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
@@ -777,10 +776,10 @@ public:
    Float_t JetCharge     [MAX_JETS] ;
    Int_t   NConstituents [MAX_JETS] ;
    //----- Lepton cleaned variables  ----------------------------------------------
-   Float_t PtUncleaned     [MAX_JETS] ;
-   Float_t EtaUncleaned    [MAX_JETS] ;
-   Float_t PhiUncleaned    [MAX_JETS] ;
-   Float_t EnergyUncleaned [MAX_JETS] ;
+   Float_t Pt_MuonCleaned     [MAX_JETS] ;
+   Float_t Eta_MuonCleaned    [MAX_JETS] ;
+   Float_t Phi_MuonCleaned    [MAX_JETS] ;
+   Float_t Energy_MuonCleaned [MAX_JETS] ;
 
    //----- QG tagger variables  -----------------------------------------------------------------------
    Float_t QGTagsLikelihood        [MAX_JETS] ;
@@ -872,15 +871,9 @@ public:
    Float_t JVBeta                  [MAX_JETS] ;
 
    //----- CMSSW Objects  ---------------------------------------------------------
-#ifdef __BPRIMEKIT_H__
+#ifdef __CMSSW__
    reco::Candidate* CandRef[MAX_JETS]; // backward pointer to pat:: object
 #endif
-
-
-
-
-
-
    void RegisterTree( TTree* root , std::string name = "JetInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
@@ -900,10 +893,10 @@ public:
       root->Branch( ( name + ".JetIDLOOSE" ).c_str(), JetIDLOOSE, ( name + ".JetIDLOOSE[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".JetCharge" ).c_str(), JetCharge, ( name + ".JetCharge[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NConstituents" ).c_str(), NConstituents, ( name + ".NConstituents[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".PtUncleaned" ).c_str(), PtUncleaned, ( name + ".PtUncleaned[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".EtaUncleaned" ).c_str(), EtaUncleaned, ( name + ".EtaUncleaned[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".PhiUncleaned" ).c_str(), PhiUncleaned, ( name + ".PhiUncleaned[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".EnergyUncleaned" ).c_str(), EnergyUncleaned, ( name + ".EnergyUncleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Pt_MuonCleaned" ).c_str(), Pt_MuonCleaned, ( name + ".Pt_MuonCleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Eta_MuonCleaned" ).c_str(), Eta_MuonCleaned, ( name + ".Eta_MuonCleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Phi_MuonCleaned" ).c_str(), Phi_MuonCleaned, ( name + ".Phi_MuonCleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Energy_MuonCleaned" ).c_str(), Energy_MuonCleaned, ( name + ".Energy_MuonCleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsLikelihood" ).c_str(), QGTagsLikelihood, ( name + ".QGTagsLikelihood[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsAxis2" ).c_str(), QGTagsAxis2, ( name + ".QGTagsAxis2[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsMult" ).c_str(), QGTagsMult, ( name + ".QGTagsMult[" + name + ".Size]/F" ).c_str() );
@@ -986,10 +979,10 @@ public:
       root->SetBranchAddress( ( name + ".JetIDLOOSE" ).c_str() , JetIDLOOSE ) ;
       root->SetBranchAddress( ( name + ".JetCharge" ).c_str() , JetCharge ) ;
       root->SetBranchAddress( ( name + ".NConstituents" ).c_str() , NConstituents ) ;
-      root->SetBranchAddress( ( name + ".PtUncleaned" ).c_str() , PtUncleaned ) ;
-      root->SetBranchAddress( ( name + ".EtaUncleaned" ).c_str() , EtaUncleaned ) ;
-      root->SetBranchAddress( ( name + ".PhiUncleaned" ).c_str() , PhiUncleaned ) ;
-      root->SetBranchAddress( ( name + ".EnergyUncleaned" ).c_str() , EnergyUncleaned ) ;
+      root->SetBranchAddress( ( name + ".Pt_MuonCleaned" ).c_str() , Pt_MuonCleaned ) ;
+      root->SetBranchAddress( ( name + ".Eta_MuonCleaned" ).c_str() , Eta_MuonCleaned ) ;
+      root->SetBranchAddress( ( name + ".Phi_MuonCleaned" ).c_str() , Phi_MuonCleaned ) ;
+      root->SetBranchAddress( ( name + ".Energy_MuonCleaned" ).c_str() , Energy_MuonCleaned ) ;
       root->SetBranchAddress( ( name + ".QGTagsLikelihood" ).c_str() , QGTagsLikelihood ) ;
       root->SetBranchAddress( ( name + ".QGTagsAxis2" ).c_str() , QGTagsAxis2 ) ;
       root->SetBranchAddress( ( name + ".QGTagsMult" ).c_str() , QGTagsMult ) ;
@@ -1360,4 +1353,3 @@ public:
    }
 };
 #endif // __BPRIMEKIT_FORMAT_H__
-
