@@ -64,6 +64,14 @@ public:
    explicit bprimeKit( const edm::ParameterSet& ) ;
    ~bprimeKit();
 
+   // See plugins/Isolations.cc
+   static double GetMiniPFIsolation(
+      const edm::Handle<pat::PackedCandidateCollection>& pfcands,
+      const reco::Candidate* ptcl,
+      double r_iso_min,
+      double r_iso_max,
+      double kt_scale,
+      bool charged_only );
 private:
    //--------------------------------------------------------------------------------------------------
    //   Inheritance methods
@@ -179,6 +187,7 @@ private:
    std::vector<edm::EDGetTokenT<MuonList>>       fMuonTokens            ;
    std::vector<edm::EDGetTokenT<ElectronList>>   fElectronTokens        ;
    std::vector<edm::EDGetTokenT<TauList>>        fTauTokens             ;
+   edm::EDGetTokenT<pat::PackedCandidateCollection> fPackedCandToken    ;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDVetoToken   ;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDLooseToken  ;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDMediumToken ;
@@ -221,6 +230,7 @@ private:
    std::vector<MuonHandle>      fMuonList_Hs;
    std::vector<ElectronHandle>  fElectronList_Hs;
    std::vector<TauHandle>       fTauList_Hs;
+   edm::Handle<pat::PackedCandidateCollection> fPackedCand_H;
    edm::Handle<reco::ConversionCollection> fConversions_H;
    edm::ESHandle<TransientTrackBuilder>    fTrackBuilder_H;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDVeto_H   ;

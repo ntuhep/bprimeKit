@@ -104,6 +104,17 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       fLepInfo[icoll].NumberOfExpectedInnerHits [fLepInfo[icoll].Size]
          = it_el->gsfTrack()->hitPattern().numberOfHits( reco::HitPattern::MISSING_INNER_HITS ) ; // Add by Jacky
 
+      //----- MiniPFIsolation -----
+      // https://github.com/manuelfs/CfANtupler/blob/master/minicfa/interface/miniAdHocNTupler.h#L54
+      fLepInfo[icoll].MiniIso [fLepInfo[icoll].Size]
+         = bprimeKit::GetMiniPFIsolation(
+            fPackedCand_H ,
+            dynamic_cast<const reco::Candidate*>(&*it_el),
+            0.05,
+            0.2,
+            10.,
+            false);
+
       //----- Cut based electron ID  ---------------------------------------------------------------------
       dist_ = ( it_el->convDist() == -9999. ? 9999 : it_el->convDist() );
       dcot_ = ( it_el->convDcot() == -9999. ? 9999 : it_el->convDcot() );

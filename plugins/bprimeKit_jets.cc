@@ -267,8 +267,9 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                fJetInfo[icoll].GenJetPt  [fJetInfo[icoll].Size] = genjet->pt();
                fJetInfo[icoll].GenJetEta [fJetInfo[icoll].Size] = genjet->eta();
                fJetInfo[icoll].GenJetPhi [fJetInfo[icoll].Size] = genjet->phi();
+               cout << fJetCollections[icoll] << ":Gen Jet Found!" << endl;
             } else {
-               cout << "No Gen Jet Found!" << endl;
+               cout << fJetCollections[icoll] << ":Gen Jet Not Found!" << endl;
             }
             const reco::GenParticle* parton = it_jet->genParton();
             if ( parton != NULL ) {
@@ -279,8 +280,9 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                fJetInfo[icoll].GenFlavor [fJetInfo[icoll].Size] = it_jet->partonFlavour();
                fJetInfo[icoll].GenHadronFlavor[fJetInfo[icoll].Size] = it_jet->hadronFlavour();
                fJetInfo[icoll].GenMCTag  [fJetInfo[icoll].Size] = GetGenMCTag( parton ) ;
+               cout << fJetCollections[icoll] << ": Parton found!" << endl;
             } else {
-               cout << "No Parton found!" << endl;
+               cout << fJetCollections[icoll] << ": Parton Not found!" << endl;
             }
          }
          fJetInfo[icoll].CandRef [fJetInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_jet );

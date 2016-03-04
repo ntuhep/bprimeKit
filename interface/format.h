@@ -248,38 +248,39 @@ public:
 class LepInfoBranches {
 public:
    Int_t   Size;
-   Int_t   Index                                 [MAX_LEPTONS] ;
+   Int_t   Index                [MAX_LEPTONS] ;
    //----- Generic information  -----------------------------------------------------------------------
-   Int_t   LeptonType                            [MAX_LEPTONS] ;
-   Int_t   Charge                                [MAX_LEPTONS] ;
-   Float_t Pt                                    [MAX_LEPTONS] ;
-   Float_t Et                                    [MAX_LEPTONS] ;
-   Float_t Eta                                   [MAX_LEPTONS] ;
-   Float_t Phi                                   [MAX_LEPTONS] ;
-   Float_t Px                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t Py                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t Pz                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t Energy                                [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t TrackIso                              [MAX_LEPTONS] ;
-   Float_t EcalIso                               [MAX_LEPTONS] ;
-   Float_t HcalIso                               [MAX_LEPTONS] ;
-   Float_t ChargedHadronIso                      [MAX_LEPTONS] ;
-   Float_t NeutralHadronIso                      [MAX_LEPTONS] ;
-   Float_t PhotonIso                             [MAX_LEPTONS] ;
-   Float_t SumPUPt                               [MAX_LEPTONS] ;
-   Float_t ChargedHadronIsoR03                   [MAX_LEPTONS] ;
-   Float_t NeutralHadronIsoR03                   [MAX_LEPTONS] ;
-   Float_t PhotonIsoR03                          [MAX_LEPTONS] ;
-   Float_t sumPUPtR03                            [MAX_LEPTONS] ;
-   Float_t IsoRhoCorrR03                         [MAX_LEPTONS] ;
-   Float_t ChargedHadronIsoR04                   [MAX_LEPTONS] ;
-   Float_t NeutralHadronIsoR04                   [MAX_LEPTONS] ;
-   Float_t PhotonIsoR04                          [MAX_LEPTONS] ;
-   Float_t sumPUPtR04                            [MAX_LEPTONS] ;
-   Float_t IsoRhoCorrR04                         [MAX_LEPTONS] ;
-   Float_t Ip3dPV                                [MAX_LEPTONS] ;
-   Float_t Ip3dPVErr                             [MAX_LEPTONS] ;
-   Float_t Ip3dPVSignificance                    [MAX_LEPTONS] ;
+   Int_t   LeptonType           [MAX_LEPTONS] ;
+   Int_t   Charge               [MAX_LEPTONS] ;
+   Float_t Pt                   [MAX_LEPTONS] ;
+   Float_t Et                   [MAX_LEPTONS] ;
+   Float_t Eta                  [MAX_LEPTONS] ;
+   Float_t Phi                  [MAX_LEPTONS] ;
+   Float_t Px                   [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Py                   [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Pz                   [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Energy               [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t TrackIso             [MAX_LEPTONS] ;
+   Float_t EcalIso              [MAX_LEPTONS] ;
+   Float_t HcalIso              [MAX_LEPTONS] ;
+   Float_t ChargedHadronIso     [MAX_LEPTONS] ;
+   Float_t NeutralHadronIso     [MAX_LEPTONS] ;
+   Float_t PhotonIso            [MAX_LEPTONS] ;
+   Float_t SumPUPt              [MAX_LEPTONS] ;
+   Float_t ChargedHadronIsoR03  [MAX_LEPTONS] ;
+   Float_t NeutralHadronIsoR03  [MAX_LEPTONS] ;
+   Float_t PhotonIsoR03         [MAX_LEPTONS] ;
+   Float_t sumPUPtR03           [MAX_LEPTONS] ;
+   Float_t IsoRhoCorrR03        [MAX_LEPTONS] ;
+   Float_t ChargedHadronIsoR04  [MAX_LEPTONS] ;
+   Float_t NeutralHadronIsoR04  [MAX_LEPTONS] ;
+   Float_t PhotonIsoR04         [MAX_LEPTONS] ;
+   Float_t sumPUPtR04           [MAX_LEPTONS] ;
+   Float_t IsoRhoCorrR04        [MAX_LEPTONS] ;
+   Float_t Ip3dPV               [MAX_LEPTONS] ;
+   Float_t Ip3dPVErr            [MAX_LEPTONS] ;
+   Float_t Ip3dPVSignificance   [MAX_LEPTONS] ;
+   Float_t MiniIso              [MAX_LEPTONS] ;
 
    //------------------------------------------------------------------------------
    //   Muon Information
@@ -466,6 +467,7 @@ public:
       root->Branch( ( name + ".Ip3dPV" ).c_str(), Ip3dPV, ( name + ".Ip3dPV[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Ip3dPVErr" ).c_str(), Ip3dPVErr, ( name + ".Ip3dPVErr[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Ip3dPVSignificance" ).c_str(), Ip3dPVSignificance, ( name + ".Ip3dPVSignificance[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".MiniIso" ).c_str(), MiniIso, ( name + ".MiniIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".CaloEnergy" ).c_str(), CaloEnergy, ( name + ".CaloEnergy[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".isGoodMuonTMOneStationTight" ).c_str(), isGoodMuonTMOneStationTight, ( name + ".isGoodMuonTMOneStationTight[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".isPFMuon" ).c_str(), isPFMuon, ( name + ".isPFMuon[" + name + ".Size]/O" ).c_str() );
@@ -626,6 +628,7 @@ public:
       root->SetBranchAddress( ( name + ".Ip3dPV" ).c_str() , Ip3dPV ) ;
       root->SetBranchAddress( ( name + ".Ip3dPVErr" ).c_str() , Ip3dPVErr ) ;
       root->SetBranchAddress( ( name + ".Ip3dPVSignificance" ).c_str() , Ip3dPVSignificance ) ;
+      root->SetBranchAddress( ( name + ".MiniIso" ).c_str() , MiniIso ) ;
       root->SetBranchAddress( ( name + ".CaloEnergy" ).c_str() , CaloEnergy ) ;
       root->SetBranchAddress( ( name + ".isGoodMuonTMOneStationTight" ).c_str() , isGoodMuonTMOneStationTight ) ;
       root->SetBranchAddress( ( name + ".isPFMuon" ).c_str() , isPFMuon ) ;

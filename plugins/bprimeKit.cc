@@ -84,6 +84,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
       fElectronTokens.push_back( consumes<ElectronList>(electag_list[i]) );
       fTauTokens.push_back( consumes<TauList>(tautag_list[i]) );
    }
+   fPackedCandToken        = consumes<pat::PackedCandidateCollection>( iConfig.getParameter<edm::InputTag>("packedCandLabel"));
    fElectronIDVetoToken    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
    fElectronIDLooseToken   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    fElectronIDMediumToken  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
@@ -338,6 +339,7 @@ void bprimeKit::GetEventObjects( const edm::Event& iEvent , const edm::EventSetu
    }
    if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Electron ID maps" << std::endl;}
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", fTrackBuilder_H );
+   iEvent.getByToken( fPackedCandToken       , fPackedCand_H       ) ;
    iEvent.getByToken( fConversionsTag        , fConversions_H      ) ;
    iEvent.getByToken( fElectronIDVetoToken   , fElectronIDVeto_H   ) ;
    iEvent.getByToken( fElectronIDLooseToken  , fElectronIDLoose_H  ) ;

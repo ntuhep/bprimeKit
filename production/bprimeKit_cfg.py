@@ -80,38 +80,30 @@ print """
 process.load('CommonTools/PileupAlgos/Puppi_cff')
 process.puppi.candName = cms.InputTag('packedPFCandidates')
 process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
-process.puppiOnTheFly = process.puppi.clone()
-process.puppiOnTheFly.useExistingWeights = True
+process.PuppiOnTheFly = process.puppi.clone(
+    candName = cms.InputTag( 'packedPFCandidates' ),
+    vertexName = cms.InputTag( 'offlineSlimmedPrimaryVertices' ),
+    clonePackedCands = cms.bool(True) )
+process.PuppiOnTheFly.useExistingWeights = True
 
 from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
 # NOTE: Disable selection to fix subjet issue
 # ak4Cut='pt>20  && abs(eta)<5.'
 # ak8Cut='pt>100 && abs(eta)<5.'
-
-run_on_data = ('Data' in options.DataProcessing )
-
-listBtagDiscriminators = [
-		'pfJetProbabilityBJetTags',
-		'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-		'pfCombinedMVAV2BJetTags',
-		'pfBoostedDoubleSecondaryVertexAK8BJetTags',
-		'pfCombinedCvsLJetTags',
-		'pfCombinedCvsBJetTags'
-		]
-
+run_on_mc = ( 'Data' not in options.DataProcessing )
 
 print "Add AK4 Jets"
 jetToolbox( process, 'ak4', 'jetToolBox_ak4', 'edmOut',
-      runOnMC            = run_on_data ,
+      runOnMC            = run_on_mc ,
       addQGTagger        = True,
-      bTagDiscriminators = listBtagDiscriminators ,
-      Cut                = ''
+#      bTagDiscriminators = listBtagDiscriminators ,
+#      Cut                = ''
       )
 
 print "Add AK8 Jets, soft drop"
 jetToolbox( process, 'ak8', 'jetToolBox_ak8', 'edmOut',
-      runOnMC            = run_on_data ,
+      runOnMC            = run_on_mc ,
       addSoftDropSubjets = True,
       addTrimming        = True,
       rFiltTrim          = 0.1,
@@ -119,32 +111,35 @@ jetToolbox( process, 'ak8', 'jetToolBox_ak8', 'edmOut',
       addFiltering       = True,
       addSoftDrop        = True,
       addNsub            = True,
-      addCMSTopTagger    = True,
-      bTagDiscriminators = listBtagDiscriminators ,
-      Cut                = '' )
+#      bTagDiscriminators = listBtagDiscriminators ,
+#      Cut                = ''
+      )
 
 print "Add AK8 Jets, top tag"
 jetToolbox( process, 'ca8', 'jetToolBox_ak8_toptag', 'edmOut',
-      runOnMC            = run_on_data ,
+      runOnMC            = run_on_mc ,
       addMassDrop        = True,
       addCMSTopTagger    = True,
-      bTagDiscriminators = listBtagDiscriminators ,
-      Cut                = ''
+#      bTagDiscriminators = listBtagDiscriminators ,
+#      Cut                = ''
       )
 
 print "Add ak8 jets, puppi"
 jetToolbox( process, 'ak8', 'jetToolBox_ak8_puppi', 'edmOut',
-      runOnMC             = run_on_data ,
-      PUMethod            = 'Puppi',
-      addTrimming         = True,
-      addPruning          = True,
-      addFiltering        = True,
-      addSoftDrop         = True,
-      addSoftDropSubjets  = True,
-      addNsub             = True,
-      bTagDiscriminators  = listBtagDiscriminators ,
-      Cut                 = ''
-      )
+   runOnMC             = run_on_mc ,
+   PUMethod            = 'Puppi',
+   addTrimming         = True,
+   addPruning          = True,
+   addFiltering        = True,
+   addSoftDrop         = True,
+   addSoftDropSubjets  = True,
+   addNsub             = True,
+#      bTagDiscriminators  = listBtagDiscriminators ,
+   JETCorrPayload='AK8PFchs',
+   subJETCorrPayload='AK4PFchs',
+   subJETCorrLevels=['L2Relative', 'L3Absoulte']
+#      Cut                 = ''
+   )
 
 
 print """
@@ -161,7 +156,7 @@ switchOnVIDElectronIdProducer(process, dataFormat)
 my_elid_modules  = []
 my_phoid_modules = []
 
-my_elid_modules.append( myParser.GetElectronIDModule( "other"     ) )
+my_elid_modules.append( myParser.GetElectronIDModule( "other" ) )
 my_elid_modules.append( myParser.GetElectronIDModule( "heep" ) )
 
 
@@ -245,6 +240,7 @@ process.bprimeKit = cms.EDAnalyzer(
       muonLabel       = cms.VInputTag( myParser.GetSetting('MuonLabel')       ) ,
       elecLabel       = cms.VInputTag( myParser.GetSetting('ElectronLabel')   ) ,
       tauLabel        = cms.VInputTag( myParser.GetSetting('TauLabel')        ) ,
+      packedCandLabel = cms.InputTag( "packedPFCandidates" ),
       eleVetoIdMap    = cms.InputTag( myParser.GetElectronIDLabel( "veto"   )  ) ,
       eleLooseIdMap   = cms.InputTag( myParser.GetElectronIDLabel( "loose"  )  ) ,
       eleMediumIdMap  = cms.InputTag( myParser.GetElectronIDLabel( "medium" )  ) ,
@@ -276,12 +272,6 @@ process.bprimeKit = cms.EDAnalyzer(
             )
       )
 
-process.edmOut = cms.OutputModule(
-    "PoolOutputModule",
-    fileName = cms.untracked.string('edmOut.root'),
-    outputCommands = cms.untracked.vstring("drop *"),
-    dropMetaData = cms.untracked.string('ALL'),
-    )
 
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
