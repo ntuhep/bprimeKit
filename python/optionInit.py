@@ -71,11 +71,6 @@ def initBPKOptions( options ):
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.int,
          'Debugging output level' )
-   options.register('ProcessList',
-         'Recommended',
-         opts.VarParsing.multiplicity.list,
-         opts.VarParsing.varType.string,
-         'Get Registered Settings for CMSSW cmsRun')
 
    options.register('RunMuonJetClean',
          True,

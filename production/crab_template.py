@@ -9,31 +9,11 @@ config.General.transferLogs = True
 config.JobType.pluginName = 'Analysis'
 config.JobType.psetName = './bprimeKit_cfg.py'
 
-## Input parameters 
-config.JobType.pyCfgParams = [ 
+## Input parameters
+config.JobType.pyCfgParams = [
    'DataProcessing=PROCESS',
-   'lheLabel=THELHELABEL'
-   # 'RunMuonJetClean=false',
    'maxEvents=-1',
-   'forceResiduals=false'
    ]
-
-## Input files, including all files for simplicity 
-config.JobType.inputFiles = [ 
-   './Summer15_25nsV2_DATA.db',
-   './Summer15_25nsV2_MC.db',
-   './Summer15_25nsV5_DATA.db', 
-   './Summer15_25nsV5_MC.db',   
-   './Summer15_25nsV6_DATA.db', 
-   './Summer15_25nsV6_MC.db',   
-   './Summer15_50nsV2_MC.db',   
-   './Summer15_50nsV4_DATA.db', 
-   './Summer15_50nsV4_MC.db',   
-   './Summer15_50nsV5_DATA.db', 
-   './Summer15_50nsV5_MC.db',
-   './JECs'
-   ] 
-
 
 config.Data.inputDataset = 'DATASET'
 config.Data.inputDBS = 'global'

@@ -35,18 +35,20 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fPhotonEffectiveArea_Photons    ((iConfig.getParameter<edm::FileInPath>("effAreaPhoFile")).fullPath()   )
 {
    //----- Configuration flags  ---------------------------------------------------
-   fPairCollectionType = iConfig.getUntrackedParameter<int> ( "PairCollection" , 0     ) ;
-   fSkipfGenInfo       = iConfig.getUntrackedParameter<bool>( "SkipGenInfo"    , false ) ;
-   fIncludeL7          = iConfig.getUntrackedParameter<bool>( "IncludeL7"      , true  ) ;
-   fDebug              = iConfig.getUntrackedParameter<int> ( "Debug"          , 0     ) ;
-   fRunOnB2G           = iConfig.getUntrackedParameter<bool>( "runOnB2G"       , false ) ;
-   fRunMuonJetCleaning = iConfig.getParameter<bool>( "runMuonJetClean" );
+   fPairCollectionType = iConfig.getParameter<int> ( "PairCollection"  ) ;
+   fSkipfGenInfo       = iConfig.getParameter<bool>( "SkipGenInfo"     ) ;
+   fIncludeL7          = iConfig.getParameter<bool>( "IncludeL7"       ) ;
+   fDebug              = iConfig.getParameter<int> ( "Debug"           ) ;
+   fRunOnB2G           = iConfig.getParameter<bool>( "runOnB2G"        ) ;
+   fRunMuonJetCleaning = iConfig.getParameter<bool>( "runMuonJetClean" ) ;
 
    //----- Event related  -----------------------------------------------------------------------------
-   fRhoToken    = consumes<double>(iConfig.getParameter<edm::InputTag>("rhoLabel"));
-   fHLTToken    = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag> ( "hltLabel"    ) );
-   fMETToken    = consumes<METList>(iConfig.getParameter<edm::InputTag> ( "metLabel"    ) );
-   fPileupToken = consumes<PileupList>(iConfig.getParameter<edm::InputTag> ( "puInfoLabel" ) );
+   fRhoToken      = consumes<double>(iConfig.getParameter<edm::InputTag>("rhoLabel"));
+   fHLTToken      = consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag> ( "hltLabel"    ) );
+   fMETToken      = consumes<METList>(iConfig.getParameter<edm::InputTag> ( "metLabel"    ) );
+   fPuppiMETToken = consumes<METList>(iConfig.getParameter<edm::InputTag> ("puppimetLabel"));
+   fPileupToken   = consumes<PileupList>(iConfig.getParameter<edm::InputTag> ( "puInfoLabel" ) );
+   fPackedCandToken = consumes<pat::PackedCandidateCollection>( iConfig.getParameter<edm::InputTag>("packedCand") );
 
    //----- Vertex related  ----------------------------------------------------------------------------
    fPrimaryVertexToken            = consumes<VertexList> (iConfig.getParameter<edm::InputTag>( "offlinePVLabel"   ) );
@@ -65,14 +67,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
       fJetCollections.push_back( jetsetting.getParameter<std::string>( "jetCollection" ) ) ;
       fJetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("jetLabel") ) );
       fSubjetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>("subjetLabel") ) );
-      cout << fJetCollections.back() << ": "
-           << jetsetting.getParameter<edm::InputTag>("jetLabel") << " ,"
-           << jetsetting.getParameter<edm::InputTag>("subjetLabel") << endl;
    }
-   fQGLikelihoodToken   = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"));
-   fQGAxis2Token        = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "axis2"));
-   fQGMultiplicityToken = consumes<edm::ValueMap<int  >>(edm::InputTag("QGTagger", "mult"));
-   fQGPtDToken          = consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "ptD"));
 
    //----- Lepton related  ----------------------------------------------------------------------------
    fLeptonCollections      = iConfig.getParameter<StrList>( "LepCollections" ) ; //branch names
@@ -84,7 +79,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
       fElectronTokens.push_back( consumes<ElectronList>(electag_list[i]) );
       fTauTokens.push_back( consumes<TauList>(tautag_list[i]) );
    }
-   fPackedCandToken        = consumes<pat::PackedCandidateCollection>( iConfig.getParameter<edm::InputTag>("packedCandLabel"));
    fElectronIDVetoToken    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleVetoIdMap"    )) ;
    fElectronIDLooseToken   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleLooseIdMap"   )) ;
    fElectronIDMediumToken  = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleMediumIdMap"  )) ;
@@ -288,6 +282,7 @@ void bprimeKit::GetEventObjects( const edm::Event& iEvent , const edm::EventSetu
    if( fDebug > 1 ){ std::cerr << "\t[1]Getting Event Wide Handles" << std::endl; }
    iEvent.getByToken( fRhoToken                                 , fRho_H                ) ;
    iEvent.getByToken( fMETToken                                 , fMET_H                ) ;
+   iEvent.getByToken( fPuppiMETToken                            , fPuppiMET_H           ) ;
    iEvent.getByToken( fBeamspotToken                            , fBeamSpot_H           ) ;
    // iEvent.getByToken( "patType1CorrectedPFMetUnclusteredEnUp"   , fMETTempPlus_H        ) ;
    // iEvent.getByToken( "patType1CorrectedPFMetUnclusteredEnDown" , fMETTempDown_H        ) ;
@@ -337,9 +332,9 @@ void bprimeKit::GetEventObjects( const edm::Event& iEvent , const edm::EventSetu
             << "\tTau       Handle:" << fTauList_Hs[       i]->size() << "  entries" <<  std::endl ;
       }
    }
-   if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Electron ID maps" << std::endl;}
+   iEvent.getByToken( fPackedCandToken                          , fPackedCand_H         ) ;
    iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", fTrackBuilder_H );
-   iEvent.getByToken( fPackedCandToken       , fPackedCand_H       ) ;
+   if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Electron ID maps" << std::endl;}
    iEvent.getByToken( fConversionsTag        , fConversions_H      ) ;
    iEvent.getByToken( fElectronIDVetoToken   , fElectronIDVeto_H   ) ;
    iEvent.getByToken( fElectronIDLooseToken  , fElectronIDLoose_H  ) ;

@@ -64,14 +64,14 @@ public:
    explicit bprimeKit( const edm::ParameterSet& ) ;
    ~bprimeKit();
 
-   // See plugins/Isolations.cc
    static double GetMiniPFIsolation(
-      const edm::Handle<pat::PackedCandidateCollection>& pfcands,
-      const reco::Candidate* ptcl,
-      double r_iso_min,
-      double r_iso_max,
-      double kt_scale,
-      bool charged_only );
+        const edm::Handle<pat::PackedCandidateCollection>& pfcands,
+        const reco::Candidate* ptcl,
+        const double r_iso_min,
+        const double r_iso_max,
+        const double kt_scale,
+        const bool charged_only );
+
 private:
    //--------------------------------------------------------------------------------------------------
    //   Inheritance methods
@@ -142,10 +142,11 @@ private:
    RunInfoBranches fRunInfo;
 
    //----- Event variable setup  ----------------------------------------------------------------------
-   edm::EDGetTokenT<double>              fRhoToken    ;
-   edm::EDGetTokenT<METList>             fMETToken    ;
-   edm::EDGetTokenT<edm::TriggerResults> fHLTToken    ;
-   edm::EDGetTokenT<PileupList>          fPileupToken ;
+   edm::EDGetTokenT<double>              fRhoToken     ;
+   edm::EDGetTokenT<METList>             fMETToken     ;
+   edm::EDGetTokenT<METList>             fPuppiMETToken;
+   edm::EDGetTokenT<edm::TriggerResults> fHLTToken     ;
+   edm::EDGetTokenT<PileupList>          fPileupToken  ;
 
    //----- Vertex variable setup  ---------------------------------------------------------------------
    edm::EDGetTokenT<VertexList>      fPrimaryVertexToken            ;
@@ -163,10 +164,6 @@ private:
    std::vector<std::string>                fJetCollections      ;
    std::vector<edm::EDGetTokenT<JetList>>  fJetTokens           ;
    std::vector<edm::EDGetTokenT<JetList>>  fSubjetTokens        ;
-   edm::EDGetTokenT<edm::ValueMap<float>>  fQGLikelihoodToken   ;
-   edm::EDGetTokenT<edm::ValueMap<float>>  fQGAxis2Token        ;
-   edm::EDGetTokenT<edm::ValueMap<int  >>  fQGMultiplicityToken ;
-   edm::EDGetTokenT<edm::ValueMap<float>>  fQGPtDToken          ;
 
    //----- Photon variable setup  ---------------------------------------------------------------------
    std::vector<std::string>                   fPhotonCollections                 ;
@@ -187,7 +184,7 @@ private:
    std::vector<edm::EDGetTokenT<MuonList>>       fMuonTokens            ;
    std::vector<edm::EDGetTokenT<ElectronList>>   fElectronTokens        ;
    std::vector<edm::EDGetTokenT<TauList>>        fTauTokens             ;
-   edm::EDGetTokenT<pat::PackedCandidateCollection> fPackedCandToken    ;
+   edm::EDGetTokenT<pat::PackedCandidateCollection> fPackedCandToken;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDVetoToken   ;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDLooseToken  ;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDMediumToken ;
@@ -201,6 +198,7 @@ private:
    //----- Event Wide Handles  ----------------------------------------------------
    edm::Handle<double> fRho_H;
    METHandle           fMET_H;
+   METHandle           fPuppiMET_H;
    METHandle           fMETTempPlus_H;
    METHandle           fMETTempDown_H;
    PileupHandle        fPileup_H;
@@ -221,10 +219,6 @@ private:
    //----- Jet related Handles  ---------------------------------------------------
    JetHandleList     fJetList_Hs;
    JetHandleList     fSubjetList_Hs;
-   edm::Handle<edm::ValueMap<float>> fQGLikelihood_H;
-   edm::Handle<edm::ValueMap<float>> fQGAxis2_H;
-   edm::Handle<edm::ValueMap<int  >> fQGMultiplicity_H;
-   edm::Handle<edm::ValueMap<float>> fQGPtD_H;
 
    //----- Lepton related Handles  ------------------------------------------------
    std::vector<MuonHandle>      fMuonList_Hs;

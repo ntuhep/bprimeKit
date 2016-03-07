@@ -55,7 +55,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
       memset( &fJetInfo[icoll], 0x00, sizeof( fJetInfo[icoll] ) );
 
-      if( fJetCollections[icoll]== "JetInfo" ) {
+      if( fJetCollections[icoll] == "JetInfo" || fJetCollections[icoll] == "JetInfoPuppi" ) {
          pfjetcoll  = true ;
          fatjetcoll = false;
          pt_cut = 15.;
@@ -68,11 +68,9 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       }
 
       if( fJetCollections[icoll].find( "Puppi" ) != std::string::npos ){
-         cout << "Getting Puppi jets!" << endl;
          userFloat_name   = "AK8Puppi" ;
          userFloat_prefix = "ak8PFJetsPuppi";
       } else {
-         cout << "Getting regular jets!" << endl;
          userFloat_name   = "AK8CHS" ;
          userFloat_prefix = "ak8PFJetsCHS" ;
       }
@@ -180,10 +178,23 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          //------------------------------------------------------------------------------
          //   AK4 Jet Specific variables
          //------------------------------------------------------------------------------
-         if( pfjetcoll ) {
+         if( pfjetcoll ){
             if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting QGTags ..." << endl ;}
-            fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = it_jet->userFloat("QGTaggerAK4PFCHS:qgLikelihood");
+            if( fJetCollections[icoll] == "JetInfo" ){
+               fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = it_jet->userFloat("QGTaggerAK4PFCHS:qgLikelihood");
+            } else if( fJetCollections[icoll] == "JetInfoPuppi" ){
+               fJetInfo[icoll].Puppivtx3DSig   [fJetInfo[icoll].Size] = it_jet->userFloat("vtx3DSig");
+               fJetInfo[icoll].Puppivtx3DVal   [fJetInfo[icoll].Size] = it_jet->userFloat("vtx3DVal");
+               fJetInfo[icoll].PuppivtxMass    [fJetInfo[icoll].Size] = it_jet->userFloat("vtxMass");
+               fJetInfo[icoll].PuppivtxNtracks [fJetInfo[icoll].Size] = it_jet->userFloat("vtxNtracks");
+               fJetInfo[icoll].PuppivtxPosX    [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPosX");
+               fJetInfo[icoll].PuppivtxPosY    [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPosY");
+               fJetInfo[icoll].PuppivtxPosZ    [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPosZ");
+               fJetInfo[icoll].PuppivtxPx      [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPx");
+               fJetInfo[icoll].PuppivtxPy      [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPy");
+               fJetInfo[icoll].PuppivtxPz      [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPz");
 
+            }
             //----- Particle flow information  -----------------------------------------------------------------
             if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Particle flow information ..." << endl ; }
             fJetInfo[icoll].NCH[fJetInfo[icoll].Size] = it_jet->chargedMultiplicity();
@@ -211,12 +222,6 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                   const reco::CATopJetTagInfo* tagInfo = dynamic_cast<const reco::CATopJetTagInfo*>( it_jet->tagInfo("caTop"));
                   fJetInfo[icoll].ca8MinMass [fJetInfo[icoll].Size] = tagInfo->properties().minMass;
                   fJetInfo[icoll].ca8TopMass [fJetInfo[icoll].Size] = tagInfo->properties().topMass;
-               } else {
-                  cout << "Has No (caTop) tagInfo! Avaliable: " << endl;
-                  for( const auto& name : it_jet->tagInfoLabels() ){
-                     cout << name << " " << flush ;
-                  }
-                  cout << endl;
                }
             }
 
@@ -232,9 +237,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             }
 
             JetIterator subjet_bunch = GetSubjetBunch( it_jet , fSubjetList_Hs[icoll] );
-            if( subjet_bunch == fSubjetList_Hs[icoll]->end() ) {
-               cout << "No valid subjet bunch found!" << endl;
-            } else {
+            if( subjet_bunch != fSubjetList_Hs[icoll]->end() ) {
                if( fDebug > 3 ) {
                   cout << subjet_bunch - fSubjetList_Hs[icoll]->begin() << endl;
                   cout << "\t\t\t[SubJets] Number of subjets: " << flush <<subjet_bunch->numberOfDaughters();
@@ -267,9 +270,6 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                fJetInfo[icoll].GenJetPt  [fJetInfo[icoll].Size] = genjet->pt();
                fJetInfo[icoll].GenJetEta [fJetInfo[icoll].Size] = genjet->eta();
                fJetInfo[icoll].GenJetPhi [fJetInfo[icoll].Size] = genjet->phi();
-               cout << fJetCollections[icoll] << ":Gen Jet Found!" << endl;
-            } else {
-               cout << fJetCollections[icoll] << ":Gen Jet Not Found!" << endl;
             }
             const reco::GenParticle* parton = it_jet->genParton();
             if ( parton != NULL ) {
@@ -280,9 +280,6 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                fJetInfo[icoll].GenFlavor [fJetInfo[icoll].Size] = it_jet->partonFlavour();
                fJetInfo[icoll].GenHadronFlavor[fJetInfo[icoll].Size] = it_jet->hadronFlavour();
                fJetInfo[icoll].GenMCTag  [fJetInfo[icoll].Size] = GetGenMCTag( parton ) ;
-               cout << fJetCollections[icoll] << ": Parton found!" << endl;
-            } else {
-               cout << fJetCollections[icoll] << ": Parton Not found!" << endl;
             }
          }
          fJetInfo[icoll].CandRef [fJetInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_jet );

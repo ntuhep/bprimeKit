@@ -5,7 +5,7 @@
 *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
 *
 *  GetMiniPFIsolation: Reimplementation as public static function
-*  https://github.com/manuelfs/CfANtupler/blob/master/minicfa/interface/miniAdHocNTupler.h#L54
+// *  https://github.com/manuelfs/CfANtupler/blob/master/minicfa/interface/miniAdHocNTupler.h#L54
 *
 *******************************************************************************/
 
@@ -17,10 +17,10 @@ using namespace std;
 double bprimeKit::GetMiniPFIsolation(
         const edm::Handle<pat::PackedCandidateCollection>& pfcands,
         const reco::Candidate* ptcl,
-        double r_iso_min,
-        double r_iso_max,
-        double kt_scale,
-        bool charged_only )
+        const double r_iso_min,
+        const double r_iso_max,
+        const double kt_scale,
+        const bool charged_only )
 {
    if(ptcl->pt()<5.) { return 99999.; }
    double deadcone_nh = 0.;
