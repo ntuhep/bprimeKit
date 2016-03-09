@@ -13,6 +13,7 @@
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
+using namespace std;
 //------------------------------------------------------------------------------ 
 //   Static helper variables
 //------------------------------------------------------------------------------

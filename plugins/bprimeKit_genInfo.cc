@@ -6,14 +6,15 @@
  *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
-//------------------------------------------------------------------------------ 
+using namespace std;
+//------------------------------------------------------------------------------
 //   bprimeKit method implementation
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Variable declaration
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    const reco::Candidate* MCDaughters[14];
    const reco::Candidate* dau1;
    const reco::Candidate* dau2;
@@ -23,7 +24,7 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
    CandidateIterator      mother1  , mother2;
    CandidateIterator      gmother1 , gmother2;
    int NMo, NDa;
-   int pdgId , dauId1 , dauId2 , monId ; 
+   int pdgId , dauId1 , dauId2 , monId ;
 
    bool isTZTZ = false;
    bool isTZTH = false;
@@ -34,18 +35,18 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
    vector<int> quarkID;
    vector<int> bosonID;
 
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Setting up common variables
    //--------------------------------------------------------------------------------------------------
    if( fDebug > 1 ) { cout << "\t[1] Entering fGenInfo subroutine"  << endl;}
    for( int i = 0; i < 14; i++ ) { MCDaughters[i] = NULL; }
    if( fIsData || fSkipfGenInfo  ) return false;
-   
+
 
    for( GenIterator it_gen = fGenParticle_H->begin(); it_gen != fGenParticle_H->end(); it_gen++ ) {
       cands.push_back( &*it_gen ); }
 
-   //------------------------------------------------------------------------------ 
+   //------------------------------------------------------------------------------
    //   Inserting Event wide variables
    //------------------------------------------------------------------------------
    fGenInfo.Weight = 1.0 ;
@@ -53,28 +54,30 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
       fGenInfo.Weight = fGenEvent_H->weight();
       fEvtInfo.ptHat  = fGenEvent_H->qScale();
    }
+
+
    if( fLHEInfo_H.isValid() ){
       if( fDebug > 1 ){ cout << "LHE Product is valid" << endl; }
-      fGenInfo.LHENominalWeight = fLHEInfo_H->hepeup().XWGTUP;
-      fGenInfo.LHEOriginalWeight = fLHEInfo_H->originalXWGTUP(); 
-      fGenInfo.LHESize = fLHEInfo_H->weights().size();
+      fGenInfo.LHENominalWeight  = fLHEInfo_H->hepeup().XWGTUP;
+      fGenInfo.LHEOriginalWeight = fLHEInfo_H->originalXWGTUP();
+      fGenInfo.LHESize           = TMath::Min(MAX_LHE,(int)fLHEInfo_H->weights().size());
       if( fDebug > 1 ){ cout << "LHE Product weight << " << fGenInfo.LHENominalWeight  << endl; }
-      for( unsigned i = 0 ; i < fLHEInfo_H->weights().size(); ++i ){
+      for( int i = 0 ; i < fGenInfo.LHESize ; ++i ){
          fGenInfo.LHESystematicWeights[i] = fLHEInfo_H->weights().at(i).wgt;
          fGenInfo.LHESystematicId[i]      = std::stoi(fLHEInfo_H->weights().at(i).id.data());
-         if( fDebug > 1 ){ 
+         if( fDebug > 1 ){
             cout << "\t[1] "<< i<<"th LHE Product s weight: [" << fGenInfo.LHESystematicId[i]
-                 << "]: " << fGenInfo.LHESystematicWeights[i]  
-                 << endl; 
+                 << "]: " << fGenInfo.LHESystematicWeights[i]
+                 << endl;
          }
       }
    } else {
       cout << "LHE Prodcut invalid!" << endl;
       cout << fLHELabel << endl;
    }
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Begin main loop
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    if( fDebug > 1 ) { cout << "\t[1] Entering fGenInfo main loop"  << endl;}
    for( GenIterator it_gen = fGenParticle_H->begin(); it_gen != fGenParticle_H->end(); ++it_gen  ) {
 
@@ -87,7 +90,7 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
 
       //----- fGenInfo Branch insertion  ------------------------------------------------------------------
       if( fGenInfo.Size < 60 ){
-         if( fDebug > 2 ) { cout << "\t\t[2]fGenInfo Particle" << endl; } 
+         if( fDebug > 2 ) { cout << "\t\t[2]fGenInfo Particle" << endl; }
          fGenInfo.Pt             [fGenInfo.Size] = it_gen->pt()                ;
          fGenInfo.Eta            [fGenInfo.Size] = it_gen->eta()               ;
          fGenInfo.Phi            [fGenInfo.Size] = it_gen->phi()               ;
@@ -115,34 +118,34 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
          if( fDebug > 2 ) { cout << "\t\t[2] Getting parent candidates" << endl;}
 
          mother1 = find( cands.begin(), cands.end(), it_gen->mother(0) );
-         if( mother1 != cands.end() ) { 
+         if( mother1 != cands.end() ) {
             fGenInfo.Mo1       [fGenInfo.Size] = mother1 - cands.begin() ;
-            fGenInfo.Mo1PdgID  [fGenInfo.Size] = (*mother1)->pdgId() ;  
+            fGenInfo.Mo1PdgID  [fGenInfo.Size] = (*mother1)->pdgId() ;
             fGenInfo.Mo1Status [fGenInfo.Size] = (*mother1)->status();
             gmother1 = find( cands.begin(), cands.end(), (*mother1)->mother(0) );
-            if( gmother1 != cands.end() ) { 
+            if( gmother1 != cands.end() ) {
                fGenInfo.GrandMo1PdgID [fGenInfo.Size] = (*gmother1)->pdgId();
                fGenInfo.GrandMo1Status[fGenInfo.Size] = (*gmother1)->status();
             }
-         } 
+         }
          mother2 = find( cands.begin(), cands.end(), it_gen->mother(NMo-1) );
-         if( mother2 != cands.end() ) { 
+         if( mother2 != cands.end() ) {
             fGenInfo.Mo2       [fGenInfo.Size] = mother2 - cands.begin() ;
-            fGenInfo.Mo2PdgID  [fGenInfo.Size] = (*mother2)->pdgId() ;  
+            fGenInfo.Mo2PdgID  [fGenInfo.Size] = (*mother2)->pdgId() ;
             fGenInfo.Mo2Status [fGenInfo.Size] = (*mother2)->status();
             gmother2 = find( cands.begin(), cands.end(), (*mother2)->mother(0) );
-            if( gmother2 != cands.end() ) { 
+            if( gmother2 != cands.end() ) {
                fGenInfo.GrandMo2PdgID [fGenInfo.Size] = (*gmother2)->pdgId();
                fGenInfo.GrandMo2Status[fGenInfo.Size] = (*gmother2)->status();
             }
          }
          daughter1 = find( cands.begin(), cands.end(), it_gen->daughter(0) );
-         if( daughter1 != cands.end() ) { 
-            fGenInfo.Da1 [fGenInfo.Size] = daughter1 - cands.begin() ; 
+         if( daughter1 != cands.end() ) {
+            fGenInfo.Da1 [fGenInfo.Size] = daughter1 - cands.begin() ;
             fGenInfo.Da1PdgID [fGenInfo.Size]  = it_gen->daughter(0)->pdgId();
          }
          daughter2 = find( cands.begin(), cands.end(), it_gen->daughter(NDa-1) );
-         if( daughter2 != cands.end() ) { 
+         if( daughter2 != cands.end() ) {
             fGenInfo.Da2 [fGenInfo.Size]= daughter2 - cands.begin() ;
             fGenInfo.Da2PdgID [fGenInfo.Size]  = it_gen->daughter(NDa-1)->pdgId();
          }
@@ -155,7 +158,7 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
          if( !IsTprime( it_gen->pdgId() ) || HasTprimeDaughter( it_gen ) ) { continue ; }
          for( size_t i = 0 ; i< it_gen->numberOfDaughters() ; ++i ){
             int daughterId = it_gen->daughter(i)->pdgId();
-            if( abs(daughterId) == 5 || abs(daughterId) == 6 ){ 
+            if( abs(daughterId) == 5 || abs(daughterId) == 6 ){
                quarkID.push_back( daughterId );
             } else if( abs(daughterId) > 22 && abs(daughterId)< 26 ){
                bosonID.push_back( daughterId );
@@ -163,9 +166,9 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
          }
       }
 
-      //-------------------------------------------------------------------------------------------------- 
+      //--------------------------------------------------------------------------------------------------
       //   Inserting Event Level information
-      //-------------------------------------------------------------------------------------------------- 
+      //--------------------------------------------------------------------------------------------------
       if ( NDa >= 2 ) {
          dau1    = it_gen->daughter( 0 );
          dau2    = it_gen->daughter( 1 );
@@ -185,7 +188,7 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
       if( fDebug > 2 ) { cout << "\t\t[2]Getting decay mode" << endl; }
       //----- b' decay mode  -----------------------------------------------------------------------------
       // b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH
-      if ( pdgId == +7 ) { 
+      if ( pdgId == +7 ) {
          fEvtInfo.McbprimeMass[0] = it_gen->p4().mag();
          // b' decay mode      - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
          if ( dauId1 == 6 && dauId2 == 24 ) { fEvtInfo.McbprimeMode[0] = 1; }
@@ -197,8 +200,8 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
             if ( abs( dau1->daughter( 0 )->pdgId() ) == 5 ) { MCDaughters[0] = dau1->daughter( 0 ); }
             if ( abs( dau1->daughter( 1 )->pdgId() ) == 5 ) { MCDaughters[0] = dau1->daughter( 1 ); }
          } else { MCDaughters[0] = dau1; }
-      } 
-      else if ( pdgId == -7 ) { 
+      }
+      else if ( pdgId == -7 ) {
          fEvtInfo.McbprimeMass[1] = it_gen->p4().mag();
          if ( dauId1 == 6 && dauId2 == 24 ) { fEvtInfo.McbprimeMode[1] = 1; }
          if ( dauId1 == 4 && dauId2 == 24 ) { fEvtInfo.McbprimeMode[1] = 2; }
@@ -279,7 +282,7 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
          if ( fEvtInfo.McWMode[3] == 0 ) { continue; }
          MCDaughters[8] = dau1;
          MCDaughters[9] = dau2;
-      } 
+      }
       //----- Z decay mode  ------------------------------------------------------------------------------
       // 0:others, 1:ee, 2:mumu, 3:tautau, 4:nunu, 5:bb, b:jj
       else if ( pdgId == 23 && ( monId == +7 || monId == +8 ) ) { // Z from b' or t'
@@ -322,14 +325,14 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
       fEvtInfo.McDauPdgID[i] = MCDaughters[i]->pdgId();
    }
 
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Begin main part of ljmet algorithm
    //   Main reference: https://github.com/cms-ljmet/Ljmet-Com/blob/master/src/TpTpCalc.cc
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    if(quarkID.size() == 0){ return 0;}
    else if(quarkID.size() != 2){
       double test = quarkID[0]*quarkID[1];
-      int sign = -1; 
+      int sign = -1;
       if(test > 0) { sign = 1; }
       if(sign > 0){
          if(quarkID.size() == 4){
@@ -364,7 +367,7 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
    else if(abs(quarkID[0]) == 6 && abs(quarkID[1]) == 5){
       if     (bosonID[0] == 23 && abs(bosonID[1]) == 24) isTZBW = true;
       else if(bosonID[0] == 25 && abs(bosonID[1]) == 24) isTHBW = true;
-      else cout << "t - b pair didn't match Z/H - W pair" << bosonID[0] << ", " << bosonID[1] << endl; 
+      else cout << "t - b pair didn't match Z/H - W pair" << bosonID[0] << ", " << bosonID[1] << endl;
    }
    // b-t pairs, check for correlating bosons in the right spots
    else if(abs(quarkID[1]) == 6 && abs(quarkID[0]) == 5){
@@ -391,13 +394,13 @@ bool bprimeKit::FillfGenInfo( const edm::Event& iEvent , const edm::EventSetup& 
 
 /*******************************************************************************
  *
- *  Note : Photons Flag rules - 
+ *  Note : Photons Flag rules -
  *    -1 : unknown or non photon
- *     0 : prompt photon 
- *         ( pid=22 && status(3) ) || 
+ *     0 : prompt photon
+ *         ( pid=22 && status(3) ) ||
  *         ( pid(22) && status(3) && M_pid(22) && status M_pid(3) )
  *     1 : Decay in flight
- *         ( pid(22) && status(1) && M_status(2) ) 
+ *         ( pid(22) && status(1) && M_status(2) )
  *     2 : ISR photon
  *          pid(22) && status(1) && M_status(3) && M_pid(<6 || =21) && GM_status(3) && GM_pid(2212)
  *     3 : FSR photon
@@ -414,27 +417,27 @@ int bprimeKit::PhotonFlag( const GenIterator& particle ) const
 {
    int numMo = particle->numberOfMothers();
    if( particle->status() == 3 ) {
-      if( particle->pdgId() == 22 ) { return PROMPT_PHOTON; } 
+      if( particle->pdgId() == 22 ) { return PROMPT_PHOTON; }
       else { return UNKNOWN_FLAG; }
-   } 
+   }
    else if( particle->status() == 1 && particle->pdgId() == 22 && numMo > 1 ) {
       auto mother1 = particle->mother(0);
       auto mother2 = particle->mother( numMo - 1 ) ;
-      if( mother1->pdgId()  == 22 && mother2->status() == 22 && 
-            mother1->status() == 3  && mother2->status() == 3 ){ 
+      if( mother1->pdgId()  == 22 && mother2->status() == 22 &&
+            mother1->status() == 3  && mother2->status() == 3 ){
          return PROMPT_PHOTON ;
       } else if( mother1->status() == 2 && mother2->status() == 2 ) {
          return DECAY_IN_FLIGHT ;
       } else if( mother1->status()  == 3 && mother2->status()  == 3 &&
             mother1->mother(0) != 0 && mother2->mother(0) != 0 &&
-            mother1->mother(0)->pdgId() == 2212 && 
+            mother1->mother(0)->pdgId() == 2212 &&
             mother2->mother(0)->pdgId() == 2212 ){
          if( (  abs( mother1->pdgId() ) < 6 || mother1->pdgId()       == 21 ) &&
                (  abs( mother2->pdgId() ) < 6 || mother2->pdgId() == 21 ) ) {
-            return ISR_PHOTON; 
+            return ISR_PHOTON;
          } else return FSR_PHOTON;
-      } else return UNKNOWN_FLAG ; 
-   } 
+      } else return UNKNOWN_FLAG ;
+   }
    return UNKNOWN_FLAG;
 }
 

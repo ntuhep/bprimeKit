@@ -23,15 +23,17 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 
 typedef std::vector<pat::MET>   METList;
 typedef edm::Handle<METList>    METHandle;
 typedef METList::const_iterator METIterator;
 
-typedef edm::Handle<std::vector<PileupSummaryInfo>>      PileupHandle;
-typedef std::vector<PileupSummaryInfo>::const_iterator   PileupIterator;
-   
-typedef edm::Handle<TriggerResults>                TriggerHandle;
+typedef std::vector<PileupSummaryInfo> PileupList;
+typedef edm::Handle<PileupList>        PileupHandle;
+typedef PileupList::const_iterator     PileupIterator;
+
+typedef edm::Handle<edm::TriggerResults>                TriggerHandle;
 typedef edm::Handle<L1GlobalTriggerReadoutRecord>  RecordHandle;
 typedef edm::Handle<reco::BeamSpot>                BeamSpotHandle ;
 
@@ -40,6 +42,7 @@ typedef std::vector<reco::GenParticle>   GenList;
 typedef edm::Handle<GenList>             GenHandle;
 typedef GenList::const_iterator          GenIterator ;
 typedef edm::Handle<LHEEventProduct>     LHEHandle;
+typedef edm::Handle<LHERunInfoProduct>   LHERunInfoHandle;
 
 typedef std::vector<reco::Vertex>  VertexList;
 typedef edm::Handle<VertexList>    VertexHandle   ;
@@ -51,9 +54,6 @@ typedef std::vector<edm::Handle<edm::ValueMap<double>>>             IsoDepositVa
 typedef edm::View<pat::Electron>       ElectronList        ;
 typedef edm::Handle<ElectronList>      ElectronHandle      ;
 typedef ElectronList::const_iterator   ElectronIterator    ;
-typedef edm::View<reco::GsfElectron>   GsfList             ;
-typedef edm::Handle<GsfList>           GsfHandle           ;
-typedef GsfList::const_iterator        GsfIterator         ;
 
 typedef edm::View<pat::Muon>     MuonList;
 typedef edm::Handle<MuonList>    MuonHandle;
@@ -65,12 +65,12 @@ typedef edm::Handle<TauList>    TauHandle;
 typedef std::vector<TauHandle>  TauHandleList;
 typedef TauList::const_iterator TauIterator;
 
-typedef edm::View<pat::Photon>     PhotonList; 
+typedef edm::View<pat::Photon>     PhotonList;
 typedef edm::Handle<PhotonList>    PhotonHandle;
 typedef std::vector<PhotonHandle>  PhotonHandleList;
 typedef PhotonList::const_iterator PhotonIterator ;
 
-typedef edm::View<pat::Jet>     JetList;
+typedef std::vector<pat::Jet>     JetList;
 typedef edm::Handle<JetList>    JetHandle;
 typedef std::vector<JetHandle>  JetHandleList;
 typedef JetList::const_iterator JetIterator;
@@ -79,7 +79,7 @@ typedef edm::Handle<reco::TrackCollection>       TrackHandle        ;
 typedef edm::Handle<reco::ConversionCollection>  ConversionHandle    ;
 typedef edm::Handle<DcsStatusCollection>         DcsStatusHandle     ;
 
-typedef vector<const reco::Candidate*>   CandidateList;
+typedef std::vector<const reco::Candidate*>   CandidateList;
 typedef CandidateList::const_iterator    CandidateIterator;
 
 

@@ -5,21 +5,19 @@
  *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
-
-//-------------------------  Muon specific CMSSW libraries  -------------------------
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
 #include "TrackingTools/IPTools/interface/IPTools.h"
 
-
-//------------------------------------------------------------------------------ 
+using namespace std;
+//------------------------------------------------------------------------------
 //   Begin bprimeKit muon method implementaion
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll )
 {
    MuonEffectiveArea::MuonEffectiveAreaTarget EATarget = MuonEffectiveArea::kMuEAFall11MC;
    if( fIsData ) { EATarget = MuonEffectiveArea::kMuEAData2012; }
 
-   if( fDebug > 1 ) { 
+   if( fDebug > 1 ) {
       cout << "\t[1]Muon collection size " << fMuonList_Hs[icoll]->size() << endl;  }
 
    fMySelectedMuons.clear();
@@ -28,9 +26,9 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;
       }
-      if( fDebug > 2 ) { 
+      if( fDebug > 2 ) {
          cout << "\t\t[2] Size " << fLepInfo[icoll].Size << " mu pt,eta,phi " << it_mu->pt() << "," << it_mu->eta() << "," << it_mu->phi() << endl; }
-      
+
       fLepInfo[icoll].Index                     [fLepInfo[icoll].Size] = fLepInfo[icoll].Size              ;
       fLepInfo[icoll].LeptonType                [fLepInfo[icoll].Size] = 13                               ;
       fLepInfo[icoll].Charge                    [fLepInfo[icoll].Size] = it_mu->charge()                  ;
@@ -56,8 +54,19 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
 
       //----- Good Muon selection  -----------------------------------------------------------------------
       // https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Soft_Muon
-      fLepInfo[icoll].isGoodMuonTMOneStationTight    [fLepInfo[icoll].Size] = muon::isGoodMuon( *it_mu , muon::TMOneStationTight ) ; 
-     
+      fLepInfo[icoll].isGoodMuonTMOneStationTight    [fLepInfo[icoll].Size] = muon::isGoodMuon( *it_mu , muon::TMOneStationTight ) ;
+
+      //----- MiniPFIsolation -----
+      // https://github.com/manuelfs/CfANtupler/blob/master/minicfa/interface/miniAdHocNTupler.h#L54
+      fLepInfo[icoll].MiniIso [fLepInfo[icoll].Size]
+         = bprimeKit::GetMiniPFIsolation(
+            fPackedCand_H ,
+            dynamic_cast<const reco::Candidate*>(&*it_mu),
+            0.05,
+            0.2,
+            10.,
+            false);
+
       //----- Muon isolation information  ----------------------------------------------------------------
       //  1. Delta Beta     : I = [sumChargedHadronPt+ max(0.,sumNeutralHadronPt+sumPhotonPt-0.5sumPUPt]/pt
       //  2. Rho Correction : https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=188494
@@ -74,7 +83,7 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          fLepInfo[icoll].sumPUPtR04           [fLepInfo[icoll].Size] = it_mu->pfIsolationR04().sumPUPt;
 
          double rhoPrime = max( (double)(fEvtInfo.Rho), 0.0 );
-         
+
          float AEffR03 = MuonEffectiveArea::GetMuonEffectiveArea( MuonEffectiveArea::kMuGammaAndNeutralHadronIso03, fLepInfo[icoll].Eta[fLepInfo[icoll].Size], EATarget );
          fLepInfo[icoll].IsoRhoCorrR03[fLepInfo[icoll].Size] = fLepInfo[icoll].ChargedHadronIsoR03[fLepInfo[icoll].Size] +
             max( fLepInfo[icoll].NeutralHadronIsoR03[fLepInfo[icoll].Size] + fLepInfo[icoll].PhotonIsoR03[fLepInfo[icoll].Size] - rhoPrime * AEffR03, 0.0 );
@@ -132,7 +141,7 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          fLepInfo[icoll].Ip3dPVErr          [fLepInfo[icoll].Size] = ip3dpv.second.error();
          fLepInfo[icoll].Ip3dPVSignificance [fLepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
       }
-      
+
       //----- Global muon specific parameters  -----------------------------------------------------------
       if ( it_mu->type() & 0x02 ) {
          fLepInfo[icoll].MuGlobalPtError        [fLepInfo[icoll].Size] = it_mu->globalTrack()->ptError();
@@ -162,7 +171,7 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
             if( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] != 0 ) { break; }
             fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = GetGenMCTag( it_gen , it_mu )  ; }
       }
-      
+
       if( IsSelectedMuon(it_mu) ){
          fMySelectedMuons.push_back( it_mu ); }
 
@@ -172,4 +181,3 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
    }
    return true;
 }
-

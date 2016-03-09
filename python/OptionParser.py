@@ -4,79 +4,95 @@
 ##    Description:  Various functions for parsing option input into variables
 ##
 ##**************************************************************************************************
-import sys 
+import os, os.path
+import re #Regular expression library
+import glob
+import sys
+import ConfigParser
 
-def getGlobalTag( dataProcess ):
-   if dataProcess == "MC25ns_MiniAODv2":
-      return "74X_mcRun2_asymptotic_v2"
-   elif dataProcess =="MC25ns_MiniAODv2_FastSim":
-     return "74X_mcRun2_asymptotic_v2"
-   elif dataProcess=="Data25ns_ReReco":
-      return "74X_dataRun2_v4"
-   elif dataProcess=="Data25ns_MiniAODv2":
-     return "74X_dataRun2_reMiniAOD_v0"
-   elif dataProcess=="Data25ns_PromptRecov4":
-     return "74X_dataRun2_Prompt_v4"
-   elif dataProcess=="MC50ns_MiniAODv2":
-     return "74X_mcRun2_asymptotic50ns_v0"
-   elif dataProcess=="Data50ns_MiniAODv2":
-     return "74X_dataRun2_reMiniAOD_v0"
-   elif dataProcess=="MC25ns_MiniAODv1":
-      print( "Warning!! Running a unrecommended version of MC miniAOD, global tag MCRUN2_74_V9\n" ) 
-      return "MCRUN2_74_V9"
-   else:
-     sys.exit("!!!!Error: Wrong DataProcessing option. Choose any of the following options:\n"
-           "'MC25ns_MiniAODv2', 'MC25ns_MiniAODv2_FastSim',\n"
-           "'Data25ns_ReReco' , 'Data25ns_MiniAODv2', 'Data25ns_PromptRecov4',\n"
-           "'MC50ns_MiniAODv2', 'Data50ns_MiniAODv2'\n")
+#-------------------------------------------------------------------------------
+#   Helper functions and global variables
+#-------------------------------------------------------------------------------
+cmssw_base = os.environ['CMSSW_BASE']
+cfg_dir   = cmssw_base + "/src/bpkFrameWork/bprimeKit/data/"
+all_cfg_files = glob.glob( cfg_dir+"/Process*.cfg")
 
-def getElectronIDLabel( workingPoint , dataProcess ):
-   if "50ns" in dataProcess:
-      if workingPoint == "veto":
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-veto"
-      elif workingPoint == "loose" : 
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-loose"
-      elif workingPoint == "medium" :
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-medium"
-      elif workingPoint == "tight" :
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-50ns-V2-standalone-tight"
-      elif workingPoint == "heep" :
-         return "egmGsfElectronIDs:heepElectronID-HEEPV60"
+def ListAllProcesses():
+   for cfg_file in all_cfg_files :
+      if 'Recommended' in cfg_file:
+         continue
+      processList = cfg_file.replace( cfg_dir , '' )
+      processList = processList.replace( 'Process_' , '' )
+      processList = processList.replace( '.cfg' , '' )
+      print "ProcessList=", processList, ", File: $CMSSW_BASE/%s" % cfg_file.replace( cmssw_base , '' )
+      cfg = ConfigParser.ConfigParser()
+      cfg.optionxform=str
+      cfg.read( cfg_file )
+      for section in cfg.sections():
+         if cfg.get(section,'Recommended') == 'Yes' :
+            print '\t[V] %-30s: %s' % ( section , cfg.get( section, 'GlobalTag' ) )
+         else:
+            print '\t[ ] %-30s: %s' % ( section , cfg.get( section, 'GlobalTag' ) )
+      print ""
+
+#-------------------------------------------------------------------------------
+#   Begin class definition
+#-------------------------------------------------------------------------------
+class OptionParser:
+   def __init__( self, options ):
+      self.DataProcessing = ''
+      self.cfgSettings = {}
+
+      if options.DataProcessing == '' :
+         print "Error! No Data Processing number input! Look at candidates in bprimeKit/data/Process*.cfg"
+         ListAllProcesses()
+         sys.exit()
+
+      self.DataProcessing = options.DataProcessing.strip()
+      for processfile in all_cfg_files :
+         cfg = ConfigParser.ConfigParser()
+         cfg.optionxform = str
+         cfg.read( processfile )
+         if cfg.has_section( options.DataProcessing ):
+            self.cfgSettings = dict( cfg.items( options.DataProcessing ) )
+            break
+
+      if len(self.cfgSettings) == 0 :
+         print "Error! Illegal Data processing options (",options.DataProcessing, ")! Look at candidates in bprimeKit/data/Process*.cfg"
+         ListAllProcesses()
+         sys.exit()
+
+      if self.cfgSettings['Recommended'] != 'Yes' :
+         print "Warning! Un-recommended data processing ", options.DataProcessing, " used!"
+
+      if options.lheLabel != '' :
+         print "Warning! Overriding default lhelabel to ", options.lheLabel
+         self.cfgSettings['LHELabel'] = options.lheLabel
+
+      if options.globalTag != '':
+         print "Warning! Overriding default global tag to ", options.globalTag
+         self.cfgSettings['GlobalTag'] = options.globalTag
+
+   def IsData(self):
+      return 'Data' in self.DataProcessing
+
+   def IsMC(self):
+      return 'MC' in self.DataProcessing
+
+   def GetProcess(self):
+      return self.DataProcessing
+
+   def GetSetting( self, x ):
+      if x in self.cfgSettings:
+         return self.cfgSettings[x]
       else:
-         return ""
-   elif "25ns" in dataProcess:
-      if workingPoint == "veto" : 
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"
-      elif workingPoint == "loose" :
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"
-      elif workingPoint == "medium" : 
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"
-      elif workingPoint == "tight" :
-         return "egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"
-      elif workingPoint == "heep" :
-         return "egmGsfElectronIDs:heepElectronID-HEEPV60"
+         print "Warning! Setting (",x,") not found!"
+         return ''
+
+   def GetMultiSetting( self,x ):
+      if x in self.cfgSettings:
+         tmp = self.cfgSettings[x]
+         ret = [ y.strip() for y in tmp.split(',') ]
+         return ret
       else:
-         return ""
-   else:
-      return ""
-
-def getElectronIDModule( workingPoint , dataProcess ):
-   if workingPoint == "heep":
-      return "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
-   elif "25ns" in dataProcess:
-      return "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff"
-   elif "50ns" in dataProcess:
-      return "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_50ns_V2_cff"
-   else :
-      return ""
-
-def getPileUpLabel( dataProcess ):
-   if dataProcess=="MC25ns_MiniAODv1":
-      return "addPileupInfo"
-   elif "Data" in dataProcess :
-      return ""
-   else:
-      return "slimmedAddPileupInfo"
-
-
-
+         return []

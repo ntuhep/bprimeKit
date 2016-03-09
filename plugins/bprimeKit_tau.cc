@@ -8,7 +8,7 @@
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 
-
+using namespace std;
 //------------------------------------------------------------------------------ 
 //   bprimeKit method implementation
 //------------------------------------------------------------------------------ 

@@ -12,15 +12,15 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
-//------------------------------------------------------------------------------ 
+using namespace std;
+//------------------------------------------------------------------------------
 //   Helper functions
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 bool findAncestor( const reco::Candidate* & , const reco::GenParticle* ) ;
 
-
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Beging method implementation
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 
 bool bprimeKit::FillLepPair( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
@@ -42,19 +42,19 @@ bool bprimeKit::FillLepPair( const edm::Event& iEvent , const edm::EventSetup& i
       }
       sum = fLepInfo[fPairCollectionType].CandRef[index1]->p4() + fLepInfo[fPairCollectionType].CandRef[index2]->p4();
       if( sum.mag() > 200. ) {continue;}
-      
+
       fPairInfo.Type [fPairInfo.Size] = 1; // 1: ll
       FillfPairInfo( index1 , index2 , sum );
       if ( !fIsData && !fSkipfGenInfo ) { //mc
          par1 = par2 = NULL;
-         if ( fLepInfo[fPairCollectionType].LeptonType[index1] == 11 ){ 
-            par1 = ( ( pat::Electron* )fLepInfo[fPairCollectionType].CandRef[index1] )->genLepton(); } 
-         else if ( fLepInfo[fPairCollectionType].LeptonType[index1] == 13 ){ 
+         if ( fLepInfo[fPairCollectionType].LeptonType[index1] == 11 ){
+            par1 = ( ( pat::Electron* )fLepInfo[fPairCollectionType].CandRef[index1] )->genLepton(); }
+         else if ( fLepInfo[fPairCollectionType].LeptonType[index1] == 13 ){
             par1 = ( ( pat::Muon*     )fLepInfo[fPairCollectionType].CandRef[index1] )->genLepton(); }
-         if ( fLepInfo[fPairCollectionType].LeptonType[index2] == 11 ){ 
-            par2 = ( ( pat::Electron* )fLepInfo[fPairCollectionType].CandRef[index2] )->genLepton(); } 
-         else if ( fLepInfo[fPairCollectionType].LeptonType[index2] == 13 ){ 
-            par2 = ( ( pat::Muon*     )fLepInfo[fPairCollectionType].CandRef[index2] )->genLepton(); } 
+         if ( fLepInfo[fPairCollectionType].LeptonType[index2] == 11 ){
+            par2 = ( ( pat::Electron* )fLepInfo[fPairCollectionType].CandRef[index2] )->genLepton(); }
+         else if ( fLepInfo[fPairCollectionType].LeptonType[index2] == 13 ){
+            par2 = ( ( pat::Muon*     )fLepInfo[fPairCollectionType].CandRef[index2] )->genLepton(); }
          FillPairGen( par1 , par2 );
       }
       fPairInfo.Size++;
@@ -62,12 +62,12 @@ bool bprimeKit::FillLepPair( const edm::Event& iEvent , const edm::EventSetup& i
    return true;
 }
 
-bool bprimeKit::FillJetPair( const edm::Event& iEvent , const edm::EventSetup& iSetup ) 
+bool bprimeKit::FillJetPair( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    math::XYZTLorentzVector sum;
    const reco::GenParticle* par1;
    const reco::GenParticle* par2;
-   
+
    for( int index1 = 0          ; index1 < fJetInfo[0].Size ; index1++ ) {
    for( int index2 = index1 + 1 ; index2 < fJetInfo[0].Size ; index2++ ) {
 
@@ -111,7 +111,7 @@ bool bprimeKit::FillPairGen( const reco::GenParticle* par1, const reco::GenParti
    const reco::Candidate* gen1;
    const reco::Candidate* gen2;
    const reco::Candidate* mon;
-   
+
    if( par1 == NULL || par2 == NULL ) return false;
    gen1 = par1;
    gen2 = par2;
@@ -119,7 +119,7 @@ bool bprimeKit::FillPairGen( const reco::GenParticle* par1, const reco::GenParti
    findAncestor( gen1 , par1 );
    findAncestor( gen2 , par2 );
 
-   if ( gen1 != NULL && gen1->numberOfMothers() == 1 && 
+   if ( gen1 != NULL && gen1->numberOfMothers() == 1 &&
         gen2 != NULL && gen2->numberOfMothers() == 1 &&
         gen1->mother( 0 ) == gen2->mother( 0 ) ) {
       mon = gen1->mother( 0 );
@@ -132,13 +132,13 @@ bool bprimeKit::FillPairGen( const reco::GenParticle* par1, const reco::GenParti
    return true;
 }
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Helper function implementation
-//------------------------------------------------------------------------------ 
-bool findAncestor( const reco::Candidate*& gen , const reco::GenParticle* par ) 
+//------------------------------------------------------------------------------
+bool findAncestor( const reco::Candidate*& gen , const reco::GenParticle* par )
 {
    if( par == NULL ) return false;
-   while( gen!= NULL && gen->numberOfMothers() == 1 && 
+   while( gen!= NULL && gen->numberOfMothers() == 1 &&
           gen->mother(0)->pdgId() == par->pdgId() ){
       gen = gen->mother(0);
    }

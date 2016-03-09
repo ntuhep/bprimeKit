@@ -5,19 +5,20 @@
  *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+using namespace std;
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   bprimeKit method implementation
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    if( fDebug > 1 ) { cout << "\t[1] Entering EventInfo subroutine" << endl ;}
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    //   Helper variables definition
-   //-------------------------------------------------------------------------------------------------- 
+   //--------------------------------------------------------------------------------------------------
    std::pair<int,int>  psValueCombo;
 
-   
+
    if( fDebug > 1 ){ cout <<"\t[1] Inserting generic Event information"<< endl;}
    fEvtInfo.RunNo    = iEvent.id().run();
    fEvtInfo.EvtNo    = iEvent.id().event();
@@ -26,8 +27,8 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    fEvtInfo.LumiNo   = iEvent.luminosityBlock();
    fEvtInfo.Orbit    = iEvent.orbitNumber();
    fEvtInfo.nTrgBook = N_TRIGGER_BOOKINGS;
-   fEvtInfo.Rho      = *(fRho_H.product()) ; 
-   
+   fEvtInfo.Rho      = *(fRho_H.product()) ;
+
    if( fDebug > 1 ){ cout <<"\t[1] Inserting Pile up information information"<< endl;}
    //----- Pile up information  -----------------------------------------------------------------------
    if( fPileup_H.isValid() ) {
@@ -38,7 +39,7 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          ++fEvtInfo.nBX ;
       }
    }
-   
+
    //----- Getting beamspot information  --------------------------------------------------------------
    if( fDebug > 1 ) { cout << "\t[1] Get beam spot."<< endl; }
    if ( fBeamSpot_H.isValid() ) {
@@ -75,22 +76,38 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    //----- Getting missing momentum information  ------------------------------------------------------
    if( fDebug > 1 ) { cout << "\t[1]Evt: Get missing momentum."<< endl; }
    for( auto it_met = fMET_H->begin(); it_met != fMET_H->end(); it_met++ ) {
-      fEvtInfo.PFMET              = it_met->pt()             ;
-      fEvtInfo.PFMETPhi           = it_met->phi()            ;
+      fEvtInfo.PFMET              = it_met->pt()       ;
+      fEvtInfo.PFMETPhi           = it_met->phi()      ;
       fEvtInfo.PFRawMET           = it_met->uncorPt()  ;
       fEvtInfo.PFRawMETPhi        = it_met->uncorPhi() ;
-      fEvtInfo.PFMETx             = it_met->px()             ; //Uly 2011-04-04
-      fEvtInfo.PFMETy             = it_met->py()             ; //Uly 2011-04-04
-      fEvtInfo.PFSumEt            = it_met->sumEt()          ;
-      fEvtInfo.PFMETSig           = it_met->mEtSig()         ; //MET Significance = MET / std::sqrt(SumET)
+      fEvtInfo.PFMETx             = it_met->px()       ; //Uly 2011-04-04
+      fEvtInfo.PFMETy             = it_met->py()       ; //Uly 2011-04-04
+      fEvtInfo.PFSumEt            = it_met->sumEt()    ;
+      fEvtInfo.PFMETSig           = it_met->mEtSig()   ; //MET Significance = MET / std::sqrt(SumET)
       fEvtInfo.PFMETRealSig       = it_met->significance()   ; //real MET significance
       fEvtInfo.PFMETlongitudinal  = it_met->e_longitudinal() ; //longitudinal component of the vector sum of energy over all object
-      const reco::GenMET* genmet = it_met->genMET()         ;
+      const reco::GenMET* genmet = it_met->genMET()    ;
       if ( !fSkipfGenInfo && genmet != NULL ) {
          fEvtInfo.PFGenMET        = genmet->pt();
          fEvtInfo.PFGenMETPhi     = genmet->phi();
       }
    }
+   for( auto it_met = fPuppiMET_H->begin(); it_met != fPuppiMET_H->end(); it_met++ ) {
+      fEvtInfo.PuppiMET              = it_met->pt()       ;
+      fEvtInfo.PuppiMETPhi           = it_met->phi()      ;
+      fEvtInfo.PuppiRawMET           = it_met->uncorPt()  ;
+      fEvtInfo.PuppiRawMETPhi        = it_met->uncorPhi() ;
+      fEvtInfo.PuppiSumEt            = it_met->sumEt()    ;
+      fEvtInfo.PuppiMETSig           = it_met->mEtSig()   ; //MET Significance = MET / std::sqrt(SumET)
+      fEvtInfo.PuppiMETRealSig       = it_met->significance()   ; //real MET significance
+      fEvtInfo.PuppiMETlongitudinal  = it_met->e_longitudinal() ; //longitudinal component of the vector sum of energy over all object
+      const reco::GenMET* genmet = it_met->genMET()    ;
+      if ( !fSkipfGenInfo && genmet != NULL ) {
+         fEvtInfo.PuppiGenMET        = genmet->pt();
+         fEvtInfo.PuppiGenMETPhi     = genmet->phi();
+      }
+   }
+
    //----- Missing momentum correction  ---------------------------------------------------------------
    if( fDebug > 1 ) { cout << "\t[1] Get missing momentum corrections."<< endl; }
    if( fMETTempPlus_H.isValid() ){
@@ -101,7 +118,6 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    }
 
    //----- Generation information  --------------------------------------------------------------------
-   iEvent.getByLabel( fGenEventLabel , fGenEvent_H ) ;
    if ( fGenEvent_H.isValid() && fGenEvent_H->hasPDF() ) {
       fEvtInfo.PDFid1   = fGenEvent_H->pdf()->id.first;
       fEvtInfo.PDFid2   = fGenEvent_H->pdf()->id.second;
@@ -137,8 +153,9 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
          fEvtInfo.HLTbits[i] = ( fTrigger_H->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
          if( fDebug > 2 ) { cout << "\t\t[2] HLTInfo: "<< i <<"["<< fEvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ; }
-         if( fDebug > 2 ) { cout << "\t\t[2] Getting prescale set: " << fHighLevelTriggerConfig.prescaleSet( iEvent , iSetup ) << endl; }
-         fEvtInfo.HLTPrescaleFactor[i] = fHighLevelTriggerConfig.prescaleValue( iEvent, iSetup, triggerName_ );
+         // TODO Assuming prescale set = 0 , check.
+         // Enoch 2016-02-04
+         fEvtInfo.HLTPrescaleFactor[i] = fHighLevelTriggerConfig.prescaleValue( 0 , triggerName_ );
          fHighLevelTriggerMap_pr = fHighLevelTriggerMap.find( triggerName_ );
          if( fHighLevelTriggerMap_pr != fHighLevelTriggerMap.end() ) {
             fEvtInfo.HLTName2enum[i] = fHighLevelTriggerMap_pr->second ;

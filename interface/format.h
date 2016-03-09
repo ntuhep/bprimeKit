@@ -88,6 +88,21 @@ public:
    Float_t PFGenMETPhi                               ;
    Float_t PFMETx                                    ; //Uly 2011-04-04
    Float_t PFMETy                                    ; //Uly 2011-04-04
+
+   //----- Puppi MET Information
+   Float_t PuppiMET                                     ;
+   Float_t PuppiMETType1CorrectedPFMetUnclusteredEnUp   ;
+   Float_t PuppiMETType1CorrectedPFMetUnclusteredEnDown ;
+   Float_t PuppiMETPhi                                  ;
+   Float_t PuppiRawMET                                  ;
+   Float_t PuppiRawMETPhi                               ;
+   Float_t PuppiSumEt                                   ;
+   Float_t PuppiMETSig                                  ;
+   Float_t PuppiMETlongitudinal                         ;
+   Float_t PuppiMETRealSig                              ;
+   Float_t PuppiGenMET                                  ;
+   Float_t PuppiGenMETPhi                               ;
+
    //----- High Level Trigger information  ------------------------------------------------------------
    Int_t   TrgCount                    ; // No. of fired booking bits
    Int_t   nTrgBook                    ;
@@ -101,7 +116,6 @@ public:
    Bool_t  HLTbits[N_TRIGGER_BOOKINGS] ;
    Int_t   L1[128]                     ; // L1 trigger bits
    Int_t   TT[64]                      ; // Techical trigger bits
-
    void RegisterTree( TTree* root , std::string name = "EvtInfo" ) {
       root->Branch( ( name + ".RunNo" ).c_str(), &RunNo, ( name + ".RunNo/I" ).c_str() );
       root->Branch( ( name + ".EvtNo" ).c_str(), &EvtNo, ( name + ".EvtNo/l" ).c_str() );
@@ -160,6 +174,18 @@ public:
       root->Branch( ( name + ".PFGenMETPhi" ).c_str(), &PFGenMETPhi, ( name + ".PFGenMETPhi/F" ).c_str() );
       root->Branch( ( name + ".PFMETx" ).c_str(), &PFMETx, ( name + ".PFMETx/F" ).c_str() );
       root->Branch( ( name + ".PFMETy" ).c_str(), &PFMETy, ( name + ".PFMETy/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMET" ).c_str(), &PuppiMET, ( name + ".PuppiMET/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETType1CorrectedPFMetUnclusteredEnUp" ).c_str(), &PuppiMETType1CorrectedPFMetUnclusteredEnUp, ( name + ".PuppiMETType1CorrectedPFMetUnclusteredEnUp/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETType1CorrectedPFMetUnclusteredEnDown" ).c_str(), &PuppiMETType1CorrectedPFMetUnclusteredEnDown, ( name + ".PuppiMETType1CorrectedPFMetUnclusteredEnDown/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETPhi" ).c_str(), &PuppiMETPhi, ( name + ".PuppiMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".PuppiRawMET" ).c_str(), &PuppiRawMET, ( name + ".PuppiRawMET/F" ).c_str() );
+      root->Branch( ( name + ".PuppiRawMETPhi" ).c_str(), &PuppiRawMETPhi, ( name + ".PuppiRawMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".PuppiSumEt" ).c_str(), &PuppiSumEt, ( name + ".PuppiSumEt/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETSig" ).c_str(), &PuppiMETSig, ( name + ".PuppiMETSig/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETlongitudinal" ).c_str(), &PuppiMETlongitudinal, ( name + ".PuppiMETlongitudinal/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETRealSig" ).c_str(), &PuppiMETRealSig, ( name + ".PuppiMETRealSig/F" ).c_str() );
+      root->Branch( ( name + ".PuppiGenMET" ).c_str(), &PuppiGenMET, ( name + ".PuppiGenMET/F" ).c_str() );
+      root->Branch( ( name + ".PuppiGenMETPhi" ).c_str(), &PuppiGenMETPhi, ( name + ".PuppiGenMETPhi/F" ).c_str() );
       root->Branch( ( name + ".TrgCount" ).c_str(), &TrgCount, ( name + ".TrgCount/I" ).c_str() );
       root->Branch( ( name + ".nTrgBook" ).c_str(), &nTrgBook, ( name + ".nTrgBook/I" ).c_str() );
       root->Branch( ( name + ".TrgBook" ).c_str(), TrgBook, ( name + ".TrgBook[" + name + ".nTrgBook]/C" ).c_str() );
@@ -231,6 +257,18 @@ public:
       root->SetBranchAddress( ( name + ".PFGenMETPhi" ).c_str() , &PFGenMETPhi ) ;
       root->SetBranchAddress( ( name + ".PFMETx" ).c_str() , &PFMETx ) ;
       root->SetBranchAddress( ( name + ".PFMETy" ).c_str() , &PFMETy ) ;
+      root->SetBranchAddress( ( name + ".PuppiMET" ).c_str() , &PuppiMET ) ;
+      root->SetBranchAddress( ( name + ".PuppiMETType1CorrectedPFMetUnclusteredEnUp" ).c_str() , &PuppiMETType1CorrectedPFMetUnclusteredEnUp ) ;
+      root->SetBranchAddress( ( name + ".PuppiMETType1CorrectedPFMetUnclusteredEnDown" ).c_str() , &PuppiMETType1CorrectedPFMetUnclusteredEnDown ) ;
+      root->SetBranchAddress( ( name + ".PuppiMETPhi" ).c_str() , &PuppiMETPhi ) ;
+      root->SetBranchAddress( ( name + ".PuppiRawMET" ).c_str() , &PuppiRawMET ) ;
+      root->SetBranchAddress( ( name + ".PuppiRawMETPhi" ).c_str() , &PuppiRawMETPhi ) ;
+      root->SetBranchAddress( ( name + ".PuppiSumEt" ).c_str() , &PuppiSumEt ) ;
+      root->SetBranchAddress( ( name + ".PuppiMETSig" ).c_str() , &PuppiMETSig ) ;
+      root->SetBranchAddress( ( name + ".PuppiMETlongitudinal" ).c_str() , &PuppiMETlongitudinal ) ;
+      root->SetBranchAddress( ( name + ".PuppiMETRealSig" ).c_str() , &PuppiMETRealSig ) ;
+      root->SetBranchAddress( ( name + ".PuppiGenMET" ).c_str() , &PuppiGenMET ) ;
+      root->SetBranchAddress( ( name + ".PuppiGenMETPhi" ).c_str() , &PuppiGenMETPhi ) ;
       root->SetBranchAddress( ( name + ".TrgCount" ).c_str() , &TrgCount ) ;
       root->SetBranchAddress( ( name + ".nTrgBook" ).c_str() , &nTrgBook ) ;
       root->SetBranchAddress( ( name + ".TrgBook" ).c_str() , TrgBook ) ;
@@ -248,38 +286,39 @@ public:
 class LepInfoBranches {
 public:
    Int_t   Size;
-   Int_t   Index                                 [MAX_LEPTONS] ;
+   Int_t   Index                [MAX_LEPTONS] ;
    //----- Generic information  -----------------------------------------------------------------------
-   Int_t   LeptonType                            [MAX_LEPTONS] ;
-   Int_t   Charge                                [MAX_LEPTONS] ;
-   Float_t Pt                                    [MAX_LEPTONS] ;
-   Float_t Et                                    [MAX_LEPTONS] ;
-   Float_t Eta                                   [MAX_LEPTONS] ;
-   Float_t Phi                                   [MAX_LEPTONS] ;
-   Float_t Px                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t Py                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t Pz                                    [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t Energy                                [MAX_LEPTONS] ; //Uly 2011-04-04
-   Float_t TrackIso                              [MAX_LEPTONS] ;
-   Float_t EcalIso                               [MAX_LEPTONS] ;
-   Float_t HcalIso                               [MAX_LEPTONS] ;
-   Float_t ChargedHadronIso                      [MAX_LEPTONS] ;
-   Float_t NeutralHadronIso                      [MAX_LEPTONS] ;
-   Float_t PhotonIso                             [MAX_LEPTONS] ;
-   Float_t SumPUPt                               [MAX_LEPTONS] ;
-   Float_t ChargedHadronIsoR03                   [MAX_LEPTONS] ;
-   Float_t NeutralHadronIsoR03                   [MAX_LEPTONS] ;
-   Float_t PhotonIsoR03                          [MAX_LEPTONS] ;
-   Float_t sumPUPtR03                            [MAX_LEPTONS] ;
-   Float_t IsoRhoCorrR03                         [MAX_LEPTONS] ;
-   Float_t ChargedHadronIsoR04                   [MAX_LEPTONS] ;
-   Float_t NeutralHadronIsoR04                   [MAX_LEPTONS] ;
-   Float_t PhotonIsoR04                          [MAX_LEPTONS] ;
-   Float_t sumPUPtR04                            [MAX_LEPTONS] ;
-   Float_t IsoRhoCorrR04                         [MAX_LEPTONS] ;
-   Float_t Ip3dPV                                [MAX_LEPTONS] ;
-   Float_t Ip3dPVErr                             [MAX_LEPTONS] ;
-   Float_t Ip3dPVSignificance                    [MAX_LEPTONS] ;
+   Int_t   LeptonType           [MAX_LEPTONS] ;
+   Int_t   Charge               [MAX_LEPTONS] ;
+   Float_t Pt                   [MAX_LEPTONS] ;
+   Float_t Et                   [MAX_LEPTONS] ;
+   Float_t Eta                  [MAX_LEPTONS] ;
+   Float_t Phi                  [MAX_LEPTONS] ;
+   Float_t Px                   [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Py                   [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Pz                   [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t Energy               [MAX_LEPTONS] ; //Uly 2011-04-04
+   Float_t TrackIso             [MAX_LEPTONS] ;
+   Float_t EcalIso              [MAX_LEPTONS] ;
+   Float_t HcalIso              [MAX_LEPTONS] ;
+   Float_t ChargedHadronIso     [MAX_LEPTONS] ;
+   Float_t NeutralHadronIso     [MAX_LEPTONS] ;
+   Float_t PhotonIso            [MAX_LEPTONS] ;
+   Float_t SumPUPt              [MAX_LEPTONS] ;
+   Float_t ChargedHadronIsoR03  [MAX_LEPTONS] ;
+   Float_t NeutralHadronIsoR03  [MAX_LEPTONS] ;
+   Float_t PhotonIsoR03         [MAX_LEPTONS] ;
+   Float_t sumPUPtR03           [MAX_LEPTONS] ;
+   Float_t IsoRhoCorrR03        [MAX_LEPTONS] ;
+   Float_t ChargedHadronIsoR04  [MAX_LEPTONS] ;
+   Float_t NeutralHadronIsoR04  [MAX_LEPTONS] ;
+   Float_t PhotonIsoR04         [MAX_LEPTONS] ;
+   Float_t sumPUPtR04           [MAX_LEPTONS] ;
+   Float_t IsoRhoCorrR04        [MAX_LEPTONS] ;
+   Float_t Ip3dPV               [MAX_LEPTONS] ;
+   Float_t Ip3dPVErr            [MAX_LEPTONS] ;
+   Float_t Ip3dPVSignificance   [MAX_LEPTONS] ;
+   Float_t MiniIso              [MAX_LEPTONS] ;
 
    //------------------------------------------------------------------------------
    //   Muon Information
@@ -430,10 +469,9 @@ public:
    Float_t GenPhi                                [MAX_LEPTONS] ;
    Int_t   GenPdgID                              [MAX_LEPTONS] ;
    Int_t   GenMCTag                              [MAX_LEPTONS] ;
-#ifdef __BPRIMEKIT_H__
+#ifdef __CMSSW__
    reco::Candidate* CandRef[MAX_LEPTONS]; // backward poInt_ter to the PAT objects
 #endif
-
    void RegisterTree( TTree* root , std::string name = "LepInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
@@ -467,6 +505,7 @@ public:
       root->Branch( ( name + ".Ip3dPV" ).c_str(), Ip3dPV, ( name + ".Ip3dPV[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Ip3dPVErr" ).c_str(), Ip3dPVErr, ( name + ".Ip3dPVErr[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Ip3dPVSignificance" ).c_str(), Ip3dPVSignificance, ( name + ".Ip3dPVSignificance[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".MiniIso" ).c_str(), MiniIso, ( name + ".MiniIso[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".CaloEnergy" ).c_str(), CaloEnergy, ( name + ".CaloEnergy[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".isGoodMuonTMOneStationTight" ).c_str(), isGoodMuonTMOneStationTight, ( name + ".isGoodMuonTMOneStationTight[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".isPFMuon" ).c_str(), isPFMuon, ( name + ".isPFMuon[" + name + ".Size]/O" ).c_str() );
@@ -627,6 +666,7 @@ public:
       root->SetBranchAddress( ( name + ".Ip3dPV" ).c_str() , Ip3dPV ) ;
       root->SetBranchAddress( ( name + ".Ip3dPVErr" ).c_str() , Ip3dPVErr ) ;
       root->SetBranchAddress( ( name + ".Ip3dPVSignificance" ).c_str() , Ip3dPVSignificance ) ;
+      root->SetBranchAddress( ( name + ".MiniIso" ).c_str() , MiniIso ) ;
       root->SetBranchAddress( ( name + ".CaloEnergy" ).c_str() , CaloEnergy ) ;
       root->SetBranchAddress( ( name + ".isGoodMuonTMOneStationTight" ).c_str() , isGoodMuonTMOneStationTight ) ;
       root->SetBranchAddress( ( name + ".isPFMuon" ).c_str() , isPFMuon ) ;
@@ -777,17 +817,26 @@ public:
    Float_t JetCharge     [MAX_JETS] ;
    Int_t   NConstituents [MAX_JETS] ;
    //----- Lepton cleaned variables  ----------------------------------------------
-   Float_t PtUncleaned     [MAX_JETS] ;
-   Float_t EtaUncleaned    [MAX_JETS] ;
-   Float_t PhiUncleaned    [MAX_JETS] ;
-   Float_t EnergyUncleaned [MAX_JETS] ;
-   Float_t MassUncleaned   [MAX_JETS] ;
+   Float_t Pt_MuonCleaned     [MAX_JETS] ;
+   Float_t Eta_MuonCleaned    [MAX_JETS] ;
+   Float_t Phi_MuonCleaned    [MAX_JETS] ;
+   Float_t Energy_MuonCleaned [MAX_JETS] ;
 
    //----- QG tagger variables  -----------------------------------------------------------------------
    Float_t QGTagsLikelihood        [MAX_JETS] ;
    Float_t QGTagsAxis2             [MAX_JETS] ;
    Float_t QGTagsMult              [MAX_JETS] ;
    Float_t QGTagsPtD               [MAX_JETS] ;
+   Float_t Puppivtx3DSig   [MAX_JETS];
+   Float_t Puppivtx3DVal   [MAX_JETS];
+   Float_t PuppivtxMass    [MAX_JETS];
+   Float_t PuppivtxNtracks [MAX_JETS];
+   Float_t PuppivtxPosX    [MAX_JETS];
+   Float_t PuppivtxPosY    [MAX_JETS];
+   Float_t PuppivtxPosZ    [MAX_JETS];
+   Float_t PuppivtxPx      [MAX_JETS];
+   Float_t PuppivtxPy      [MAX_JETS];
+   Float_t PuppivtxPz      [MAX_JETS];
 
    Int_t   NCH                     [MAX_JETS] ;
    Float_t CEF                     [MAX_JETS] ;
@@ -873,15 +922,9 @@ public:
    Float_t JVBeta                  [MAX_JETS] ;
 
    //----- CMSSW Objects  ---------------------------------------------------------
-#ifdef __BPRIMEKIT_H__
+#ifdef __CMSSW__
    reco::Candidate* CandRef[MAX_JETS]; // backward pointer to pat:: object
 #endif
-
-
-
-
-
-
    void RegisterTree( TTree* root , std::string name = "JetInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
@@ -901,15 +944,24 @@ public:
       root->Branch( ( name + ".JetIDLOOSE" ).c_str(), JetIDLOOSE, ( name + ".JetIDLOOSE[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".JetCharge" ).c_str(), JetCharge, ( name + ".JetCharge[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NConstituents" ).c_str(), NConstituents, ( name + ".NConstituents[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".PtUncleaned" ).c_str(), PtUncleaned, ( name + ".PtUncleaned[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".EtaUncleaned" ).c_str(), EtaUncleaned, ( name + ".EtaUncleaned[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".PhiUncleaned" ).c_str(), PhiUncleaned, ( name + ".PhiUncleaned[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".EnergyUncleaned" ).c_str(), EnergyUncleaned, ( name + ".EnergyUncleaned[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".MassUncleaned" ).c_str(), MassUncleaned, ( name + ".MassUncleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Pt_MuonCleaned" ).c_str(), Pt_MuonCleaned, ( name + ".Pt_MuonCleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Eta_MuonCleaned" ).c_str(), Eta_MuonCleaned, ( name + ".Eta_MuonCleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Phi_MuonCleaned" ).c_str(), Phi_MuonCleaned, ( name + ".Phi_MuonCleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Energy_MuonCleaned" ).c_str(), Energy_MuonCleaned, ( name + ".Energy_MuonCleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsLikelihood" ).c_str(), QGTagsLikelihood, ( name + ".QGTagsLikelihood[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsAxis2" ).c_str(), QGTagsAxis2, ( name + ".QGTagsAxis2[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsMult" ).c_str(), QGTagsMult, ( name + ".QGTagsMult[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".QGTagsPtD" ).c_str(), QGTagsPtD, ( name + ".QGTagsPtD[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Puppivtx3DSig" ).c_str(), Puppivtx3DSig, ( name + ".Puppivtx3DSig[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Puppivtx3DVal" ).c_str(), Puppivtx3DVal, ( name + ".Puppivtx3DVal[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxMass" ).c_str(), PuppivtxMass, ( name + ".PuppivtxMass[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxNtracks" ).c_str(), PuppivtxNtracks, ( name + ".PuppivtxNtracks[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxPosX" ).c_str(), PuppivtxPosX, ( name + ".PuppivtxPosX[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxPosY" ).c_str(), PuppivtxPosY, ( name + ".PuppivtxPosY[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxPosZ" ).c_str(), PuppivtxPosZ, ( name + ".PuppivtxPosZ[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxPx" ).c_str(), PuppivtxPx, ( name + ".PuppivtxPx[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxPy" ).c_str(), PuppivtxPy, ( name + ".PuppivtxPy[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".PuppivtxPz" ).c_str(), PuppivtxPz, ( name + ".PuppivtxPz[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NCH" ).c_str(), NCH, ( name + ".NCH[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".CEF" ).c_str(), CEF, ( name + ".CEF[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".NHF" ).c_str(), NHF, ( name + ".NHF[" + name + ".Size]/F" ).c_str() );
@@ -988,15 +1040,24 @@ public:
       root->SetBranchAddress( ( name + ".JetIDLOOSE" ).c_str() , JetIDLOOSE ) ;
       root->SetBranchAddress( ( name + ".JetCharge" ).c_str() , JetCharge ) ;
       root->SetBranchAddress( ( name + ".NConstituents" ).c_str() , NConstituents ) ;
-      root->SetBranchAddress( ( name + ".PtUncleaned" ).c_str() , PtUncleaned ) ;
-      root->SetBranchAddress( ( name + ".EtaUncleaned" ).c_str() , EtaUncleaned ) ;
-      root->SetBranchAddress( ( name + ".PhiUncleaned" ).c_str() , PhiUncleaned ) ;
-      root->SetBranchAddress( ( name + ".EnergyUncleaned" ).c_str() , EnergyUncleaned ) ;
-      root->SetBranchAddress( ( name + ".MassUncleaned" ).c_str() , MassUncleaned ) ;
+      root->SetBranchAddress( ( name + ".Pt_MuonCleaned" ).c_str() , Pt_MuonCleaned ) ;
+      root->SetBranchAddress( ( name + ".Eta_MuonCleaned" ).c_str() , Eta_MuonCleaned ) ;
+      root->SetBranchAddress( ( name + ".Phi_MuonCleaned" ).c_str() , Phi_MuonCleaned ) ;
+      root->SetBranchAddress( ( name + ".Energy_MuonCleaned" ).c_str() , Energy_MuonCleaned ) ;
       root->SetBranchAddress( ( name + ".QGTagsLikelihood" ).c_str() , QGTagsLikelihood ) ;
       root->SetBranchAddress( ( name + ".QGTagsAxis2" ).c_str() , QGTagsAxis2 ) ;
       root->SetBranchAddress( ( name + ".QGTagsMult" ).c_str() , QGTagsMult ) ;
       root->SetBranchAddress( ( name + ".QGTagsPtD" ).c_str() , QGTagsPtD ) ;
+      root->SetBranchAddress( ( name + ".Puppivtx3DSig" ).c_str() , Puppivtx3DSig ) ;
+      root->SetBranchAddress( ( name + ".Puppivtx3DVal" ).c_str() , Puppivtx3DVal ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxMass" ).c_str() , PuppivtxMass ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxNtracks" ).c_str() , PuppivtxNtracks ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxPosX" ).c_str() , PuppivtxPosX ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxPosY" ).c_str() , PuppivtxPosY ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxPosZ" ).c_str() , PuppivtxPosZ ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxPx" ).c_str() , PuppivtxPx ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxPy" ).c_str() , PuppivtxPy ) ;
+      root->SetBranchAddress( ( name + ".PuppivtxPz" ).c_str() , PuppivtxPz ) ;
       root->SetBranchAddress( ( name + ".NCH" ).c_str() , NCH ) ;
       root->SetBranchAddress( ( name + ".CEF" ).c_str() , CEF ) ;
       root->SetBranchAddress( ( name + ".NHF" ).c_str() , NHF ) ;
@@ -1146,11 +1207,12 @@ public:
    Int_t GrandMo1Status [MAX_GENS] ;
    Int_t GrandMo2Status [MAX_GENS] ;
    //----- LHE related information  -----------------------------------------------
-   Float_t     LHENominalWeight;
-   Float_t     LHEOriginalWeight;
-   Int_t       LHESize;
-   Int_t       LHESystematicId      [MAX_LHE];
-   Float_t     LHESystematicWeights [MAX_LHE];
+   Int_t    PdfID;
+   Float_t  LHENominalWeight;
+   Float_t  LHEOriginalWeight;
+   Int_t    LHESize;
+   Int_t    LHESystematicId      [MAX_LHE];
+   Float_t  LHESystematicWeights [MAX_LHE];
    void RegisterTree( TTree* root , std::string name = "GenInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
       root->Branch( ( name + ".Weight" ).c_str(), &Weight, ( name + ".Weight/F" ).c_str() );
@@ -1177,6 +1239,7 @@ public:
       root->Branch( ( name + ".GrandMo2PdgID" ).c_str(), GrandMo2PdgID, ( name + ".GrandMo2PdgID[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo1Status" ).c_str(), GrandMo1Status, ( name + ".GrandMo1Status[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo2Status" ).c_str(), GrandMo2Status, ( name + ".GrandMo2Status[" + name + ".Size]/I" ).c_str() );
+      root->Branch( ( name + ".PdfID" ).c_str(), &PdfID, ( name + ".PdfID/I" ).c_str() );
       root->Branch( ( name + ".LHENominalWeight" ).c_str(), &LHENominalWeight, ( name + ".LHENominalWeight/F" ).c_str() );
       root->Branch( ( name + ".LHEOriginalWeight" ).c_str(), &LHEOriginalWeight, ( name + ".LHEOriginalWeight/F" ).c_str() );
       root->Branch( ( name + ".LHESize" ).c_str(), &LHESize, ( name + ".LHESize/I" ).c_str() );
@@ -1209,6 +1272,7 @@ public:
       root->SetBranchAddress( ( name + ".GrandMo2PdgID" ).c_str() , GrandMo2PdgID ) ;
       root->SetBranchAddress( ( name + ".GrandMo1Status" ).c_str() , GrandMo1Status ) ;
       root->SetBranchAddress( ( name + ".GrandMo2Status" ).c_str() , GrandMo2Status ) ;
+      root->SetBranchAddress( ( name + ".PdfID" ).c_str() , &PdfID ) ;
       root->SetBranchAddress( ( name + ".LHENominalWeight" ).c_str() , &LHENominalWeight ) ;
       root->SetBranchAddress( ( name + ".LHEOriginalWeight" ).c_str() , &LHEOriginalWeight ) ;
       root->SetBranchAddress( ( name + ".LHESize" ).c_str() , &LHESize ) ;
@@ -1348,5 +1412,15 @@ public:
       root->SetBranchAddress( ( name + ".Rho" ).c_str() , Rho ) ;
    }
 };
+class RunInfoBranches {
+public:
+   //----- GenInformation  --------------------------------------------------------
+   Int_t  PdfID;
+   void RegisterTree( TTree* root , std::string name = "RunInfo" ) {
+      root->Branch( ( name + ".PdfID" ).c_str(), &PdfID, ( name + ".PdfID/I" ).c_str() );
+   }
+   void Register( TTree* root , std::string name = "RunInfo" ) {
+      root->SetBranchAddress( ( name + ".PdfID" ).c_str() , &PdfID ) ;
+   }
+};
 #endif // __BPRIMEKIT_FORMAT_H__
-

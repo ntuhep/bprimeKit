@@ -6,20 +6,26 @@
 #-------------------------------------------------------------------------------
 
 function makeName(){
-   echo $1 | awk -F "/" '{print $2"_"$3 }' 
-}
-
-function getLHELabel(){
-   if [[ $dataset == *"MINIAODSIM" ]]; then
-      echo "externalLHEProducer"
+   input=$1
+   geometry=$(echo $input | awk -F "/" '{print $2}')
+   tag=$(echo $input | awk -F "/" '{print $3}')
+   process=$(getDataProcess $input)
+   name=""
+   if [[ $process == *"Data"* ]]; then
+      name="$geometry"_"$tag"
    else
-      echo ""
+      name=$geometry
    fi
+   echo $name
 }
 
 function getDataProcess() {
    local data_set=$1
-   if [[ $data_set == *"RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"* ]]; then
+   if [[ $data_set == *"16Dec2015"* ]]; then
+      echo "Data25ns_76X"
+   elif [[ $data_set ==  *"RunIIFall15MiniAODv2-PU25nsData2015v1"* ]]; then
+      echo "MC25ns_MiniAOD_76X"
+   elif [[ $data_set == *"RunIISpring15MiniAODv2-74X_mcRun2_asymptotic_v2-v1"* ]]; then
       echo "MC25ns_MiniAODv2"
    elif [[ $data_set == *"RunIISpring15MiniAODv2-Asympt50ns_74X_mcRun2_asymptotic50ns_v0-v1"* ]]; then
       echo "MC50ns_MiniAODv2"
@@ -37,4 +43,3 @@ function getDataProcess() {
       echo ""
    fi
 }
-

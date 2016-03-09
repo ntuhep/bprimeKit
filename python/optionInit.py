@@ -10,7 +10,7 @@ import FWCore.ParameterSet.VarParsing as opts
 
 def initB2GOptions( options ):
    options.register('sample',
-         'file:///wk_cms/yichen/miniAODs/MC_reMiniAOD_25ns/TTJets_amcatnlo.root', 
+         'file:///wk_cms/yichen/miniAODs/MC_MiniAOD_76X/TTJets_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8.root',
          opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,
          'Sample to analyze')
@@ -28,7 +28,7 @@ def initB2GOptions( options ):
          'Data processing types. Options are: MC25ns_MiniAODv2, Data25ns_MiniAODv2, Data25ns_PromptRecov4')
 
    options.register('lheLabel',
-         "externalLHEProducer",
+         "",
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.string,
          'LHE module label, MC sample specific. Can be: externalLHEProducer')
@@ -72,8 +72,8 @@ def initBPKOptions( options ):
          opts.VarParsing.varType.int,
          'Debugging output level' )
 
-   options.register('RunMuonJetClean', 
-         True,
+   options.register('RunMuonJetClean',
+         False,
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.bool,
          "Whether to run Muon-Jet Cleaning")
@@ -84,5 +84,11 @@ def initBPKOptions( options ):
          opts.VarParsing.varType.bool,
          'Whether to use the filters and producers defined by b2g group')
 
-   options.setDefault('maxEvents', 1000 )
+   options.register('runJetToolKit',
+        True,
+        opts.VarParsing.multiplicity.singleton,
+        opts.VarParsing.varType.bool,
+        'Whether to use the jet tool kit to recluster jets'
+    )
 
+   options.setDefault('maxEvents', 1000 )
