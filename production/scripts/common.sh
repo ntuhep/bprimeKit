@@ -6,7 +6,17 @@
 #-------------------------------------------------------------------------------
 
 function makeName(){
-   echo $1 | awk -F "/" '{print $2"_"$3 }'
+   input=$1
+   geometry=$(echo $input | awk -F "/" '{print $2}')
+   tag=$(echo $input | awk -F "/" '{print $3}')
+   process=$(getDataProcess $input)
+   name=""
+   if [[ $process == *"Data"* ]]; then
+      name="$geometry"_"$tag"
+   else
+      name=$geometry
+   fi
+   echo $name
 }
 
 function getDataProcess() {

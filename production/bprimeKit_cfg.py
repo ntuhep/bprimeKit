@@ -156,6 +156,18 @@ for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 #-------------------------------------------------------------------------------
+#   Muon Puppi Isolation variables
+#-------------------------------------------------------------------------------
+# process.PUPPIMuonRelIso = cms.EDProducer(
+#     'PuppiLeptonIsolation'
+#     , srcLepton = cms.InputTag( 'slimmedMuons' )
+#     , dR = cms.double( 0.4 )
+#     , mixFraction = cms.double( 0.5 )
+#     , configuration = cms.string( "" )
+# )
+
+
+#-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
 #-------------------------------------------------------------------------------
 process.TFileService = cms.Service("TFileService",

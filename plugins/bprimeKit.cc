@@ -85,6 +85,21 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    fElectronIDTightToken   = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleTightIdMap"   )) ;
    fElectronIDHEEPToken    = consumes<edm::ValueMap<bool>> (iConfig.getParameter<edm::InputTag>( "eleHEEPIdMap"    )) ;
    fConversionsTag         = consumes<reco::ConversionCollection>( iConfig.getParameter<edm::InputTag>("conversionsLabel") );
+   // fToken_PuppiMuIso_Combined        = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiCombined"           ) );
+   // fToken_PuppiMuIso_WithLep         = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithLepton"         ) );
+   // fToken_PuppiMuIso_WithoutLep      = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithoutLepton"      ) );
+   // fToken_PuppiMuIso_Combined_CH     = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiCombinedCH"         ) );
+   // fToken_PuppiMuIso_Combined_NH     = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiCombinedNH"         ) );
+   // fToken_PuppiMuIso_Combined_PH     = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiCombinedPH"         ) );
+   // fToken_PuppiMuIso_WithLep_CH      = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithLeptonCH"       ) );
+   // fToken_PuppiMuIso_WithLep_NH      = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithLeptonNH"       ) );
+   // fToken_PuppiMuIso_WithLep_PH      = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithLeptonPH"       ) );
+   // fToken_PuppiMuIso_WithoutLep_CH   = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithoutLeptonCH"    ) );
+   // fToken_PuppiMuIso_WithoutLep_NH   = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithoutLeptonNH"    ) );
+   // fToken_PuppiMuIso_WithoutLep_PH   = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIso"       ,"PuppiWithoutLeptonPH"    ) );
+   // fToken_PuppiMuIsoAlter_Combined   = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIsoAltCalc","relIsoPuppiCombined"     ) );
+   // fToken_PuppiMuIsoAlter_WithLep    = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIsoAltCalc","relIsoPuppiWithLepton"   ) );
+   // fToken_PuppiMuIsoAlter_WithoutLep = consumes<edm::ValueMap<double>>(edm::InputTag("PUPPIMuonRelIsoAltCalc","relIsoPuppiWithoutLepton") );
 
    //----- Photon related  ----------------------------------------------------------------------------
    fPhotonCollections     = iConfig.getParameter<StrList> ( "PhoCollections" ) ; //branch names
@@ -341,7 +356,21 @@ void bprimeKit::GetEventObjects( const edm::Event& iEvent , const edm::EventSetu
    iEvent.getByToken( fElectronIDMediumToken , fElectronIDMedium_H ) ;
    iEvent.getByToken( fElectronIDTightToken  , fElectronIDTight_H  ) ;
    iEvent.getByToken( fElectronIDHEEPToken   , fElectronIDHEEP_H   ) ;
-
+   // iEvent.getByToken( fToken_PuppiMuIso_Combined        , fPuppiMuIso_Combined_H        ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithLep         , fPuppiMuIso_WithLep_H         ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithoutLep      , fPuppiMuIso_WithoutLep_H      ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_Combined_CH     , fPuppiMuIso_Combined_CH_H     ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_Combined_NH     , fPuppiMuIso_Combined_NH_H     ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_Combined_PH     , fPuppiMuIso_Combined_PH_H     ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithLep_CH      , fPuppiMuIso_WithLep_CH_H      ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithLep_NH      , fPuppiMuIso_WithLep_NH_H      ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithLep_PH      , fPuppiMuIso_WithLep_PH_H      ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithoutLep_CH   , fPuppiMuIso_WithoutLep_CH_H   ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithoutLep_NH   , fPuppiMuIso_WithoutLep_NH_H   ) ;
+   // iEvent.getByToken( fToken_PuppiMuIso_WithoutLep_PH   , fPuppiMuIso_WithoutLep_PH_H   ) ;
+   // iEvent.getByToken( fToken_PuppiMuIsoAlter_Combined   , fPuppiMuIsoAlter_Combined_H   ) ;
+   // iEvent.getByToken( fToken_PuppiMuIsoAlter_WithLep    , fPuppiMuIsoAlter_WithLep_H    ) ;
+   // iEvent.getByToken( fToken_PuppiMuIsoAlter_WithoutLep , fPuppiMuIsoAlter_WithoutLep_H ) ;
 
    for( unsigned il = 0; il < fPhotonTokens.size(); il++ ) {
       fPhotonList_Hs.push_back( PhotonHandle() );

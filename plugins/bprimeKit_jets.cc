@@ -133,15 +133,17 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          fJetInfo[icoll].pfCombinedMVABJetTags                       [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfCombinedMVABJetTags"                       );
 
          //----- Cleaned Jet four momentum  ---------------------------------------------
-         if( pfjetcoll ){
-            cleanedJet = CleanAK4Jet( it_jet ) ;
-         } else if( fatjetcoll ){
-            cleanedJet = CleanAK8Jet( it_jet  );
+         if( fRunMuonJetCleaning ){
+            if( pfjetcoll ){
+               cleanedJet = CleanAK4Jet( it_jet ) ;
+            } else if( fatjetcoll ){
+               cleanedJet = CleanAK8Jet( it_jet  );
+            }
+            fJetInfo[icoll].Pt_MuonCleaned[fJetInfo[icoll].Size]     = cleanedJet.Pt();
+            fJetInfo[icoll].Eta_MuonCleaned[fJetInfo[icoll].Size]    = cleanedJet.Eta();
+            fJetInfo[icoll].Phi_MuonCleaned[fJetInfo[icoll].Size]    = cleanedJet.Phi();
+            fJetInfo[icoll].Energy_MuonCleaned[fJetInfo[icoll].Size] = cleanedJet.Energy();
          }
-         fJetInfo[icoll].Pt_MuonCleaned[fJetInfo[icoll].Size]     = cleanedJet.Pt();
-         fJetInfo[icoll].Eta_MuonCleaned[fJetInfo[icoll].Size]    = cleanedJet.Eta();
-         fJetInfo[icoll].Phi_MuonCleaned[fJetInfo[icoll].Size]    = cleanedJet.Phi();
-         fJetInfo[icoll].Energy_MuonCleaned[fJetInfo[icoll].Size] = cleanedJet.Energy();
          if( fDebug > 2 ){
             cout << "\t\t[2]Cleaned  Jet Pt:" << cleanedJet.Pt() << endl;
             cout << "\t\t[2]Original Jet Pt:" << it_jet->pt() << endl;

@@ -191,6 +191,22 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDTightToken  ;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDHEEPToken   ;
    edm::EDGetTokenT<reco::ConversionCollection>  fConversionsTag        ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined        ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep         ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep      ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined_CH     ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined_NH     ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined_PH     ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep_CH      ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep_NH      ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep_PH      ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep_CH   ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep_NH   ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep_PH   ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIsoAlter_Combined   ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIsoAlter_WithLep    ;
+   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIsoAlter_WithoutLep ;
+
 
    //------------------------------------------------------------------------------
    //   EDM Handles
@@ -232,6 +248,21 @@ private:
    edm::Handle<edm::ValueMap<bool>>  fElectronIDMedium_H ;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDTight_H  ;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDHEEP_H   ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_H        ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_H         ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_H      ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_CH_H     ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_NH_H     ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_PH_H     ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_CH_H      ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_NH_H      ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_PH_H      ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_CH_H   ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_NH_H   ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_PH_H   ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIsoAlter_Combined_H   ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIsoAlter_WithLep_H    ;
+   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIsoAlter_WithoutLep_H ;
 
    //----- Photon related Handles  ------------------------------------------------
    std::vector<PhotonHandle>         fPhotonList_Hs;
