@@ -45,8 +45,8 @@ cat $template |
    sed "s@NAME@${name}@" > $crab_file
 
 ## Submitting crab job
-# export SCRAM_ARCH=slc6_amd64_gcc491
-# eval `scramv1 runtime -sh`
-# source /cvmfs/cms.cern.ch/crab3/crab.sh
-# voms-proxy-init -voms cms -valid 192:0
-# crab submit -c $crab_file
+export SCRAM_ARCH=slc6_amd64_gcc491
+eval `scramv1 runtime -sh`
+source /cvmfs/cms.cern.ch/crab3/crab.sh
+voms-proxy-init -voms cms -valid 192:0
+crab submit -c $crab_file
