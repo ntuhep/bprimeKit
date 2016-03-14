@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------
 #
 #   File        : Submit_All.sh
-#   Descriptions: Submit all data samples designated to user 
+#   Descriptions: Submit all data samples designated to user
 #   Usage       : ./Submit_All.sh
 #
 #-------------------------------------------------------------------------------
@@ -10,7 +10,7 @@
 sampleList="MC_dataset_${USER}"
 
 if [[ ! -e $sampleList ]]; then
-   echo "Error! File $sampleList not found!" 
+   echo "Error! File $sampleList not found!"
    exit 1
 fi
 
