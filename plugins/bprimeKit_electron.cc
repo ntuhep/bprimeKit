@@ -127,10 +127,15 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       //----- Isolation variables  -----------------------------------------------------------------------
       const edm::Ptr<pat::Electron> el( fElectronList_Hs[icoll], i );
       if( !fRunOnB2G ) {
+         if(fDebug ){ cout << "Getting Veto ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdVETO   [fLepInfo[icoll].Size] = (int)((*fElectronIDVeto_H)[el]);
+         if(fDebug ){ cout << "Getting Loose ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdLOOSE  [fLepInfo[icoll].Size] = (int)((*fElectronIDLoose_H)[el]);
+         if(fDebug ){ cout << "Getting Medium ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdMEDIUM [fLepInfo[icoll].Size] = (int)((*fElectronIDMedium_H)[el]);
+         if(fDebug ){ cout << "Getting Tight ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdTIGHT  [fLepInfo[icoll].Size] = (int)((*fElectronIDTight_H)[el]);
+         if(fDebug ){ cout << "Getting HEEP ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdHEEP   [fLepInfo[icoll].Size] = (int)((*fElectronIDHEEP_H)[el]);
       } else {
          fLepInfo[icoll].EgammaCutBasedEleIdVETO   [fLepInfo[icoll].Size] = it_el->userFloat( "vidVeto" ) ;
@@ -139,10 +144,10 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          fLepInfo[icoll].EgammaCutBasedEleIdTIGHT  [fLepInfo[icoll].Size] = it_el->userFloat( "vidTight" ) ;
          fLepInfo[icoll].EgammaCutBasedEleIdHEEP   [fLepInfo[icoll].Size] = it_el->userFloat( "vidHEEP" ) ;
       }
-      fLepInfo[icoll].ChargedHadronIso          [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ;
-      fLepInfo[icoll].NeutralHadronIso          [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
-      fLepInfo[icoll].PhotonIso                 [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
-      fLepInfo[icoll].SumPUPt                   [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPUPt;
+      fLepInfo[icoll].ChargedHadronIso            [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ;
+      fLepInfo[icoll].NeutralHadronIso            [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
+      fLepInfo[icoll].PhotonIso                   [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
+      fLepInfo[icoll].SumPUPt                     [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPUPt;
       fLepInfo[icoll].ElEcalE                     [fLepInfo[icoll].Size] = el->ecalEnergy();
       fLepInfo[icoll].ElhcalOverEcalBc            [fLepInfo[icoll].Size] = el->hcalOverEcalBc();
       fLepInfo[icoll].Eldr03HcalDepth1TowerSumEtBc[fLepInfo[icoll].Size] = el->dr03HcalDepth1TowerSumEtBc();

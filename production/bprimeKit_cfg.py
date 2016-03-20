@@ -64,72 +64,10 @@ process.GlobalTag.globaltag = myParser.GetSetting('GlobalTag')
 
 #-------------------------------------------------------------------------------
 #   Reprocessing Jets
+#     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
-process.load('CommonTools/PileupAlgos/Puppi_cff')
-process.puppi.candName = cms.InputTag('packedPFCandidates')
-process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
-process.puppiOnTheFly = process.puppi.clone()
-process.puppiOnTheFly.useExistingWeights = True
-
-from JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
-
-listBtagDiscriminators = [
-		'pfJetProbabilityBJetTags',
-		'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-		'pfCombinedMVAV2BJetTags',
-		'pfBoostedDoubleSecondaryVertexAK8BJetTags',
-		'pfCombinedCvsLJetTags',
-		'pfCombinedCvsBJetTags'
-		]
-
-
-print "Running on MC? :",myParser.IsMC()
-
-print "Add AK4 Jets"
-jetToolbox( process, 'ak4', 'jetToolBox_ak4', 'edmOut',
-      runOnMC            = myParser.IsMC() ,
-      addQGTagger        = True,
-      bTagDiscriminators = listBtagDiscriminators ,
-      Cut                = ''
-      )
-
-print "Add AK8 Jets, soft drop"
-jetToolbox( process, 'ak8', 'jetToolBox_ak8', 'edmOut',
-      runOnMC            = myParser.IsMC() ,
-      addSoftDropSubjets = True,
-      addTrimming        = True,
-      rFiltTrim          = 0.1,
-      addPruning         = True,
-      addFiltering       = True,
-      addSoftDrop        = True,
-      addNsub            = True,
-      addCMSTopTagger    = True,
-      bTagDiscriminators = listBtagDiscriminators ,
-      Cut                = '' )
-
-print "Add AK8 Jets, top tag"
-jetToolbox( process, 'ca8', 'jetToolBox_ak8_toptag', 'edmOut',
-      runOnMC            = myParser.IsMC() ,
-      addMassDrop        = True,
-      addCMSTopTagger    = True,
-      bTagDiscriminators = listBtagDiscriminators ,
-      Cut                = ''
-      )
-
-print "Add ak8 jets, puppi"
-jetToolbox( process, 'ak8', 'jetToolBox_ak8_puppi', 'edmOut',
-      runOnMC             = myParser.IsMC() ,
-      PUMethod            = 'Puppi',
-      addTrimming         = True,
-      addPruning          = True,
-      addFiltering        = True,
-      addSoftDrop         = True,
-      addSoftDropSubjets  = True,
-      addNsub             = True,
-      bTagDiscriminators  = listBtagDiscriminators ,
-      Cut                 = ''
-      )
-
+from bpkFrameWork.bprimeKit.jettoolbox_settings import *
+jettoolbox_settings( process, myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
