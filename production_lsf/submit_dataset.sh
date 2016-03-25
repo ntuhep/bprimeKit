@@ -27,6 +27,7 @@ function main()
    mkdir -p $OUT_TEMP/${name}
 
    file_list=$( das_client  --limit=1000000 --query="file dataset=$dataset" | grep "store" )
+   label="1"
    for file in $file_list ; do
       run_list=$(das_client --limit=1000000 --query="run file=$file" | grep --invert-match "Showing" )
       run_list=${run_list#*\[}
@@ -34,11 +35,11 @@ function main()
       run_list=${run_list//,/}
 
       for run in $run_list ; do
-         echo $file $run
-         script_file=${SH_DIR}/${name}/run_${run}.sh
-         log_file=${LOG_DIR}/${name}/run_${run}.txt
-         ntp_file=${OUT_TEMP}/${name}/run_${run}.root
-         store_file=${OUT_STORE}/${name}/bpk_ntuple_${run}.root
+         echo $file $label $run
+         script_file=${SH_DIR}/${name}/run_${label}_${run}.sh
+         log_file=${LOG_DIR}/${name}/run_${label}_${run}.txt
+         ntp_file=${OUT_TEMP}/${name}/bpk_ntuple_${label}_${run}.root
+         store_file=${OUT_STORE}/${name}/bpk_ntuple_${label}_${run}.root
 
          cmd="cmsRun $PWD/bprimeKit_cfg.py"
          cmd="${cmd} DataProcessing=${process}"
@@ -55,8 +56,9 @@ function main()
          echo "rm ${ntp_file}"               >> $script_file
 
          chmod +x $script_file
-
       done
+
+      label=$((label+1))
    done
 
 }
