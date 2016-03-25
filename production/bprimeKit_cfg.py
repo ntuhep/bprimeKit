@@ -112,7 +112,7 @@ process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
 # See the file python/bprimeKit_* default settings for the various DataProcessings
-process.load('bpkFrameWork.bprimeKit.bprimeKit_' + options.DataProcessing )
+process.load('bpkFrameWork.bprimeKit.bprimeKit_cfg_test' )
 # Passing input options to bprimeKit
 process.bprimeKit.runMuonJetClean = cms.bool( options.RunMuonJetClean )
 process.bprimeKit.runOnB2G        = cms.bool( options.b2gPreprocess )

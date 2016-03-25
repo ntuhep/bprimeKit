@@ -136,7 +136,7 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          if(fDebug ){ cout << "Getting Tight ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdTIGHT  [fLepInfo[icoll].Size] = (int)((*fElectronIDTight_H)[el]);
          if(fDebug ){ cout << "Getting HEEP ID" << endl; }
-         fLepInfo[icoll].EgammaCutBasedEleIdHEEP   [fLepInfo[icoll].Size] = (int)((*fElectronIDHEEP_H)[el]);
+         // fLepInfo[icoll].EgammaCutBasedEleIdHEEP   [fLepInfo[icoll].Size] = (int)((*fElectronIDHEEP_H)[el]);
       } else {
          fLepInfo[icoll].EgammaCutBasedEleIdVETO   [fLepInfo[icoll].Size] = it_el->userFloat( "vidVeto" ) ;
          fLepInfo[icoll].EgammaCutBasedEleIdLOOSE  [fLepInfo[icoll].Size] = it_el->userFloat( "vidLoose" ) ;

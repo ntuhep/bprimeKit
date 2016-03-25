@@ -70,6 +70,9 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
       if( fJetCollections[icoll].find( "Puppi" ) != std::string::npos ){
          userFloat_name   = "AK8Puppi" ;
          userFloat_prefix = "ak8PFJetsPuppi";
+      } else if( fJetCollections[icoll].find("MiniAOD") != std::string::npos ){
+         userFloat_name = "AK8";
+         userFloat_prefix = "ak8PFJetsCHS";
       } else {
          userFloat_name   = "AK8CHS" ;
          userFloat_prefix = "ak8PFJetsCHS" ;
@@ -239,27 +242,46 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                << ") own size: (" << fJetList_Hs[icoll]->size() << ")" << endl;
             }
 
-            JetIterator subjet_bunch = GetSubjetBunch( it_jet , fSubjetList_Hs[icoll] );
-            if( subjet_bunch != fSubjetList_Hs[icoll]->end() ) {
-               if( fDebug > 3 ) {
-                  cout << subjet_bunch - fSubjetList_Hs[icoll]->begin() << endl;
-                  cout << "\t\t\t[SubJets] Number of subjets: " << flush <<subjet_bunch->numberOfDaughters();
-               }
-               fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = subjet_bunch->numberOfDaughters() ;
-               for( unsigned i = 0 ; i < subjet_bunch->numberOfDaughters() ; ++i ){
-                  const pat::Jet* subjet = (pat::Jet*) subjet_bunch->daughter(i);
-                  fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass() );
-                  fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt() );
-                  fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et() );
-                  fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta() );
-                  fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi() );
-                  fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea() );
+            if( fJetCollections[icoll].find("MiniAOD") != string::npos ) {
+               fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = it_jet->subjets("CMSTopTag").size();
+               for( const auto& subjet : it_jet->subjets("CMSTopTag") ){
+                  fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
+                  fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
+                  fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
+                  fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
+                  fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
+                  fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
                   fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
                   fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
                   if( !fIsData && !fSkipfGenInfo ){
                      fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
                      fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
                      fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+                  }
+               }
+            } else {
+               JetIterator subjet_bunch = GetSubjetBunch( it_jet , fSubjetList_Hs[icoll] );
+               if( subjet_bunch != fSubjetList_Hs[icoll]->end() ) {
+                  if( fDebug > 3 ) {
+                     cout << subjet_bunch - fSubjetList_Hs[icoll]->begin() << endl;
+                     cout << "\t\t\t[SubJets] Number of subjets: " << flush <<subjet_bunch->numberOfDaughters();
+                  }
+                  fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = subjet_bunch->numberOfDaughters() ;
+                  for( unsigned i = 0 ; i < subjet_bunch->numberOfDaughters() ; ++i ){
+                     const pat::Jet* subjet = (pat::Jet*) subjet_bunch->daughter(i);
+                     fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass() );
+                     fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt() );
+                     fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et() );
+                     fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta() );
+                     fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi() );
+                     fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea() );
+                     fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
+                     fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
+                     if( !fIsData && !fSkipfGenInfo ){
+                        fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
+                        fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
+                        fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+                     }
                   }
                }
             }
