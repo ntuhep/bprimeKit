@@ -11,7 +11,7 @@ source $PWD/scripts/common.sh
 SH_DIR=${PWD}/SH
 LOG_DIR=${PWD}/LOG
 OUT_TEMP=${PWD}/NTP
-OUT_STORE=${PWD}/STORE
+OUT_STORE="yichen@inrne4:/store/yichen/bpk_ntuples/76X_bpkv1.2"
 
 
 function main()
