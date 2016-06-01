@@ -66,8 +66,8 @@ process.GlobalTag.globaltag = myParser.GetSetting('GlobalTag')
 #   Reprocessing Jets
 #     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
-from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-jettoolbox_settings( process, myParser.IsMC() )
+#from bpkFrameWork.bprimeKit.jettoolbox_settings import *
+#jettoolbox_settings( process, myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
@@ -93,17 +93,6 @@ for idmod in my_elid_modules:
 for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-#-------------------------------------------------------------------------------
-#   Muon Puppi Isolation variables
-#-------------------------------------------------------------------------------
-# process.PUPPIMuonRelIso = cms.EDProducer(
-#     'PuppiLeptonIsolation'
-#     , srcLepton = cms.InputTag( 'slimmedMuons' )
-#     , dR = cms.double( 0.4 )
-#     , mixFraction = cms.double( 0.5 )
-#     , configuration = cms.string( "" )
-# )
-
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
@@ -112,7 +101,7 @@ process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
 # See the file python/bprimeKit_* default settings for the various DataProcessings
-process.load('bpkFrameWork.bprimeKit.bprimeKit_cfg_test' )
+process.load('bpkFrameWork.bprimeKit.bprimeKit_'+ myParser.GetProcess() )
 # Passing input options to bprimeKit
 process.bprimeKit.runMuonJetClean = cms.bool( options.RunMuonJetClean )
 process.bprimeKit.runOnB2G        = cms.bool( options.b2gPreprocess )

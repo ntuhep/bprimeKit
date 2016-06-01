@@ -82,8 +82,8 @@ process.GlobalTag.globaltag = myParser.GetSetting('GlobalTag')
 #   Reprocessing Jets
 #     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
-from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-jettoolbox_settings( process, myParser.IsMC() )
+# from bpkFrameWork.bprimeKit.jettoolbox_settings import *
+# jettoolbox_settings( process, myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
@@ -108,18 +108,6 @@ for idmod in my_elid_modules:
 
 for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-
-#-------------------------------------------------------------------------------
-#   Muon Puppi Isolation variables
-#-------------------------------------------------------------------------------
-# process.PUPPIMuonRelIso = cms.EDProducer(
-#     'PuppiLeptonIsolation'
-#     , srcLepton = cms.InputTag( 'slimmedMuons' )
-#     , dR = cms.double( 0.4 )
-#     , mixFraction = cms.double( 0.5 )
-#     , configuration = cms.string( "" )
-# )
-
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
