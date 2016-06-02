@@ -70,6 +70,30 @@ process.GlobalTag.globaltag = myParser.GetSetting('GlobalTag')
 #jettoolbox_settings( process, myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
+#   QG tagger pre-requisites
+#-------------------------------------------------------------------------------
+qgDatabaseVersion = 'v1'
+
+from CondCore.DBCommon.CondDBSetup_cfi import *
+QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+      CondDBSetup,
+      toGet = cms.VPSet(),
+      connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+   )
+
+for type in ['AK4PFchs','AK4PFchs_antib']:
+   QGPoolDBESSource.toGet.extend(
+      cms.VPSet(cms.PSet(
+         record = cms.string('QGLikelihoodRcd'),
+         tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
+         label  = cms.untracked.string('QGL_'+type)
+   )))
+process.load('RecoJets.JetProducers.QGTagger_cfi')
+process.QGTagger.srcJets          = cms.InputTag('slimmedJets')
+process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs')
+process.QGTagger.systematicsLabel = cms.string('')
+
+#-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
 #-------------------------------------------------------------------------------
 from PhysicsTools.PatAlgos.tools.coreTools import *
@@ -115,7 +139,10 @@ if options.Debug :
 
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
-   process.Path = cms.Path( process.bprimeKit )
+   process.Path = cms.Path(
+    process.QGTagger* 
+    process.bprimeKit
+   )
 else:
    print "Running with b2g defined filters"
    process.bprimeKit.muonlabel = cms.VInputTag("muonUserData")

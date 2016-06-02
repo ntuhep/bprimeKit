@@ -133,13 +133,13 @@ bool bprimeKit::FillMuon( const edm::Event& iEvent , const edm::EventSetup& iSet
          fLepInfo[icoll].MuNTrackLayersWMeasurement[fLepInfo[icoll].Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
 
          //----- Impact paramters  --------------------------------------------------------------------------
-         const reco::TransientTrack& tt_mu = (fTrackBuilder_H.product())->build( it_mu->track() );
-         reco::Vertex thevtx = (fVertex_H.product())->at( 0 );
-         const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
-         const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) ) >= 0 ) ? 1. : -1.;
-         fLepInfo[icoll].Ip3dPV             [fLepInfo[icoll].Size] = thesign * ip3dpv.second.value();
-         fLepInfo[icoll].Ip3dPVErr          [fLepInfo[icoll].Size] = ip3dpv.second.error();
-         fLepInfo[icoll].Ip3dPVSignificance [fLepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
+         // const reco::TransientTrack& tt_mu = (fTrackBuilder_H.product())->build( it_mu->track() );
+         // reco::Vertex thevtx = (fVertex_H.product())->at( 0 );
+         // const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
+         // const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) ) >= 0 ) ? 1. : -1.;
+         // fLepInfo[icoll].Ip3dPV             [fLepInfo[icoll].Size] = thesign * ip3dpv.second.value();
+         // fLepInfo[icoll].Ip3dPVErr          [fLepInfo[icoll].Size] = ip3dpv.second.error();
+         // fLepInfo[icoll].Ip3dPVSignificance [fLepInfo[icoll].Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
       }
 
       //----- Global muon specific parameters  -----------------------------------------------------------

@@ -190,13 +190,13 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 
       //----- Impact parameter related  ------------------------------------------------------------------
       // Reference from UserCode/MitProd/TreeFiller/src/FillerElectrons.cc
-      const reco::TransientTrack& tt = (fTrackBuilder_H.product())->build( it_el->gsfTrack() );
-      const reco::Vertex thevtx = (fVertex_H.product())->at( 0 );
-      const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
-      const double gsfsign = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
-      fLepInfo[icoll].Ip3dPV[fLepInfo[icoll].Size]             = gsfsign * ip3dpv.second.value();
-      fLepInfo[icoll].Ip3dPVSignificance[fLepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
-      fLepInfo[icoll].Ip3dPVErr[fLepInfo[icoll].Size]          = ip3dpv.second.error();
+      // const reco::TransientTrack& tt = (fTrackBuilder_H.product())->build( it_el->gsfTrack() );
+      // const reco::Vertex thevtx = (fVertex_H.product())->at( 0 );
+      // const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
+      // const double gsfsign = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
+      // fLepInfo[icoll].Ip3dPV[fLepInfo[icoll].Size]             = gsfsign * ip3dpv.second.value();
+      // fLepInfo[icoll].Ip3dPVSignificance[fLepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
+      // fLepInfo[icoll].Ip3dPVErr[fLepInfo[icoll].Size]          = ip3dpv.second.error();
 
       //----- Conversion rejection information  ----------------------------------------------------------
       fLepInfo[icoll].Eldist        [fLepInfo[icoll].Size] = it_el->convDist();

@@ -348,7 +348,7 @@ void bprimeKit::GetEventObjects( const edm::Event& iEvent , const edm::EventSetu
       }
    }
    iEvent.getByToken( fPackedCandToken                          , fPackedCand_H         ) ;
-   iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", fTrackBuilder_H );
+   // iSetup.get<TransientTrackRecord>().get( "TransientTrackBuilder", fTrackBuilder_H );
    if( fDebug > 1 ) { std::cerr <<"\t[1]Getting Electron ID maps" << std::endl;}
    iEvent.getByToken( fConversionsTag        , fConversions_H      ) ;
    iEvent.getByToken( fElectronIDVetoToken   , fElectronIDVeto_H   ) ;

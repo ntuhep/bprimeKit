@@ -116,7 +116,6 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          //----- B Tagging discriminators  ------------------------------------------------------------------
          if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting b tags  ..." << endl ;}
          fJetInfo[icoll].pfJetBProbabilityBJetTags                   [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"    );
-         // New Btag!
          fJetInfo[icoll].combinedSecondaryVertexBJetTags             [fJetInfo[icoll].Size] = it_jet->bDiscriminator("combinedSecondaryVertexBJetTags"              );
          fJetInfo[icoll].pfJetProbabilityBJetTags                    [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfJetProbabilityBJetTags"                     );
          fJetInfo[icoll].pfTrackCountingHighPurBJetTags              [fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfTrackCountingHighPurBJetTags"               );
@@ -179,8 +178,6 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          if( pfjetcoll ){
             if( fDebug > 2 ) { std::cerr << "\t\t[2]Jet: Getting QGTags ..." << endl ;}
             if( fJetCollections[icoll] == "JetInfo" ){
-               fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = it_jet->userFloat("QGTaggerAK4PFCHS:qgLikelihood");
-            } else if( fJetCollections[icoll] == "JetInfoPuppi" ){
                fJetInfo[icoll].Puppivtx3DSig   [fJetInfo[icoll].Size] = it_jet->userFloat("vtx3DSig");
                fJetInfo[icoll].Puppivtx3DVal   [fJetInfo[icoll].Size] = it_jet->userFloat("vtx3DVal");
                fJetInfo[icoll].PuppivtxMass    [fJetInfo[icoll].Size] = it_jet->userFloat("vtxMass");
@@ -191,7 +188,8 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
                fJetInfo[icoll].PuppivtxPx      [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPx");
                fJetInfo[icoll].PuppivtxPy      [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPy");
                fJetInfo[icoll].PuppivtxPz      [fJetInfo[icoll].Size] = it_jet->userFloat("vtxPz");
-
+            } else if( fJetCollections[icoll] == "JetInfoPuppi" ){
+               // fJetInfo[icoll].QGTagsLikelihood [fJetInfo[icoll].Size] = it_jet->userFloat("QGTaggerAK4PFCHS:qgLikelihood");
             }
             //----- Particle flow information  -----------------------------------------------------------------
             if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Particle flow information ..." << endl ; }
@@ -212,8 +210,8 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
             fJetInfo[icoll].NjettinessAK8tau3        [fJetInfo[icoll].Size]=it_jet->userFloat( "NjettinessAK8:tau3"       ) ;
             fJetInfo[icoll].ak8PFJetsCHSSoftDropMass [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSSoftDropMass" ) ;
             fJetInfo[icoll].ak8PFJetsCHSPrunedMass   [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSPrunedMass"   ) ;
-            fJetInfo[icoll].ak8PFJetsCHSTrimmedMass  [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSTrimmedMass"  ) ;
-            fJetInfo[icoll].ak8PFJetsCHSFilteredMass [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSFilteredMass" ) ;
+            // fJetInfo[icoll].ak8PFJetsCHSTrimmedMass  [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSTrimmedMass"  ) ;
+            // fJetInfo[icoll].ak8PFJetsCHSFilteredMass [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsCHSFilteredMass" ) ;
 
             fJetInfo[icoll].NSubjets        [fJetInfo[icoll].Size] = 0;
             fJetInfo[icoll].SubjetsIdxStart [fJetInfo[icoll].Size] = 0;
@@ -223,21 +221,23 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
             // Overriding results for JetAK8InfoPuppi
             if( fJetCollections[icoll] == "JetAK8InfoPuppi" ){
-               TLorentzVector new_vec;
+               TLorentzVector new_vec(0,0,0,0);
                double pt  = it_jet->userFloat("ak8PFJetsPuppiValueMap:pt");
                double eta = it_jet->userFloat("ak8PFJetsPuppiValueMap:eta");
                double phi = it_jet->userFloat("ak8PFJetsPuppiValueMap:phi");
                double mass= it_jet->userFloat("ak8PFJetsPuppiValueMap:mass");
-               new_vec.SetPtEtaPhiM( pt, eta, phi, mass );
-
-               fJetInfo[icoll].Pt     [fJetInfo[icoll].Size] = new_vec.Pt();
-               fJetInfo[icoll].Eta    [fJetInfo[icoll].Size] = new_vec.Eta();
-               fJetInfo[icoll].Phi    [fJetInfo[icoll].Size] = new_vec.Phi();
-               fJetInfo[icoll].Energy [fJetInfo[icoll].Size] = new_vec.Energy();
-               fJetInfo[icoll].Px     [fJetInfo[icoll].Size] = new_vec.Px();
-               fJetInfo[icoll].Py     [fJetInfo[icoll].Size] = new_vec.Py();
-               fJetInfo[icoll].Pz     [fJetInfo[icoll].Size] = new_vec.Pz();
-               fJetInfo[icoll].Et     [fJetInfo[icoll].Size] = new_vec.Et();
+               if( pt > 0 ){
+                  new_vec.SetPtEtaPhiM( pt, eta, phi, mass );
+                  if( fDebug > 2 ) { cout << "\t\t[2]: Over riding variables in JetAK8InfoPuppi..." << pt << " "<< eta << " " << phi  << endl; }
+                  fJetInfo[icoll].Pt     [fJetInfo[icoll].Size] = new_vec.Pt();
+                  fJetInfo[icoll].Eta    [fJetInfo[icoll].Size] = new_vec.Eta();
+                  fJetInfo[icoll].Phi    [fJetInfo[icoll].Size] = new_vec.Phi();
+                  fJetInfo[icoll].Energy [fJetInfo[icoll].Size] = new_vec.Energy();
+                  fJetInfo[icoll].Px     [fJetInfo[icoll].Size] = new_vec.Px();
+                  fJetInfo[icoll].Py     [fJetInfo[icoll].Size] = new_vec.Py();
+                  fJetInfo[icoll].Pz     [fJetInfo[icoll].Size] = new_vec.Pz();
+                  fJetInfo[icoll].Et     [fJetInfo[icoll].Size] = new_vec.Et();
+               }
                fJetInfo[icoll].NjettinessAK8tau1 [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1") ;
                fJetInfo[icoll].NjettinessAK8tau2 [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2") ;
                fJetInfo[icoll].NjettinessAK8tau3 [fJetInfo[icoll].Size]=it_jet->userFloat( "ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau3") ;

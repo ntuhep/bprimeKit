@@ -9,22 +9,22 @@
 #include "DataFormats/PatCandidates/interface/Tau.h"
 
 using namespace std;
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   bprimeKit method implementation
-//------------------------------------------------------------------------------ 
-bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll ) 
+//------------------------------------------------------------------------------
+bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll )
 {
-   for( TauIterator it_tau = fTauList_Hs[icoll]->begin(); it_tau != fTauList_Hs[icoll]->end(); it_tau++ ) { 
+   for( TauIterator it_tau = fTauList_Hs[icoll]->begin(); it_tau != fTauList_Hs[icoll]->end(); it_tau++ ) {
       if ( fLepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr<< "ERROR: number of leptons exceeds the size of array." << endl;
          break;
       }
       if( it_tau->pt() < 20 ) { continue; } //Require PT > 20 GeV
-      if( fDebug > 2 ) { 
-         std::cerr << "\t\t[2]Size " << fLepInfo[icoll].Size 
-                   << " tau pt,eta,phi " << it_tau->pt() << "," << it_tau->eta() << "," << it_tau->phi() << endl; 
+      if( fDebug > 2 ) {
+         std::cerr << "\t\t[2]Size " << fLepInfo[icoll].Size
+                   << " tau pt,eta,phi " << it_tau->pt() << "," << it_tau->eta() << "," << it_tau->phi() << endl;
       }
-      
+
       //----- Inserting generic information  -------------------------------------------------------------
       fLepInfo[icoll].Index            [fLepInfo[icoll].Size] = fLepInfo[icoll].Size        ;
       fLepInfo[icoll].LeptonType       [fLepInfo[icoll].Size] = 15                         ;
@@ -42,7 +42,7 @@ bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       fLepInfo[icoll].NeutralHadronIso [fLepInfo[icoll].Size] = it_tau->neutralHadronIso() ;
       fLepInfo[icoll].PhotonIso        [fLepInfo[icoll].Size] = it_tau->photonIso()        ;
       fLepInfo[icoll].isPFTau          [fLepInfo[icoll].Size] = it_tau->isPFTau()          ; // YoungKyu 2012-10-16
-      
+
       //----- Tau ID information  ----------------------------------------------------
       fLepInfo[icoll].DiscriminationByDecayModeFinding            [fLepInfo[icoll].Size] = it_tau->tauID( "decayModeFinding" ) ;
       fLepInfo[icoll].DiscriminationByDecayModeFindingNewDMs      [fLepInfo[icoll].Size] = it_tau->tauID( "decayModeFindingNewDMs" ) ;
@@ -55,9 +55,9 @@ bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       fLepInfo[icoll].PuCorrPtSum                                 [fLepInfo[icoll].Size] = it_tau->tauID( "puCorrPtSum" ) ;
       fLepInfo[icoll].AgainstMuonLoose3                           [fLepInfo[icoll].Size] = it_tau->tauID( "againstMuonLoose3" ) ;
       fLepInfo[icoll].AgainstMuonTight3                           [fLepInfo[icoll].Size] = it_tau->tauID( "againstMuonTight3" ) ;
-      fLepInfo[icoll].AgainstElectronVLooseMVA5                   [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronVLooseMVA5" ) ;
-      fLepInfo[icoll].AgainstElectronLooseMVA5                    [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronLooseMVA5" ) ;
-      fLepInfo[icoll].AgainstElectronMediumMVA5                   [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronMediumMVA5" ) ;
+      fLepInfo[icoll].AgainstElectronVLooseMVA5                   [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronVLooseMVA6" ) ;
+      fLepInfo[icoll].AgainstElectronLooseMVA5                    [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronLooseMVA6" ) ;
+      fLepInfo[icoll].AgainstElectronMediumMVA5                   [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronMediumMVA6" ) ;
       //fLepInfo[icoll].ByLoosePileupWeightedIsolation3Hits         [fLepInfo[icoll].Size] = it_tau->tauID( "byLoosePileupWeightedIsolation3Hits" ) ;
       //fLepInfo[icoll].ByMediumPileupWeightedIsolation3Hits        [fLepInfo[icoll].Size] = it_tau->tauID( "byMediumPileupWeightedIsolation3Hits" ) ;
       //fLepInfo[icoll].ByTightPileupWeightedIsolation3Hits         [fLepInfo[icoll].Size] = it_tau->tauID( "byTightPileupWeightedIsolation3Hits" ) ;
@@ -67,14 +67,14 @@ bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       //fLepInfo[icoll].PhotonPtSumOutsideSignalCone                [fLepInfo[icoll].Size] = it_tau->tauID( "photonPtSumOutsideSignalCone" ) ;
 
       //----------------------------  Generation information  -----------------------------
-      if ( !fIsData && !fSkipfGenInfo ) {                                       
-         if( fDebug > 3 ) { cout << "\t\t\t[3]Getting Tau MC information\n"; }         
-         const reco::Candidate* gen = it_tau->genLepton();                    
-         if ( gen != NULL ) {                                                 
-            fLepInfo[icoll].GenPt        [fLepInfo[icoll].Size] = gen->pt();    
-            fLepInfo[icoll].GenEta       [fLepInfo[icoll].Size] = gen->eta();   
-            fLepInfo[icoll].GenPhi       [fLepInfo[icoll].Size] = gen->phi();   
-            fLepInfo[icoll].GenPdgID     [fLepInfo[icoll].Size] = gen->pdgId(); 
+      if ( !fIsData && !fSkipfGenInfo ) {
+         if( fDebug > 3 ) { cout << "\t\t\t[3]Getting Tau MC information\n"; }
+         const reco::Candidate* gen = it_tau->genLepton();
+         if ( gen != NULL ) {
+            fLepInfo[icoll].GenPt        [fLepInfo[icoll].Size] = gen->pt();
+            fLepInfo[icoll].GenEta       [fLepInfo[icoll].Size] = gen->eta();
+            fLepInfo[icoll].GenPhi       [fLepInfo[icoll].Size] = gen->phi();
+            fLepInfo[icoll].GenPdgID     [fLepInfo[icoll].Size] = gen->pdgId();
          }
       }
       fLepInfo[icoll].CandRef[fLepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_tau );
