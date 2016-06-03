@@ -252,27 +252,53 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
 
             TLorentzVector softdrop_sum(0,0,0,0);
             TLorentzVector softdrop_subjet;
-            fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = it_jet->subjets( subjet_tag.c_str() ).size();
-            for( const auto& subjet : it_jet->subjets( subjet_tag.c_str() ) ){
-               softdrop_subjet.SetPtEtaPhiM( subjet->pt(), subjet->eta(), subjet->phi(), subjet->mass() );
-               softdrop_sum += softdrop_subjet;
 
-               fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
-               fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
-               fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
-               fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
-               fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
-               fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
-               fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
-               fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
-               if( !fIsData && !fSkipfGenInfo ){
-                  fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
-                  fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
-                  fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+            if( fJetCollections[icoll] == "JetCA8Info" ){
+               JetIterator subjet_bunch = GetSubjetBunch( it_jet,fSubjetList_Hs[icoll] );
+               if( subjet_bunch != fSubjetList_Hs[icoll]->end() ){
+                  fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = subjet_bunch->numberOfDaughters();
+                  for( unsigned i = 0 ; i < subjet_bunch->numberOfDaughters(); ++i ){
+                     const pat::Jet* subjet =  (pat::Jet*) subjet_bunch->daughter(i);
+                     fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
+                     fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
+                     fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
+                     fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
+                     fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
+                     fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
+                     fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
+                     fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
+                     if( !fIsData && !fSkipfGenInfo ){
+                        fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
+                        fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
+                        fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+                     }
+                  }
+               } else {
+                  fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = 0;
                }
-            }
-            if( fJetCollections[icoll] == "JetAK8InfoPuppi" ){
-               fJetInfo[icoll].ak8PFJetsCHSSoftDropMass [fJetInfo[icoll].Size]= softdrop_sum.M() ;
+            } else {
+               fJetInfo[icoll].NSubjets[fJetInfo[icoll].Size] = it_jet->subjets( subjet_tag.c_str() ).size();
+               for( const auto& subjet : it_jet->subjets( subjet_tag.c_str() ) ){
+                  softdrop_subjet.SetPtEtaPhiM( subjet->pt(), subjet->eta(), subjet->phi(), subjet->mass() );
+                  softdrop_sum += softdrop_subjet;
+
+                  fJetInfo[icoll].SubjetMass_w.push_back ( subjet->mass ( ) );
+                  fJetInfo[icoll].SubjetPt_w.push_back   ( subjet->pt      ( ) );
+                  fJetInfo[icoll].SubjetEt_w.push_back   ( subjet->et      ( ) );
+                  fJetInfo[icoll].SubjetEta_w.push_back  ( subjet->eta     ( ) );
+                  fJetInfo[icoll].SubjetPhi_w.push_back  ( subjet->phi     ( ) );
+                  fJetInfo[icoll].SubjetArea_w.push_back ( subjet->jetArea ( ) );
+                  fJetInfo[icoll].SubjetPtUncorr_w.push_back( subjet->pt() * subjet->jecFactor("Uncorrected") );
+                  fJetInfo[icoll].SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
+                  if( !fIsData && !fSkipfGenInfo ){
+                     fJetInfo[icoll].SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
+                     fJetInfo[icoll].SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
+                     fJetInfo[icoll].SubjetGenPdgId_w.push_back( subjet->pdgId() );
+                  }
+               }
+               if( fJetCollections[icoll] == "JetAK8InfoPuppi" ){
+                  fJetInfo[icoll].ak8PFJetsCHSSoftDropMass [fJetInfo[icoll].Size]= softdrop_sum.M() ;
+               }
             }
 
          }

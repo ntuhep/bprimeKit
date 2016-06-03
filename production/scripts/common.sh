@@ -21,7 +21,11 @@ function makeName(){
 
 function getDataProcess() {
    local data_set=$1
-   if [[ $data_set == *"16Dec2015"* ]]; then
+   if[[ $data_set == *"RunIISpring16MiniAODv2"* ]]; then
+      echo "MC_MiniAOD_80X"
+   elif [[ $data_set == *"Run2016B-PromptReco-v"* ]]; then
+      echo  "Data2016_80X"
+   elif [[ $data_set == *"16Dec2015"* ]]; then
       echo "Data25ns_76X"
    elif [[ $data_set ==  *"RunIIFall15MiniAODv2-PU25nsData2015v1"* ]]; then
       echo "MC25ns_MiniAOD_76X"

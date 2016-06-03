@@ -66,8 +66,8 @@ process.GlobalTag.globaltag = myParser.GetSetting('GlobalTag')
 #   Reprocessing Jets
 #     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
-#from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-#jettoolbox_settings( process, myParser.IsMC() )
+from bpkFrameWork.bprimeKit.jettoolbox_settings import *
+jettoolbox_settings( process, myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
 #   QG tagger pre-requisites
@@ -140,7 +140,7 @@ if options.Debug :
 if not options.b2gPreprocess:
    print "Running with original pat tuples"
    process.Path = cms.Path(
-    process.QGTagger* 
+    process.QGTagger*
     process.bprimeKit
    )
 else:
