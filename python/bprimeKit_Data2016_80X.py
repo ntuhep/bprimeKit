@@ -92,7 +92,7 @@ bprimeKit = cms.EDAnalyzer(
          cms.PSet(
             jetCollection = cms.string( 'JetCA8Info' ),
             jetLabel      = cms.InputTag( 'slimmedJetsAK8' ),
-            subjetLabel   = cms.InputTag( 'patJetsCMSTopTagCHSPacked' ),
+            subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFCHSSoftDropPacked' ),
             ),
         )
       )

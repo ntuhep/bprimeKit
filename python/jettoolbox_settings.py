@@ -32,31 +32,31 @@ def jettoolbox_settings( process , RunOnMC ):
     #     Cut                = ''
     # )
 
-    # print "Add AK8 Jets, soft drop"
-    # jetToolbox( process, 'ak8', 'jetToolBox_ak8', 'edmOut',
-    # runOnMC            = RunOnMC,
-    # addSoftDropSubjets = True,
-    # addTrimming        = True,
-    # rFiltTrim          = 0.1,
-    # addPruning         = True,
-    # addFiltering       = True,
-    # addSoftDrop        = True,
-    # addNsub            = True,
-    # GetJetMCFlavour    = True,
-    # GetSubjetMCFlavour = True,
-    # bTagDiscriminators = listBtagDiscriminators ,
-    # Cut                = '' )
+    print "Add AK8 Jets, soft drop"
+    jetToolbox( process, 'ak8', 'jetToolBox_ak8', 'edmOut',
+    runOnMC            = RunOnMC,
+    addSoftDropSubjets = True,
+    addTrimming        = True,
+    rFiltTrim          = 0.1,
+    addPruning         = True,
+    addFiltering       = True,
+    addSoftDrop        = True,
+    addNsub            = True,
+    GetJetMCFlavour    = True,
+    GetSubjetMCFlavour = True,
+    bTagDiscriminators = listBtagDiscriminators ,
+    Cut                = '' )
 
-    print "Add CA8 Subjet collection for top tagging"
-    jetToolbox( process, 'ca8', 'jetToolBox_ca8_toptag', 'edmOut',
-        runOnMC            = RunOnMC ,
-        addMassDrop        = True,
-        addCMSTopTagger    = True,
-        GetJetMCFlavour    = True,
-        GetSubjetMCFlavour = True,
-        bTagDiscriminators = listBtagDiscriminators ,
-        Cut                = ''
-    )
+    # print "Add CA8 Subjet collection for top tagging"
+    # jetToolbox( process, 'ca8', 'jetToolBox_ca8_toptag', 'edmOut',
+    #     runOnMC            = RunOnMC ,
+    #     addMassDrop        = True,
+    #     addCMSTopTagger    = True,
+    #     GetJetMCFlavour    = True,
+    #     GetSubjetMCFlavour = True,
+    #     bTagDiscriminators = listBtagDiscriminators ,
+    #     Cut                = ''
+    # )
 
     # print "Add ak8 jets, puppi"
     # jetToolbox( process, 'ak8', 'jetToolBox_ak8_puppi', 'edmOut',
