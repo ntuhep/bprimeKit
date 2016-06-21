@@ -71,28 +71,29 @@ bprimeKit = cms.EDAnalyzer(
       JetSettings = cms.VPSet(
          cms.PSet(
             jetCollection = cms.string( 'JetInfo' ),
-            jetLabel      = cms.InputTag( 'slimmedJets' ),
+            jetLabel      = cms.InputTag( 'jetUserData' ),
             subjetLabel   = cms.InputTag(''), ## No tag for this collection..
             ),
          cms.PSet(
             jetCollection = cms.string( 'JetInfoPuppi' ),
-            jetLabel      = cms.InputTag( 'slimmedJetsPuppi'),
+            jetLabel      = cms.InputTag( 'jetUserDataPuppi' ),
             subjetLabel   = cms.InputTag(''), ## No tag for this collection
             ),
          cms.PSet(
             jetCollection = cms.string( 'JetAK8Info' ),
-            jetLabel      = cms.InputTag( 'slimmedJetsAK8' ),
-            subjetLabel   = cms.InputTag( 'slimmedJetsAK8PFCHSSoftDropPacked' ),
-            ),
-         cms.PSet(
-            jetCollection = cms.string( 'JetAK8InfoPuppi' ),
-            jetLabel      = cms.InputTag( 'slimmedJetsAK8' ),
-            subjetLabel   = cms.InputTag( 'slimmedJetsAK8PFPuppiSoftDropPacked' ),
+            jetLabel      = cms.InputTag( 'boostedJetUserDataAK8' ),
+            subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFCHSSoftDropPacked' ),
             ),
          cms.PSet(
             jetCollection = cms.string( 'JetCA8Info' ),
-            jetLabel      = cms.InputTag( 'slimmedJetsAK8' ),
-            subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFCHSSoftDropPacked' ),
+            jetLabel      = cms.InputTag( 'boostedJetUserDataAK8' ),
+            subjetLabel   = cms.InputTag( 'patJetsCMSTopTagCHSPacked' ),
             ),
+         cms.PSet(
+            jetCollection = cms.string( 'JetAK8InfoPuppi' ),
+            jetLabel      = cms.InputTag( 'boostedJetUserDataAK8Puppi' ),
+            subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFPuppiSoftDropPacked'),
+            ),
+
         )
       )

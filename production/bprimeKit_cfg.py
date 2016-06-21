@@ -70,30 +70,6 @@ from bpkFrameWork.bprimeKit.jettoolbox_settings import *
 jettoolbox_settings( process, myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
-#   QG tagger pre-requisites
-#-------------------------------------------------------------------------------
-qgDatabaseVersion = 'v1'
-
-from CondCore.DBCommon.CondDBSetup_cfi import *
-QGPoolDBESSource = cms.ESSource("PoolDBESSource",
-      CondDBSetup,
-      toGet = cms.VPSet(),
-      connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
-   )
-
-for type in ['AK4PFchs','AK4PFchs_antib']:
-   QGPoolDBESSource.toGet.extend(
-      cms.VPSet(cms.PSet(
-         record = cms.string('QGLikelihoodRcd'),
-         tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
-         label  = cms.untracked.string('QGL_'+type)
-   )))
-process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets          = cms.InputTag('slimmedJets')
-process.QGTagger.jetsLabel        = cms.string('QGL_AK4PFchs')
-process.QGTagger.systematicsLabel = cms.string('')
-
-#-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
 #-------------------------------------------------------------------------------
 from PhysicsTools.PatAlgos.tools.coreTools import *
@@ -117,6 +93,11 @@ for idmod in my_elid_modules:
 for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
+#-------------------------------------------------------------------------------
+#   Loading B2G Producers
+#-------------------------------------------------------------------------------
+import bpkFrameWork.bprimeKit.b2gProcesses as myProcess
+myProcess.load_b2g( process , myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
@@ -124,6 +105,8 @@ for idmod in my_phoid_modules:
 process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
+# Loading B2G producers
+process.load('bpkFrameWork.bprimeKit.b2gProcesses')
 # See the file python/bprimeKit_* default settings for the various DataProcessings
 process.load('bpkFrameWork.bprimeKit.bprimeKit_'+ myParser.GetProcess() )
 # Passing input options to bprimeKit
@@ -137,17 +120,7 @@ process.bprimeKit.Debug           = cms.int32( options.Debug )
 if options.Debug :
    process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
-if not options.b2gPreprocess:
-   print "Running with original pat tuples"
-   process.Path = cms.Path(
+process.Path = cms.Path(
     process.QGTagger*
     process.bprimeKit
-   )
-else:
-   print "Running with b2g defined filters"
-   process.bprimeKit.muonlabel = cms.VInputTag("muonUserData")
-   process.bprimeKit.eleclabel = cms.VInputTag("electronUserData")
-   process.bprimeKit.pholabel  = cms.VInputTag("photonUserData")
-   process.bprimeKit.jetlabel = cms.VInputTag( "jetUserData" , "jetUserDataAK8" , "jetUserDataAK8" )
-   process.QGTagger.srcJets = cms.InputTag( "jetUserData" )
-   process.endPath = cms.Path(process.bprimeKit)
+)

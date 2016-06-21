@@ -23,4 +23,6 @@
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="RecoBTag/SecondaryVertex"/>
 
+<flags CXXFLAGS="-g"/>
+
 <flags EDM_PLUGIN="1"/>

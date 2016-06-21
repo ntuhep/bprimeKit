@@ -33,6 +33,115 @@ hltElectronFilterLabel = "hltL1sL1Mu3p5EG12ORL1MuOpenEG12L3Filtered8"
 metProcess = "PAT"
 
 #-------------------------------------------------------------------------------
+#   Jet Settings
+#-------------------------------------------------------------------------------
+jLabel		    = 'selectedPatJetsAK4PFCHS'
+jLabelAK8	    = 'selectedPatJetsAK8PFCHS'
+jLabelPuppi	    = 'selectedPatJetsAK4PFPuppi'
+jLabelAK8Puppi  = 'selectedPatJetsAK8PFPuppi'
+jetAlgo         = 'AK4PFchs'
+jetAlgoPuppi    = 'AK4PFPuppi'
+jetAlgoAK8      = 'AK8PFchs'
+jetAlgoAK8Puppi = 'AK8PFPuppi'
+
+def load_b2g( process, runMC ):
+    if runMC:
+        jerEra = "Fall15_25nsV2_MC"
+    else:
+        jerEra = "Fall15_25nsV2_DATA"
+
+    process.jetUserData = cms.EDProducer(
+        'JetUserData',
+        jetLabel          = cms.InputTag(jLabel),
+        rho               = cms.InputTag('fixedGridRhoAll'),
+        getJERFromTxt     = cms.bool(True),
+        jetCorrLabel      = cms.string(jetAlgo),
+        jerLabel          = cms.string(jetAlgo),
+        resolutionsFile   = cms.string(jerEra+'_PtResolution_'+jetAlgo+'.txt'),
+        scaleFactorsFile  = cms.string(jerEra+'_SF_'+jetAlgo+'.txt'),
+        triggerResults = cms.InputTag(triggerResultsLabel,"","HLT"),
+        triggerSummary = cms.InputTag(triggerSummaryLabel,"","HLT"),
+        hltJetFilter       = cms.InputTag("hltPFHT"),
+        hltPath            = cms.string("HLT_PFHT800"),
+        hlt2reco_deltaRmax = cms.double(0.2),
+        candSVTagInfos         = cms.string("pfInclusiveSecondaryVertexFinder"),
+        )
+
+    process.jetUserDataPuppi = cms.EDProducer(
+        'JetUserData',
+        jetLabel           = cms.InputTag(jLabelPuppi),
+        rho                = cms.InputTag('fixedGridRhoAll'),
+        getJERFromTxt      = cms.bool(True),
+        jetCorrLabel       = cms.string(jetAlgoPuppi),
+        jerLabel           = cms.string(jetAlgoPuppi),
+        resolutionsFile    = cms.string(jerEra+'_PtResolution_'+jetAlgoPuppi+'.txt'),
+        scaleFactorsFile   = cms.string(jerEra+'_SF_'+jetAlgoPuppi+'.txt'),
+        triggerResults     = cms.InputTag(triggerResultsLabel,"","HLT"),
+        triggerSummary     = cms.InputTag(triggerSummaryLabel,"","HLT"),
+        hltJetFilter       = cms.InputTag("hltPFHT"),
+        hltPath            = cms.string("HLT_PFHT800"),
+        hlt2reco_deltaRmax = cms.double(0.2),
+        candSVTagInfos         = cms.string("pfInclusiveSecondaryVertexFinder"),
+    )
+
+
+    process.jetUserDataAK8 = cms.EDProducer(
+        'JetUserData',
+        jetLabel          = cms.InputTag(jLabelAK8),
+        rho               = cms.InputTag('fixedGridRhoAll'),
+        getJERFromTxt     = cms.bool(True),
+        jetCorrLabel      = cms.string(jetAlgoAK8),
+        jerLabel          = cms.string(jetAlgoAK8),
+        resolutionsFile   = cms.string(jerEra+'_PtResolution_'+jetAlgoAK8+'.txt'),
+        scaleFactorsFile  = cms.string(jerEra+'_SF_'+jetAlgoAK8+'.txt'),
+        ### TTRIGGER ###
+        triggerResults     = cms.InputTag(triggerResultsLabel,"","HLT"),
+        triggerSummary     = cms.InputTag(triggerSummaryLabel,"","HLT"),
+        hltJetFilter       = cms.InputTag("hltAK8PFJetsTrimR0p1PT0p03"),
+        hltPath            = cms.string("HLT_AK8PFHT650_TrimR0p1PT0p03Mass50"),
+        hlt2reco_deltaRmax = cms.double(0.2),
+        candSVTagInfos     = cms.string("pfInclusiveSecondaryVertexFinder"),
+    )
+
+    process.boostedJetUserDataAK8 = cms.EDProducer(
+        'BoostedJetToolboxUserData',
+        jetLabel  = cms.InputTag('jetUserDataAK8'),
+        #topjetLabel = cms.InputTag('patJetsCMSTopTagCHSPacked'),
+        vjetLabel = cms.InputTag('selectedPatJetsAK8PFCHSSoftDropPacked'),
+        distMax   = cms.double(0.8)
+    )
+
+
+    process.jetUserDataAK8Puppi = cms.EDProducer(
+        'JetUserData',
+        jetLabel          = cms.InputTag( jLabelAK8Puppi ),
+        rho               = cms.InputTag('fixedGridRhoAll'),
+        getJERFromTxt     = cms.bool(True),
+        jetCorrLabel      = cms.string(jetAlgoAK8Puppi),
+        jerLabel          = cms.string(jetAlgoAK8Puppi),
+        resolutionsFile   = cms.string(jerEra+'_PtResolution_'+jetAlgoAK8Puppi+'.txt'),
+        scaleFactorsFile  = cms.string(jerEra+'_SF_'+jetAlgoAK8Puppi+'.txt'),
+        ### TTRIGGER ###
+        triggerResults     = cms.InputTag(triggerResultsLabel,"","HLT"),
+        triggerSummary     = cms.InputTag(triggerSummaryLabel,"","HLT"),
+        hltJetFilter       = cms.InputTag("hltAK8PFJetsTrimR0p1PT0p03"),
+        hltPath            = cms.string("HLT_AK8PFHT650_TrimR0p1PT0p03Mass50"),
+        hlt2reco_deltaRmax = cms.double(0.2),
+        candSVTagInfos     = cms.string("pfInclusiveSecondaryVertexFinder"),
+    )
+
+    process.boostedJetUserDataAK8Puppi = cms.EDProducer(
+        'BoostedJetToolboxUserData',
+        jetLabel  = cms.InputTag('jetUserDataAK8Puppi'),
+        #topjetLabel = cms.InputTag('patJetsCMSTopTagPuppiPacked'),
+        vjetLabel = cms.InputTag('selectedPatJetsAK8PFPuppiSoftDropPacked'),
+        distMax   = cms.double(0.8)
+    )
+
+
+
+
+#-------------------------------------------------------------------------------
 #   Filters
 #-------------------------------------------------------------------------------
 skimmedPatMuons = cms.EDFilter(
@@ -65,7 +174,7 @@ skimmedPatMET = cms.EDFilter(
 #-------------------------------------------------------------------------------
 #   Producers
 #-------------------------------------------------------------------------------
-process.muonUserData = cms.EDProducer(
+muonUserData = cms.EDProducer(
     'MuonUserData',
     muonLabel      = cms.InputTag("skimmedPatMuons"),
     pv             = cms.InputTag(pvLabel),
@@ -79,7 +188,7 @@ process.muonUserData = cms.EDProducer(
     # mainROOTFILEdir    = cms.string("../data/")
     )
 
-process.electronUserData = cms.EDProducer(
+electronUserData = cms.EDProducer(
     'ElectronUserData',
     eleLabel   = cms.InputTag("skimmedPatElectrons"),
     pv         = cms.InputTag(pvLabel),
@@ -100,7 +209,8 @@ process.electronUserData = cms.EDProducer(
     eleIdVerbose           = cms.bool(False)
     )
 
-process.photonUserData = cms.EDProducer(
+
+photonUserData = cms.EDProducer(
     'PhotonUserData',
     rho                     = cms.InputTag(rhoLabel),
     pholabel                = cms.InputTag("slimmedPhotons"),
@@ -111,58 +221,4 @@ process.photonUserData = cms.EDProducer(
     phoPhoIsoMap            = cms.InputTag("photonIDValueMapProducer:phoPhotonIsolation"),
     phoNeuIsoMap            = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
     full5x5SigmaIEtaIEtaMap = cms.InputTag("photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta")
-    )
-
-
-process.jetUserData = cms.EDProducer(
-    'JetUserData',
-    jetLabel          = cms.InputTag(jLabel),
-    rho               = cms.InputTag('fixedGridRhoAll'),
-    getJERFromTxt     = cms.bool(True),
-    jetCorrLabel      = cms.string(jetAlgo),
-    jerLabel          = cms.string(jetAlgo),
-    resolutionsFile   = cms.FileInPath(jerEra+'_PtResolution_'+jetAlgo+'.txt'),
-    scaleFactorsFile  = cms.FileInPath(jerEra+'_SF_'+jetAlgo+'.txt'),
-    ### TTRIGGER ###
-    triggerResults = cms.InputTag(triggerResultsLabel,"","HLT"),
-    triggerSummary = cms.InputTag(triggerSummaryLabel,"","HLT"),
-    hltJetFilter       = cms.InputTag("hltPFHT"),
-    hltPath            = cms.string("HLT_PFHT800"),
-    hlt2reco_deltaRmax = cms.double(0.2),
-    candSVTagInfos         = cms.string("pfInclusiveSecondaryVertexFinder"),
-    )
-
-process.jetUserDataAK8 = cms.EDProducer(
-    'JetUserData',
-    jetLabel          = cms.InputTag(jLabelAK8),
-    rho               = cms.InputTag('fixedGridRhoAll'),
-    getJERFromTxt     = cms.bool(True),
-    jetCorrLabel      = cms.string(jetAlgoAK8),
-    jerLabel          = cms.string(jetAlgoAK8),
-    resolutionsFile   = cms.FileInPath(jerEra+'_PtResolution_'+jetAlgoAK8+'.txt'),
-    scaleFactorsFile  = cms.FileInPath(jerEra+'_SF_'+jetAlgoAK8+'.txt'),
-    ### TTRIGGER ###
-    triggerResults = cms.InputTag(triggerResultsLabel,"","HLT"),
-    triggerSummary = cms.InputTag(triggerSummaryLabel,"","HLT"),
-    hltJetFilter       = cms.InputTag("hltAK8PFJetsTrimR0p1PT0p03"),
-    hltPath            = cms.string("HLT_AK8PFHT650_TrimR0p1PT0p03Mass50"),
-    hlt2reco_deltaRmax = cms.double(0.2),
-    candSVTagInfos     = cms.string("pfInclusiveSecondaryVertexFinder"),
-)
-process.jetUserDataAK8Puppi = cms.EDProducer(
-    'JetUserData',
-    jetLabel          = cms.InputTag( jLabelAK8Puppi ),
-    rho               = cms.InputTag('fixedGridRhoAll'),
-    getJERFromTxt     = cms.bool(True),
-    jetCorrLabel      = cms.string(jetAlgoAK8Puppi),
-    jerLabel          = cms.string(jetAlgoAK8Puppi),
-    resolutionsFile   = cms.FileInPath(jerEra+'_PtResolution_'+jetAlgoAK8Puppi+'.txt'),
-    scaleFactorsFile  = cms.FileInPath(jerEra+'_SF_'+jetAlgoAK8Puppi+'.txt'),
-    ### TTRIGGER ###
-    triggerResults = cms.InputTag(triggerResultsLabel,"","HLT"),
-    triggerSummary = cms.InputTag(triggerSummaryLabel,"","HLT"),
-    hltJetFilter       = cms.InputTag("hltAK8PFJetsTrimR0p1PT0p03"),
-    hltPath            = cms.string("HLT_AK8PFHT650_TrimR0p1PT0p03Mass50"),
-    hlt2reco_deltaRmax = cms.double(0.2),
-    candSVTagInfos         = cms.string("pfInclusiveSecondaryVertexFinder"),
     )

@@ -10,7 +10,7 @@ import FWCore.ParameterSet.VarParsing as opts
 
 def initB2GOptions( options ):
    options.register('sample',
-         'file:///wk_cms/yichen/miniAODs/MC_MiniAOD_80X/TprimeTprime.root',
+         'file:///store/yichen/MiniAODS/MC_80X/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root',
          opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,
          'Sample to analyze')
@@ -91,4 +91,4 @@ def initBPKOptions( options ):
         'Whether to use the jet tool kit to recluster jets'
     )
 
-   options.setDefault('maxEvents', 1000 )
+   options.setDefault('maxEvents', 100 )
