@@ -88,3 +88,16 @@ def jettoolbox_settings( process , runMC ):
         bTagDiscriminators = listBtagDiscriminators ,
         Cut                = ''
     )
+
+    jetToolbox( process, 'ca8', 'analysisPath', 'edmOut',
+        runOnMC            = runMC ,
+        PUMethod='Puppi',
+        newPFCollection=True,
+        nameNewPFCollection='puppi',
+        addMassDrop        = True,
+        addCMSTopTagger    = True,
+        GetJetMCFlavour    = True,
+        GetSubjetMCFlavour = True,
+        bTagDiscriminators = listBtagDiscriminators ,
+        Cut                = ''
+    )

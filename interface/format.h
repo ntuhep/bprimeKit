@@ -858,6 +858,7 @@ public:
    Float_t pfCombinedInclusiveSecondaryVertexV2BJetTags [MAX_JETS] ;
    Float_t pfCombinedSecondaryVertexSoftLeptonBJetTags  [MAX_JETS] ;
    Float_t pfCombinedMVABJetTags                        [MAX_JETS] ;
+   Float_t pfBoostedDoubleSecondaryVertexAK8BJetTags    [MAX_JETS] ;
 
    //----- Generation MC information  -----------------------------------------------------------------
    Float_t GenJetPt                [MAX_JETS] ;
@@ -983,6 +984,7 @@ public:
       root->Branch( ( name + ".pfCombinedInclusiveSecondaryVertexV2BJetTags" ).c_str(), pfCombinedInclusiveSecondaryVertexV2BJetTags, ( name + ".pfCombinedInclusiveSecondaryVertexV2BJetTags[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".pfCombinedSecondaryVertexSoftLeptonBJetTags" ).c_str(), pfCombinedSecondaryVertexSoftLeptonBJetTags, ( name + ".pfCombinedSecondaryVertexSoftLeptonBJetTags[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".pfCombinedMVABJetTags" ).c_str(), pfCombinedMVABJetTags, ( name + ".pfCombinedMVABJetTags[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(), pfBoostedDoubleSecondaryVertexAK8BJetTags, ( name + ".pfBoostedDoubleSecondaryVertexAK8BJetTags[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenJetPt" ).c_str(), GenJetPt, ( name + ".GenJetPt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenJetEta" ).c_str(), GenJetEta, ( name + ".GenJetEta[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenJetPhi" ).c_str(), GenJetPhi, ( name + ".GenJetPhi[" + name + ".Size]/F" ).c_str() );
@@ -1083,6 +1085,7 @@ public:
       root->SetBranchAddress( ( name + ".pfCombinedInclusiveSecondaryVertexV2BJetTags" ).c_str() , pfCombinedInclusiveSecondaryVertexV2BJetTags ) ;
       root->SetBranchAddress( ( name + ".pfCombinedSecondaryVertexSoftLeptonBJetTags" ).c_str() , pfCombinedSecondaryVertexSoftLeptonBJetTags ) ;
       root->SetBranchAddress( ( name + ".pfCombinedMVABJetTags" ).c_str() , pfCombinedMVABJetTags ) ;
+      root->SetBranchAddress( ( name + ".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str() , pfBoostedDoubleSecondaryVertexAK8BJetTags ) ;
       root->SetBranchAddress( ( name + ".GenJetPt" ).c_str() , GenJetPt ) ;
       root->SetBranchAddress( ( name + ".GenJetEta" ).c_str() , GenJetEta ) ;
       root->SetBranchAddress( ( name + ".GenJetPhi" ).c_str() , GenJetPhi ) ;

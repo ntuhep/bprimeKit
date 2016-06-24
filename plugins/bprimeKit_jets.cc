@@ -196,6 +196,7 @@ bool bprimeKit::FillJet( const edm::Event& iEvent , const edm::EventSetup& iSetu
          //------------------------------------------------------------------------------
          if( fatjetcoll ) {
             if( fDebug > 2 ) { cout << "\t\t[2]Jet: Getting Subjet information ..." << endl ;}
+            fJetInfo[icoll].pfBoostedDoubleSecondaryVertexAK8BJetTags[fJetInfo[icoll].Size] = it_jet->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags");
             fJetInfo[icoll].NjettinessAK8tau1        [fJetInfo[icoll].Size]=it_jet->userFloat( "Njettiness" + userFloat_name + ":tau1"       ) ;
             fJetInfo[icoll].NjettinessAK8tau2        [fJetInfo[icoll].Size]=it_jet->userFloat( "Njettiness" + userFloat_name + ":tau2"       ) ;
             fJetInfo[icoll].NjettinessAK8tau3        [fJetInfo[icoll].Size]=it_jet->userFloat( "Njettiness" + userFloat_name + ":tau3"       ) ;

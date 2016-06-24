@@ -54,7 +54,7 @@
 //------------------------------------------------------------------------------
 #define MAX_LEPCOLLECTIONS 3
 #define MAX_PHOCOLLECTIONS 3
-#define MAX_JETCOLLECTIONS 5
+#define MAX_JETCOLLECTIONS 8
 
 //------------------------------------------------------------------------------
 //   BprimeKit definitions

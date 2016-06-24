@@ -48,7 +48,7 @@ process.options.allowUnscheduled = cms.untracked.bool(True) ## Run all processes
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories.append('HLTrigReport')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 if( options.Debug ):
    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
@@ -96,8 +96,8 @@ for idmod in my_phoid_modules:
 #-------------------------------------------------------------------------------
 #   Loading B2G Producers
 #-------------------------------------------------------------------------------
-import bpkFrameWork.bprimeKit.b2gProcesses as myProcess
-myProcess.load_b2g( process , myParser.IsMC() )
+# import bpkFrameWork.bprimeKit.b2gProcesses as myProcess
+# myProcess.load_b2g( process , myParser.IsMC() )
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
@@ -105,8 +105,7 @@ myProcess.load_b2g( process , myParser.IsMC() )
 process.TFileService = cms.Service("TFileService",
         fileName = cms.string( options.outputLabel )
         )
-# Loading B2G producers
-process.load('bpkFrameWork.bprimeKit.b2gProcesses')
+
 # See the file python/bprimeKit_* default settings for the various DataProcessings
 process.load('bpkFrameWork.bprimeKit.bprimeKit_'+ myParser.GetProcess() )
 # Passing input options to bprimeKit
@@ -121,6 +120,5 @@ if options.Debug :
    process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
 process.Path = cms.Path(
-    process.QGTagger*
     process.bprimeKit
 )
