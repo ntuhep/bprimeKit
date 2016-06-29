@@ -1,7 +1,7 @@
 #ifndef __TRIGGERBOOKING_H__
 #define __TRIGGERBOOKING_H__
 
-#include "MyAna/bprimeKit/interface/format.h"
+#include "bpkFrameWork/bprimeKit/interface/format.h"
 
 static const std::string TriggerBooking[N_TRIGGER_BOOKINGS] = {
    "AlCa_EcalEtaEBonly_v1" ,
