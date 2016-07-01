@@ -126,23 +126,14 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
 
       //----- Isolation variables  -----------------------------------------------------------------------
       const edm::Ptr<pat::Electron> el( fElectronList_Hs[icoll], i );
-      if( !fRunOnB2G ) {
-         if(fDebug ){ cout << "Getting Veto ID" << endl; }
+      try {
          fLepInfo[icoll].EgammaCutBasedEleIdVETO   [fLepInfo[icoll].Size] = (int)((*fElectronIDVeto_H)[el]);
-         if(fDebug ){ cout << "Getting Loose ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdLOOSE  [fLepInfo[icoll].Size] = (int)((*fElectronIDLoose_H)[el]);
-         if(fDebug ){ cout << "Getting Medium ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdMEDIUM [fLepInfo[icoll].Size] = (int)((*fElectronIDMedium_H)[el]);
-         if(fDebug ){ cout << "Getting Tight ID" << endl; }
          fLepInfo[icoll].EgammaCutBasedEleIdTIGHT  [fLepInfo[icoll].Size] = (int)((*fElectronIDTight_H)[el]);
-         if(fDebug ){ cout << "Getting HEEP ID" << endl; }
          // fLepInfo[icoll].EgammaCutBasedEleIdHEEP   [fLepInfo[icoll].Size] = (int)((*fElectronIDHEEP_H)[el]);
-      } else {
-         fLepInfo[icoll].EgammaCutBasedEleIdVETO   [fLepInfo[icoll].Size] = it_el->userFloat( "vidVeto" ) ;
-         fLepInfo[icoll].EgammaCutBasedEleIdLOOSE  [fLepInfo[icoll].Size] = it_el->userFloat( "vidLoose" ) ;
-         fLepInfo[icoll].EgammaCutBasedEleIdMEDIUM [fLepInfo[icoll].Size] = it_el->userFloat( "vidMedium" ) ;
-         fLepInfo[icoll].EgammaCutBasedEleIdTIGHT  [fLepInfo[icoll].Size] = it_el->userFloat( "vidTight" ) ;
-         fLepInfo[icoll].EgammaCutBasedEleIdHEEP   [fLepInfo[icoll].Size] = it_el->userFloat( "vidHEEP" ) ;
+      } catch( cms::Exception& x ){
+         cout << "Wierd electron found!" << endl;
       }
       fLepInfo[icoll].ChargedHadronIso            [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ;
       fLepInfo[icoll].NeutralHadronIso            [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;

@@ -27,7 +27,7 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
       if( fDebug > 2 ) {
          cout << "\t\t[2]Fill photon info, collection " << icoll << " with name " << fPhotonCollections[icoll] << endl
               << " Photon collection size " << fPhotonList_Hs[icoll]->size() << endl; }
-
+      if( fPhotonList_Hs[icoll]->size() == 3 ) { continue; }
       for( PhotonIterator it_pho = fPhotonList_Hs[icoll]->begin(); it_pho != fPhotonList_Hs[icoll]->end(); it_pho++ ) {
          if( fDebug > 2 ) {
             cout << "\t\t[2]Size " << fPhotonInfo[icoll].Size << " photon pt,eta,phi "
@@ -37,6 +37,11 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             cerr <<  "ERROR: number of photons exceeds the size of array." << endl;
             break;//exit(0);
          }
+
+         if( it_pho->pt() < 10.  ) { continue; }
+         if( fabs(it_pho->eta()) > 2.4) { continue; }
+
+         cout << "Getting Valuemaps" << endl;
          //------------------------  Filling in generic information  -------------------------
          fPhotonInfo[icoll].Pt                   [fPhotonInfo[icoll].Size] = it_pho->pt();
          fPhotonInfo[icoll].Eta                  [fPhotonInfo[icoll].Size] = it_pho->eta();
@@ -54,8 +59,9 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          fPhotonInfo[icoll].r9                   [fPhotonInfo[icoll].Size] = it_pho->r9();
 
          //-----------------------  Filling in isolation information  ------------------------
-         if( !fRunOnB2G  ) {
-            const auto pho = fPhotonList_Hs[icoll]->ptrAt( fPhotonInfo[icoll].Size );
+         cout << "Getting Valuemaps" << endl;
+         const auto pho = fPhotonList_Hs[icoll]->ptrAt( fPhotonInfo[icoll].Size );
+         try{
             fPhotonInfo[icoll].phoPFChIso    [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Charged_H)[pho] ;
             fPhotonInfo[icoll].phoPFPhoIso   [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Photon_H)[pho] ;
             fPhotonInfo[icoll].phoPFNeuIso   [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Neutral_H)[pho] ;
@@ -63,23 +69,15 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
             fPhotonInfo[icoll].phoPassLoose  [fPhotonInfo[icoll].Size] = (*fPhotonIDLoose)[pho];
             fPhotonInfo[icoll].phoPassMedium [fPhotonInfo[icoll].Size] = (*fPhotonIDMedium)[pho];
             fPhotonInfo[icoll].phoPassTight  [fPhotonInfo[icoll].Size] = (*fPhotonIDTight)[pho];
+
             fPhotonInfo[icoll].isoChEffArea  [fPhotonInfo[icoll].Size]
-               = std::max( float(0.0) ,(*fPhotonIsolation_Charged_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_ChargeHadron.getEffectiveArea(abs(it_pho->eta())));
+            = std::max( float(0.0) ,(*fPhotonIsolation_Charged_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_ChargeHadron.getEffectiveArea(abs(it_pho->eta())));
             fPhotonInfo[icoll].isoPhoEffArea [fPhotonInfo[icoll].Size]
-               = std::max( float(0.0) ,(*fPhotonIsolation_Photon_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_Photons.getEffectiveArea(abs(it_pho->eta()))) ;
+            = std::max( float(0.0) ,(*fPhotonIsolation_Photon_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_Photons.getEffectiveArea(abs(it_pho->eta()))) ;
             fPhotonInfo[icoll].isoNeuEffArea [fPhotonInfo[icoll].Size]
-               = std::max( float(0.0) ,(*fPhotonIsolation_Neutral_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_NeutralHadron.getEffectiveArea(abs(it_pho->eta())));
-         } else {
-            fPhotonInfo[icoll].phoPFChIso    [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isoC"       ) ;
-            fPhotonInfo[icoll].phoPFPhoIso   [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isoP"       ) ;
-            fPhotonInfo[icoll].phoPFNeuIso   [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isoN"       ) ;
-            fPhotonInfo[icoll].phoPFNeuIso   [fPhotonInfo[icoll].Size] = it_pho->userFloat( "sigmaIetaIeta" ) ;
-            fPhotonInfo[icoll].phoPassLoose  [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isLoose"    ) ;
-            fPhotonInfo[icoll].phoPassMedium [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isMedium"   ) ;
-            fPhotonInfo[icoll].phoPassTight  [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isTight"    ) ;
-            fPhotonInfo[icoll].isoChEffArea  [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isoC_EAcor" ) ;
-            fPhotonInfo[icoll].isoPhoEffArea [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isoP_EAcor" ) ;
-            fPhotonInfo[icoll].isoNeuEffArea [fPhotonInfo[icoll].Size] = it_pho->userFloat( "isoN_EAcor" ) ;
+            = std::max( float(0.0) ,(*fPhotonIsolation_Neutral_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_NeutralHadron.getEffectiveArea(abs(it_pho->eta())));
+         } catch( std::exception& e ){
+            cout << "Wierd photon found!!" << endl;
          }
 
          //----- Generation MC information  ---------------------------------------------
