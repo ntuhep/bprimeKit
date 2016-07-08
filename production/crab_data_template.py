@@ -35,8 +35,8 @@ config.JobType.inputFiles = [
 
 config.Data.inputDataset = 'DATASET'
 config.Data.inputDBS = 'global'
-config.Data.splitting = 'LumiBased'
-config.Data.unitsPerJob = 100
+config.Data.splitting = 'FileBased'
+config.Data.unitsPerJob = 1
 config.Data.outLFNDirBase = '/store/group/phys_b2g/BprimeKit_Ntuples_CMSSW_80X/'
 
 config.Site.storageSite = 'T2_CH_CERN'
