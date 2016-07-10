@@ -23,7 +23,7 @@ function getDataProcess() {
    local data_set=$1
    if [[ $data_set == *"RunIISpring16MiniAODv2"* ]]; then
       echo "MC_MiniAOD_80X"
-   elif [[ $data_set == *"Run2016B-PromptReco-v"* ]]; then
+   elif [[ $data_set == *"Run2016"*"-PromptReco-v"* ]]; then
       echo  "Data2016_80X"
    elif [[ $data_set == *"16Dec2015"* ]]; then
       echo "Data25ns_76X"
