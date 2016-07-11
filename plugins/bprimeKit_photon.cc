@@ -41,7 +41,6 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          if( it_pho->pt() < 10.  ) { continue; }
          if( fabs(it_pho->eta()) > 2.4) { continue; }
 
-         cout << "Getting Valuemaps" << endl;
          //------------------------  Filling in generic information  -------------------------
          fPhotonInfo[icoll].Pt                   [fPhotonInfo[icoll].Size] = it_pho->pt();
          fPhotonInfo[icoll].Eta                  [fPhotonInfo[icoll].Size] = it_pho->eta();
@@ -59,7 +58,6 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          fPhotonInfo[icoll].r9                   [fPhotonInfo[icoll].Size] = it_pho->r9();
 
          //-----------------------  Filling in isolation information  ------------------------
-         cout << "Getting Valuemaps" << endl;
          const auto pho = fPhotonList_Hs[icoll]->ptrAt( fPhotonInfo[icoll].Size );
          try{
             fPhotonInfo[icoll].phoPFChIso    [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Charged_H)[pho] ;

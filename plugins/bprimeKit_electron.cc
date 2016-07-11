@@ -167,7 +167,7 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             fLepInfo[icoll].GenEta       [fLepInfo[icoll].Size] = gen->eta();
             fLepInfo[icoll].GenPhi       [fLepInfo[icoll].Size] = gen->phi();
             fLepInfo[icoll].GenPdgID     [fLepInfo[icoll].Size] = gen->pdgId();
-            fLepInfo[icoll].GenMCTag     [fLepInfo[icoll].Size] = GetGenMCTag( gen ) ;
+            // fLepInfo[icoll].GenMCTag     [fLepInfo[icoll].Size] = GetGenMCTag( gen ) ;
          }
          if( fDebug > 3 ) { cout << "\t\t\t[3]Get Electron Gen Particle\n"; }
          if ( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] == 0 && fGenParticle_H.isValid() ) {

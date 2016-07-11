@@ -11,7 +11,7 @@
 
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/Math/interface/deltaR.h"
-
+#include <iostream>
 using namespace std;
 
 //----- MC tag for pat particles  ------------------------------------------------------------------
@@ -45,8 +45,7 @@ int bprimeKit::GetGenMCTag( const reco::GenParticle* gen ) const
          else if ( abs( genCand->pdgId() )                    == 15 ) { returnTag = 7; } // from tau
       }
    }
-   if ( bprimeTag == 1 ) { returnTag += 10; }
-   if ( bprimeTag == 2 ) { returnTag += 20; }
+   returnTag += 10*bprimeTag;
    return returnTag;
 }
 
