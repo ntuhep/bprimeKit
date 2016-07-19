@@ -8,6 +8,7 @@
 #define __BPRIMEKIT_FORMAT_H__
 
 //------------------------------  Required libraries  -------------------------------
+#include "TriggerBooking.h"
 #include <TTree.h>
 #include <vector>
 
@@ -21,7 +22,6 @@
 #define MAX_LHE            256
 #define MAX_Vertices       256
 #define MAX_BX             128
-#define N_TRIGGER_BOOKINGS 3330
 
 class EvtInfoBranches {
 public:
@@ -1437,4 +1437,3 @@ public:
    }
 };
 #endif // __BPRIMEKIT_FORMAT_H__
-

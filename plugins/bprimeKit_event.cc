@@ -132,6 +132,7 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
    if ( fTrigger_H.isValid() ) {
       if( fDebug > 1 ) { cout << "\t[1] Getting High Level Trigger" << endl; }
       const edm::TriggerNames& TrgNames = iEvent.triggerNames( *fTrigger_H );
+
       fEvtInfo.TrgCount = 0;
       for( size_t i = 0; i < N_TRIGGER_BOOKINGS; ++i ) {
          unsigned int TrgIndex = TrgNames.triggerIndex( TriggerBooking[i] );
@@ -152,7 +153,11 @@ bool bprimeKit::FillEvent( const edm::Event& iEvent , const edm::EventSetup& iSe
       for( size_t i = 0; i < TrgNames.size(); ++i ) {
          fEvtInfo.HLTbits[i] = ( fTrigger_H->accept( i ) == true ) ? 1 : 0;
          const std::string triggerName_ = TrgNames.triggerName( i );
-         if( fDebug > 2 ) { cout << "\t\t[2] HLTInfo: "<< i <<"["<< fEvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ; }
+         if( fDebug > 2 ) {
+            cout << "\t\t[2] HLTInfo: "<< i <<"["<< fEvtInfo.HLTbits[i]<< "]: \"" << triggerName_ << "\"" << endl ;
+         }
+
+
          // TODO Assuming prescale set = 0 , check.
          // Enoch 2016-02-04
          fEvtInfo.HLTPrescaleFactor[i] = fHighLevelTriggerConfig.prescaleValue( 0 , triggerName_ );

@@ -16,13 +16,12 @@
 #  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data50ns'
 #
 # *****************************************************************************************
-import sys
+import sys,os,importlib  # Python2.7 libaries
 import copy
 import ConfigParser
-import FWCore.ParameterSet.Config     as cms
-import FWCore.ParameterSet.VarParsing as opts
+import FWCore.ParameterSet.Config            as cms
+import FWCore.ParameterSet.VarParsing        as opts
 import bpkFrameWork.bprimeKit.optionInit     as myOptions
-import bpkFrameWork.bprimeKit.OptionParser
 
 #-------------------------------------------------------------------------------
 #   Options settings + Parsing, see python/optionsInit and python/OptionParser
@@ -31,9 +30,10 @@ options = opts.VarParsing ('analysis')
 myOptions.initB2GOptions( options )
 myOptions.initBPKOptions( options )
 options.parseArguments()
-myParser = bpkFrameWork.bprimeKit.OptionParser.OptionParser( options )
 
-print "\nRunning with DataProcessing option ", myParser.GetProcess(), " and with global tag", myParser.GetSetting('GlobalTag'), "\n"
+mysetting = importlib.import_module('bpkFrameWork.bprimeKit.bprimeKit_' + options.DataProcessing )
+
+print "\nRunning with DataProcessing option ", options.DataProcessing, " and with global tag", mysetting.GlobalTag, "\n"
 
 #-------------------------------------------------------------------------------
 #   Process Setup
@@ -60,14 +60,14 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
 process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag.globaltag = myParser.GetSetting('GlobalTag')
+process.GlobalTag.globaltag = mysetting.GlobalTag
 
 #-------------------------------------------------------------------------------
 #   Reprocessing Jets
 #     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
 from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-jettoolbox_settings( process, myParser.IsMC() )
+jettoolbox_settings( process, "Data" not in options.DataProcessing )
 
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
@@ -82,8 +82,8 @@ switchOnVIDElectronIdProducer(process, dataFormat)
 my_elid_modules  = []
 my_phoid_modules = []
 
-my_elid_modules.append( myParser.GetSetting('ElectronIDModule') )
-my_elid_modules.append( myParser.GetSetting('ElectronIDHEEPModule') )
+my_elid_modules.append( mysetting.ElectronIDModule )
+my_elid_modules.append( mysetting.ElectronIDHEEPModule )
 
 my_phoid_modules.append( 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_50ns_V1_cff' )
 
@@ -94,12 +94,6 @@ for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 #-------------------------------------------------------------------------------
-#   Loading B2G Producers
-#-------------------------------------------------------------------------------
-# import bpkFrameWork.bprimeKit.b2gProcesses as myProcess
-# myProcess.load_b2g( process , myParser.IsMC() )
-
-#-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
 #-------------------------------------------------------------------------------
 process.TFileService = cms.Service("TFileService",
@@ -107,8 +101,7 @@ process.TFileService = cms.Service("TFileService",
         )
 
 # See the file python/bprimeKit_* default settings for the various DataProcessings
-process.load('bpkFrameWork.bprimeKit.bprimeKit_'+ myParser.GetProcess() )
-# Passing input options to bprimeKit
+process.bprimeKit = mysetting.bprimeKit
 process.bprimeKit.runMuonJetClean = cms.bool( options.RunMuonJetClean )
 process.bprimeKit.runOnB2G        = cms.bool( options.b2gPreprocess )
 process.bprimeKit.Debug           = cms.int32( options.Debug )

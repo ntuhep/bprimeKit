@@ -10,7 +10,8 @@ import FWCore.ParameterSet.VarParsing as opts
 
 def initB2GOptions( options ):
    options.register('sample',
-         'file:///store/yichen/MiniAODS/MC_80X/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8.root',
+   "/store/mc/RunIISpring16MiniAODv2/TprimeTprime_M-1700_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/DA9E6A85-D83A-E611-813E-02163E017832.root",
+    #     'file:///store/yichen/MiniAODS/MC_80X/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT.root',
          opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,
          'Sample to analyze')
@@ -51,12 +52,6 @@ def initB2GOptions( options ):
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.bool,
          'Whether to force residuals to be applied')
-
-   options.register('globalTag',
-         '',
-         opts.VarParsing.multiplicity.singleton,
-         opts.VarParsing.varType.string,
-         'Global Tag')
 
    options.register('wantSummary',
          True,

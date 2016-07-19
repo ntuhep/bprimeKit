@@ -9,6 +9,17 @@
 #*******************************************************************************
 import FWCore.ParameterSet.Config     as cms
 
+#-------------------------------------------------------------------------------
+#   Additional tag settings
+#-------------------------------------------------------------------------------
+GlobalTag            = "80X_dataRun2_Prompt_ICHEP16JEC_v0"
+ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
+ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff"
+
+#-------------------------------------------------------------------------------
+#   BprimeKit input tags
+#-------------------------------------------------------------------------------
+
 bprimeKit = cms.EDAnalyzer(
       "bprimeKit",
       #----- Operation Tags
