@@ -22,13 +22,13 @@
 #include <math.h>
 
 using namespace std;
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Helper static functions
 //------------------------------------------------------------------------------
-typedef edm::Ptr<reco::Candidate> JetConstituent; 
+typedef edm::Ptr<reco::Candidate> JetConstituent;
 bool HasOverLap( const MuonIterator& , const JetConstituent& );
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Class method implementation
 //------------------------------------------------------------------------------
 bool bprimeKit::IsSelectedMuon( const MuonIterator& mu ) const
@@ -43,8 +43,6 @@ TLorentzVector bprimeKit::CleanAK4Jet( JetIterator jet )
    TLorentzVector cleanedJetP4 = TLorentzVector( jet->px() , jet->py() , jet->pz() , jet->energy() ) ;
    TLorentzVector muonP4;
 
-   if( fDebug > 3 ) { std::cout << "\t\t\t[3]Checking Overlap" << std::endl; }
-   
    for( const auto& muon : fMySelectedMuons ){
       // Cleaning against muons in a delta R radius of 0.4
       if( deltaR( jet->p4() , muon->p4() ) > 0.4 ) { continue; }
@@ -58,20 +56,6 @@ TLorentzVector bprimeKit::CleanAK4Jet( JetIterator jet )
       }
    }
 
-   //----- TODO: Disabled for CMSSW_7_6_3  ----------------------------------------
-   // Run correction regardless of clean operation (?)
-   // fJetCorrector->setJetEta( cleanedJetP4.Eta() );
-   // fJetCorrector->setJetPt( cleanedJetP4.Pt() );
-   // fJetCorrector->setJetE( cleanedJetP4.Energy() );
-   // fJetCorrector->setJetA( jet->jetArea() );
-   // fJetCorrector->setRho( *(fRho_H.product()) );
-   // fJetCorrector->setNPV( fVertex_H->size() ); 
-   // cleanedJetP4 *= fJetCorrector->getCorrection();
-   
-   //printf( "AK4 Cleaning\n" );
-   //printf( "Before cleaning:\t%lf\t%lf\t%lf\t%lf\n", jet->pt(), jet->eta(), jet->phi(), jet->energy() );
-   //printf( "After  cleaning:\t%lf\t%lf\t%lf\t%lf\n\n", cleanedJetP4.Pt(), cleanedJetP4.Eta(), cleanedJetP4.Phi(), cleanedJetP4.Energy() );
-
    return cleanedJetP4;
 }
 
@@ -83,10 +67,8 @@ TLorentzVector bprimeKit::CleanAK8Jet( JetIterator fatjet )
    JetConstituent   subjet_const ;
    const reco::Jet* subjet;
 
-   if( fDebug > 3 ) { std::cout << "\t\t\t[3]Checking Overlap" << std::endl; }
-
    for( const auto& muon : fMySelectedMuons ){
-      // Cleaning against muons in a delta R radius of pi/2 
+      // Cleaning against muons in a delta R radius of pi/2
       // This is following the rejection scheme used in the B2G Ntuple reader
       if( deltaR( fatjet->p4() , muon->p4() ) > M_PI/2.0  ) { continue; }
       muonP4.SetPtEtaPhiE( muon->pt(), muon->eta(), muon->phi(), muon->energy() );
@@ -95,8 +77,8 @@ TLorentzVector bprimeKit::CleanAK8Jet( JetIterator fatjet )
          jet_const = fatjet->daughterPtr(i);
 
          if( jet_const->numberOfDaughters() > 0 ) {
-            // If numberOfDaughters > 0 , this constitute is a subjet and requires 
-            // additional looping of the subjets constituents 
+            // If numberOfDaughters > 0 , this constitute is a subjet and requires
+            // additional looping of the subjets constituents
             //
             subjet = dynamic_cast<const reco::Jet*>(fatjet->daughter(i));
             // Recasting required! daughter() passes back const reco::Candidate* (base class of reco::Jet*)
@@ -106,44 +88,29 @@ TLorentzVector bprimeKit::CleanAK8Jet( JetIterator fatjet )
                   cleanedJetP4 -= muonP4;
                   break;
                }
-            }  
+            }
          } else {
-            // This is a non-subjet constitute, proceed as before 
+            // This is a non-subjet constitute, proceed as before
             if( HasOverLap( muon , jet_const )) {
-               cleanedJetP4 -= muonP4 ; 
+               cleanedJetP4 -= muonP4 ;
             }
          }
       }
    }
 
-   //----- TODO: Disabled for CMSSW_7_6_3  ----------------------------------------
-   // Run corrector regardless of clean operation (?)
-   // fJetCorrectorAK8->setJetEta( cleanedJetP4.Eta() );
-   // fJetCorrectorAK8->setJetPt( cleanedJetP4.Pt() );
-   // fJetCorrectorAK8->setJetE( cleanedJetP4.Energy() );
-   // fJetCorrectorAK8->setJetA( fatjet->jetArea() );
-   // fJetCorrectorAK8->setRho( *(fRho_H.product()) );
-   // fJetCorrectorAK8->setNPV( fVertex_H->size() ); 
-   // cleanedJetP4 *= fJetCorrectorAK8->getCorrection();
-   
-   //printf( "AK8 Cleaning\n" );
-   //printf( "Before cleaning:\t%lf\t%lf\t%lf\t%lf\n", fatjet->pt(), fatjet->eta(), fatjet->phi(), fatjet->energy() );
-   //printf( "After  cleaning:\t%lf\t%lf\t%lf\t%lf\n\n", cleanedJetP4.Pt(), cleanedJetP4.Eta(), cleanedJetP4.Phi(), cleanedJetP4.Energy() );
    return cleanedJetP4;
 }
 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
 //   Helper Function Implementation
 //------------------------------------------------------------------------------
 
 bool HasOverLap( const MuonIterator& muon , const JetConstituent& jet_const )
 {
-   for( unsigned i = 0 ; i < muon->numberOfSourceCandidatePtrs() ; ++i )
-   {
+   for( unsigned i = 0 ; i < muon->numberOfSourceCandidatePtrs() ; ++i ){
       if( jet_const.key() == muon->sourceCandidatePtr(i).key() ){
          return true;
-      } 
+      }
    }
    return false;
 }
-

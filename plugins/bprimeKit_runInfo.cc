@@ -3,7 +3,7 @@
  *  Filename    : bprimeKit_runInfo.cc
  *  Description : Extracting the Run Informations
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *  
+ *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include <iostream>
@@ -14,10 +14,6 @@ void bprimeKit::FillRunInfo()
 {
    if( fLHERunInfo_H.isValid() ){
       fRunInfo.PdfID = fLHERunInfo_H->heprup().PDFSUP.first;
-      if( fDebug ) {
-         cout << "[RunInfo] PDFID: " << fRunInfo.PdfID << endl; 
-         cout << "[RunInfo] PDFID: " << fLHERunInfo_H->heprup().PDFSUP.first << endl;
-      }
    } else {
       cout << "Invalid handle!" << endl;
    }

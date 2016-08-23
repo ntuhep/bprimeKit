@@ -34,9 +34,19 @@ bprimeKit = cms.EDAnalyzer(
 
       #----- Event level objects -----
       rhoLabel            = cms.InputTag( 'fixedGridRhoFastjetAll' ),
-      hltLabel            = cms.InputTag( 'TriggerResults::HLT' ),
       metLabel            = cms.InputTag( 'slimmedMETs' ),
       puppimetLabel       = cms.InputTag( 'slimmedMETsPuppi'),
+
+      #----- Trigger related -----
+      hltLabel            = cms.InputTag( 'TriggerResults::HLT' ),
+      trgobjLabel  = cms.InputTag( 'selectedPatTrigger'),
+      triggerList  = cms.vstring(
+            'HLT_IsoMu27',
+            'HLT_Ele27_eta2p1_WPLoose_Gsf',
+            'HLT_Mu45_eta2p1',
+            'HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50',
+            'HLT_Ele45_WPLoose_Gsf'
+      ),
 
       #----- Vertex related  ------------------------------------------------------------------------------
       offlinePVLabel      = cms.InputTag( 'offlineSlimmedPrimaryVertices' ),

@@ -1,0 +1,6 @@
+<use name="FWCore/Common"/>
+<use name="DataFormats/FWLite"/>
+<use name="DataFormats/PatCandidates"/>
+
+
+<bin name="DumpTriggerObjects" file="DumpTriggerObjects.cc"/>

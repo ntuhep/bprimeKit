@@ -16,23 +16,12 @@ using namespace std;
 //------------------------------------------------------------------------------
 bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   if( fDebug > 1 ) { cout << "\t[1]Entering photon sub-sequence" << endl; }
-   PhotonIterator    it_pho ;
-
    for( unsigned icoll = 0; icoll < fPhotonCollections.size(); icoll++ ) {
       if( icoll >= MAX_PHOCOLLECTIONS ) { break    ; }
       if( fPhotonList_Hs.size() <= icoll   ) { continue ; }
-
       memset( &fPhotonInfo[icoll], 0x00, sizeof( fPhotonInfo[icoll] ) );
-      if( fDebug > 2 ) {
-         cout << "\t\t[2]Fill photon info, collection " << icoll << " with name " << fPhotonCollections[icoll] << endl
-              << " Photon collection size " << fPhotonList_Hs[icoll]->size() << endl; }
       if( fPhotonList_Hs[icoll]->size() == 3 ) { continue; }
       for( PhotonIterator it_pho = fPhotonList_Hs[icoll]->begin(); it_pho != fPhotonList_Hs[icoll]->end(); it_pho++ ) {
-         if( fDebug > 2 ) {
-            cout << "\t\t[2]Size " << fPhotonInfo[icoll].Size << " photon pt,eta,phi "
-               << it_pho->pt()  << "," << it_pho->eta() << "," << it_pho->phi() << endl;
-         }
          if ( fPhotonInfo[icoll].Size >= MAX_PHOTONS ) {
             cerr <<  "ERROR: number of photons exceeds the size of array." << endl;
             break;//exit(0);
@@ -58,7 +47,7 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          fPhotonInfo[icoll].r9                   [fPhotonInfo[icoll].Size] = it_pho->r9();
 
          //-----------------------  Filling in isolation information  ------------------------
-         const auto pho = fPhotonList_Hs[icoll]->ptrAt( fPhotonInfo[icoll].Size );
+         const auto pho = fPhotonList_Hs[icoll]->ptrAt( it_pho - fPhotonList_Hs[icoll]->begin() );
          try{
             fPhotonInfo[icoll].phoPFChIso    [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Charged_H)[pho] ;
             fPhotonInfo[icoll].phoPFPhoIso   [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Photon_H)[pho] ;
@@ -80,7 +69,6 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
 
          //----- Generation MC information  ---------------------------------------------
          if ( !fIsData && !fSkipfGenInfo ) {
-            if( fDebug > 3 ) { cout << "\t\t\t[3]Getting Photon MC information" << endl ; }
             const reco::Candidate* gen = it_pho->genPhoton();
             if ( gen != NULL ) {
                fPhotonInfo[icoll].GenPt        [fPhotonInfo[icoll].Size] = gen->pt();

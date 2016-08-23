@@ -1,24 +1,24 @@
 /*******************************************************************************
  *
  *  Filename    : bprimeKit_vertex.cc
- *  Description : vertex info Filling 
+ *  Description : vertex info Filling
  *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
 using namespace std;
-//------------------------------------------------------------------------------ 
-//   bprimeKit method implementation 
-//------------------------------------------------------------------------------ 
+//------------------------------------------------------------------------------
+//   bprimeKit method implementation
+//------------------------------------------------------------------------------
 bool bprimeKit::FillVertex( const edm::Event& iEvent , const edm::EventSetup& iSetup )
 {
    bool   gotfPrimaryVertex;
    double PVBS_Pt_Max;
-      
+
    if( fDebug > 1 ) { cout << "\t[1]Fill Vertex Info.\n"; }
    memset( &fVertexInfo, 0x00, sizeof( fVertexInfo ) );
-   
+
    //----- Vertices without beamspot constraints  -----------------------------------------------------
    gotfPrimaryVertex = false;
    if( fVertex_H.isValid() && !fVertex_H.failedToGet() && fVertex_H->size() > 0 ) {
@@ -53,8 +53,8 @@ bool bprimeKit::FillVertex( const edm::Event& iEvent , const edm::EventSetup& iS
       }
    }
 
-   //----- Vertices with beamspot constraint  ---------------------------------------------------------
-   PVBS_Pt_Max = -100. ; 
+   //----- Vertices with beamspot constraint  ---------------------------------
+   PVBS_Pt_Max = -100. ;
    if( fVertexWithBeamSpot_H.isValid() && !fVertexWithBeamSpot_H.failedToGet() && fVertexWithBeamSpot_H->size() > 0 ) {
       for( VertexIterator it_vtx = fVertexWithBeamSpot_H->begin(); it_vtx != fVertexWithBeamSpot_H->end(); ++it_vtx ) {
          if ( fVertexInfo.Size >= MAX_Vertices ) {

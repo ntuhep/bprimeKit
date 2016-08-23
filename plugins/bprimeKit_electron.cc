@@ -167,7 +167,7 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             fLepInfo[icoll].GenEta       [fLepInfo[icoll].Size] = gen->eta();
             fLepInfo[icoll].GenPhi       [fLepInfo[icoll].Size] = gen->phi();
             fLepInfo[icoll].GenPdgID     [fLepInfo[icoll].Size] = gen->pdgId();
-            // fLepInfo[icoll].GenMCTag     [fLepInfo[icoll].Size] = GetGenMCTag( gen ) ;
+            fLepInfo[icoll].GenMCTag     [fLepInfo[icoll].Size] = GetGenMCTag( gen ) ;
          }
          if( fDebug > 3 ) { cout << "\t\t\t[3]Get Electron Gen Particle\n"; }
          if ( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] == 0 && fGenParticle_H.isValid() ) {
@@ -179,15 +179,6 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          if( fDebug > 3 ) { cout << "\t\t\t[3]Done getting MC information\n"; }
       }
 
-      //----- Impact parameter related  ------------------------------------------------------------------
-      // Reference from UserCode/MitProd/TreeFiller/src/FillerElectrons.cc
-      // const reco::TransientTrack& tt = (fTrackBuilder_H.product())->build( it_el->gsfTrack() );
-      // const reco::Vertex thevtx = (fVertex_H.product())->at( 0 );
-      // const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt, thevtx );
-      // const double gsfsign = ( ( -it_el->gsfTrack()->dxy( thevtx.position() ) )   >= 0 ) ? 1. : -1.;
-      // fLepInfo[icoll].Ip3dPV[fLepInfo[icoll].Size]             = gsfsign * ip3dpv.second.value();
-      // fLepInfo[icoll].Ip3dPVSignificance[fLepInfo[icoll].Size] = gsfsign * ip3dpv.second.value() / ip3dpv.second.error();
-      // fLepInfo[icoll].Ip3dPVErr[fLepInfo[icoll].Size]          = ip3dpv.second.error();
 
       //----- Conversion rejection information  ----------------------------------------------------------
       fLepInfo[icoll].Eldist        [fLepInfo[icoll].Size] = it_el->convDist();
@@ -199,38 +190,3 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
    }
    return true;
 }
-
-//--------------------------------------------------------------------------------------------------
-//   Legacy code section
-//--------------------------------------------------------------------------------------------------
-//fLepInfo[icoll].ElhasConv  [fLepInfo[icoll].Size] = ConversionTools::hasMatchedConversion( *el, fConversions_H, fBeamSpot.position() );
-//
-// convInfo = convFinder.getConversionInfo( *it_el, tracks_h, evt_bField );
-// ConversionFinder convFinder;
-// ConversionInfo convInfo;
-// fLepInfo[icoll].ElConvPoint_x [fLepInfo[icoll].Size] = convInfo.pointOfConversion().x();
-// fLepInfo[icoll].ElConvPoint_y [fLepInfo[icoll].Size] = convInfo.pointOfConversion().y();
-// fLepInfo[icoll].ElConvPoint_z [fLepInfo[icoll].Size] = convInfo.pointOfConversion().z();
-
-//// MVA-ID  -- start
-// Vertex dummy;
-// const Vertex* pv = &dummy;
-// if ( VertexHandle->size() != 0 ) {
-//     pv = &*VertexHandle->begin();
-// } else { // create a dummy PV
-//   Vertex::Error e;
-//   e( 0, 0 ) = 0.0015 * 0.0015;
-//   e( 1, 1 ) = 0.0015 * 0.0015;
-//   e( 2, 2 ) = 15. * 15.;
-//   Vertex::Point p( 0, 0, 0 );
-//   dummy = Vertex( p, e, 0, 0, 0 );
-//}
-//
-// float myMVATrigMethod = myMVATrig->mvaValue( ( theEGamma[nGsfEle] ), *pv, thebuilder, lazyTools, debugMVAclass );
-// fLepInfo[icoll].EgammaMVATrig      [fLepInfo[icoll].Size] = myMVATrigMethod;
-// fLepInfo[icoll].sumPUPtR03                [fLepInfo[icoll].Size] = isolatorR03.getIsolationChargedAll();
-// fLepInfo[icoll].sumPUPtR04                [fLepInfo[icoll].Size] = isolatorR04.getIsolationChargedAll();
-// float AEffR04 = ElectronEffectiveArea::GetElectronEffectiveArea( ElectronEffectiveArea::kEleGammaAndNeutralHadronIso04, fLepInfo[icoll].Eta[fLepInfo[icoll].Size], EATarget );
-// fLepInfo[icoll].IsoRhoCorrR04             [fLepInfo[icoll].Size] = fLepInfo[icoll].ChargedHadronIsoR04[fLepInfo[icoll].Size] +
-//   max( fLepInfo[icoll].NeutralHadronIsoR04[fLepInfo[icoll].Size] + fLepInfo[icoll].PhotonIsoR04[fLepInfo[icoll].Size] - rhoPrime * AEffR04, 0.0 );
-//

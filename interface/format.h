@@ -8,7 +8,6 @@
 #define __BPRIMEKIT_FORMAT_H__
 
 //------------------------------  Required libraries  -------------------------------
-#include "TriggerBooking.h"
 #include <TTree.h>
 #include <vector>
 
@@ -16,13 +15,12 @@
 #define MAX_LEPTONS        256
 #define MAX_TRACKS         256
 #define MAX_JETS           128
-#define MAX_PAIRS          512
 #define MAX_PHOTONS        128
 #define MAX_GENS           128
 #define MAX_LHE            256
 #define MAX_Vertices       256
 #define MAX_BX             128
-
+#define MAX_TRGOBJS        64
 class EvtInfoBranches {
 public:
    Int_t      RunNo  ;
@@ -437,27 +435,6 @@ public:
    //   Tau information
    //------------------------------------------------------------------------------
    Int_t    isPFTau                                     [MAX_LEPTONS] ;    // YoungKyu 2012-10-16
-   Float_t  DiscriminationByDecayModeFinding            [MAX_LEPTONS] ;
-   Float_t  DiscriminationByDecayModeFindingNewDMs      [MAX_LEPTONS] ;
-   Float_t  ByLooseCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-   Float_t  ByMediumCombinedIsolationDeltaBetaCorr3Hits [MAX_LEPTONS] ;
-   Float_t  ByTightCombinedIsolationDeltaBetaCorr3Hits  [MAX_LEPTONS] ;
-   Float_t  ByCombinedIsolationDeltaBetaCorrRaw3Hits    [MAX_LEPTONS] ;
-   Float_t  ChargedIsoPtSum                             [MAX_LEPTONS] ;
-   Float_t  NeutralIsoPtSum                             [MAX_LEPTONS] ;
-   Float_t  PuCorrPtSum                                 [MAX_LEPTONS] ;
-   Float_t  ByLoosePileupWeightedIsolation3Hits         [MAX_LEPTONS] ;
-   Float_t  ByMediumPileupWeightedIsolation3Hits        [MAX_LEPTONS] ;
-   Float_t  ByTightPileupWeightedIsolation3Hits         [MAX_LEPTONS] ;
-   Float_t  ByPileupWeightedIsolationRaw3Hits           [MAX_LEPTONS] ;
-   Float_t  NeutralIsoPtSumWeight                       [MAX_LEPTONS] ;
-   Float_t  FootprintCorrection                         [MAX_LEPTONS] ;
-   Float_t  PhotonPtSumOutsideSignalCone                [MAX_LEPTONS] ;
-   Float_t  AgainstMuonLoose3                           [MAX_LEPTONS] ;
-   Float_t  AgainstMuonTight3                           [MAX_LEPTONS] ;
-   Float_t  AgainstElectronVLooseMVA5                   [MAX_LEPTONS] ;
-   Float_t  AgainstElectronLooseMVA5                    [MAX_LEPTONS] ;
-   Float_t  AgainstElectronMediumMVA5                   [MAX_LEPTONS] ;
 
    //----- Generation Monte Carlo information  --------------------------------------------------------
    Float_t GenPt                                 [MAX_LEPTONS] ;
@@ -602,27 +579,6 @@ public:
       root->Branch( ( name + ".TrgPhi" ).c_str(), TrgPhi, ( name + ".TrgPhi[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".TrgID" ).c_str(), TrgID, ( name + ".TrgID[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".isPFTau" ).c_str(), isPFTau, ( name + ".isPFTau[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".DiscriminationByDecayModeFinding" ).c_str(), DiscriminationByDecayModeFinding, ( name + ".DiscriminationByDecayModeFinding[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".DiscriminationByDecayModeFindingNewDMs" ).c_str(), DiscriminationByDecayModeFindingNewDMs, ( name + ".DiscriminationByDecayModeFindingNewDMs[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByLooseCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByLooseCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByLooseCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByMediumCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByMediumCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByMediumCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByTightCombinedIsolationDeltaBetaCorr3Hits" ).c_str(), ByTightCombinedIsolationDeltaBetaCorr3Hits, ( name + ".ByTightCombinedIsolationDeltaBetaCorr3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByCombinedIsolationDeltaBetaCorrRaw3Hits" ).c_str(), ByCombinedIsolationDeltaBetaCorrRaw3Hits, ( name + ".ByCombinedIsolationDeltaBetaCorrRaw3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ChargedIsoPtSum" ).c_str(), ChargedIsoPtSum, ( name + ".ChargedIsoPtSum[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".NeutralIsoPtSum" ).c_str(), NeutralIsoPtSum, ( name + ".NeutralIsoPtSum[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".PuCorrPtSum" ).c_str(), PuCorrPtSum, ( name + ".PuCorrPtSum[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByLoosePileupWeightedIsolation3Hits" ).c_str(), ByLoosePileupWeightedIsolation3Hits, ( name + ".ByLoosePileupWeightedIsolation3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByMediumPileupWeightedIsolation3Hits" ).c_str(), ByMediumPileupWeightedIsolation3Hits, ( name + ".ByMediumPileupWeightedIsolation3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByTightPileupWeightedIsolation3Hits" ).c_str(), ByTightPileupWeightedIsolation3Hits, ( name + ".ByTightPileupWeightedIsolation3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".ByPileupWeightedIsolationRaw3Hits" ).c_str(), ByPileupWeightedIsolationRaw3Hits, ( name + ".ByPileupWeightedIsolationRaw3Hits[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".NeutralIsoPtSumWeight" ).c_str(), NeutralIsoPtSumWeight, ( name + ".NeutralIsoPtSumWeight[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".FootprintCorrection" ).c_str(), FootprintCorrection, ( name + ".FootprintCorrection[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".PhotonPtSumOutsideSignalCone" ).c_str(), PhotonPtSumOutsideSignalCone, ( name + ".PhotonPtSumOutsideSignalCone[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".AgainstMuonLoose3" ).c_str(), AgainstMuonLoose3, ( name + ".AgainstMuonLoose3[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".AgainstMuonTight3" ).c_str(), AgainstMuonTight3, ( name + ".AgainstMuonTight3[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".AgainstElectronVLooseMVA5" ).c_str(), AgainstElectronVLooseMVA5, ( name + ".AgainstElectronVLooseMVA5[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".AgainstElectronLooseMVA5" ).c_str(), AgainstElectronLooseMVA5, ( name + ".AgainstElectronLooseMVA5[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".AgainstElectronMediumMVA5" ).c_str(), AgainstElectronMediumMVA5, ( name + ".AgainstElectronMediumMVA5[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenPt" ).c_str(), GenPt, ( name + ".GenPt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenEta" ).c_str(), GenEta, ( name + ".GenEta[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".GenPhi" ).c_str(), GenPhi, ( name + ".GenPhi[" + name + ".Size]/F" ).c_str() );
@@ -763,27 +719,6 @@ public:
       root->SetBranchAddress( ( name + ".TrgPhi" ).c_str() , TrgPhi ) ;
       root->SetBranchAddress( ( name + ".TrgID" ).c_str() , TrgID ) ;
       root->SetBranchAddress( ( name + ".isPFTau" ).c_str() , isPFTau ) ;
-      root->SetBranchAddress( ( name + ".DiscriminationByDecayModeFinding" ).c_str() , DiscriminationByDecayModeFinding ) ;
-      root->SetBranchAddress( ( name + ".DiscriminationByDecayModeFindingNewDMs" ).c_str() , DiscriminationByDecayModeFindingNewDMs ) ;
-      root->SetBranchAddress( ( name + ".ByLooseCombinedIsolationDeltaBetaCorr3Hits" ).c_str() , ByLooseCombinedIsolationDeltaBetaCorr3Hits ) ;
-      root->SetBranchAddress( ( name + ".ByMediumCombinedIsolationDeltaBetaCorr3Hits" ).c_str() , ByMediumCombinedIsolationDeltaBetaCorr3Hits ) ;
-      root->SetBranchAddress( ( name + ".ByTightCombinedIsolationDeltaBetaCorr3Hits" ).c_str() , ByTightCombinedIsolationDeltaBetaCorr3Hits ) ;
-      root->SetBranchAddress( ( name + ".ByCombinedIsolationDeltaBetaCorrRaw3Hits" ).c_str() , ByCombinedIsolationDeltaBetaCorrRaw3Hits ) ;
-      root->SetBranchAddress( ( name + ".ChargedIsoPtSum" ).c_str() , ChargedIsoPtSum ) ;
-      root->SetBranchAddress( ( name + ".NeutralIsoPtSum" ).c_str() , NeutralIsoPtSum ) ;
-      root->SetBranchAddress( ( name + ".PuCorrPtSum" ).c_str() , PuCorrPtSum ) ;
-      root->SetBranchAddress( ( name + ".ByLoosePileupWeightedIsolation3Hits" ).c_str() , ByLoosePileupWeightedIsolation3Hits ) ;
-      root->SetBranchAddress( ( name + ".ByMediumPileupWeightedIsolation3Hits" ).c_str() , ByMediumPileupWeightedIsolation3Hits ) ;
-      root->SetBranchAddress( ( name + ".ByTightPileupWeightedIsolation3Hits" ).c_str() , ByTightPileupWeightedIsolation3Hits ) ;
-      root->SetBranchAddress( ( name + ".ByPileupWeightedIsolationRaw3Hits" ).c_str() , ByPileupWeightedIsolationRaw3Hits ) ;
-      root->SetBranchAddress( ( name + ".NeutralIsoPtSumWeight" ).c_str() , NeutralIsoPtSumWeight ) ;
-      root->SetBranchAddress( ( name + ".FootprintCorrection" ).c_str() , FootprintCorrection ) ;
-      root->SetBranchAddress( ( name + ".PhotonPtSumOutsideSignalCone" ).c_str() , PhotonPtSumOutsideSignalCone ) ;
-      root->SetBranchAddress( ( name + ".AgainstMuonLoose3" ).c_str() , AgainstMuonLoose3 ) ;
-      root->SetBranchAddress( ( name + ".AgainstMuonTight3" ).c_str() , AgainstMuonTight3 ) ;
-      root->SetBranchAddress( ( name + ".AgainstElectronVLooseMVA5" ).c_str() , AgainstElectronVLooseMVA5 ) ;
-      root->SetBranchAddress( ( name + ".AgainstElectronLooseMVA5" ).c_str() , AgainstElectronLooseMVA5 ) ;
-      root->SetBranchAddress( ( name + ".AgainstElectronMediumMVA5" ).c_str() , AgainstElectronMediumMVA5 ) ;
       root->SetBranchAddress( ( name + ".GenPt" ).c_str() , GenPt ) ;
       root->SetBranchAddress( ( name + ".GenEta" ).c_str() , GenEta ) ;
       root->SetBranchAddress( ( name + ".GenPhi" ).c_str() , GenPhi ) ;
@@ -799,8 +734,6 @@ public:
    Int_t   NTracks       [MAX_JETS] ;
    Float_t Et            [MAX_JETS] ;
    Float_t Pt            [MAX_JETS] ;
-   Float_t Unc           [MAX_JETS] ;
-   Float_t JesUnc        [MAX_JETS] ;
    Float_t Eta           [MAX_JETS] ;
    Float_t Phi           [MAX_JETS] ;
    Float_t Px            [MAX_JETS] ; //Uly 2011-04-04
@@ -818,6 +751,11 @@ public:
    Float_t Phi_MuonCleaned    [MAX_JETS];
    Float_t Energy_MuonCleaned [MAX_JETS];
 
+   Float_t Unc           [MAX_JETS] ;
+   Float_t JesUnc        [MAX_JETS] ;
+   Float_t JERPt         [MAX_JETS] ;
+   Float_t JERPhi        [MAX_JETS] ;
+   Float_t JERScale      [MAX_JETS] ;
 
    //----- Lepton cleaned variables  ----------------------------------------------
    Float_t PtUncleaned     [MAX_JETS] ;
@@ -936,8 +874,6 @@ public:
       root->Branch( ( name + ".NTracks" ).c_str(), NTracks, ( name + ".NTracks[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".Et" ).c_str(), Et, ( name + ".Et[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".Unc" ).c_str(), Unc, ( name + ".Unc[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".JesUnc" ).c_str(), JesUnc, ( name + ".JesUnc[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Phi" ).c_str(), Phi, ( name + ".Phi[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Px" ).c_str(), Px, ( name + ".Px[" + name + ".Size]/F" ).c_str() );
@@ -953,6 +889,11 @@ public:
       root->Branch( ( name + ".Eta_MuonCleaned" ).c_str(), Eta_MuonCleaned, ( name + ".Eta_MuonCleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Phi_MuonCleaned" ).c_str(), Phi_MuonCleaned, ( name + ".Phi_MuonCleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Energy_MuonCleaned" ).c_str(), Energy_MuonCleaned, ( name + ".Energy_MuonCleaned[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Unc" ).c_str(), Unc, ( name + ".Unc[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".JesUnc" ).c_str(), JesUnc, ( name + ".JesUnc[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".JERPt" ).c_str(), JERPt, ( name + ".JERPt[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".JERPhi" ).c_str(), JERPhi, ( name + ".JERPhi[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".JERScale" ).c_str(), JERScale, ( name + ".JERScale[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PtUncleaned" ).c_str(), PtUncleaned, ( name + ".PtUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".EtaUncleaned" ).c_str(), EtaUncleaned, ( name + ".EtaUncleaned[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PhiUncleaned" ).c_str(), PhiUncleaned, ( name + ".PhiUncleaned[" + name + ".Size]/F" ).c_str() );
@@ -1037,8 +978,6 @@ public:
       root->SetBranchAddress( ( name + ".NTracks" ).c_str() , NTracks ) ;
       root->SetBranchAddress( ( name + ".Et" ).c_str() , Et ) ;
       root->SetBranchAddress( ( name + ".Pt" ).c_str() , Pt ) ;
-      root->SetBranchAddress( ( name + ".Unc" ).c_str() , Unc ) ;
-      root->SetBranchAddress( ( name + ".JesUnc" ).c_str() , JesUnc ) ;
       root->SetBranchAddress( ( name + ".Eta" ).c_str() , Eta ) ;
       root->SetBranchAddress( ( name + ".Phi" ).c_str() , Phi ) ;
       root->SetBranchAddress( ( name + ".Px" ).c_str() , Px ) ;
@@ -1054,6 +993,11 @@ public:
       root->SetBranchAddress( ( name + ".Eta_MuonCleaned" ).c_str() , Eta_MuonCleaned ) ;
       root->SetBranchAddress( ( name + ".Phi_MuonCleaned" ).c_str() , Phi_MuonCleaned ) ;
       root->SetBranchAddress( ( name + ".Energy_MuonCleaned" ).c_str() , Energy_MuonCleaned ) ;
+      root->SetBranchAddress( ( name + ".Unc" ).c_str() , Unc ) ;
+      root->SetBranchAddress( ( name + ".JesUnc" ).c_str() , JesUnc ) ;
+      root->SetBranchAddress( ( name + ".JERPt" ).c_str() , JERPt ) ;
+      root->SetBranchAddress( ( name + ".JERPhi" ).c_str() , JERPhi ) ;
+      root->SetBranchAddress( ( name + ".JERScale" ).c_str() , JERScale ) ;
       root->SetBranchAddress( ( name + ".PtUncleaned" ).c_str() , PtUncleaned ) ;
       root->SetBranchAddress( ( name + ".EtaUncleaned" ).c_str() , EtaUncleaned ) ;
       root->SetBranchAddress( ( name + ".PhiUncleaned" ).c_str() , PhiUncleaned ) ;
@@ -1142,56 +1086,6 @@ public:
       root->SetBranchAddress( ( name + ".SubjetHadronFlavour" ).c_str() , &SubjetHadronFlavour ) ;
       root->SetBranchAddress( ( name + ".JVAlpha" ).c_str() , JVAlpha ) ;
       root->SetBranchAddress( ( name + ".JVBeta" ).c_str() , JVBeta ) ;
-   }
-};
-class PairInfoBranches {
-public:
-   Int_t   Size;
-   Int_t   Index     [MAX_PAIRS] ;
-   Int_t   Type      [MAX_PAIRS] ; // type of pairing - 1: ll (regardless of charge and flavor!), 2: jj
-   Int_t   Obj1Index [MAX_PAIRS] ;
-   Int_t   Obj2Index [MAX_PAIRS] ;
-   Int_t   GenPdgID  [MAX_PAIRS] ;
-   Float_t Mass      [MAX_PAIRS] ;
-   Float_t Pt        [MAX_PAIRS] ;
-   Float_t Eta       [MAX_PAIRS] ;
-   Float_t Phi       [MAX_PAIRS] ;
-   Float_t GenMass   [MAX_PAIRS] ;
-   Float_t GenPt     [MAX_PAIRS] ;
-   Float_t GenEta    [MAX_PAIRS] ;
-   Float_t GenPhi    [MAX_PAIRS] ;
-
-   void RegisterTree( TTree* root , std::string name = "PairInfo" ) {
-      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
-      root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".Type" ).c_str(), Type, ( name + ".Type[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".Obj1Index" ).c_str(), Obj1Index, ( name + ".Obj1Index[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".Obj2Index" ).c_str(), Obj2Index, ( name + ".Obj2Index[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".GenPdgID" ).c_str(), GenPdgID, ( name + ".GenPdgID[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".Mass" ).c_str(), Mass, ( name + ".Mass[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".Phi" ).c_str(), Phi, ( name + ".Phi[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".GenMass" ).c_str(), GenMass, ( name + ".GenMass[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".GenPt" ).c_str(), GenPt, ( name + ".GenPt[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".GenEta" ).c_str(), GenEta, ( name + ".GenEta[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".GenPhi" ).c_str(), GenPhi, ( name + ".GenPhi[" + name + ".Size]/F" ).c_str() );
-   }
-   void Register( TTree* root , std::string name = "PairInfo" ) {
-      root->SetBranchAddress( ( name + ".Size" ).c_str() , &Size ) ;
-      root->SetBranchAddress( ( name + ".Index" ).c_str() , Index ) ;
-      root->SetBranchAddress( ( name + ".Type" ).c_str() , Type ) ;
-      root->SetBranchAddress( ( name + ".Obj1Index" ).c_str() , Obj1Index ) ;
-      root->SetBranchAddress( ( name + ".Obj2Index" ).c_str() , Obj2Index ) ;
-      root->SetBranchAddress( ( name + ".GenPdgID" ).c_str() , GenPdgID ) ;
-      root->SetBranchAddress( ( name + ".Mass" ).c_str() , Mass ) ;
-      root->SetBranchAddress( ( name + ".Pt" ).c_str() , Pt ) ;
-      root->SetBranchAddress( ( name + ".Eta" ).c_str() , Eta ) ;
-      root->SetBranchAddress( ( name + ".Phi" ).c_str() , Phi ) ;
-      root->SetBranchAddress( ( name + ".GenMass" ).c_str() , GenMass ) ;
-      root->SetBranchAddress( ( name + ".GenPt" ).c_str() , GenPt ) ;
-      root->SetBranchAddress( ( name + ".GenEta" ).c_str() , GenEta ) ;
-      root->SetBranchAddress( ( name + ".GenPhi" ).c_str() , GenPhi ) ;
    }
 };
 class GenInfoBranches {
@@ -1436,4 +1330,30 @@ public:
       root->SetBranchAddress( ( name + ".PdfID" ).c_str() , &PdfID ) ;
    }
 };
+class TrgInfoBranches {
+public:
+   Int_t Size;
+   Int_t   TriggerBit [MAX_TRGOBJS];
+   Float_t Pt         [MAX_TRGOBJS];
+   Float_t Eta        [MAX_TRGOBJS];
+   Float_t Phi        [MAX_TRGOBJS];
+   Float_t Energy     [MAX_TRGOBJS];
+   void RegisterTree( TTree* root , std::string name = "TrgInfo" ) {
+      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + ".Size/I" ).c_str() );
+      root->Branch( ( name + ".TriggerBit" ).c_str(), TriggerBit, ( name + ".TriggerBit[" + name + ".Size]/I" ).c_str() );
+      root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Phi" ).c_str(), Phi, ( name + ".Phi[" + name + ".Size]/F" ).c_str() );
+      root->Branch( ( name + ".Energy" ).c_str(), Energy, ( name + ".Energy[" + name + ".Size]/F" ).c_str() );
+   }
+   void Register( TTree* root , std::string name = "TrgInfo" ) {
+      root->SetBranchAddress( ( name + ".Size" ).c_str() , &Size ) ;
+      root->SetBranchAddress( ( name + ".TriggerBit" ).c_str() , TriggerBit ) ;
+      root->SetBranchAddress( ( name + ".Pt" ).c_str() , Pt ) ;
+      root->SetBranchAddress( ( name + ".Eta" ).c_str() , Eta ) ;
+      root->SetBranchAddress( ( name + ".Phi" ).c_str() , Phi ) ;
+      root->SetBranchAddress( ( name + ".Energy" ).c_str() , Energy ) ;
+   }
+};
 #endif // __BPRIMEKIT_FORMAT_H__
+

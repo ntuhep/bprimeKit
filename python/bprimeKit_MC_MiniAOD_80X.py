@@ -35,21 +35,30 @@ bprimeKit = cms.EDAnalyzer(
 
       #----- Event level objects -----
       rhoLabel      = cms.InputTag( 'fixedGridRhoFastjetAll' ),
-      hltLabel      = cms.InputTag( 'TriggerResults::HLT2' ),
       metLabel      = cms.InputTag( 'slimmedMETs' ),
       puppimetLabel = cms.InputTag( 'slimmedMETsPuppi'),
+      puInfoLabel = cms.InputTag( 'slimmedAddPileupInfo' ),
+
+      #----- Trigger object storage -----
+      hltLabel      = cms.InputTag( 'TriggerResults::HLT2' ),
+      trgobjLabel  = cms.InputTag( 'selectedPatTrigger'),
+      triggerList  = cms.vstring(
+            'HLT_IsoMu27',
+            'HLT_Ele27_eta2p1_WPLoose_Gsf',
+            'HLT_Mu45_eta2p1',
+            'HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50',
+            'HLT_Ele45_WPLoose_Gsf'
+      ),
 
       #----- Vertex related  ------------------------------------------------------------------------------
       offlinePVLabel   = cms.InputTag( 'offlineSlimmedPrimaryVertices' ),
       offlinePVBSLabel = cms.InputTag( 'offlinePrimaryVerticesWithBS' ),
       offlineBSLabel   = cms.InputTag( 'offlineBeamSpot' ),
-      conversionsLabel = cms.InputTag( 'reducedEgamma', 'reducedConversions' ),
 
       #----- MC Generation information --------------------------------------------------------------------
-      genLabel    = cms.InputTag( 'prunedGenParticles' ),
       genevtLabel = cms.InputTag( 'generator' ),
+      genLabel    = cms.InputTag( 'prunedGenParticles' ),
       gtdigiLabel = cms.InputTag( 'gtDigis' ),
-      puInfoLabel = cms.InputTag( 'slimmedAddPileupInfo' ),
       lheLabel    = cms.InputTag( 'externalLHEProducer' ),
       lheRunLabel = cms.InputTag( 'externalLHEProducer' ),
 
@@ -78,6 +87,7 @@ bprimeKit = cms.EDAnalyzer(
       eleMediumIdMap  = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium'  ) ,
       eleTightIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight'  ) ,
       eleHEEPIdMap    = cms.InputTag( 'egmGsfElectronIDs:heepElectronID-HEEPV60'  ) ,
+      conversionsLabel = cms.InputTag( 'reducedEgamma', 'reducedConversions' ),
 
       #----- Jet Information ------------------------------------------------------------------------------
       JetSettings = cms.VPSet(

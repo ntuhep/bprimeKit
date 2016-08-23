@@ -42,9 +42,9 @@
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 
 //----- Custom classes  --------------------------------------------------------
+#include "bpkFrameWork/bprimeKit/interface/TriggerBooking.h"
 #include "bpkFrameWork/bprimeKit/interface/Types.h"
 #include "bpkFrameWork/bprimeKit/interface/format.h"
-#include "bpkFrameWork/bprimeKit/interface/TriggerBooking.h"
 #include <map>
 #include <TTree.h>
 
@@ -73,24 +73,24 @@ public:
         const bool charged_only );
 
 private:
-   //--------------------------------------------------------------------------------------------------
+   //--------------------------------------------------------------------------
    //   Inheritance methods
-   //--------------------------------------------------------------------------------------------------
+   //--------------------------------------------------------------------------
    virtual void beginJob() ;
    virtual void analyze( const edm::Event&, const edm::EventSetup& ) ;
    virtual void endJob() ;
    virtual void beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup );
    virtual void endRun( const edm::Run&, const edm::EventSetup& );
 
-   //--------------------------------------------------------------------------------------------------
+   //--------------------------------------------------------------------------
    //   Helper Methods
-   //--------------------------------------------------------------------------------------------------
-   //----- Ntuplization functions  ------------------------------------------------
+   //--------------------------------------------------------------------------
+   //----- Ntuplization functions  --------------------------------------------
    void InitTree();
    void ClearTree();
    void InitJetEnergyCorrectors();
    void ClearJetEnergyCorrector();
-   void GetEventObjects ( const edm::Event&, const edm::EventSetup& );
+   void GetEventObjects ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillVertex      ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillPhoton      ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillLepton      ( const edm::Event&, const edm::EventSetup& ) ;
@@ -98,12 +98,9 @@ private:
    bool FillElectron    ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
    bool FillTau         ( const edm::Event&, const edm::EventSetup& , const size_t ) ;
    bool FillJet         ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillLepPair     ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillJetPair     ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillfGenInfo    ( const edm::Event&, const edm::EventSetup& ) ;
    bool FillEvent       ( const edm::Event&, const edm::EventSetup& ) ;
-   bool FillfPairInfo  ( const int , const int , math::XYZTLorentzVector& );
-   bool FillPairGen   ( const reco::GenParticle* , const reco::GenParticle* );
+   bool FillTrgObj      ( const edm::Event&, const edm::EventSetup& ) ;
 
    //----- RunInfo, See bprimeKit/plugins/bprimeKit_runInfo.cc  -------------------
    void GetRunObjects( const edm::Run&, const edm::EventSetup& );
@@ -124,48 +121,56 @@ private:
    TLorentzVector CleanAK4Jet( JetIterator );
    TLorentzVector CleanAK8Jet( JetIterator );
 
-   //--------------------------------------------------------------------------------------------------
-   //   Private data members
-   //--------------------------------------------------------------------------------------------------
+   // Helper function for trigger booking
+   int GetTriggerIdx( const std::string& ) const ;
 
-   //----- Ntuple interaction variables  --------------------------------------------------------------
-   TTree*             fBaseTree                      ;
-   EvtInfoBranches    fEvtInfo                       ;
-   GenInfoBranches    fGenInfo                       ;
+   //--------------------------------------------------------------------------
+   //   Private data members
+   //--------------------------------------------------------------------------
+
+   //----- Ntuple interaction variables  --------------------------------------
+   TTree*             fBaseTree                       ;
+   EvtInfoBranches    fEvtInfo                        ;
+   GenInfoBranches    fGenInfo                        ;
    LepInfoBranches    fLepInfo   [MAX_LEPCOLLECTIONS] ;
    PhotonInfoBranches fPhotonInfo[MAX_PHOCOLLECTIONS] ;
    JetInfoBranches    fJetInfo   [MAX_JETCOLLECTIONS] ;
    VertexInfoBranches fVertexInfo                     ;
-   PairInfoBranches   fPairInfo                       ;
+   TrgInfoBranches    fTrgInfo                        ;
+
 
    TTree* fRunTree ;
    RunInfoBranches fRunInfo;
 
-   //----- Event variable setup  ----------------------------------------------------------------------
-   edm::EDGetTokenT<double>              fRhoToken     ;
-   edm::EDGetTokenT<METList>             fMETToken     ;
-   edm::EDGetTokenT<METList>             fPuppiMETToken;
-   edm::EDGetTokenT<edm::TriggerResults> fHLTToken     ;
-   edm::EDGetTokenT<PileupList>          fPileupToken  ;
+   //----- Event variable setup  ----------------------------------------------
+   const edm::EDGetToken  fRhoToken     ;
+   const edm::EDGetToken  fMETToken     ;
+   const edm::EDGetToken  fPuppiMETToken;
+   const edm::EDGetToken  fPileupToken  ;
 
-   //----- Vertex variable setup  ---------------------------------------------------------------------
-   edm::EDGetTokenT<VertexList>      fPrimaryVertexToken            ;
-   edm::EDGetTokenT<VertexList>      fPrimVertex_withBeamSpot_Token ;
-   edm::EDGetTokenT<reco::BeamSpot>  fBeamspotToken                 ;
+   // Trigger related
+   const edm::EDGetToken           fHLTToken;
+   const std::vector<std::string>  fTrgList;
+   const edm::EDGetToken           fTriggerObjToken;
 
-   //----- Generation variables setup  ----------------------------------------------------------------
-   edm::EDGetTokenT<GenEventInfoProduct>            fGenEventToken    ;
-   edm::EDGetTokenT<GenList>                        fGenParticleToken ;
-   edm::EDGetTokenT<L1GlobalTriggerReadoutRecord>   fGenDigiToken     ;
-   edm::EDGetTokenT<LHEEventProduct>                fLHEToken         ;
-   edm::EDGetTokenT<LHERunInfoProduct>              fLHERunToken      ;
+   //----- Vertex variable setup  ---------------------------------------------
+   const edm::EDGetToken   fPrimaryVertexToken            ;
+   const edm::EDGetToken   fPrimVertex_withBeamSpot_Token ;
+   const edm::EDGetToken   fBeamspotToken                 ;
 
-   //----- Jet variable setup  ------------------------------------------------------------------------
+   //----- Generation variables setup  ----------------------------------------
+   const edm::EDGetTokenT<GenEventInfoProduct>            fGenEventToken    ;
+   const edm::EDGetTokenT<GenList>                        fGenParticleToken ;
+   const edm::EDGetTokenT<L1GlobalTriggerReadoutRecord>   fGenDigiToken     ;
+   const edm::EDGetTokenT<LHEEventProduct>                fLHEToken         ;
+   const edm::EDGetTokenT<LHERunInfoProduct>              fLHERunToken      ;
+
+   //----- Jet variable setup  ------------------------------------------------
    std::vector<std::string>                fJetCollections      ;
    std::vector<edm::EDGetTokenT<JetList>>  fJetTokens           ;
    std::vector<edm::EDGetTokenT<JetList>>  fSubjetTokens        ;
 
-   //----- Photon variable setup  ---------------------------------------------------------------------
+   //----- Photon variable setup  ---------------------------------------------
    std::vector<std::string>                   fPhotonCollections                 ;
    std::vector<edm::EDGetTokenT<PhotonList>>  fPhotonTokens                      ;
    edm::EDGetTokenT<edm::ValueMap<bool>>      fPhotonLooseIDToken                ;
@@ -179,7 +184,7 @@ private:
    EffectiveAreas                             fPhotonEffectiveArea_NeutralHadron ;
    EffectiveAreas                             fPhotonEffectiveArea_Photons       ;
 
-   //----- Lepton variable setup  ---------------------------------------------------------------------
+   //----- Lepton variable setup  ---------------------------------------------
    std::vector<std::string>                      fLeptonCollections     ;
    std::vector<edm::EDGetTokenT<MuonList>>       fMuonTokens            ;
    std::vector<edm::EDGetTokenT<ElectronList>>   fElectronTokens        ;
@@ -191,21 +196,6 @@ private:
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDTightToken  ;
    edm::EDGetTokenT<edm::ValueMap<bool>>         fElectronIDHEEPToken   ;
    edm::EDGetTokenT<reco::ConversionCollection>  fConversionsTag        ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined        ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep         ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep      ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined_CH     ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined_NH     ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_Combined_PH     ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep_CH      ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep_NH      ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithLep_PH      ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep_CH   ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep_NH   ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIso_WithoutLep_PH   ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIsoAlter_Combined   ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIsoAlter_WithLep    ;
-   // edm::EDGetTokenT<edm::ValueMap<double>>  fToken_PuppiMuIsoAlter_WithoutLep ;
 
 
    //------------------------------------------------------------------------------
@@ -221,6 +211,9 @@ private:
    TriggerHandle       fTrigger_H;
    BeamSpotHandle      fBeamSpot_H ;
    RecordHandle        fRecord_H;
+   TriggerObjHandle           fTriggerObjList_H;
+   std::map<std::string,int>  fHighLevelTriggerMap   ;
+   HLTConfigProvider          fHighLevelTriggerConfig;
 
    //----- fGenInfo Handles  -------------------------------------------------------
    GenHandle     fGenParticle_H;
@@ -241,28 +234,13 @@ private:
    std::vector<ElectronHandle>  fElectronList_Hs;
    std::vector<TauHandle>       fTauList_Hs;
    edm::Handle<pat::PackedCandidateCollection> fPackedCand_H;
-   edm::Handle<reco::ConversionCollection> fConversions_H;
-   edm::ESHandle<TransientTrackBuilder>    fTrackBuilder_H;
+   edm::Handle<reco::ConversionCollection>     fConversions_H;
+   edm::ESHandle<TransientTrackBuilder>        fTrackBuilder_H;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDVeto_H   ;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDLoose_H  ;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDMedium_H ;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDTight_H  ;
    edm::Handle<edm::ValueMap<bool>>  fElectronIDHEEP_H   ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_H        ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_H         ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_H      ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_CH_H     ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_NH_H     ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_Combined_PH_H     ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_CH_H      ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_NH_H      ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithLep_PH_H      ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_CH_H   ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_NH_H   ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIso_WithoutLep_PH_H   ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIsoAlter_Combined_H   ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIsoAlter_WithLep_H    ;
-   // edm::Handle<edm::ValueMap<bool>>  fPuppiMuIsoAlter_WithoutLep_H ;
 
    //----- Photon related Handles  ------------------------------------------------
    std::vector<PhotonHandle>         fPhotonList_Hs;
@@ -274,22 +252,15 @@ private:
    edm::Handle<edm::ValueMap<float>> fPhotonIsolation_Photon_H;
    edm::Handle<edm::ValueMap<float>> fPhotonSigmaIEtaIEta_H;
 
-   reco::Vertex                         fPrimaryVertex        ;
-   reco::Vertex                         fPrimaryVertex_BS     ;
-   reco::BeamSpot                       fBeamSpot       ;
-   std::map<std::string,int>            fHighLevelTriggerMap;
-   std::map<std::string,int>::iterator  fHighLevelTriggerMap_pr;
-   HLTConfigProvider                    fHighLevelTriggerConfig;
+   reco::Vertex    fPrimaryVertex   ;
+   reco::Vertex    fPrimaryVertex_BS;
+   reco::BeamSpot  fBeamSpot        ;
 
    //----- Helper variables for muon-jet cleaning  --------------------------------
-   std::vector<MuonIterator>   fMySelectedMuons          ;
-   FactorizedJetCorrector*     fJetCorrector             ;
-   FactorizedJetCorrector*     fJetCorrectorAK8          ;
-	JetCorrectionUncertainty*   fJetCorrectionUncertainty ;
+   std::vector<MuonIterator>   fMySelectedMuons;
 
-   //----- Configuration flags  -----------------------------------------------------------------------
-   int  fPairCollectionType ;
-   bool fSkipfGenInfo        ;
+   //----- Configuration flags  ---------------------------------------------------
+   bool fSkipfGenInfo       ;
    bool fIncludeL7          ;
    int  fDebug              ;
    bool fRunOnB2G           ;

@@ -44,27 +44,6 @@ bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
       fLepInfo[icoll].isPFTau          [fLepInfo[icoll].Size] = it_tau->isPFTau()          ; // YoungKyu 2012-10-16
 
       //----- Tau ID information  ----------------------------------------------------
-      fLepInfo[icoll].DiscriminationByDecayModeFinding            [fLepInfo[icoll].Size] = it_tau->tauID( "decayModeFinding" ) ;
-      fLepInfo[icoll].DiscriminationByDecayModeFindingNewDMs      [fLepInfo[icoll].Size] = it_tau->tauID( "decayModeFindingNewDMs" ) ;
-      fLepInfo[icoll].ByLooseCombinedIsolationDeltaBetaCorr3Hits  [fLepInfo[icoll].Size] = it_tau->tauID( "byLooseCombinedIsolationDeltaBetaCorr3Hits" ) ;
-      fLepInfo[icoll].ByMediumCombinedIsolationDeltaBetaCorr3Hits [fLepInfo[icoll].Size] = it_tau->tauID( "byMediumCombinedIsolationDeltaBetaCorr3Hits" ) ;
-      fLepInfo[icoll].ByTightCombinedIsolationDeltaBetaCorr3Hits  [fLepInfo[icoll].Size] = it_tau->tauID( "byTightCombinedIsolationDeltaBetaCorr3Hits" ) ;
-      fLepInfo[icoll].ByCombinedIsolationDeltaBetaCorrRaw3Hits    [fLepInfo[icoll].Size] = it_tau->tauID( "byCombinedIsolationDeltaBetaCorrRaw3Hits" ) ;
-      fLepInfo[icoll].ChargedIsoPtSum                             [fLepInfo[icoll].Size] = it_tau->tauID( "chargedIsoPtSum" ) ;
-      fLepInfo[icoll].NeutralIsoPtSum                             [fLepInfo[icoll].Size] = it_tau->tauID( "neutralIsoPtSum" ) ;
-      fLepInfo[icoll].PuCorrPtSum                                 [fLepInfo[icoll].Size] = it_tau->tauID( "puCorrPtSum" ) ;
-      fLepInfo[icoll].AgainstMuonLoose3                           [fLepInfo[icoll].Size] = it_tau->tauID( "againstMuonLoose3" ) ;
-      fLepInfo[icoll].AgainstMuonTight3                           [fLepInfo[icoll].Size] = it_tau->tauID( "againstMuonTight3" ) ;
-      fLepInfo[icoll].AgainstElectronVLooseMVA5                   [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronVLooseMVA6" ) ;
-      fLepInfo[icoll].AgainstElectronLooseMVA5                    [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronLooseMVA6" ) ;
-      fLepInfo[icoll].AgainstElectronMediumMVA5                   [fLepInfo[icoll].Size] = it_tau->tauID( "againstElectronMediumMVA6" ) ;
-      //fLepInfo[icoll].ByLoosePileupWeightedIsolation3Hits         [fLepInfo[icoll].Size] = it_tau->tauID( "byLoosePileupWeightedIsolation3Hits" ) ;
-      //fLepInfo[icoll].ByMediumPileupWeightedIsolation3Hits        [fLepInfo[icoll].Size] = it_tau->tauID( "byMediumPileupWeightedIsolation3Hits" ) ;
-      //fLepInfo[icoll].ByTightPileupWeightedIsolation3Hits         [fLepInfo[icoll].Size] = it_tau->tauID( "byTightPileupWeightedIsolation3Hits" ) ;
-      //fLepInfo[icoll].ByPileupWeightedIsolationRaw3Hits           [fLepInfo[icoll].Size] = it_tau->tauID( "byPileupWeightedIsolationRaw3Hits" ) ;
-      //fLepInfo[icoll].NeutralIsoPtSumWeight                       [fLepInfo[icoll].Size] = it_tau->tauID( "neutralIsoPtSumWeight" ) ;
-      //fLepInfo[icoll].FootprintCorrection                         [fLepInfo[icoll].Size] = it_tau->tauID( "footprintCorrection" ) ;
-      //fLepInfo[icoll].PhotonPtSumOutsideSignalCone                [fLepInfo[icoll].Size] = it_tau->tauID( "photonPtSumOutsideSignalCone" ) ;
 
       //----------------------------  Generation information  -----------------------------
       if ( !fIsData && !fSkipfGenInfo ) {
