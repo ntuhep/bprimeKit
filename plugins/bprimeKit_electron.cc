@@ -21,14 +21,14 @@
 
 using namespace std;
 
-//--------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 //   BprimeKit electron information methods
-//--------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& iSetup , const size_t icoll  )
 {
-   //--------------------------------------------------------------------------------------------------
+   //--------------------------------------------------------------------------
    //   Helper variables definition
-   //--------------------------------------------------------------------------------------------------
+   //--------------------------------------------------------------------------
    ElectronEffectiveArea::ElectronEffectiveAreaTarget EATarget;
 
    float dist_     ,dcot_     , rhoPrime, AEffR03  ;
@@ -40,22 +40,17 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       EATarget = ElectronEffectiveArea::kEleEAFall11MC;
    }
 
-   //--------------------------------------------------------------------------------------------------
+   //--------------------------------------------------------------------------
    //   Begin main loop
-   //--------------------------------------------------------------------------------------------------
+   //--------------------------------------------------------------------------
    ElectronIterator it_el = fElectronList_Hs[icoll]->begin();
    for( size_t i = 0 ; i < fElectronList_Hs[icoll]->size() ; ++i , ++it_el ) {
       if ( fLepInfo[icoll].Size >= MAX_LEPTONS ) {
          cerr << "ERROR: number of leptons exceeds the size of array." << endl;
          break;
       }
-      if( fDebug > 2 ) {
-         std::cerr << "\t\t[2]Size " << fLepInfo[icoll].Size
-              << " el et,eta,phi " << it_el->et() << "," << it_el->superCluster()->eta() << ","
-              << it_el->superCluster()->phi() << endl;
-      }
 
-      //----- Inserting generic information  -------------------------------------------------------------
+      //----- Inserting generic information  ----------------------------------
       fLepInfo[icoll].LeptonType        [fLepInfo[icoll].Size] = 11                                                     ;
       fLepInfo[icoll].Index             [fLepInfo[icoll].Size] = fLepInfo[icoll].Size                                   ;
       fLepInfo[icoll].isEcalDriven      [fLepInfo[icoll].Size] = it_el->ecalDrivenSeed()                                ;
@@ -133,7 +128,7 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
          fLepInfo[icoll].EgammaCutBasedEleIdTIGHT  [fLepInfo[icoll].Size] = (int)((*fElectronIDTight_H)[el]);
          // fLepInfo[icoll].EgammaCutBasedEleIdHEEP   [fLepInfo[icoll].Size] = (int)((*fElectronIDHEEP_H)[el]);
       } catch( cms::Exception& x ){
-         cout << "Wierd electron found!" << endl;
+         cout << "Weird electron found!" << endl;
       }
       fLepInfo[icoll].ChargedHadronIso            [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumChargedHadronPt ;
       fLepInfo[icoll].NeutralHadronIso            [fLepInfo[icoll].Size] = it_el->pfIsolationVariables().sumPhotonEt;
@@ -158,9 +153,8 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
       fLepInfo[icoll].IsoRhoCorrR03[fLepInfo[icoll].Size] = fLepInfo[icoll].ChargedHadronIsoR03[fLepInfo[icoll].Size] +
          max( (double)(fLepInfo[icoll].NeutralHadronIsoR03[fLepInfo[icoll].Size] + fLepInfo[icoll].PhotonIsoR03[fLepInfo[icoll].Size] - rhoPrime * AEffR03), 0.0 );
 
-      //----- Generation Monte Carlo information  --------------------------------------------------------
+      //----- Generation Monte Carlo information  -----------------------------
       if ( !fIsData && !fSkipfGenInfo ) {
-         if( fDebug > 3 ) { cout << "\t\t\t[3]Getting Electron MC information\n"; }
          const reco::GenParticle* gen = it_el->genLepton();
          if ( gen != NULL ) {
             fLepInfo[icoll].GenPt        [fLepInfo[icoll].Size] = gen->pt();
@@ -169,23 +163,20 @@ bool bprimeKit::FillElectron( const edm::Event& iEvent , const edm::EventSetup& 
             fLepInfo[icoll].GenPdgID     [fLepInfo[icoll].Size] = gen->pdgId();
             fLepInfo[icoll].GenMCTag     [fLepInfo[icoll].Size] = GetGenMCTag( gen ) ;
          }
-         if( fDebug > 3 ) { cout << "\t\t\t[3]Get Electron Gen Particle\n"; }
          if ( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] == 0 && fGenParticle_H.isValid() ) {
             for( GenIterator it_gen = fGenParticle_H->begin(); it_gen != fGenParticle_H->end() ; it_gen++ ) {
                if( fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] != 0 ) break;
                fLepInfo[icoll].GenMCTag[fLepInfo[icoll].Size] = GetGenMCTag( it_gen , it_el )  ;
             }
          }
-         if( fDebug > 3 ) { cout << "\t\t\t[3]Done getting MC information\n"; }
       }
 
 
-      //----- Conversion rejection information  ----------------------------------------------------------
+      //----- Conversion rejection information  -------------------------------
       fLepInfo[icoll].Eldist        [fLepInfo[icoll].Size] = it_el->convDist();
       fLepInfo[icoll].Elconvradius  [fLepInfo[icoll].Size] = it_el->convRadius();
       fLepInfo[icoll].Eldcot        [fLepInfo[icoll].Size] = it_el->convDcot();
 
-      fLepInfo[icoll].CandRef[fLepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_el );
       fLepInfo[icoll].Size++;
    }
    return true;

@@ -56,7 +56,6 @@ bool bprimeKit::FillTau( const edm::Event& iEvent , const edm::EventSetup& iSetu
             fLepInfo[icoll].GenPdgID     [fLepInfo[icoll].Size] = gen->pdgId();
          }
       }
-      fLepInfo[icoll].CandRef[fLepInfo[icoll].Size] = ( reco::Candidate* ) & ( *it_tau );
       fLepInfo[icoll].Size++;
    }
 
