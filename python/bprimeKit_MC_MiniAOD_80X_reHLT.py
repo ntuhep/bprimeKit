@@ -35,7 +35,7 @@ bprimeKit = cms.EDAnalyzer(
 
       #----- Event level objects -----
       rhoLabel      = cms.InputTag( 'fixedGridRhoFastjetAll' ),
-      hltLabel      = cms.InputTag( 'TriggerResults::HLT' ),
+      hltLabel      = cms.InputTag( 'TriggerResults::HLT2' ),
       metLabel      = cms.InputTag( 'slimmedMETs' ),
       puppimetLabel = cms.InputTag( 'slimmedMETsPuppi'),
 
