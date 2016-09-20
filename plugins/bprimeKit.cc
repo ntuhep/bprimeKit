@@ -165,15 +165,12 @@ bprimeKit::endRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
 void
 bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   cout << "Getting Event objects " << endl;
    GetEventObjects( iEvent, iSetup );
    fIsData = iEvent.isRealData();// Add by Jacky
 
-   cout << "Getting GenInfo objects " << endl;
    memset( &fGenInfo, 0x00, sizeof( fGenInfo ) );
    memset( &fEvtInfo, 0x00, sizeof( fEvtInfo ) );
    FillfGenInfo( iEvent, iSetup );
-   cout << "Getting EventInfo objects " << endl;
    FillEvent( iEvent, iSetup );
 
    FillVertex( iEvent, iSetup );

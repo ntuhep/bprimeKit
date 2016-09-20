@@ -107,7 +107,7 @@ public:
    Int_t L1 [128];
    Int_t TT [64];
 
-   void RegisterTree( TTree* root, const std::string& name = "EvtInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "EvtInfo" ) {
       root->Branch( ( name + ".RunNo" ).c_str(), &RunNo );
       root->Branch( ( name + ".EvtNo" ).c_str(), &EvtNo );
       root->Branch( ( name + ".BxNo" ).c_str(), &BxNo );
@@ -305,7 +305,7 @@ public:
    Int_t LHESystematicId [MAX_LHE];
    Float_t LHESystematicWeights [MAX_LHE];
 
-   void RegisterTree( TTree* root, const std::string& name = "GenInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "GenInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size );
       root->Branch( ( name + ".Weight" ).c_str(), &Weight );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
@@ -488,7 +488,7 @@ public:
    Float_t JVAlpha [MAX_JETS];
    Float_t JVBeta [MAX_JETS];
 
-   void RegisterTree( TTree* root, const std::string& name = "JetInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "JetInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".NTracks" ).c_str(), NTracks, ( name + ".NTracks[" + name + ".Size]/I" ).c_str() );
@@ -862,7 +862,7 @@ public:
    Int_t GenPdgID [MAX_LEPTONS];
    Int_t GenMCTag [MAX_LEPTONS];
 
-   void RegisterTree( TTree* root, const std::string& name = "LepInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "LepInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".LeptonType" ).c_str(), LeptonType, ( name + ".LeptonType[" + name + ".Size]/I" ).c_str() );
@@ -1176,7 +1176,7 @@ public:
    Float_t GenPhi [MAX_PHOTONS];
    Int_t GenPdgID [MAX_PHOTONS];
 
-   void RegisterTree( TTree* root, const std::string& name = "PhotonInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "PhotonInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
@@ -1248,7 +1248,7 @@ public:
    Float_t Phi [MAX_TRGOBJS];
    Float_t Energy [MAX_TRGOBJS];
 
-   void RegisterTree( TTree* root, const std::string& name = "TrgInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "TrgInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size );
       root->Branch( ( name + ".TriggerBit" ).c_str(), TriggerBit, ( name + ".TriggerBit[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
@@ -1282,7 +1282,7 @@ public:
    Float_t z [MAX_Vertices];
    Float_t Rho [MAX_Vertices];
 
-   void RegisterTree( TTree* root, const std::string& name = "VertexInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "VertexInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size );
       root->Branch( ( name + ".isValid" ).c_str(), isValid, ( name + ".isValid[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".isFake" ).c_str(), isFake, ( name + ".isFake[" + name + ".Size]/O" ).c_str() );
@@ -1317,7 +1317,7 @@ class RunInfoBranches {
 public:
    Int_t PdfID;
 
-   void RegisterTree( TTree* root, const std::string& name = "RunInfo " ) {
+   void RegisterTree( TTree* root, const std::string& name = "RunInfo" ) {
       root->Branch( ( name + ".PdfID" ).c_str(), &PdfID );
    }
 

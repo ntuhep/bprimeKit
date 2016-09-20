@@ -45,7 +45,9 @@ bprimeKit = cms.EDAnalyzer(
             'HLT_Ele27_eta2p1_WPLoose_Gsf',
             'HLT_Mu45_eta2p1',
             'HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50',
-            'HLT_Ele45_WPLoose_Gsf'
+            'HLT_Ele45_WPLoose_Gsf',
+            'HLT_Mu50',
+            'HLT_TkMu50'
       ),
 
       #----- Vertex related  ------------------------------------------------------------------------------

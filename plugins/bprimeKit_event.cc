@@ -14,7 +14,6 @@ using namespace std;
 bool
 bprimeKit::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   cout << "Filling Event ID information " << endl;
    fEvtInfo.RunNo    = iEvent.id().run();
    fEvtInfo.EvtNo    = iEvent.id().event();
    fEvtInfo.McFlag   = iEvent.isRealData() ? 0 : 1;
@@ -25,7 +24,6 @@ bprimeKit::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSetup )
    fEvtInfo.Rho      = *fRho_H;
 
    // ----- Pile up information  -----------------------------------------------------------------------
-   cout << "Filling Pileup information" << endl;
    if( fPileup_H.isValid() ){ // Need to shutdown for Data
       for( auto PVI = fPileup_H->begin(); PVI != fPileup_H->end(); ++PVI ){
          fEvtInfo.nPU[fEvtInfo.nBX]    = PVI->getPU_NumInteractions();
@@ -35,7 +33,6 @@ bprimeKit::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       }
    }
 
-   cout << "Filling beamspot information" << endl;
    const auto& fBeamSpot = *( fBeamSpot_H.product() );
    fEvtInfo.BeamSpotX    = fBeamSpot.position().x();
    fEvtInfo.BeamSpotY    = fBeamSpot.position().y();
@@ -43,7 +40,6 @@ bprimeKit::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 
    // ----- Getting Monte Carlo mode  ------------------------------------------------------------------
    // See code in bprimeKit_genInfo.cc
-   cout << "Filling MC mode information information " << endl;
    int mclep_count[2] = {0, 0};
    if( fEvtInfo.McWMode[0] == 1 || fEvtInfo.McWMode[0] == 2 ){ mclep_count[1]++; }
    if( fEvtInfo.McWMode[1] == 1 || fEvtInfo.McWMode[1] == 2 ){ mclep_count[0]++; }
@@ -62,7 +58,6 @@ bprimeKit::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSetup )
    if( mclep_count[0] == 2 && mclep_count[1] == 2 ){ fEvtInfo.McSigTag = 4; }
 
    // ----- Getting missing momentum information  --------------------------------
-   cout << "Filling MET information " << endl;
 
    for( auto it_met = fMET_H->begin(); it_met != fMET_H->end(); it_met++ ){
       fEvtInfo.PFMET             = it_met->pt();
@@ -107,7 +102,6 @@ bprimeKit::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSetup )
    }
 
    // ----- Generation information  --------------------------------------------
-   cout << "Filling PDF information information " << endl;
    if( fGenEvent_H.isValid() && fGenEvent_H->hasPDF() ){
       fEvtInfo.PDFid1   = fGenEvent_H->pdf()->id.first;
       fEvtInfo.PDFid2   = fGenEvent_H->pdf()->id.second;
@@ -119,7 +113,6 @@ bprimeKit::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSetup )
    }
 
    // ----- Level 1 trigger and technical trigger bits  ------------------------
-   cout << "Filling L1 Trigger information " << endl;
    if( fRecord_H.isValid() ){
       DecisionWord dWord = fRecord_H->decisionWord();
       if( !dWord.empty() ){// if board not there this is zero

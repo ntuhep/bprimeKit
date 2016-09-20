@@ -13,9 +13,6 @@ using namespace std;
 bool
 bprimeKit::FillTrgObj( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   // Initializing
-   memset( &fTrgInfo, 0x00, sizeof( fTrgInfo ) );
-
    const edm::TriggerNames& TrgNames = iEvent.triggerNames( *fTrigger_H );
 
    // Getting trigger table
@@ -47,6 +44,11 @@ bprimeKit::FillTrgObj( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       fEvtInfo.HLTPrescaleFactor[i] = fHighLevelTriggerConfig.prescaleValue( 0, name );
       fEvtInfo.HLTName2enum[i]      = GetTriggerIdx( name );
    }
+
+
+   // Trigger object part
+   // Initializing
+   memset( &fTrgInfo, 0x00, sizeof( fTrgInfo ) );
 
    for( auto obj : *fTriggerObjList_H ){
       obj.unpackPathNames( TrgNames );
