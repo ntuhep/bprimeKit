@@ -2,5 +2,7 @@
 <use name="DataFormats/FWLite"/>
 <use name="DataFormats/PatCandidates"/>
 
+<use name="boost"/>
+<use name="boost_program_options"/>
 
 <bin name="DumpTriggerObjects" file="DumpTriggerObjects.cc"/>
