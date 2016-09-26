@@ -42,14 +42,35 @@ bprimeKit = cms.EDAnalyzer(
       #----- Trigger object storage -----
       hltLabel      = cms.InputTag( 'TriggerResults::HLT2' ),
       trgobjLabel  = cms.InputTag( 'selectedPatTrigger'),
-      triggerList  = cms.vstring(
-            'HLT_IsoMu27',
-            'HLT_Ele27_eta2p1_WPLoose_Gsf',
-            'HLT_Mu45_eta2p1',
-            'HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50',
-            'HLT_Ele45_WPLoose_Gsf',
-            'HLT_Mu50',
-            'HLT_TkMu50'
+      triggerlist  = cms.VPSet(
+        cms.PSet(
+            HLTPath=cms.string('HLT_IsoMu27_v*'),
+            HLTFilter=cms.string("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09"),
+            ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele27_eta2p1_WPLoose_Gsf_v*'),
+            HLTFilter=cms.string('hltEle27erWPLooseGsfTrackIsoFilter')
+            ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Mu45_eta2p1_v*'),
+            HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered45e2p1Q')
+            ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v*'),
+            HLTFilter=cms.string('hltEle45CaloIdVTGsfTrkIdTCentralPFJet200EleCleaned')
+             ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele45_WPLoose_Gsf_v*'),
+            HLTFilter=cms.string('*')
+            ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Mu50_v*'),
+            HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q')
+            ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_TkMu50_v*'),
+            HLTFilter=cms.string('hltL3fL1sMu25f0TkFiltered50Q')
+             ),
       ),
 
       #----- Vertex related  ------------------------------------------------------------------------------

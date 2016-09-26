@@ -7,8 +7,19 @@
 *******************************************************************************/
 #include "DataFormats/HLTReco/interface/TriggerTypeDefs.h"
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+#include <regex>
 using namespace std;
 
+/*******************************************************************************
+*   Prototyping helper functions
+*******************************************************************************/
+bool TrigObjMatchPathFilter(
+   const pat::TriggerObjectStandAlone&,
+   const std::string& pathglob,
+   std::string&       matchedpath,
+   const std::string& filterglob,
+   std::string&       matchedfilter
+   );
 
 bool
 bprimeKit::FillTrgObj( const edm::Event& iEvent, const edm::EventSetup& iSetup )
@@ -45,6 +56,11 @@ bprimeKit::FillTrgObj( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       fEvtInfo.HLTName2enum[i]      = GetTriggerIdx( name );
    }
 
+   bool changedConfig = false;
+   if( !fHighLevelTriggerConfig.init( iEvent.getRun(), iSetup, "HLT", changedConfig ) ){
+      std::cout << "Initialization of HLTConfigProvider failed!!" << std::endl;
+      return 1;
+   }
 
    // Trigger object part
    // Initializing
@@ -53,18 +69,23 @@ bprimeKit::FillTrgObj( const edm::Event& iEvent, const edm::EventSetup& iSetup )
    for( auto obj : *fTriggerObjList_H ){
       obj.unpackPathNames( TrgNames );
 
-      for( const auto& path : fTrgList ){
-         for( const auto objpath : obj.pathNames() ){
-            if( fTrgInfo.Size >= 64 ){ break; }
-            if( objpath.find( path ) == string::npos ){ continue; }
-            if( !obj.hasPathName( objpath ) ){ continue; }
-            fTrgInfo.Pt     [fTrgInfo.Size]    = obj.pt();
-            fTrgInfo.Eta    [fTrgInfo.Size]    = obj.eta();
-            fTrgInfo.Phi    [fTrgInfo.Size]    = obj.phi();
-            fTrgInfo.Energy [fTrgInfo.Size]    = obj.energy();
-            fTrgInfo.TriggerBit[fTrgInfo.Size] = GetTriggerIdx( objpath );
-            fTrgInfo.Size++;
-         }
+      for( const auto& hltpair : fTrgList ){
+         if( fTrgInfo.Size >= 64 ){ break; }
+
+         std::string matchedpath   = "";
+         std::string matchedfilter = "";
+         bool matchresult          = TrigObjMatchPathFilter(
+            obj,
+            hltpair.first, matchedpath,
+            hltpair.second, matchedfilter
+            );
+         if( !matchresult ){ continue; }
+         fTrgInfo.Pt     [fTrgInfo.Size]    = obj.pt();
+         fTrgInfo.Eta    [fTrgInfo.Size]    = obj.eta();
+         fTrgInfo.Phi    [fTrgInfo.Size]    = obj.phi();
+         fTrgInfo.Energy [fTrgInfo.Size]    = obj.energy();
+         fTrgInfo.TriggerBit[fTrgInfo.Size] = GetTriggerIdx( matchedpath );
+         fTrgInfo.Size++;
       }
    }
 
@@ -80,4 +101,63 @@ bprimeKit::GetTriggerIdx( const string& triggername ) const
    } else {
       return -1;
    }
+}
+
+
+/*******************************************************************************
+*   Helper functions implementations
+*******************************************************************************/
+string GlobToRegex( const std::string& );
+
+bool
+TrigObjMatchPathFilter(
+   const pat::TriggerObjectStandAlone& obj,
+   const std::string&                  path,
+   std::string&                        matchedpath,
+   const std::string&                  filter,
+   std::string&                        matchedfilter
+   )
+{
+   bool hasmatchpath   = false;
+   bool hasmatchfilter = false;
+
+   const std::regex pathreg( GlobToRegex( path ) );
+
+   for( const auto& objpath : obj.pathNames() ){
+      if( std::regex_match( objpath, pathreg ) && obj.hasPathName( objpath ) ){
+         hasmatchpath = true;
+         matchedpath  = objpath;
+         break;
+      }
+   }
+
+   const std::regex filterreg( GlobToRegex( filter ) );
+
+   for( const auto& objfilter : obj.filterLabels() ){
+      if( std::regex_match( objfilter, filterreg ) && obj.hasFilterLabel( objfilter ) ){
+         hasmatchfilter = true;
+         matchedfilter  = objfilter;
+         break;
+      }
+   }
+
+   return hasmatchpath && hasmatchfilter;
+}
+
+
+
+
+string
+GlobToRegex( const std::string& query )
+{
+   static const std::regex starmatch( "\\*" );
+   static const std::string starrep( ".*" );
+
+   static const std::regex qmmatch( "\\?" );
+   static const std::string qmrep( "." );
+
+   string ans = query;
+   ans = std::regex_replace( ans, starmatch, starrep );
+   ans = std::regex_replace( ans, qmmatch, qmrep );
+   return ans;
 }

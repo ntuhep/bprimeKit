@@ -26,31 +26,34 @@ using edm::InputTag;
 typedef std::vector<edm::InputTag> TagList;
 typedef std::vector<std::string>   StrList;
 
+#define GETTOKEN( PARAMSET, TYPE, TAG ) \
+   ( consumes<TYPE>( PARAMSET.getParameter<edm::InputTag>( TAG ) ) )
+
 // ------------------------------------------------------------------------------
 //   bprimeKit methods: constructor and destructor
 // ------------------------------------------------------------------------------
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    // Event related information
-   fRhoToken( consumes<double>( iConfig.getParameter<InputTag>( "rhoLabel" ) ) ),
-   fMETToken( consumes<METList>( iConfig.getParameter<InputTag>( "metLabel" ) ) ),
-   fPuppiMETToken( consumes<METList>( iConfig.getParameter<InputTag>( "puppimetLabel" ) ) ),
-   fPileupToken( consumes<PileupList>( iConfig.getParameter<InputTag>( "puInfoLabel" ) ) ),
+   fRhoToken( GETTOKEN( iConfig, double, "rhoLabel" ) ),
+   fMETToken( GETTOKEN( iConfig, METList, "metLabel" ) ),
+   fPuppiMETToken( GETTOKEN( iConfig, METList, "puppimetLabel" ) ),
+   fPileupToken( GETTOKEN( iConfig, PileupList, "puInfoLabel" ) ),
 
-// Trigger related information
-   fHLTToken( consumes<edm::TriggerResults>( iConfig.getParameter<InputTag>( "hltLabel" ) ) ),
-   fTrgList( iConfig.getParameter<StrList>( "triggerList" ) ),
-   fTriggerObjToken( consumes<pat::TriggerObjectStandAloneCollection>( iConfig.getParameter<InputTag>( "trgobjLabel" ) ) ),
+   // Trigger related information
+   fHLTToken( GETTOKEN( iConfig, edm::TriggerResults, "hltLabel" ) ),
+   fTriggerObjToken( GETTOKEN( iConfig, pat::TriggerObjectStandAloneCollection, "trgobjLabel" ) ),
+   fTrgList( GetTrgList( iConfig )),
 
 // Vertex related
-   fPrimaryVertexToken( consumes<VertexList>( iConfig.getParameter<InputTag>( "offlinePVLabel" ) ) ),
-   fPrimVertex_withBeamSpot_Token( consumes<VertexList>( iConfig.getParameter<InputTag>( "offlinePVBSLabel" ) ) ),
-   fBeamspotToken( consumes<reco::BeamSpot>( iConfig.getParameter<InputTag>( "offlineBSLabel" ) ) ),
+   fPrimaryVertexToken( GETTOKEN( iConfig, VertexList, "offlinePVLabel" ) ),
+   fPrimVertex_withBeamSpot_Token( GETTOKEN( iConfig, VertexList,  "offlinePVBSLabel" ) ),
+   fBeamspotToken( GETTOKEN( iConfig, reco::BeamSpot, "offlineBSLabel" ) ),
 
 // Gen Info related
-   fGenEventToken( consumes<GenEventInfoProduct>( iConfig.getParameter<InputTag>( "genevtLabel" ) ) ),
-   fGenParticleToken( consumes<GenList>( iConfig.getParameter<InputTag>( "genLabel" ) ) ),
-   fGenDigiToken( consumes<L1GlobalTriggerReadoutRecord>( iConfig.getParameter<InputTag>( "gtdigiLabel" ) ) ),
-   fLHEToken( consumes<LHEEventProduct>( iConfig.getParameter<InputTag>( "lheLabel" ) ) ),
+   fGenEventToken( GETTOKEN( iConfig, GenEventInfoProduct, "genevtLabel" ) ),
+   fGenParticleToken( GETTOKEN( iConfig, GenList, "genLabel" ) ),
+   fGenDigiToken( GETTOKEN( iConfig, L1GlobalTriggerReadoutRecord, "gtdigiLabel" ) ),
+   fLHEToken( GETTOKEN( iConfig, LHEEventProduct, "lheLabel" ) ),
    fLHERunToken( consumes<LHERunInfoProduct, edm::InRun>( iConfig.getParameter<InputTag>( "lheRunLabel" ) ) ),
 
    fPhotonEffectiveArea_ChargeHadron( ( iConfig.getParameter<edm::FileInPath>( "effAreaChHadFile" ) ).fullPath() ),
@@ -83,13 +86,13 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
       fTauTokens.push_back( consumes<TauList>( tautag_list[i] ) );
    }
 
-   fPackedCandToken       = consumes<pat::PackedCandidateCollection>( iConfig.getParameter<InputTag>( "packedCand" ) );
-   fElectronIDVetoToken   = consumes<edm::ValueMap<bool> >( iConfig.getParameter<InputTag>( "eleVetoIdMap"    ) );
-   fElectronIDLooseToken  = consumes<edm::ValueMap<bool> >( iConfig.getParameter<InputTag>( "eleLooseIdMap"   ) );
-   fElectronIDMediumToken = consumes<edm::ValueMap<bool> >( iConfig.getParameter<InputTag>( "eleMediumIdMap"  ) );
-   fElectronIDTightToken  = consumes<edm::ValueMap<bool> >( iConfig.getParameter<InputTag>( "eleTightIdMap"   ) );
-   fElectronIDHEEPToken   = consumes<edm::ValueMap<bool> >( iConfig.getParameter<InputTag>( "eleHEEPIdMap"    ) );
-   fConversionsTag        = consumes<reco::ConversionCollection>( iConfig.getParameter<InputTag>( "conversionsLabel" ) );
+   fPackedCandToken       = GETTOKEN( iConfig, pat::PackedCandidateCollection, "packedCand" );
+   fElectronIDVetoToken   = GETTOKEN( iConfig, edm::ValueMap<bool>,  "eleVetoIdMap"    );
+   fElectronIDLooseToken  = GETTOKEN( iConfig, edm::ValueMap<bool>,  "eleLooseIdMap"   );
+   fElectronIDMediumToken = GETTOKEN( iConfig, edm::ValueMap<bool>,  "eleMediumIdMap"  );
+   fElectronIDTightToken  = GETTOKEN( iConfig, edm::ValueMap<bool>,  "eleTightIdMap"   );
+   fElectronIDHEEPToken   = GETTOKEN( iConfig, edm::ValueMap<bool>,  "eleHEEPIdMap"    );
+   fConversionsTag        = GETTOKEN( iConfig, reco::ConversionCollection,  "conversionsLabel" );
 
    // ----- Photon related  ----------------------------------------------------
    fPhotonCollections     = iConfig.getParameter<StrList>( "PhoCollections" );   // branch names
@@ -99,13 +102,13 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
       fPhotonTokens.push_back( consumes<PhotonList>( photag ) );
    }
 
-   fPhotonLooseIDToken            = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "phoLooseIdMap"             ) );
-   fPhotonMediumIDToken           = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "phoMediumIdMap"            ) );
-   fPhotonTightIDToken            = consumes<edm::ValueMap<bool> >( iConfig.getParameter<edm::InputTag>( "phoTightIdMap"             ) );
-   fPhotonIsolation_Charged_Token = consumes<edm::ValueMap<float> >( iConfig.getParameter<InputTag>( "phoChargedIsolation"       ) );
-   fPhotonIsolation_Neutral_Token = consumes<edm::ValueMap<float> >( iConfig.getParameter<InputTag>( "phoNeutralHadronIsolation" ) );
-   fPhotonIsolation_Photon_Token  = consumes<edm::ValueMap<float> >( iConfig.getParameter<InputTag>( "phoPhotonIsolation"        ) );
-   fPhotonSignaIEtaIEtaToken      = consumes<edm::ValueMap<float> >( iConfig.getParameter<InputTag>( "full5x5SigmaIEtaIEtaMap"   ) );
+   fPhotonLooseIDToken            = GETTOKEN( iConfig, edm::ValueMap<bool>,  "phoLooseIdMap"             );
+   fPhotonMediumIDToken           = GETTOKEN( iConfig, edm::ValueMap<bool>,  "phoMediumIdMap"            );
+   fPhotonTightIDToken            = GETTOKEN( iConfig, edm::ValueMap<bool>,  "phoTightIdMap"             );
+   fPhotonIsolation_Charged_Token = GETTOKEN( iConfig, edm::ValueMap<float>, "phoChargedIsolation"       );
+   fPhotonIsolation_Neutral_Token = GETTOKEN( iConfig, edm::ValueMap<float>, "phoNeutralHadronIsolation" );
+   fPhotonIsolation_Photon_Token  = GETTOKEN( iConfig, edm::ValueMap<float>, "phoPhotonIsolation"        );
+   fPhotonSignaIEtaIEtaToken      = GETTOKEN( iConfig, edm::ValueMap<float>, "full5x5SigmaIEtaIEtaMap"   );
 
    for( int i = 0; i < N_TRIGGER_BOOKINGS; i++ ){
       fHighLevelTriggerMap.insert( pair<std::string, int>( TriggerBooking[i], i ) );
@@ -281,5 +284,21 @@ bprimeKit::GetEventObjects( const edm::Event& iEvent, const edm::EventSetup& iSe
    iEvent.getByToken( fPhotonIsolation_Photon_Token,  fPhotonIsolation_Photon_H  );
    iEvent.getByToken( fPhotonSignaIEtaIEtaToken,      fPhotonSigmaIEtaIEta_H     );
 }
+
+/*******************************************************************************
+*   Helper functions for getting Trigger Object list
+*******************************************************************************/
+std::vector<std::pair<std::string, std::string>> bprimeKit::GetTrgList( const edm::ParameterSet& iConfig )
+{
+   std::vector<std::pair<std::string,std::string>> ans;
+   for( const auto& paramset : iConfig.getParameter<std::vector<edm::ParameterSet>>("triggerlist") ){
+      std::pair<std::string, std::string>  mypair;
+      mypair.first = paramset.getParameter<std::string>( "HLTPath" );
+      mypair.second = paramset.getParameter<std::string>( "HLTFilter" );
+      ans.push_back( mypair );
+   }
+   return ans;
+}
+
 
 DEFINE_FWK_MODULE( bprimeKit );

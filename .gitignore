@@ -1,31 +1,26 @@
-# General C++ exclusion 
+# General C++ exclusion
 *.o
 *.so
 
-# General Python exclusion 
+# General Python exclusion
 *.pyc
 
-# Swap files 
-*.swp 
+# Swap files
+*.swp
 
 # General data file exclusions
-*.txt 
+*.txt
 *.root
 *.log
 log*
 
-# Specific file exclusion 
+# Specific file exclusion
 # [relative/path/to/file]
 
-test/Production_MC_CMSSW74X_MiniAOD/*/*
-test/Production_MC_CMSSW74X_MiniAOD/MC_dataset_*
-test/Production_Data_CMSSW74X_MiniAOD/*/*
-test/Production_Data_CMSSW74X_MiniAOD/Data_dataset_*
+test/hlt.py
 python/__init__.py
 interface/makeHeaders/format.h
 interface/makeHeaders/TriggerBooking.h
 
-# Specific file inclusion 
+# Specific file inclusion
 # ![relative/path/to/file]
-
-

@@ -14,13 +14,28 @@ void checkoutput()
    TChain* root = new TChain( "bprimeKit/root" );
    root->Add( "bpk_ntuple.root" );
 
+   TrgInfoBranches TrgInfo ; TrgInfo.Register( root );
    EvtInfoBranches EvtInfo ; EvtInfo.Register( root );
 
    for( int entry = 0; entry < root->GetEntries() ; ++entry ) { //Loop over all events
       root->GetEntry( entry );
 
-      for( int i = 0 ; i < N_TRIGGER_BOOKINGS ; ++i ){
-         cout << TriggerBooking[i] << " " << (int)EvtInfo.TrgBook[i] << endl;
+      cout << "\nentry = "<< entry << endl;
+
+      int ntr = 0;
+      for( int i = 0; i < N_TRIGGER_BOOKINGS; i++){
+         if( EvtInfo.TrgBook[i] == 1 && TriggerBooking[i].find("HLT_IsoMu27") != std::string::npos ) {
+            cout<<"Fired: TriggerBitNumber = "<< i<<",\t" << TriggerBooking[i] << endl;
+            ntr++;
+         }
+      }
+
+      cout << " Fired HLT paths  = " << ntr << endl;
+      cout << " TrgInfo.Size  = " << TrgInfo.Size << endl;
+
+      for( int j = 0 ; j < TrgInfo.Size ; ++j ){
+         cout << TrgInfo.TriggerBit[j] << " " << TriggerBooking[ TrgInfo.TriggerBit[j]] << "|"
+              << TrgInfo.Pt[j] << " " << TrgInfo.Eta[j] << " " << TrgInfo.Phi[j] << endl;
       }
    }
 
