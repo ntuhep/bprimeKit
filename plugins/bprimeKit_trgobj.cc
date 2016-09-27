@@ -85,6 +85,11 @@ bprimeKit::FillTrgObj( const edm::Event& iEvent, const edm::EventSetup& iSetup )
          fTrgInfo.Phi    [fTrgInfo.Size]    = obj.phi();
          fTrgInfo.Energy [fTrgInfo.Size]    = obj.energy();
          fTrgInfo.TriggerBit[fTrgInfo.Size] = GetTriggerIdx( matchedpath );
+         for( const auto& filterid : obj.filterIds() ){
+            fTrgInfo.FilterLabel[fTrgInfo.Size] *= 100;
+            fTrgInfo.FilterLabel[fTrgInfo.Size] += filterid;
+         }
+
          fTrgInfo.Size++;
       }
    }

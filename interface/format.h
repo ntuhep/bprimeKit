@@ -1243,6 +1243,7 @@ class TrgInfoBranches {
 public:
    Int_t Size;
    Int_t TriggerBit [MAX_TRGOBJS];
+   Int_t FilterLabel [MAX_TRGOBJS];
    Float_t Pt [MAX_TRGOBJS];
    Float_t Eta [MAX_TRGOBJS];
    Float_t Phi [MAX_TRGOBJS];
@@ -1251,6 +1252,7 @@ public:
    void RegisterTree( TTree* root, const std::string& name = "TrgInfo" ) {
       root->Branch( ( name + ".Size" ).c_str(), &Size );
       root->Branch( ( name + ".TriggerBit" ).c_str(), TriggerBit, ( name + ".TriggerBit[" + name + ".Size]/I" ).c_str() );
+      root->Branch( ( name + ".FilterLabel" ).c_str(), FilterLabel, ( name + ".FilterLabel[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Phi" ).c_str(), Phi, ( name + ".Phi[" + name + ".Size]/F" ).c_str() );
@@ -1260,6 +1262,7 @@ public:
    void Register( TTree* root, const std::string& name = "TrgInfo" ) {
       root->SetBranchAddress( ( name + ".Size" ).c_str() , &Size );
       root->SetBranchAddress( ( name + ".TriggerBit" ).c_str() , TriggerBit );
+      root->SetBranchAddress( ( name + ".FilterLabel" ).c_str() , FilterLabel );
       root->SetBranchAddress( ( name + ".Pt" ).c_str() , Pt );
       root->SetBranchAddress( ( name + ".Eta" ).c_str() , Eta );
       root->SetBranchAddress( ( name + ".Phi" ).c_str() , Phi );

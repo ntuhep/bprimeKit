@@ -27,6 +27,7 @@ int main(int argc, char const *argv[]) {
       ("file,f" , opt::value<string>(), "Path to file" )
       ("path,p", opt::value<string>(), "HLT Path to use")
       ("HLT,h", opt::value<string>(), "HLT Process to use (HLT for data, HLT2 for reHLT MC samples)")
+      ("filter,l",opt::value<string>(), "HLT Filter path to use")
       ("help", "produces help message and exit" )
    ;
 
@@ -40,17 +41,19 @@ int main(int argc, char const *argv[]) {
    if( !input.count("file") ) { cout << "file not specified!" << endl ;     return 1 ; }
    if( !input.count("path") ) { cout << "HLT path not specified!" << endl ; return 1 ; }
    if( !input.count("HLT") ) { cout << "HLT process not specified!" << endl ; return 1 ; }
+   if( !input.count("filter") ) { cout << "HLT filter process not specified!" << endl ; return 1 ; }
 
    const string filename = input["file"].as<string>();
    const string reqpath  = input["path"].as<string>();
    const string hlt      = input["HLT"].as<string>();
+   const string filter   = input["filter"].as<string>();
 
    fwlite::Event ev( TFile::Open(filename.c_str()) );
    fwlite::Handle<pat::TriggerObjectStandAloneCollection> triggerobj_handle;
    fwlite::Handle<edm::TriggerResults>                    trigger_handle;
 
    unsigned i = 1 ;
-   for( ev.toBegin() ; !ev.atEnd() && i < 100  ; ++ev , ++i ){
+   for( ev.toBegin() ; !ev.atEnd()   ; ++ev , ++i ){
       triggerobj_handle.getByLabel( ev, "selectedPatTrigger" );
       trigger_handle.getByLabel( ev, "TriggerResults" , "" , hlt.c_str() );
       const auto& triggernames = ev.triggerNames( *trigger_handle );
@@ -61,11 +64,18 @@ int main(int argc, char const *argv[]) {
       for( auto obj : *triggerobj_handle ){
          obj.unpackPathNames(triggernames);
 
+         // Checking path
          bool haspath = false;
          for( const auto& path : obj.pathNames() ){
             if( path.find(reqpath) != std::string::npos && obj.hasPathName(path)) { haspath=true; break; }
          }
          if( !haspath ) { continue ; }
+         // Checking filter
+         bool hasfilter = false;
+         for( const auto& objfilter : obj.filterLabels() ){
+            if( objfilter.find(filter) != std::string::npos ) { hasfilter = true; break; }
+         }
+         if( !hasfilter) { continue; }
 
          fprintf(
             stdout, "\tTrigger object [%d] pt:%lf eta:%lf phi%lf\n",

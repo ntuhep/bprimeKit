@@ -34,8 +34,12 @@ void checkoutput()
       cout << " TrgInfo.Size  = " << TrgInfo.Size << endl;
 
       for( int j = 0 ; j < TrgInfo.Size ; ++j ){
-         cout << TrgInfo.TriggerBit[j] << " " << TriggerBooking[ TrgInfo.TriggerBit[j]] << "|"
-              << TrgInfo.Pt[j] << " " << TrgInfo.Eta[j] << " " << TrgInfo.Phi[j] << endl;
+         printf( "%4d | %40s | %8d | %6lf %6lf %6lf\n",
+            TrgInfo.TriggerBit[j],
+            TriggerBooking[ TrgInfo.TriggerBit[j]].c_str(),
+            TrgInfo.FilterLabel[j],
+            TrgInfo.Pt[j], TrgInfo.Eta[j] , TrgInfo.Phi[j]
+       );
       }
    }
 
