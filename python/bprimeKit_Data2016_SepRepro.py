@@ -13,9 +13,9 @@ import bpkFrameWork.bprimeKit.HLTStorage as myHLT
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-GlobalTag            = "80X_dataRun2_Prompt_ICHEP16JEC_v0"
+GlobalTag            = "80X_dataRun2_2016SeptRepro_v4"
 ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
-ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff"
+ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags
@@ -62,7 +62,7 @@ bprimeKit = cms.EDAnalyzer(
       phoLabel                  = cms.VInputTag( 'slimmedPhotons' ),
       phoLooseIdMap             = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose' ) ,
       phoMediumIdMap            = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium') ,
-      phoTightIdMap             = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight') ,
+      phoTightIdMap             = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight' ) ,
       phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
       phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
       phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
@@ -77,10 +77,10 @@ bprimeKit = cms.EDAnalyzer(
       elecLabel       = cms.VInputTag( 'slimmedElectrons'   ) ,
       tauLabel        = cms.VInputTag( 'slimmedTaus'     ) ,
       packedCand      = cms.InputTag( 'packedPFCandidates' ),
-      eleVetoIdMap    = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto'  ) ,
-      eleLooseIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose'  ) ,
-      eleMediumIdMap  = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium'  ) ,
-      eleTightIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight'  ) ,
+      eleVetoIdMap    = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto'  ) ,
+      eleLooseIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose'  ) ,
+      eleMediumIdMap  = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium'  ) ,
+      eleTightIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight'  ) ,
       eleHEEPIdMap    = cms.InputTag( 'egmGsfElectronIDs:heepElectronID-HEEPV60'  ) ,
 
       #----- Jet Information ------------------------------------------------------------------------------

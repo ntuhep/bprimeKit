@@ -75,7 +75,8 @@ def jettoolbox_settings( process , runMC ):
         addNsub=True,
         bTagInfos=listBTagInfos,
         bTagDiscriminators=listBtagDiscriminators,
-        addCMSTopTagger=True, Cut=ak8Cut,
+        addCMSTopTagger=True,
+        Cut=ak8Cut,
         addNsubSubjets=True,
         subjetMaxTau=4 )
 
