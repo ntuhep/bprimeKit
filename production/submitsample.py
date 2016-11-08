@@ -49,10 +49,13 @@ config.JobType.inputFiles = [
     "Summer15_50nsV5_MC.db"
 ]
 
-config.Data.inputDataset = '{3}'
-config.Data.inputDBS = 'global'
-config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 1
+config.JobType.maxMemoryMB      = 3000 #Requesting slightly more memory
+config.JobType.maxJobRuntimeMin = 2000 # requesting slightly more runtime
+
+config.Data.inputDataset  = '{3}'
+config.Data.inputDBS      = 'global'
+config.Data.splitting     = 'FileBased'
+config.Data.unitsPerJob   = 1
 config.Data.outLFNDirBase = '{4}'
 
 config.Site.storageSite = '{5}'

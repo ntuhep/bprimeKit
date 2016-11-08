@@ -1,7 +1,7 @@
 #*******************************************************************************
  #
- #  Filename    : bprimeKit_MC25ns_MiniAOD_76X.py
- #  Description : Default settings for DataProcessing Flag MC25ns_MiniAOD_76X
+ #  Filename    : bprimeKit_MC_76X.py
+ #  Description : Default settings for 76X
  #  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
  #
  #  Ditching original cfg framework 2016-03
@@ -9,24 +9,24 @@
 #*******************************************************************************
 import FWCore.ParameterSet.Config        as cms
 import bpkFrameWork.bprimeKit.HLTStorage as myHLT
-#-------------------------------------------------------------------------------
-#   Tag settings
-#-------------------------------------------------------------------------------
 
-GlobalTag            = "80X_mcRun2_asymptotic_2016_miniAODv2_v1"
+#-------------------------------------------------------------------------------
+#   Additional tag settings
+#-------------------------------------------------------------------------------
+GlobalTag            = "80X_dataRun2_Prompt_ICHEP16JEC_v0"
 ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
 ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff"
 
+#-------------------------------------------------------------------------------
+#   BprimeKit input tags
+#-------------------------------------------------------------------------------
 
-#-------------------------------------------------------------------------------
-#   BprimeKit input settings
-#-------------------------------------------------------------------------------
 bprimeKit = cms.EDAnalyzer(
       "bprimeKit",
       #----- Operation Tags
       #----- Defined directly in cfg.py files
       MCtag           = cms.bool( False ),
-      SkipGenInfo     = cms.bool( False ),
+      SkipGenInfo     = cms.bool( True  ),
       PairCollection  = cms.int32(1),
       IncludeL7       = cms.bool(False),
       Debug           = cms.int32(0),
@@ -34,25 +34,26 @@ bprimeKit = cms.EDAnalyzer(
       runMuonJetClean = cms.bool( True ),
 
       #----- Event level objects -----
-      rhoLabel      = cms.InputTag( 'fixedGridRhoFastjetAll' ),
-      metLabel      = cms.InputTag( 'slimmedMETs' ),
-      puppimetLabel = cms.InputTag( 'slimmedMETsPuppi'),
-      puInfoLabel = cms.InputTag( 'slimmedAddPileupInfo' ),
+      rhoLabel            = cms.InputTag( 'fixedGridRhoFastjetAll' ),
+      metLabel            = cms.InputTag( 'slimmedMETs' ),
+      puppimetLabel       = cms.InputTag( 'slimmedMETsPuppi'),
 
-      #----- Trigger object storage -----
-      hltLabel      = cms.InputTag( 'TriggerResults::HLT2' ),
+      #----- Trigger related -----
+      hltLabel     = cms.InputTag( 'TriggerResults::HLT' ),
       trgobjLabel  = cms.InputTag( 'selectedPatTrigger'),
       triggerlist  = myHLT.triggerlist,
 
       #----- Vertex related  ------------------------------------------------------------------------------
-      offlinePVLabel   = cms.InputTag( 'offlineSlimmedPrimaryVertices' ),
-      offlinePVBSLabel = cms.InputTag( 'offlinePrimaryVerticesWithBS' ),
-      offlineBSLabel   = cms.InputTag( 'offlineBeamSpot' ),
+      offlinePVLabel      = cms.InputTag( 'offlineSlimmedPrimaryVertices' ),
+      offlinePVBSLabel    = cms.InputTag( 'offlinePrimaryVerticesWithBS' ),
+      offlineBSLabel      = cms.InputTag( 'offlineBeamSpot' ),
+      conversionsLabel    = cms.InputTag( 'reducedEgamma', 'reducedConversions' ),
 
       #----- MC Generation information --------------------------------------------------------------------
-      genevtLabel = cms.InputTag( 'generator' ),
       genLabel    = cms.InputTag( 'prunedGenParticles' ),
+      genevtLabel = cms.InputTag( 'generator' ),
       gtdigiLabel = cms.InputTag( 'gtDigis' ),
+      puInfoLabel = cms.InputTag( 'slimmedAddPileupInfo' ),
       lheLabel    = cms.InputTag( 'externalLHEProducer' ),
       lheRunLabel = cms.InputTag( 'externalLHEProducer' ),
 
@@ -72,16 +73,15 @@ bprimeKit = cms.EDAnalyzer(
 
       #----- Lepton related information -------------------------------------------------------------------
       LepCollections  = cms.vstring( 'LepInfo'  ) ,
-      muonLabel       = cms.VInputTag( 'slimmedMuons'     ) ,
-      elecLabel       = cms.VInputTag( 'slimmedElectrons' ) ,
-      tauLabel        = cms.VInputTag( 'slimmedTaus'      ) ,
+      muonLabel       = cms.VInputTag( 'slimmedMuons'       ) ,
+      elecLabel       = cms.VInputTag( 'slimmedElectrons'   ) ,
+      tauLabel        = cms.VInputTag( 'slimmedTaus'     ) ,
       packedCand      = cms.InputTag( 'packedPFCandidates' ),
       eleVetoIdMap    = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto'  ) ,
       eleLooseIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose'  ) ,
       eleMediumIdMap  = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium'  ) ,
       eleTightIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight'  ) ,
       eleHEEPIdMap    = cms.InputTag( 'egmGsfElectronIDs:heepElectronID-HEEPV60'  ) ,
-      conversionsLabel = cms.InputTag( 'reducedEgamma', 'reducedConversions' ),
 
       #----- Jet Information ------------------------------------------------------------------------------
       JetSettings = cms.VPSet(
