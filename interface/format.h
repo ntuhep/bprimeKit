@@ -108,85 +108,85 @@ public:
    Int_t TT [64];
 
    void RegisterTree( TTree* root, const std::string& name = "EvtInfo" ) {
-      root->Branch( ( name + ".RunNo" ).c_str(), &RunNo );
-      root->Branch( ( name + ".EvtNo" ).c_str(), &EvtNo );
-      root->Branch( ( name + ".BxNo" ).c_str(), &BxNo );
-      root->Branch( ( name + ".LumiNo" ).c_str(), &LumiNo );
-      root->Branch( ( name + ".Orbit" ).c_str(), &Orbit );
-      root->Branch( ( name + ".McIsTZTZ" ).c_str(), &McIsTZTZ );
-      root->Branch( ( name + ".McIsTHTH" ).c_str(), &McIsTHTH );
-      root->Branch( ( name + ".McIsTZTH" ).c_str(), &McIsTZTH );
-      root->Branch( ( name + ".McIsTZBW" ).c_str(), &McIsTZBW );
-      root->Branch( ( name + ".McIsTHBW" ).c_str(), &McIsTHBW );
-      root->Branch( ( name + ".McIsBWBW" ).c_str(), &McIsBWBW );
-      root->Branch( ( name + ".McFlag" ).c_str(), &McFlag );
-      root->Branch( ( name + ".McSigTag" ).c_str(), &McSigTag );
-      root->Branch( ( name + ".McbprimeMode" ).c_str(), McbprimeMode, ( name + ".McbprimeMode[2]" ).c_str() );
-      root->Branch( ( name + ".MctprimeMode" ).c_str(), MctprimeMode, ( name + ".MctprimeMode[2]" ).c_str() );
-      root->Branch( ( name + ".McWMode" ).c_str(), McWMode, ( name + ".McWMode[4]" ).c_str() );
-      root->Branch( ( name + ".McZMode" ).c_str(), McZMode, ( name + ".McZMode[2]" ).c_str() );
-      root->Branch( ( name + ".McbprimeMass" ).c_str(), McbprimeMass, ( name + ".McbprimeMass[2]" ).c_str() );
-      root->Branch( ( name + ".MctprimeMass" ).c_str(), MctprimeMass, ( name + ".MctprimeMass[2]" ).c_str() );
-      root->Branch( ( name + ".MctopMass" ).c_str(), MctopMass, ( name + ".MctopMass[2]" ).c_str() );
-      root->Branch( ( name + ".McWMass" ).c_str(), McWMass, ( name + ".McWMass[4]" ).c_str() );
-      root->Branch( ( name + ".McZMass" ).c_str(), McZMass, ( name + ".McZMass[2]" ).c_str() );
-      root->Branch( ( name + ".McDauPt" ).c_str(), McDauPt, ( name + ".McDauPt[14]" ).c_str() );
-      root->Branch( ( name + ".McDauEta" ).c_str(), McDauEta, ( name + ".McDauEta[14]" ).c_str() );
-      root->Branch( ( name + ".McDauPhi" ).c_str(), McDauPhi, ( name + ".McDauPhi[14]" ).c_str() );
-      root->Branch( ( name + ".McDauPdgID" ).c_str(), McDauPdgID, ( name + ".McDauPdgID[14]" ).c_str() );
-      root->Branch( ( name + ".Rho" ).c_str(), &Rho );
-      root->Branch( ( name + ".RhoPU" ).c_str(), RhoPU, ( name + ".RhoPU[2]" ).c_str() );
-      root->Branch( ( name + ".SigmaPU" ).c_str(), SigmaPU, ( name + ".SigmaPU[2]" ).c_str() );
-      root->Branch( ( name + ".BeamSpotX" ).c_str(), &BeamSpotX );
-      root->Branch( ( name + ".BeamSpotY" ).c_str(), &BeamSpotY );
-      root->Branch( ( name + ".BeamSpotZ" ).c_str(), &BeamSpotZ );
-      root->Branch( ( name + ".nBX" ).c_str(), &nBX );
+      root->Branch( ( name + ".RunNo" ).c_str(), &RunNo, ( name + "RunNo/I" ).c_str() );
+      root->Branch( ( name + ".EvtNo" ).c_str(), &EvtNo, ( name + "EvtNo/l" ).c_str() );
+      root->Branch( ( name + ".BxNo" ).c_str(), &BxNo, ( name + "BxNo/I" ).c_str() );
+      root->Branch( ( name + ".LumiNo" ).c_str(), &LumiNo, ( name + "LumiNo/I" ).c_str() );
+      root->Branch( ( name + ".Orbit" ).c_str(), &Orbit, ( name + "Orbit/I" ).c_str() );
+      root->Branch( ( name + ".McIsTZTZ" ).c_str(), &McIsTZTZ, ( name + "McIsTZTZ/O" ).c_str() );
+      root->Branch( ( name + ".McIsTHTH" ).c_str(), &McIsTHTH, ( name + "McIsTHTH/O" ).c_str() );
+      root->Branch( ( name + ".McIsTZTH" ).c_str(), &McIsTZTH, ( name + "McIsTZTH/O" ).c_str() );
+      root->Branch( ( name + ".McIsTZBW" ).c_str(), &McIsTZBW, ( name + "McIsTZBW/O" ).c_str() );
+      root->Branch( ( name + ".McIsTHBW" ).c_str(), &McIsTHBW, ( name + "McIsTHBW/O" ).c_str() );
+      root->Branch( ( name + ".McIsBWBW" ).c_str(), &McIsBWBW, ( name + "McIsBWBW/O" ).c_str() );
+      root->Branch( ( name + ".McFlag" ).c_str(), &McFlag, ( name + "McFlag/I" ).c_str() );
+      root->Branch( ( name + ".McSigTag" ).c_str(), &McSigTag, ( name + "McSigTag/I" ).c_str() );
+      root->Branch( ( name + ".McbprimeMode" ).c_str(), McbprimeMode, ( name + ".McbprimeMode[2]/I" ).c_str() );
+      root->Branch( ( name + ".MctprimeMode" ).c_str(), MctprimeMode, ( name + ".MctprimeMode[2]/I" ).c_str() );
+      root->Branch( ( name + ".McWMode" ).c_str(), McWMode, ( name + ".McWMode[4]/I" ).c_str() );
+      root->Branch( ( name + ".McZMode" ).c_str(), McZMode, ( name + ".McZMode[2]/I" ).c_str() );
+      root->Branch( ( name + ".McbprimeMass" ).c_str(), McbprimeMass, ( name + ".McbprimeMass[2]/F" ).c_str() );
+      root->Branch( ( name + ".MctprimeMass" ).c_str(), MctprimeMass, ( name + ".MctprimeMass[2]/F" ).c_str() );
+      root->Branch( ( name + ".MctopMass" ).c_str(), MctopMass, ( name + ".MctopMass[2]/F" ).c_str() );
+      root->Branch( ( name + ".McWMass" ).c_str(), McWMass, ( name + ".McWMass[4]/F" ).c_str() );
+      root->Branch( ( name + ".McZMass" ).c_str(), McZMass, ( name + ".McZMass[2]/F" ).c_str() );
+      root->Branch( ( name + ".McDauPt" ).c_str(), McDauPt, ( name + ".McDauPt[14]/F" ).c_str() );
+      root->Branch( ( name + ".McDauEta" ).c_str(), McDauEta, ( name + ".McDauEta[14]/F" ).c_str() );
+      root->Branch( ( name + ".McDauPhi" ).c_str(), McDauPhi, ( name + ".McDauPhi[14]/F" ).c_str() );
+      root->Branch( ( name + ".McDauPdgID" ).c_str(), McDauPdgID, ( name + ".McDauPdgID[14]/I" ).c_str() );
+      root->Branch( ( name + ".Rho" ).c_str(), &Rho, ( name + "Rho/F" ).c_str() );
+      root->Branch( ( name + ".RhoPU" ).c_str(), RhoPU, ( name + ".RhoPU[2]/F" ).c_str() );
+      root->Branch( ( name + ".SigmaPU" ).c_str(), SigmaPU, ( name + ".SigmaPU[2]/F" ).c_str() );
+      root->Branch( ( name + ".BeamSpotX" ).c_str(), &BeamSpotX, ( name + "BeamSpotX/F" ).c_str() );
+      root->Branch( ( name + ".BeamSpotY" ).c_str(), &BeamSpotY, ( name + "BeamSpotY/F" ).c_str() );
+      root->Branch( ( name + ".BeamSpotZ" ).c_str(), &BeamSpotZ, ( name + "BeamSpotZ/F" ).c_str() );
+      root->Branch( ( name + ".nBX" ).c_str(), &nBX, ( name + "nBX/I" ).c_str() );
       root->Branch( ( name + ".nPU" ).c_str(), nPU, ( name + ".nPU[" + name + ".nBX]/I" ).c_str() );
       root->Branch( ( name + ".BXPU" ).c_str(), BXPU, ( name + ".BXPU[" + name + ".nBX]/I" ).c_str() );
       root->Branch( ( name + ".TrueIT" ).c_str(), TrueIT, ( name + ".TrueIT[" + name + ".nBX]/F" ).c_str() );
-      root->Branch( ( name + ".PDFid1" ).c_str(), &PDFid1 );
-      root->Branch( ( name + ".PDFid2" ).c_str(), &PDFid2 );
-      root->Branch( ( name + ".PDFx1" ).c_str(), &PDFx1 );
-      root->Branch( ( name + ".PDFx2" ).c_str(), &PDFx2 );
-      root->Branch( ( name + ".PDFscale" ).c_str(), &PDFscale );
-      root->Branch( ( name + ".PDFv1" ).c_str(), &PDFv1 );
-      root->Branch( ( name + ".PDFv2" ).c_str(), &PDFv2 );
-      root->Branch( ( name + ".PFMET" ).c_str(), &PFMET );
-      root->Branch( ( name + ".PFMETType1CorrectedPFMetUnclusteredEnUp" ).c_str(), &PFMETType1CorrectedPFMetUnclusteredEnUp );
-      root->Branch( ( name + ".PFMETType1CorrectedPFMetUnclusteredEnDown" ).c_str(), &PFMETType1CorrectedPFMetUnclusteredEnDown );
-      root->Branch( ( name + ".PFMETPhi" ).c_str(), &PFMETPhi );
-      root->Branch( ( name + ".PFRawMET" ).c_str(), &PFRawMET );
-      root->Branch( ( name + ".PFRawMETPhi" ).c_str(), &PFRawMETPhi );
-      root->Branch( ( name + ".PFSumEt" ).c_str(), &PFSumEt );
-      root->Branch( ( name + ".PFMETSig" ).c_str(), &PFMETSig );
-      root->Branch( ( name + ".PFMETlongitudinal" ).c_str(), &PFMETlongitudinal );
-      root->Branch( ( name + ".PFMETRealSig" ).c_str(), &PFMETRealSig );
-      root->Branch( ( name + ".PFGenMET" ).c_str(), &PFGenMET );
-      root->Branch( ( name + ".PFGenMETPhi" ).c_str(), &PFGenMETPhi );
-      root->Branch( ( name + ".PFMETx" ).c_str(), &PFMETx );
-      root->Branch( ( name + ".PFMETy" ).c_str(), &PFMETy );
-      root->Branch( ( name + ".PuppiMET" ).c_str(), &PuppiMET );
-      root->Branch( ( name + ".PuppiMETPhi" ).c_str(), &PuppiMETPhi );
-      root->Branch( ( name + ".PuppiRawMET" ).c_str(), &PuppiRawMET );
-      root->Branch( ( name + ".PuppiRawMETPhi" ).c_str(), &PuppiRawMETPhi );
-      root->Branch( ( name + ".PuppiSumEt" ).c_str(), &PuppiSumEt );
-      root->Branch( ( name + ".PuppiMETSig" ).c_str(), &PuppiMETSig );
-      root->Branch( ( name + ".PuppiMETlongitudinal" ).c_str(), &PuppiMETlongitudinal );
-      root->Branch( ( name + ".PuppiMETRealSig" ).c_str(), &PuppiMETRealSig );
-      root->Branch( ( name + ".PuppiGenMET" ).c_str(), &PuppiGenMET );
-      root->Branch( ( name + ".PuppiGenMETPhi" ).c_str(), &PuppiGenMETPhi );
-      root->Branch( ( name + ".TrgCount" ).c_str(), &TrgCount );
-      root->Branch( ( name + ".nTrgBook" ).c_str(), &nTrgBook );
+      root->Branch( ( name + ".PDFid1" ).c_str(), &PDFid1, ( name + "PDFid1/I" ).c_str() );
+      root->Branch( ( name + ".PDFid2" ).c_str(), &PDFid2, ( name + "PDFid2/I" ).c_str() );
+      root->Branch( ( name + ".PDFx1" ).c_str(), &PDFx1, ( name + "PDFx1/F" ).c_str() );
+      root->Branch( ( name + ".PDFx2" ).c_str(), &PDFx2, ( name + "PDFx2/F" ).c_str() );
+      root->Branch( ( name + ".PDFscale" ).c_str(), &PDFscale, ( name + "PDFscale/F" ).c_str() );
+      root->Branch( ( name + ".PDFv1" ).c_str(), &PDFv1, ( name + "PDFv1/F" ).c_str() );
+      root->Branch( ( name + ".PDFv2" ).c_str(), &PDFv2, ( name + "PDFv2/F" ).c_str() );
+      root->Branch( ( name + ".PFMET" ).c_str(), &PFMET, ( name + "PFMET/F" ).c_str() );
+      root->Branch( ( name + ".PFMETType1CorrectedPFMetUnclusteredEnUp" ).c_str(), &PFMETType1CorrectedPFMetUnclusteredEnUp, ( name + "PFMETType1CorrectedPFMetUnclusteredEnUp/F" ).c_str() );
+      root->Branch( ( name + ".PFMETType1CorrectedPFMetUnclusteredEnDown" ).c_str(), &PFMETType1CorrectedPFMetUnclusteredEnDown, ( name + "PFMETType1CorrectedPFMetUnclusteredEnDown/F" ).c_str() );
+      root->Branch( ( name + ".PFMETPhi" ).c_str(), &PFMETPhi, ( name + "PFMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".PFRawMET" ).c_str(), &PFRawMET, ( name + "PFRawMET/F" ).c_str() );
+      root->Branch( ( name + ".PFRawMETPhi" ).c_str(), &PFRawMETPhi, ( name + "PFRawMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".PFSumEt" ).c_str(), &PFSumEt, ( name + "PFSumEt/F" ).c_str() );
+      root->Branch( ( name + ".PFMETSig" ).c_str(), &PFMETSig, ( name + "PFMETSig/F" ).c_str() );
+      root->Branch( ( name + ".PFMETlongitudinal" ).c_str(), &PFMETlongitudinal, ( name + "PFMETlongitudinal/F" ).c_str() );
+      root->Branch( ( name + ".PFMETRealSig" ).c_str(), &PFMETRealSig, ( name + "PFMETRealSig/F" ).c_str() );
+      root->Branch( ( name + ".PFGenMET" ).c_str(), &PFGenMET, ( name + "PFGenMET/F" ).c_str() );
+      root->Branch( ( name + ".PFGenMETPhi" ).c_str(), &PFGenMETPhi, ( name + "PFGenMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".PFMETx" ).c_str(), &PFMETx, ( name + "PFMETx/F" ).c_str() );
+      root->Branch( ( name + ".PFMETy" ).c_str(), &PFMETy, ( name + "PFMETy/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMET" ).c_str(), &PuppiMET, ( name + "PuppiMET/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETPhi" ).c_str(), &PuppiMETPhi, ( name + "PuppiMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".PuppiRawMET" ).c_str(), &PuppiRawMET, ( name + "PuppiRawMET/F" ).c_str() );
+      root->Branch( ( name + ".PuppiRawMETPhi" ).c_str(), &PuppiRawMETPhi, ( name + "PuppiRawMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".PuppiSumEt" ).c_str(), &PuppiSumEt, ( name + "PuppiSumEt/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETSig" ).c_str(), &PuppiMETSig, ( name + "PuppiMETSig/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETlongitudinal" ).c_str(), &PuppiMETlongitudinal, ( name + "PuppiMETlongitudinal/F" ).c_str() );
+      root->Branch( ( name + ".PuppiMETRealSig" ).c_str(), &PuppiMETRealSig, ( name + "PuppiMETRealSig/F" ).c_str() );
+      root->Branch( ( name + ".PuppiGenMET" ).c_str(), &PuppiGenMET, ( name + "PuppiGenMET/F" ).c_str() );
+      root->Branch( ( name + ".PuppiGenMETPhi" ).c_str(), &PuppiGenMETPhi, ( name + "PuppiGenMETPhi/F" ).c_str() );
+      root->Branch( ( name + ".TrgCount" ).c_str(), &TrgCount, ( name + "TrgCount/I" ).c_str() );
+      root->Branch( ( name + ".nTrgBook" ).c_str(), &nTrgBook, ( name + "nTrgBook/I" ).c_str() );
       root->Branch( ( name + ".TrgBook" ).c_str(), TrgBook, ( name + ".TrgBook[" + name + ".nTrgBook]/C" ).c_str() );
-      root->Branch( ( name + ".nHLT" ).c_str(), &nHLT );
-      root->Branch( ( name + ".HighPurityFraction" ).c_str(), &HighPurityFraction );
-      root->Branch( ( name + ".NofTracks" ).c_str(), &NofTracks );
-      root->Branch( ( name + ".ptHat" ).c_str(), &ptHat );
+      root->Branch( ( name + ".nHLT" ).c_str(), &nHLT, ( name + "nHLT/I" ).c_str() );
+      root->Branch( ( name + ".HighPurityFraction" ).c_str(), &HighPurityFraction, ( name + "HighPurityFraction/F" ).c_str() );
+      root->Branch( ( name + ".NofTracks" ).c_str(), &NofTracks, ( name + "NofTracks/I" ).c_str() );
+      root->Branch( ( name + ".ptHat" ).c_str(), &ptHat, ( name + "ptHat/F" ).c_str() );
       root->Branch( ( name + ".HLTPrescaleFactor" ).c_str(), HLTPrescaleFactor, ( name + ".HLTPrescaleFactor[" + name + ".nHLT]/I" ).c_str() );
       root->Branch( ( name + ".HLTName2enum" ).c_str(), HLTName2enum, ( name + ".HLTName2enum[" + name + ".nHLT]/I" ).c_str() );
       root->Branch( ( name + ".HLTbits" ).c_str(), HLTbits, ( name + ".HLTbits[" + name + ".nHLT]/O" ).c_str() );
-      root->Branch( ( name + ".L1" ).c_str(), L1, ( name + ".L1[128]" ).c_str() );
-      root->Branch( ( name + ".TT" ).c_str(), TT, ( name + ".TT[64]" ).c_str() );
+      root->Branch( ( name + ".L1" ).c_str(), L1, ( name + ".L1[128]/I" ).c_str() );
+      root->Branch( ( name + ".TT" ).c_str(), TT, ( name + ".TT[64]/I" ).c_str() );
    }
 
    void Register( TTree* root, const std::string& name = "EvtInfo" ) {
@@ -306,8 +306,8 @@ public:
    Float_t LHESystematicWeights [MAX_LHE];
 
    void RegisterTree( TTree* root, const std::string& name = "GenInfo" ) {
-      root->Branch( ( name + ".Size" ).c_str(), &Size );
-      root->Branch( ( name + ".Weight" ).c_str(), &Weight );
+      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + "Size/I" ).c_str() );
+      root->Branch( ( name + ".Weight" ).c_str(), &Weight, ( name + "Weight/F" ).c_str() );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Phi" ).c_str(), Phi, ( name + ".Phi[" + name + ".Size]/F" ).c_str() );
@@ -331,9 +331,9 @@ public:
       root->Branch( ( name + ".GrandMo2PdgID" ).c_str(), GrandMo2PdgID, ( name + ".GrandMo2PdgID[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo1Status" ).c_str(), GrandMo1Status, ( name + ".GrandMo1Status[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".GrandMo2Status" ).c_str(), GrandMo2Status, ( name + ".GrandMo2Status[" + name + ".Size]/I" ).c_str() );
-      root->Branch( ( name + ".LHENominalWeight" ).c_str(), &LHENominalWeight );
-      root->Branch( ( name + ".LHEOriginalWeight" ).c_str(), &LHEOriginalWeight );
-      root->Branch( ( name + ".LHESize" ).c_str(), &LHESize );
+      root->Branch( ( name + ".LHENominalWeight" ).c_str(), &LHENominalWeight, ( name + "LHENominalWeight/F" ).c_str() );
+      root->Branch( ( name + ".LHEOriginalWeight" ).c_str(), &LHEOriginalWeight, ( name + "LHEOriginalWeight/F" ).c_str() );
+      root->Branch( ( name + ".LHESize" ).c_str(), &LHESize, ( name + "LHESize/I" ).c_str() );
       root->Branch( ( name + ".LHESystematicId" ).c_str(), LHESystematicId, ( name + ".LHESystematicId[" + name + ".LHESize]/I" ).c_str() );
       root->Branch( ( name + ".LHESystematicWeights" ).c_str(), LHESystematicWeights, ( name + ".LHESystematicWeights[" + name + ".LHESize]/F" ).c_str() );
    }
@@ -489,7 +489,7 @@ public:
    Float_t JVBeta [MAX_JETS];
 
    void RegisterTree( TTree* root, const std::string& name = "JetInfo" ) {
-      root->Branch( ( name + ".Size" ).c_str(), &Size );
+      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + "Size/I" ).c_str() );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".NTracks" ).c_str(), NTracks, ( name + ".NTracks[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".Et" ).c_str(), Et, ( name + ".Et[" + name + ".Size]/F" ).c_str() );
@@ -578,17 +578,6 @@ public:
       root->Branch( ( name + ".PuppivtxPx" ).c_str(), PuppivtxPx, ( name + ".PuppivtxPx[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PuppivtxPy" ).c_str(), PuppivtxPy, ( name + ".PuppivtxPy[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".PuppivtxPz" ).c_str(), PuppivtxPz, ( name + ".PuppivtxPz[" + name + ".Size]/F" ).c_str() );
-      root->Branch( ( name + ".SubjetMass" ).c_str(), &SubjetMass );
-      root->Branch( ( name + ".SubjetPt" ).c_str(), &SubjetPt );
-      root->Branch( ( name + ".SubjetEt" ).c_str(), &SubjetEt );
-      root->Branch( ( name + ".SubjetEta" ).c_str(), &SubjetEta );
-      root->Branch( ( name + ".SubjetPhi" ).c_str(), &SubjetPhi );
-      root->Branch( ( name + ".SubjetArea" ).c_str(), &SubjetArea );
-      root->Branch( ( name + ".SubjetPtUncorr" ).c_str(), &SubjetPtUncorr );
-      root->Branch( ( name + ".SubjetCombinedSVBJetTags" ).c_str(), &SubjetCombinedSVBJetTags );
-      root->Branch( ( name + ".SubjetGenPdgId" ).c_str(), &SubjetGenPdgId );
-      root->Branch( ( name + ".SubjetGenFlavour" ).c_str(), &SubjetGenFlavour );
-      root->Branch( ( name + ".SubjetHadronFlavour" ).c_str(), &SubjetHadronFlavour );
       root->Branch( ( name + ".SubjetMass" ).c_str(), &SubjetMass_w );
       root->Branch( ( name + ".SubjetPt" ).c_str(), &SubjetPt_w );
       root->Branch( ( name + ".SubjetEt" ).c_str(), &SubjetEt_w );
@@ -863,7 +852,7 @@ public:
    Int_t GenMCTag [MAX_LEPTONS];
 
    void RegisterTree( TTree* root, const std::string& name = "LepInfo" ) {
-      root->Branch( ( name + ".Size" ).c_str(), &Size );
+      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + "Size/I" ).c_str() );
       root->Branch( ( name + ".Index" ).c_str(), Index, ( name + ".Index[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".LeptonType" ).c_str(), LeptonType, ( name + ".LeptonType[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".Charge" ).c_str(), Charge, ( name + ".Charge[" + name + ".Size]/I" ).c_str() );
@@ -1177,7 +1166,7 @@ public:
    Int_t GenPdgID [MAX_PHOTONS];
 
    void RegisterTree( TTree* root, const std::string& name = "PhotonInfo" ) {
-      root->Branch( ( name + ".Size" ).c_str(), &Size );
+      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + "Size/I" ).c_str() );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Eta" ).c_str(), Eta, ( name + ".Eta[" + name + ".Size]/F" ).c_str() );
       root->Branch( ( name + ".Phi" ).c_str(), Phi, ( name + ".Phi[" + name + ".Size]/F" ).c_str() );
@@ -1250,7 +1239,7 @@ public:
    Float_t Energy [MAX_TRGOBJS];
 
    void RegisterTree( TTree* root, const std::string& name = "TrgInfo" ) {
-      root->Branch( ( name + ".Size" ).c_str(), &Size );
+      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + "Size/I" ).c_str() );
       root->Branch( ( name + ".TriggerBit" ).c_str(), TriggerBit, ( name + ".TriggerBit[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".FilterLabel" ).c_str(), FilterLabel, ( name + ".FilterLabel[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".Pt" ).c_str(), Pt, ( name + ".Pt[" + name + ".Size]/F" ).c_str() );
@@ -1286,7 +1275,7 @@ public:
    Float_t Rho [MAX_Vertices];
 
    void RegisterTree( TTree* root, const std::string& name = "VertexInfo" ) {
-      root->Branch( ( name + ".Size" ).c_str(), &Size );
+      root->Branch( ( name + ".Size" ).c_str(), &Size, ( name + "Size/I" ).c_str() );
       root->Branch( ( name + ".isValid" ).c_str(), isValid, ( name + ".isValid[" + name + ".Size]/I" ).c_str() );
       root->Branch( ( name + ".isFake" ).c_str(), isFake, ( name + ".isFake[" + name + ".Size]/O" ).c_str() );
       root->Branch( ( name + ".Type" ).c_str(), Type, ( name + ".Type[" + name + ".Size]/I" ).c_str() );
@@ -1321,7 +1310,7 @@ public:
    Int_t PdfID;
 
    void RegisterTree( TTree* root, const std::string& name = "RunInfo" ) {
-      root->Branch( ( name + ".PdfID" ).c_str(), &PdfID );
+      root->Branch( ( name + ".PdfID" ).c_str(), &PdfID, ( name + "PdfID/I" ).c_str() );
    }
 
    void Register( TTree* root, const std::string& name = "RunInfo" ) {

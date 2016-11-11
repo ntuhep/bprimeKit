@@ -80,10 +80,10 @@ bprimeKit::FillTrgObj( const edm::Event& iEvent, const edm::EventSetup& iSetup )
             hltpair.second, matchedfilter
             );
          if( !matchresult ){ continue; }
-         fTrgInfo.Pt     [fTrgInfo.Size]    = obj.pt();
-         fTrgInfo.Eta    [fTrgInfo.Size]    = obj.eta();
-         fTrgInfo.Phi    [fTrgInfo.Size]    = obj.phi();
-         fTrgInfo.Energy [fTrgInfo.Size]    = obj.energy();
+         fTrgInfo.Pt        [fTrgInfo.Size] = obj.pt();
+         fTrgInfo.Eta       [fTrgInfo.Size] = obj.eta();
+         fTrgInfo.Phi       [fTrgInfo.Size] = obj.phi();
+         fTrgInfo.Energy    [fTrgInfo.Size] = obj.energy();
          fTrgInfo.TriggerBit[fTrgInfo.Size] = GetTriggerIdx( matchedpath );
          for( const auto& filterid : obj.filterIds() ){
             fTrgInfo.FilterLabel[fTrgInfo.Size] *= 100;
@@ -104,6 +104,7 @@ bprimeKit::GetTriggerIdx( const string& triggername ) const
    if( result != fHighLevelTriggerMap.end() ){
       return result->second;
    } else {
+      cout << "Cannot find trigger index for " << triggername << endl;
       return -1;
    }
 }
