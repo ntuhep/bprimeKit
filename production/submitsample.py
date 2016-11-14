@@ -47,12 +47,13 @@ def submitsample(argv):
     parser=optparse.OptionParser()
     parser.add_option("-d","--dataset",dest='dataset',help='which dataset to run', default=None, type='string')
     parser.add_option('-s','--site',dest='site',help='which site to store output', default='T2_CH_CERN', type='string')
-    parser.add_option('-l','--lfndir',dest='lfndir',help='the storage lfn directory' , default='/store/group/phys_b2g/BprimeKit_Ntuples_CMSSW80X_RE', type='string')
+    parser.add_option('-l','--lfndir',dest='lfndir',help='the storage lfn directory' , default='/store/group/phys_b2g/BprimeKit_CMSSW80X_RE', type='string')
 
     opt, args = parser.parse_args( argv )
 
     if not opt.dataset :
         print "Error! Data set argument is required!"
+        print parser.print_help()
         return 1
 
     content = crabcfgformat.format(
@@ -71,10 +72,10 @@ def submitsample(argv):
     cfgfile.write(content)
     cfgfile.close()
 
-    # if not os.environ.get('CRABCLIENT_ROOT'):
-    #     os.sys('source /cvmfs/cms.cern.ch/crab3/crab.sh')
-    # os.sys('crab submit ' +filename)
-    print "Writting to file {}. Do not sumbit crab jobs directly using this version! At most use crab submit --dryrun!".format( filename )
+    if not os.environ.get('CRABCLIENT_ROOT'):
+        os.sys('source /cvmfs/cms.cern.ch/crab3/crab.sh')
+    os.sys('crab submit ' +filename)
+    # print "Writting to file {}. Do not sumbit crab jobs directly using this version! At most use crab submit --dryrun!".format( filename )
 
 
 if __name__ == '__main__':
