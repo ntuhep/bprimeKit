@@ -15,6 +15,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/Scalers/interface/DcsStatus.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -33,7 +34,8 @@ typedef std::vector<PileupSummaryInfo> PileupList;
 typedef edm::Handle<PileupList>        PileupHandle;
 typedef PileupList::const_iterator     PileupIterator;
 
-typedef edm::Handle<edm::TriggerResults>                TriggerHandle;
+typedef edm::Handle<edm::TriggerResults>                      TriggerHandle;
+typedef edm::Handle<pat::TriggerObjectStandAloneCollection>   TriggerObjHandle;
 typedef edm::Handle<L1GlobalTriggerReadoutRecord>  RecordHandle;
 typedef edm::Handle<reco::BeamSpot>                BeamSpotHandle ;
 
@@ -70,7 +72,7 @@ typedef edm::Handle<PhotonList>    PhotonHandle;
 typedef std::vector<PhotonHandle>  PhotonHandleList;
 typedef PhotonList::const_iterator PhotonIterator ;
 
-typedef std::vector<pat::Jet>     JetList;
+typedef std::vector<pat::Jet>   JetList;
 typedef edm::Handle<JetList>    JetHandle;
 typedef std::vector<JetHandle>  JetHandleList;
 typedef JetList::const_iterator JetIterator;

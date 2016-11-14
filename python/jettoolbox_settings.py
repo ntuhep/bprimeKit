@@ -37,14 +37,14 @@ def jettoolbox_settings( process , runMC ):
         bTagDiscriminators = listBtagDiscriminators,
         Cut                = ak4Cut )
 
-    jetToolbox( process, 'ak4', 'analysisPath', 'edmOut',
-        runOnMC             = runMC,
-        PUMethod            = 'Puppi',
-        newPFCollection     = True,
-        nameNewPFCollection = 'puppi',
-        bTagInfos           = listBTagInfos,
-        bTagDiscriminators  = listBtagDiscriminators,
-        Cut                 = ak4Cut )
+    #jetToolbox( process, 'ak4', 'analysisPath', 'edmOut',
+    #    runOnMC=runMC,
+    #    PUMethod='Puppi',
+    #    newPFCollection=True,
+    #    nameNewPFCollection='puppi',
+    #    bTagInfos=listBTagInfos,
+    #    bTagDiscriminators=listBtagDiscriminators,
+    #    Cut=ak4Cut )
 
     jetToolbox( process, 'ak8', 'analysisPath', 'edmOut',
         runOnMC            = runMC,
@@ -62,23 +62,24 @@ def jettoolbox_settings( process , runMC ):
         addNsubSubjets     = True,
         subjetMaxTau       = 4 )
 
-    jetToolbox( process, 'ak8', 'analysisPath', 'edmOut',
-        runOnMC             = runMC,
-        PUMethod            = 'Puppi',
-        newPFCollection     = True,
-        nameNewPFCollection = 'puppi',
-        addSoftDropSubjets  = True,
-        addTrimming         = True,
-        addPruning          = True,
-        addFiltering        = True,
-        addSoftDrop         = True,
-        addNsub             = True,
-        bTagInfos           = listBTagInfos,
-        bTagDiscriminators  = listBtagDiscriminators,
-        addCMSTopTagger     = True,
-        Cut                 = ak8Cut,
-        addNsubSubjets      = True,
-        subjetMaxTau        = 4 )
+    #jetToolbox( process, 'ak8', 'analysisPath', 'edmOut',
+    #    runOnMC=runMC,
+    #    PUMethod='Puppi',
+    #    newPFCollection=True,
+    #    nameNewPFCollection='puppi',
+    #    addSoftDropSubjets=True,
+    #    addTrimming=True,
+    #    addPruning=True,
+    #    addFiltering=True,
+    #    addSoftDrop=True,
+    #    addNsub=True,
+    #    bTagInfos=listBTagInfos,
+    #    bTagDiscriminators=listBtagDiscriminators,
+    #    addCMSTopTagger=True,
+    #    Cut=ak8Cut,
+    #    addNsubSubjets=True,
+    #    subjetMaxTau=4
+    #    )
 
     jetToolbox( process, 'ca8', 'analysisPath', 'edmOut',
         runOnMC            = runMC ,
@@ -90,15 +91,15 @@ def jettoolbox_settings( process , runMC ):
         Cut                = ''
     )
 
-    jetToolbox( process, 'ca8', 'analysisPath', 'edmOut',
-        runOnMC             = runMC ,
-        PUMethod            = 'Puppi',
-        newPFCollection     = True,
-        nameNewPFCollection = 'puppi',
-        addMassDrop         = True,
-        addCMSTopTagger     = True,
-        GetJetMCFlavour     = True,
-        GetSubjetMCFlavour  = True,
-        bTagDiscriminators  = listBtagDiscriminators ,
-        Cut                 = ''
-    )
+    # jetToolbox( process, 'ca8', 'analysisPath', 'edmOut',
+    #     runOnMC            = runMC ,
+    #     PUMethod='Puppi',
+    #     newPFCollection=True,
+    #     nameNewPFCollection='puppi',
+    #     addMassDrop        = True,
+    #     addCMSTopTagger    = True,
+    #     GetJetMCFlavour    = True,
+    #     GetSubjetMCFlavour = True,
+    #     bTagDiscriminators = listBtagDiscriminators ,
+    #     Cut                = ''
+    # )

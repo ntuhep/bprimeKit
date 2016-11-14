@@ -1,21 +1,3 @@
-# *****************************************************************************************
-# Usage:
-#
-# cmsRun bprimeKit_cfg.py maxEvts=N
-#
-# The globalTag is automatically chosen according to the input 'DataProcessing' value.
-# However it can be explictily specified to override the default option.
-#
-#  Running on 25 ns MC (default settings):
-#  cmsRun b2gedmntuples_cfg.py isData=False DataProcessing='MC25ns'
-#  Running on 25 ns data:
-#  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data25ns'
-#  Running on 50 ns MC:
-#  cmsRun b2gedmntuples_cfg.py isData=False DataProcessing='MC50ns'
-#  Running on 50 ns data:
-#  cmsRun b2gedmntuples_cfg.py isData=True DataProcessing='Data50ns'
-#
-# *****************************************************************************************
 import sys,os,importlib  # Python2.7 libaries
 import copy
 import ConfigParser

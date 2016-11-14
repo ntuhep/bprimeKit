@@ -7,8 +7,8 @@
  #  Ditching original cfg framework 2016-03
  #
 #*******************************************************************************
-import FWCore.ParameterSet.Config     as cms
-
+import FWCore.ParameterSet.Config        as cms
+import bpkFrameWork.bprimeKit.HLTStorage as myHLT
 #-------------------------------------------------------------------------------
 #   Tag settings
 #-------------------------------------------------------------------------------
@@ -35,21 +35,24 @@ bprimeKit = cms.EDAnalyzer(
 
       #----- Event level objects -----
       rhoLabel      = cms.InputTag( 'fixedGridRhoFastjetAll' ),
-      hltLabel      = cms.InputTag( 'TriggerResults::HLT' ),
       metLabel      = cms.InputTag( 'slimmedMETs' ),
       puppimetLabel = cms.InputTag( 'slimmedMETsPuppi'),
+      puInfoLabel = cms.InputTag( 'slimmedAddPileupInfo' ),
+
+      #----- Trigger object storage -----
+      hltLabel      = cms.InputTag( 'TriggerResults::HLT2' ),
+      trgobjLabel  = cms.InputTag( 'selectedPatTrigger'),
+      triggerlist  = myHLT.triggerlist,
 
       #----- Vertex related  ------------------------------------------------------------------------------
       offlinePVLabel   = cms.InputTag( 'offlineSlimmedPrimaryVertices' ),
       offlinePVBSLabel = cms.InputTag( 'offlinePrimaryVerticesWithBS' ),
       offlineBSLabel   = cms.InputTag( 'offlineBeamSpot' ),
-      conversionsLabel = cms.InputTag( 'reducedEgamma', 'reducedConversions' ),
 
       #----- MC Generation information --------------------------------------------------------------------
-      genLabel    = cms.InputTag( 'prunedGenParticles' ),
       genevtLabel = cms.InputTag( 'generator' ),
+      genLabel    = cms.InputTag( 'prunedGenParticles' ),
       gtdigiLabel = cms.InputTag( 'gtDigis' ),
-      puInfoLabel = cms.InputTag( 'slimmedAddPileupInfo' ),
       lheLabel    = cms.InputTag( 'externalLHEProducer' ),
       lheRunLabel = cms.InputTag( 'externalLHEProducer' ),
 
@@ -69,15 +72,16 @@ bprimeKit = cms.EDAnalyzer(
 
       #----- Lepton related information -------------------------------------------------------------------
       LepCollections  = cms.vstring( 'LepInfo'  ) ,
-      muonLabel       = cms.VInputTag( 'slimmedMuons'       ) ,
-      elecLabel       = cms.VInputTag( 'slimmedElectrons'   ) ,
-      tauLabel        = cms.VInputTag( 'slimmedTaus'     ) ,
+      muonLabel       = cms.VInputTag( 'slimmedMuons'     ) ,
+      elecLabel       = cms.VInputTag( 'slimmedElectrons' ) ,
+      tauLabel        = cms.VInputTag( 'slimmedTaus'      ) ,
       packedCand      = cms.InputTag( 'packedPFCandidates' ),
       eleVetoIdMap    = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto'  ) ,
       eleLooseIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose'  ) ,
       eleMediumIdMap  = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium'  ) ,
       eleTightIdMap   = cms.InputTag( 'egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight'  ) ,
       eleHEEPIdMap    = cms.InputTag( 'egmGsfElectronIDs:heepElectronID-HEEPV60'  ) ,
+      conversionsLabel = cms.InputTag( 'reducedEgamma', 'reducedConversions' ),
 
       #----- Jet Information ------------------------------------------------------------------------------
       JetSettings = cms.VPSet(

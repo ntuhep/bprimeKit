@@ -10,7 +10,7 @@ import FWCore.ParameterSet.VarParsing as opts
 
 def initB2GOptions( options ):
    options.register('sample',
-   "/store/mc/RunIISpring16MiniAODv2/TprimeTprime_M-1700_TuneCUETP8M1_13TeV-madgraph-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/DA9E6A85-D83A-E611-813E-02163E017832.root",
+   "/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/00000/0808B606-F497-E611-BA59-008CFA1111F4.root",
     #     'file:///store/yichen/MiniAODS/MC_80X/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT.root',
          opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,
@@ -23,10 +23,10 @@ def initB2GOptions( options ):
          'Output label')
 
    options.register('DataProcessing',
-         "",
+         "Data2016_SepRepro",
          opts.VarParsing.multiplicity.singleton,
          opts.VarParsing.varType.string,
-         'Data processing types. Options are: MC25ns_MiniAODv2, Data25ns_MiniAODv2, Data25ns_PromptRecov4')
+         'Data processing types. Options are file found in python/bprimeKit_*.py')
 
    options.register('lheLabel',
          "",

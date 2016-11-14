@@ -1,47 +1,38 @@
 /*******************************************************************************
- *
- *  Filename    : bprimeKit_photon.cc
- *  Description : Fill the ntuple with photon information
- *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
- *
+*
+*  Filename    : bprimeKit_photon.cc
+*  Description : Fill the ntuple with photon information
+*  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+*
 *******************************************************************************/
 
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 
 
 using namespace std;
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 //   bprimeKit method implementation
-//------------------------------------------------------------------------------
-bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSetup )
+// ------------------------------------------------------------------------------
+bool
+bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-   if( fDebug > 1 ) { cout << "\t[1]Entering photon sub-sequence" << endl; }
-   PhotonIterator    it_pho ;
-
-   for( unsigned icoll = 0; icoll < fPhotonCollections.size(); icoll++ ) {
-      if( icoll >= MAX_PHOCOLLECTIONS ) { break    ; }
-      if( fPhotonList_Hs.size() <= icoll   ) { continue ; }
-
+   for( unsigned icoll = 0; icoll < fPhotonCollections.size(); icoll++ ){
+      if( icoll >= MAX_PHOCOLLECTIONS ){ break; }
+      if( fPhotonList_Hs.size() <= icoll   ){ continue; }
       memset( &fPhotonInfo[icoll], 0x00, sizeof( fPhotonInfo[icoll] ) );
-      if( fDebug > 2 ) {
-         cout << "\t\t[2]Fill photon info, collection " << icoll << " with name " << fPhotonCollections[icoll] << endl
-              << " Photon collection size " << fPhotonList_Hs[icoll]->size() << endl; }
-      if( fPhotonList_Hs[icoll]->size() == 3 ) { continue; }
-      for( PhotonIterator it_pho = fPhotonList_Hs[icoll]->begin(); it_pho != fPhotonList_Hs[icoll]->end(); it_pho++ ) {
-         if( fDebug > 2 ) {
-            cout << "\t\t[2]Size " << fPhotonInfo[icoll].Size << " photon pt,eta,phi "
-               << it_pho->pt()  << "," << it_pho->eta() << "," << it_pho->phi() << endl;
-         }
-         if ( fPhotonInfo[icoll].Size >= MAX_PHOTONS ) {
+      if( fPhotonList_Hs[icoll]->size() == 3 ){ continue; }
+
+      for( PhotonIterator it_pho = fPhotonList_Hs[icoll]->begin(); it_pho != fPhotonList_Hs[icoll]->end(); it_pho++ ){
+         if( fPhotonInfo[icoll].Size >= MAX_PHOTONS ){
             cerr <<  "ERROR: number of photons exceeds the size of array." << endl;
-            break;//exit(0);
+            break;// exit(0);
          }
 
-         if( it_pho->pt() < 10.  ) { continue; }
-         if( fabs(it_pho->eta()) > 2.4) { continue; }
+         if( it_pho->pt() < 10.  ){ continue; }
+         if( fabs( it_pho->eta() ) > 2.4 ){ continue; }
 
-         //------------------------  Filling in generic information  -------------------------
+         // ------------------------  Filling in generic information  -------------------------
          fPhotonInfo[icoll].Pt                   [fPhotonInfo[icoll].Size] = it_pho->pt();
          fPhotonInfo[icoll].Eta                  [fPhotonInfo[icoll].Size] = it_pho->eta();
          fPhotonInfo[icoll].Phi                  [fPhotonInfo[icoll].Size] = it_pho->phi();
@@ -52,37 +43,36 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          fPhotonInfo[icoll].SigmaIetaIeta        [fPhotonInfo[icoll].Size] = it_pho->sigmaIetaIeta();
          fPhotonInfo[icoll].hadTowOverEm         [fPhotonInfo[icoll].Size] = it_pho->hadTowOverEm();
          fPhotonInfo[icoll].hcalIsoConeDR04_2012 [fPhotonInfo[icoll].Size] = it_pho->hcalTowerSumEtConeDR04() +
-            ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
-         fPhotonInfo[icoll].passelectronveto     [fPhotonInfo[icoll].Size] = (int) it_pho->passElectronVeto() ;
+                                                                             ( it_pho->hadronicOverEm() - it_pho->hadTowOverEm() ) * it_pho->superCluster()->energy() / cosh( it_pho->superCluster()->eta() );
+         fPhotonInfo[icoll].passelectronveto     [fPhotonInfo[icoll].Size] = (int)it_pho->passElectronVeto();
          fPhotonInfo[icoll].hasPixelSeed         [fPhotonInfo[icoll].Size] = it_pho->hasPixelSeed();
          fPhotonInfo[icoll].r9                   [fPhotonInfo[icoll].Size] = it_pho->r9();
 
-         //-----------------------  Filling in isolation information  ------------------------
-         const auto pho = fPhotonList_Hs[icoll]->ptrAt( fPhotonInfo[icoll].Size );
-         try{
-            fPhotonInfo[icoll].phoPFChIso    [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Charged_H)[pho] ;
-            fPhotonInfo[icoll].phoPFPhoIso   [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Photon_H)[pho] ;
-            fPhotonInfo[icoll].phoPFNeuIso   [fPhotonInfo[icoll].Size] = (*fPhotonIsolation_Neutral_H)[pho] ;
-            fPhotonInfo[icoll].sigmaIetaIeta [fPhotonInfo[icoll].Size] = (*fPhotonSigmaIEtaIEta_H)[pho];
-            fPhotonInfo[icoll].phoPassLoose  [fPhotonInfo[icoll].Size] = (*fPhotonIDLoose)[pho];
-            fPhotonInfo[icoll].phoPassMedium [fPhotonInfo[icoll].Size] = (*fPhotonIDMedium)[pho];
-            fPhotonInfo[icoll].phoPassTight  [fPhotonInfo[icoll].Size] = (*fPhotonIDTight)[pho];
+         // -----------------------  Filling in isolation information  ------------------------
+         const auto pho = fPhotonList_Hs[icoll]->ptrAt( it_pho - fPhotonList_Hs[icoll]->begin() );
+         try {
+            fPhotonInfo[icoll].phoPFChIso    [fPhotonInfo[icoll].Size] = ( *fPhotonIsolation_Charged_H )[pho];
+            fPhotonInfo[icoll].phoPFPhoIso   [fPhotonInfo[icoll].Size] = ( *fPhotonIsolation_Photon_H )[pho];
+            fPhotonInfo[icoll].phoPFNeuIso   [fPhotonInfo[icoll].Size] = ( *fPhotonIsolation_Neutral_H )[pho];
+            fPhotonInfo[icoll].sigmaIetaIeta [fPhotonInfo[icoll].Size] = ( *fPhotonSigmaIEtaIEta_H )[pho];
+            fPhotonInfo[icoll].phoPassLoose  [fPhotonInfo[icoll].Size] = ( *fPhotonIDLoose )[pho];
+            fPhotonInfo[icoll].phoPassMedium [fPhotonInfo[icoll].Size] = ( *fPhotonIDMedium )[pho];
+            fPhotonInfo[icoll].phoPassTight  [fPhotonInfo[icoll].Size] = ( *fPhotonIDTight )[pho];
 
             fPhotonInfo[icoll].isoChEffArea  [fPhotonInfo[icoll].Size]
-            = std::max( float(0.0) ,(*fPhotonIsolation_Charged_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_ChargeHadron.getEffectiveArea(abs(it_pho->eta())));
+               = std::max( float(0.0), ( *fPhotonIsolation_Charged_H )[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_ChargeHadron.getEffectiveArea( abs( it_pho->eta() ) ) );
             fPhotonInfo[icoll].isoPhoEffArea [fPhotonInfo[icoll].Size]
-            = std::max( float(0.0) ,(*fPhotonIsolation_Photon_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_Photons.getEffectiveArea(abs(it_pho->eta()))) ;
+               = std::max( float(0.0), ( *fPhotonIsolation_Photon_H )[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_Photons.getEffectiveArea( abs( it_pho->eta() ) ) );
             fPhotonInfo[icoll].isoNeuEffArea [fPhotonInfo[icoll].Size]
-            = std::max( float(0.0) ,(*fPhotonIsolation_Neutral_H)[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_NeutralHadron.getEffectiveArea(abs(it_pho->eta())));
+               = std::max( float(0.0), ( *fPhotonIsolation_Neutral_H )[pho] - fEvtInfo.Rho*fPhotonEffectiveArea_NeutralHadron.getEffectiveArea( abs( it_pho->eta() ) ) );
          } catch( std::exception& e ){
             cout << "Wierd photon found!!" << endl;
          }
 
-         //----- Generation MC information  ---------------------------------------------
-         if ( !fIsData && !fSkipfGenInfo ) {
-            if( fDebug > 3 ) { cout << "\t\t\t[3]Getting Photon MC information" << endl ; }
+         // ----- Generation MC information  ---------------------------------------------
+         if( !fIsData && !fSkipfGenInfo ){
             const reco::Candidate* gen = it_pho->genPhoton();
-            if ( gen != NULL ) {
+            if( gen != NULL ){
                fPhotonInfo[icoll].GenPt        [fPhotonInfo[icoll].Size] = gen->pt();
                fPhotonInfo[icoll].GenEta       [fPhotonInfo[icoll].Size] = gen->eta();
                fPhotonInfo[icoll].GenPhi       [fPhotonInfo[icoll].Size] = gen->phi();
@@ -92,5 +82,6 @@ bool bprimeKit::FillPhoton( const edm::Event& iEvent, const edm::EventSetup& iSe
          fPhotonInfo[icoll].Size++;
       }
    }
+
    return true;
 }
