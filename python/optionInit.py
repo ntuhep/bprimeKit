@@ -10,7 +10,7 @@ import FWCore.ParameterSet.VarParsing as opts
 
 def initB2GOptions( options ):
    options.register('sample',
-   "/store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v3/00000/0808B606-F497-E611-BA59-008CFA1111F4.root",
+   "/store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v2/000/281/616/00000/A688B9EF-0085-E611-A490-02163E014516.root",
     #     'file:///store/yichen/MiniAODS/MC_80X/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT.root',
          opts.VarParsing.multiplicity.list,
          opts.VarParsing.varType.string,

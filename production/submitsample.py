@@ -26,7 +26,7 @@ config.JobType.pyCfgParams = [
 config.JobType.inputFiles = [
 ]
 
-config.JobType.maxMemoryMB      = 3000 # Requesting slightly more memory
+config.JobType.maxMemoryMB      = 2500 # Requesting slightly more memory
 config.JobType.maxJobRuntimeMin = 2000 # Requesting slightly more runtime
 
 config.Data.inputDataset  = '{2}'
