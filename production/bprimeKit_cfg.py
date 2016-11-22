@@ -91,8 +91,7 @@ process.bprimeKit.Debug           = cms.int32( options.Debug )
 #-------------------------------------------------------------------------------
 #   Final output settings
 #-------------------------------------------------------------------------------
-if options.Debug :
-   process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
+# process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
 process.Path = cms.Path(
     process.bprimeKit

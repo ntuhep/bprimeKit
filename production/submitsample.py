@@ -26,16 +26,16 @@ config.JobType.pyCfgParams = [
 config.JobType.inputFiles = [
 ]
 
-config.JobType.maxMemoryMB      = 2500 # Requesting slightly more memory
+config.JobType.maxMemoryMB      = 2000 # Requesting slightly more memory
 config.JobType.maxJobRuntimeMin = 2000 # Requesting slightly more runtime
 
 config.Data.inputDataset  = '{2}'
 config.Data.inputDBS      = 'global'
-config.Data.splitting     = 'FileBased'
-config.Data.unitsPerJob   = 1
-config.Data.outLFNDirBase = '{3}'
+config.Data.splitting     = 'LumiBased'
+config.Data.unitsPerJob   = {3}
+config.Data.outLFNDirBase = '{4}'
 
-config.Site.storageSite = '{4}'
+config.Site.storageSite = '{5}'
 """
 
 import bpkFrameWork.bprimeKit.datasetparser as myparser
@@ -56,10 +56,17 @@ def submitsample(argv):
         print parser.print_help()
         return 1
 
+
+    ### Constant factors
+    EventsPerLumi   = 3400
+    RuntimePerEvent = 0.32
+    TargetTime      = 8 * 60 * 60
+
     content = crabcfgformat.format(
         myparser.makename( opt.dataset ),
         myparser.getdataprocess( opt.dataset ),
         opt.dataset,
+        int(TargetTime / RuntimePerEvent / EventsPerLumi),
         opt.lfndir,
         opt.site
     )
