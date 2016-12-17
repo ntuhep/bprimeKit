@@ -20,18 +20,19 @@
 
 using namespace std;
 using edm::InputTag;
-// ------------------------------------------------------------------------------
-//   Custom enums, typedefs and macros
-// ------------------------------------------------------------------------------
+
+/*******************************************************************************
+*   Custom ENUMS, typedefs and MACRO functions
+*******************************************************************************/
 typedef std::vector<edm::InputTag> TagList;
 typedef std::vector<std::string>   StrList;
 
 #define GETTOKEN( PARAMSET, TYPE, TAG ) \
    ( consumes<TYPE>( PARAMSET.getParameter<edm::InputTag>( TAG ) ) )
 
-// ------------------------------------------------------------------------------
-//   bprimeKit methods: constructor and destructor
-// ------------------------------------------------------------------------------
+/*******************************************************************************
+*   Constructor and destructor
+*******************************************************************************/
 bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
    // Event related information
    fRhoToken( GETTOKEN( iConfig, double, "rhoLabel" ) ),
@@ -149,13 +150,16 @@ bprimeKit::endJob()
 }
 
 
-// ------------------------------------------------------------------------------
-//   bprimeKit event based analysis methods
-// ------------------------------------------------------------------------------
+/*******************************************************************************
+*   Event based analysis methods
+*******************************************************************************/
 void
 bprimeKit::beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
 {
 }
+
+/******************************************************************************/
+
 void
 bprimeKit::endRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
 {
@@ -164,6 +168,7 @@ bprimeKit::endRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
    fRunTree->Fill();
 }
 
+/******************************************************************************/
 
 void
 bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
@@ -186,9 +191,9 @@ bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 
 }
 
-// ------------------------------------------------------------------------------
-//   Tree set-up options
-// ------------------------------------------------------------------------------
+/*******************************************************************************
+*   Tree set-up options
+*******************************************************************************/
 void
 bprimeKit::InitTree()
 {
@@ -216,11 +221,15 @@ bprimeKit::InitTree()
    fRunInfo.RegisterTree( fRunTree );
 }
 
+/******************************************************************************/
+
 void
 bprimeKit::ClearTree()
 {
    /***** DO NOT DELETE TREES!  **************************************************/
 }
+
+/******************************************************************************/
 
 void
 bprimeKit::GetEventObjects( const edm::Event& iEvent, const edm::EventSetup& iSetup )

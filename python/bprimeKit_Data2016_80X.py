@@ -13,7 +13,7 @@ import bpkFrameWork.bprimeKit.HLTStorage as myHLT
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-GlobalTag            = "80X_dataRun2_Prompt_v14"
+GlobalTag            = "80X_dataRun2_2016SeptRepro_v4"
 ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
 ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
 

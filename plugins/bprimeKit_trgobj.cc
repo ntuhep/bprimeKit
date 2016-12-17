@@ -104,7 +104,7 @@ bprimeKit::GetTriggerIdx( const string& triggername ) const
    if( result != fHighLevelTriggerMap.end() ){
       return result->second;
    } else {
-      cout << "Cannot find trigger index for " << triggername << endl;
+      // cout << "Cannot find trigger index for " << triggername << endl;
       return -1;
    }
 }

@@ -58,7 +58,7 @@ def submitsample(argv):
 
 
     ### Constant factors
-    EventsPerLumi   = 3400
+    EventsPerLumi   = 3400 if myparser.isdata( opt.dataset ) else 200
     RuntimePerEvent = 0.32
     TargetTime      = 8 * 60 * 60
 
