@@ -59,7 +59,7 @@ def submitsample(argv):
 
     ### Constant factors
     EventsPerLumi   = 3400 if myparser.isdata( opt.dataset ) else 200
-    RuntimePerEvent = 0.32
+    RuntimePerEvent = 0.9
     TargetTime      = 8 * 60 * 60
 
     content = crabcfgformat.format(
@@ -81,8 +81,8 @@ def submitsample(argv):
 
     if not os.environ.get('CRABCLIENT_ROOT'):
         os.system('source /cvmfs/cms.cern.ch/crab3/crab.sh')
-    os.system('crab submit ' +filename)
-    # print "Writting to file {}. Do not sumbit crab jobs directly using this version! At most use crab submit --dryrun!".format( filename )
+    #os.system('crab submit ' +filename)
+    print "Writting to file {}. Do not sumbit crab jobs directly using this version! At most use crab submit --dryrun!".format( filename )
 
 
 if __name__ == '__main__':

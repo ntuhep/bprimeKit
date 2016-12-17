@@ -14,7 +14,7 @@ def getdataprocess( dataset ):
         return 'Data2016_SepRepro'
     elif re.match('/.*/RunIISpring16MiniAODv2.*reHLT.*/MINIAODSIM' , dataset):
         return 'MC_MiniAOD_80X'
-    elif re.math("/.*/.*RunIISummer16MiniAODv2.*/MINIAODSIM" , dataset ):
+    elif re.match("/.*/.*RunIISummer16MiniAODv2.*/MINIAODSIM" , dataset ):
         return 'MC_Summer16'
     else:
         print "Error! Dataset pattern is not recognized!"
