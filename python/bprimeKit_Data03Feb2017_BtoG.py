@@ -13,7 +13,7 @@ import bpkFrameWork.bprimeKit.HLTStorage as myHLT
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-GlobalTag            = "80X_dataRun2_2016SeptRepro_v4"
+GlobalTag            = "80X_dataRun2_2016SeptRepro_v7"
 ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
 ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
 
@@ -62,7 +62,7 @@ bprimeKit = cms.EDAnalyzer(
       phoLabel                  = cms.VInputTag( 'slimmedPhotons' ),
       phoLooseIdMap             = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose' ) ,
       phoMediumIdMap            = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium') ,
-      phoTightIdMap             = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight') ,
+      phoTightIdMap             = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight' ) ,
       phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"                          ) ,
       phoNeutralHadronIsolation = cms.InputTag( "photonIDValueMapProducer:phoNeutralHadronIsolation"                    ) ,
       phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"                           ) ,
@@ -89,8 +89,10 @@ bprimeKit = cms.EDAnalyzer(
             jetCollection = cms.string( 'JetInfo' ),
             jetLabel      = cms.InputTag( 'selectedPatJetsAK4PFCHS' ),
             subjetLabel   = cms.InputTag(''), ## No tag for this collection..
+            jecversion    = cms.string(''),# Use ones attached to global tag
+            jettype       = cms.string('AK4PFchs'),
             ),
-         #cms.PSet(
+        # cms.PSet(
         #    jetCollection = cms.string( 'JetInfoPuppi' ),
         #    jetLabel      = cms.InputTag( 'selectedPatJetsAK4PFPuppi' ),
         #    subjetLabel   = cms.InputTag(''), ## No tag for this collection
@@ -99,21 +101,25 @@ bprimeKit = cms.EDAnalyzer(
             jetCollection = cms.string( 'JetAK8Info' ),
             jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFCHS' ),
             subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFCHSSoftDropPacked' ),
+            jecversion    = cms.string(""), # use JEC attached to global tag
+            jettype       = cms.string('AK8PFchs'),
             ),
          cms.PSet(
             jetCollection = cms.string( 'JetCA8Info' ),
             jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFCHS' ),
             subjetLabel   = cms.InputTag( 'patJetsCMSTopTagCHSPacked' ),
+            jecversion    = cms.string(""), # use JEC attached to global tag
+            jettype       = cms.string('AK8PFchs'),
             ),
          #cms.PSet(
-    #        jetCollection = cms.string( 'JetAK8InfoPuppi' ),
-    #        jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFPuppi' ),
-    #        subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFPuppiSoftDropPacked' ),
-    #        ),
+        #    jetCollection = cms.string( 'JetAK8InfoPuppi' ),
+        #    jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFPuppi' ),
+        #    subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFPuppiSoftDropPacked' ),
+        #    ),
          #cms.PSet(
-#            jetCollection = cms.string( 'JetCA8InfoPuppi' ),
-#            jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFPuppi' ),
-#            subjetLabel   = cms.InputTag( 'patJetsCMSTopTagPuppiPacked' ),
-#            ),
+    #        jetCollection = cms.string( 'JetCA8InfoPuppi' ),
+    #        jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFPuppi' ),
+    #        subjetLabel   = cms.InputTag( 'patJetsCMSTopTagPuppiPacked' ),
+    #        ),
         )
       )

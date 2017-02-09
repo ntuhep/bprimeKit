@@ -9,7 +9,7 @@ import re
 
 def getdataprocess( dataset ):
     if re.match( '/.*/.*Run2016.*-PromptReco-v.*/.*',dataset):
-        return 'Data2016_80X'
+        return 'Data2016_SepRepro'
     elif re.match( '/.*/Run2016.*-23Sep2016-v.*/MINIAOD', dataset ):
         return 'Data2016_SepRepro'
     elif re.match('/.*/RunIISpring16MiniAODv2.*reHLT.*/MINIAODSIM' , dataset):

@@ -38,6 +38,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrector.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 
@@ -231,6 +232,9 @@ private:
         //----- Jet related Handles  ---------------------------------------------------
         JetHandleList fJetList_Hs;
         JetHandleList fSubjetList_Hs;
+        std::vector<std::string>               fJetTypeList;
+        std::vector<FactorizedJetCorrector*>   fJetCorrectorList;
+        std::vector<JetCorrectionUncertainty*> fJetCorUncList;
 
         //----- Lepton related Handles  ------------------------------------------------
         std::vector<MuonHandle>      fMuonList_Hs;

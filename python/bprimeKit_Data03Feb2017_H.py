@@ -13,7 +13,7 @@ import bpkFrameWork.bprimeKit.HLTStorage as myHLT
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-GlobalTag            = "80X_dataRun2_2016SeptRepro_v4"
+GlobalTag            = "80X_dataRun2_Prompt_v16"
 ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
 ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
 
@@ -89,6 +89,8 @@ bprimeKit = cms.EDAnalyzer(
             jetCollection = cms.string( 'JetInfo' ),
             jetLabel      = cms.InputTag( 'selectedPatJetsAK4PFCHS' ),
             subjetLabel   = cms.InputTag(''), ## No tag for this collection..
+            jecversion    = cms.string(''),# Use ones attached to global tag
+            jettype       = cms.string('AK4PFchs'),
             ),
         # cms.PSet(
         #    jetCollection = cms.string( 'JetInfoPuppi' ),
@@ -99,11 +101,15 @@ bprimeKit = cms.EDAnalyzer(
             jetCollection = cms.string( 'JetAK8Info' ),
             jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFCHS' ),
             subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFCHSSoftDropPacked' ),
+            jecversion    = cms.string(""), # use JEC attached to global tag
+            jettype       = cms.string('AK8PFchs'),
             ),
          cms.PSet(
             jetCollection = cms.string( 'JetCA8Info' ),
             jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFCHS' ),
             subjetLabel   = cms.InputTag( 'patJetsCMSTopTagCHSPacked' ),
+            jecversion    = cms.string(""), # use JEC attached to global tag
+            jettype       = cms.string('AK8PFchs'),
             ),
          #cms.PSet(
         #    jetCollection = cms.string( 'JetAK8InfoPuppi' ),

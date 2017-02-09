@@ -13,9 +13,9 @@ import FWCore.ParameterSet.Config as cms
 #-------------------------------------------------------------------------
 #   Tag settings
 #-------------------------------------------------------------------------
-GlobalTag = "80X_mcRun2_asymptotic_2016_TrancheIV_v6"
+GlobalTag            = "80X_mcRun2_asymptotic_2016_TrancheIV_v6"
 ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
-ElectronIDModule = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
+ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
 
 #-------------------------------------------------------------------------
 #   BprimeKit input settings
@@ -89,6 +89,8 @@ bprimeKit = cms.EDAnalyzer(
             jetCollection=cms.string('JetInfo'),
             jetLabel=cms.InputTag('selectedPatJetsAK4PFCHS'),
             subjetLabel=cms.InputTag(''),  # No tag for this collection..
+            jecversion=cms.string("Summer16_23Sep2016V3_MC"),
+            jettype=cms.string('AK4PFchs'),
         ),
         # cms.PSet(
         #    jetCollection = cms.string( 'JetInfoPuppi' ),
@@ -99,11 +101,15 @@ bprimeKit = cms.EDAnalyzer(
             jetCollection=cms.string('JetAK8Info'),
             jetLabel=cms.InputTag('selectedPatJetsAK8PFCHS'),
             subjetLabel=cms.InputTag('selectedPatJetsAK8PFCHSSoftDropPacked'),
+            jecversion=cms.string("Summer16_23Sep2016V3_MC"),
+            jettype=cms.string('AK8PFchs'),
         ),
         cms.PSet(
             jetCollection=cms.string('JetCA8Info'),
             jetLabel=cms.InputTag('selectedPatJetsAK8PFCHS'),
             subjetLabel=cms.InputTag('patJetsCMSTopTagCHSPacked'),
+            jecversion=cms.string("Summer16_23Sep2016V3_MC"),
+            jettype=cms.string('AK8PFchs'),
         ),
         # cms.PSet(
         #        jetCollection = cms.string( 'JetAK8InfoPuppi' ),
