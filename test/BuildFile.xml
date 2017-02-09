@@ -5,5 +5,4 @@
 <use name="boost"/>
 <use name="boost_program_options"/>
 
-<bin name="DumpLHEweightID"    file="DumpLHEweightID.cc"/>
 <bin name="DumpTriggerObjects" file="DumpTriggerObjects.cc"/>
