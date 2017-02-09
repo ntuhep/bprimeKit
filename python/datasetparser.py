@@ -8,12 +8,10 @@
 import re
 
 def getdataprocess( dataset ):
-    if re.match( '/.*/.*Run2016.*-PromptReco-v.*/.*',dataset):
-        return 'Data2016_SepRepro'
-    elif re.match( '/.*/Run2016.*-23Sep2016-v.*/MINIAOD', dataset ):
-        return 'Data2016_SepRepro'
-    elif re.match('/.*/RunIISpring16MiniAODv2.*reHLT.*/MINIAODSIM' , dataset):
-        return 'MC_MiniAOD_80X'
+    if re.match( '/.*/Run2016H.*-03Feb2017-v.*/MINIAOD', dataset ):
+        return 'Data03Feb2017_BtoG'
+    elif re.match( '/.*/Run2016[B-G].*-03Feb2017-v.*/MINIAOD', dataset ):
+        return 'Data03Feb2017_H'
     elif re.match("/.*/.*RunIISummer16MiniAODv2.*/MINIAODSIM" , dataset ):
         return 'MC_Summer16'
     else:
