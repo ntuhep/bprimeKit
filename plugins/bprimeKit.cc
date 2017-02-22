@@ -6,6 +6,8 @@
 *
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/NtuplizerBase.hpp"
+#include "bpkFrameWork/bprimeKit/interface/JetNtuplizer.hpp"
 
 #include <TFile.h>
 #include <TTree.h>
@@ -68,32 +70,6 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
   fRunOnB2G           = iConfig.getParameter<bool>( "runOnB2G"        );
   fRunMuonJetCleaning = iConfig.getParameter<bool>( "runMuonJetClean" );
 
-  // ----- Jet related  -------------------------------------------------------
-  for( const auto& jetsetting : iConfig.getParameter<std::vector<edm::ParameterSet> >( "JetSettings" ) ){
-    fJetCollections.push_back( jetsetting.getParameter<std::string>( "jetCollection" ) );
-    fJetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>( "jetLabel" ) ) );
-    fSubjetTokens.push_back( consumes<JetList>( jetsetting.getParameter<edm::InputTag>( "subjetLabel" ) ) );
-    fJetTypeList.push_back( jetsetting.getParameter<string>( "jettype" ) );
-    const string prefix     = "bpkFrameWork/bprimeKit/data/";
-    const string jecversion = jetsetting.getParameter<string>( "jecversion" );
-
-    if( jecversion != "" ){
-      fJetCorrectorList.emplace_back(
-        new FactorizedJetCorrector( {
-        JetCorrectorParameters( edm::FileInPath( prefix + jecversion + "_L1FastJet_" +    fJetTypeList.back() + ".txt" ).fullPath() ),
-        JetCorrectorParameters( edm::FileInPath( prefix + jecversion + "_L2Relative_" +   fJetTypeList.back() + ".txt" ).fullPath() ),
-        JetCorrectorParameters( edm::FileInPath( prefix + jecversion + "_L3Absolute_" +   fJetTypeList.back() + ".txt" ).fullPath() ),
-        JetCorrectorParameters( edm::FileInPath( prefix + jecversion + "_L2L3Residual_" + fJetTypeList.back() + ".txt" ).fullPath() )
-      } ) );
-      fJetCorUncList.emplace_back(
-        new JetCorrectionUncertainty( edm::FileInPath( prefix + jecversion + "_Uncertainty_" + fJetTypeList.back() + ".txt" ).fullPath() )
-        );
-    } else {
-      fJetCorrectorList.push_back( nullptr );
-      fJetCorUncList.push_back( nullptr );
-    }
-  }
-
   // ----- Lepton related  ----------------------------------------------------------------------------
   fLeptonCollections = iConfig.getParameter<StrList>( "LepCollections" );// branch names
   const auto muontag_list = iConfig.getParameter<TagList>( "muonLabel"      );
@@ -134,6 +110,10 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
     fHighLevelTriggerMap.insert( pair<std::string, int>( TriggerBooking[i], i ) );
   }
 
+  for( const auto& jetparm : iConfig.getParameter<edm::VParameterSet>( "jetsettings" ) ){
+    _ntuplizerlist.push_back( new JetNtuplizer( jetparm, this ) );
+  }
+
   /***** MADITORY!! DO NOT REMOVE  *********************************************/
   edm::Service<TFileService> fs;
   TFileDirectory subDir = fs->mkdir( "mySubDirectory" );
@@ -142,6 +122,9 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ) :
 
 bprimeKit::~bprimeKit()
 {
+  for( auto ntuplizer : _ntuplizerlist ){
+    delete ntuplizer;
+  }
 }
 
 
@@ -159,7 +142,12 @@ bprimeKit::beginJob()
 {
   fBaseTree = new TTree( "root", "root" );
   fRunTree  = new TTree( "run", "run"  );
+
   InitTree();
+
+  for( auto ntuplizer : _ntuplizerlist ){
+    ntuplizer->RegisterTree( fBaseTree );
+  }
 }
 void
 bprimeKit::endJob()
@@ -203,8 +191,11 @@ bprimeKit::analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
   FillVertex( iEvent, iSetup );
   FillLepton( iEvent, iSetup );
   FillPhoton( iEvent, iSetup );
-  FillJet( iEvent, iSetup );
   FillTrgObj( iEvent, iSetup );
+
+  for( auto ntuplizer : _ntuplizerlist ){
+    ntuplizer->Analyze(iEvent,iSetup);
+  }
 
   fBaseTree->Fill();
 
@@ -228,11 +219,6 @@ bprimeKit::InitTree()
   for( unsigned i = 0; i < fPhotonCollections.size(); ++i ){
     if( i >= MAX_PHOCOLLECTIONS ){ break; }
     fPhotonInfo[i].RegisterTree( fBaseTree, fPhotonCollections[i] );
-  }
-
-  for( unsigned i = 0; i < fJetCollections.size(); ++i ){
-    if( i >= MAX_JETCOLLECTIONS ){ break; }
-    fJetInfo[i].RegisterTree( fBaseTree, fJetCollections[i] );
   }
 
   fTrgInfo.RegisterTree( fBaseTree );
@@ -273,13 +259,6 @@ bprimeKit::GetEventObjects( const edm::Event& iEvent, const edm::EventSetup& iSe
       iEvent.getByToken( fLHEToken,         fLHEInfo_H );
       iEvent.getByToken( fGenDigiToken,     fRecord_H  );
     }
-  }
-
-  for( unsigned i = 0; i < fJetTokens.size(); ++i ){
-    fJetList_Hs.push_back( JetHandle() );
-    fSubjetList_Hs.push_back( JetHandle() );
-    iEvent.getByToken( fJetTokens[i],    fJetList_Hs[i] );
-    iEvent.getByToken( fSubjetTokens[i], fSubjetList_Hs[i] );
   }
 
   for( unsigned i = 0; i < fMuonTokens.size(); ++i ){

@@ -84,9 +84,6 @@ process.TFileService = cms.Service("TFileService",
 
 # See the file python/bprimeKit_* default settings for the various DataProcessings
 process.bprimeKit = mysetting.bprimeKit
-process.bprimeKit.runMuonJetClean = cms.bool( options.RunMuonJetClean )
-process.bprimeKit.runOnB2G        = cms.bool( options.b2gPreprocess )
-process.bprimeKit.Debug           = cms.int32( options.Debug )
 
 #-------------------------------------------------------------------------------
 #   Final output settings

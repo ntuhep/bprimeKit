@@ -169,8 +169,6 @@ bprimeKit::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSetup, co
          }
       }
 
-      if( IsSelectedMuon( it_mu ) ){ fMySelectedMuons.push_back( it_mu ); }
-
       fLepInfo[icoll].Size++;
 
    }

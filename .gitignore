@@ -13,6 +13,7 @@
 *.root
 *.log
 log*
+.remote-sync.json
 
 # Specific file exclusion
 # [relative/path/to/file]

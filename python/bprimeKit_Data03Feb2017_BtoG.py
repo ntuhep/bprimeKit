@@ -92,11 +92,6 @@ bprimeKit = cms.EDAnalyzer(
             jecversion    = cms.string(''),# Use ones attached to global tag
             jettype       = cms.string('AK4PFchs'),
             ),
-        # cms.PSet(
-        #    jetCollection = cms.string( 'JetInfoPuppi' ),
-        #    jetLabel      = cms.InputTag( 'selectedPatJetsAK4PFPuppi' ),
-        #    subjetLabel   = cms.InputTag(''), ## No tag for this collection
-        #    ),
          cms.PSet(
             jetCollection = cms.string( 'JetAK8Info' ),
             jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFCHS' ),
@@ -111,15 +106,5 @@ bprimeKit = cms.EDAnalyzer(
             jecversion    = cms.string(""), # use JEC attached to global tag
             jettype       = cms.string('AK8PFchs'),
             ),
-         #cms.PSet(
-        #    jetCollection = cms.string( 'JetAK8InfoPuppi' ),
-        #    jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFPuppi' ),
-        #    subjetLabel   = cms.InputTag( 'selectedPatJetsAK8PFPuppiSoftDropPacked' ),
-        #    ),
-         #cms.PSet(
-    #        jetCollection = cms.string( 'JetCA8InfoPuppi' ),
-    #        jetLabel      = cms.InputTag( 'selectedPatJetsAK8PFPuppi' ),
-    #        subjetLabel   = cms.InputTag( 'patJetsCMSTopTagPuppiPacked' ),
-    #        ),
         )
       )
