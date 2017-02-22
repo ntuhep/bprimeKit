@@ -9,7 +9,6 @@
 #define BPKFRAMEWORK_BPRIMEKIT_JETNTUPLIZER_HPP
 
 #include "bpkFrameWork/bprimeKit/interface/NtuplizerBase.hpp"
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
 #include "bpkFrameWork/bprimeKit/interface/format.h"
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -51,11 +50,6 @@ private:
   JetCorrectionUncertainty* _jetunc;
 
   std::vector<std::vector<pat::Muon>::const_iterator> _selectedmuons;
-
-  /*******************************************************************************
-  *   Settings for splitting control flow for adding individual jets
-  *******************************************************************************/
-
 
   /*******************************************************************************
   *   Jet type parsing

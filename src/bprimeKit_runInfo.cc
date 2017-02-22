@@ -5,7 +5,8 @@
 *  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
 *
 *******************************************************************************/
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.hpp"
+
 #include <iostream>
 
 using namespace std;
@@ -13,15 +14,15 @@ using namespace std;
 void
 bprimeKit::FillRunInfo()
 {
-   if( fLHERunInfo_H.isValid() ){
-      fRunInfo.PdfID = fLHERunInfo_H->heprup().PDFSUP.first;
-   } else {
-      cout << "Invalid handle!" << endl;
-   }
+  if( _runinfohandle.isValid() ){
+    RunInfo.PdfID = _runinfohandle->heprup().PDFSUP.first;
+  } else {
+    cerr << "Invalid handle!" << endl;
+  }
 }
 
 void
 bprimeKit::GetRunObjects( const edm::Run& iRun, const edm::EventSetup& iSetup )
 {
-   iRun.getByToken<LHERunInfoProduct>( fLHERunToken, fLHERunInfo_H );
+  iRun.getByToken<LHERunInfoProduct>( _lheruntoken, _runinfohandle );
 }

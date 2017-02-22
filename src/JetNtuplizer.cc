@@ -7,6 +7,8 @@
 #include "bpkFrameWork/bprimeKit/interface/JetNtuplizer.hpp"
 
 // ----- Jet Specific CMSSW packages  ---------------------------------------------------------------
+#include "FWCore/Framework/interface/ESHandle.h"
+
 #include "DataFormats/BTauReco/interface/CATopJetTagInfo.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
@@ -38,7 +40,6 @@ JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
   _jetname( iConfig.getParameter<std::string>( "jetname" ) ),
   _jettype( iConfig.getParameter<std::string>( "jettype" ) ),
   _jecversion( iConfig.getParameter<string>( "jecversion" ) ),
-
   _rhotoken( GetToken<double>( "rhosrc" ) ),
   _vtxtoken( GetToken<std::vector<reco::Vertex> >( "vtxsrc" ) ),
   _jettoken( GetToken<std::vector<pat::Jet> >( "jetsrc" ) ),
@@ -248,7 +249,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.SubjetsIdxStart[JetInfo.Size] += JetInfo.NSubjets[idx_pre];
       }
 
-      JetIterator subjet_bunch = GetSubjetBunch( it_jet  );
+      auto subjet_bunch = GetSubjetBunch( it_jet  );
       if( subjet_bunch != _subjethandle->end() ){
         JetInfo.NSubjets[JetInfo.Size] = subjet_bunch->numberOfDaughters();
 

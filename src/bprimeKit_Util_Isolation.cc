@@ -9,7 +9,9 @@
 *
 *******************************************************************************/
 
-#include "bpkFrameWork/bprimeKit/interface/bprimeKit.h"
+#include "bpkFrameWork/bprimeKit/interface/bprimeKit.hpp"
+
+#include "DataFormats/Math/interface/deltaR.h"
 #include <algorithm>
 
 using namespace std;
