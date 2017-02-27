@@ -1,26 +1,2 @@
-<use   name="root"/>
-<use   name="FWCore/Framework"/>
-<use   name="FWCore/ServiceRegistry"/>
-<use   name="DataFormats/Candidate"/>
-<use   name="DataFormats/PatCandidates"/>
-<use   name="DataFormats/Provenance"/>
-<use   name="DataFormats/HepMCCandidate"/>
-<use   name="DataFormats/BeamSpot"/>
-<use   name="DataFormats/L1GlobalTrigger"/>
-<use   name="MagneticField/Records"/>
-<use   name="MagneticField/Engine"/>
-<use   name="CommonTools/UtilAlgos"/>
-<use   name="PhysicsTools/PatAlgos"/>
-<use   name="PhysicsTools/CandUtils"/>
-<use   name="RecoEgamma/EgammaTools"/>
-<use   name="CondFormats/JetMETObjects"/>
-<use   name="JetMETCorrections/Algorithms"/>
-<use   name="JetMETCorrections/Objects"/>
-<use   name="JetMETCorrections/Modules"/>
-<use   name="EgammaAnalysis/ElectronTools"/>
-<use   name="HLTrigger/HLTcore"/>
-<use   name="SimGeneral/HepPDTRecord"/>
-<use   name="SimDataFormats/GeneratorProducts"/>
-<use   name="RecoBTag/SecondaryVertex"/>
-
+<use name="bpkFrameWork/bprimeKit"/>
 <flags EDM_PLUGIN="1"/>
