@@ -7,7 +7,6 @@
 #  Ditching original cfg framework 2016-03
 #
 #*************************************************************************
-import bpkFrameWork.bprimeKit.HLTStorage as myHLT
 import bpkFrameWork.bprimeKit.Ntuplizer_cfi as ntpl
 import FWCore.ParameterSet.Config as cms
 
