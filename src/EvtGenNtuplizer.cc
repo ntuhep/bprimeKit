@@ -20,10 +20,15 @@ EvtGenNtuplizer::EvtGenNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _pileuptoken( GetToken<vector<PileupSummaryInfo> >( "pusrc" ) ),
   _hlttoken( GetToken<edm::TriggerResults>( "hltsrc" ) ),
   _beamspottoken( GetToken<reco::BeamSpot>( "beamspotsrc" ) ),
+
   _genevttoken( GetToken<GenEventInfoProduct>( "genevtsrc" ) ),
   _genparticletoken( GetToken<vector<reco::GenParticle> >( "gensrc" ) ),
   _gendigitoken( GetToken<L1GlobalTriggerReadoutRecord>( "gtdigisrc" ) ),
-  _lhetoken( GetToken<LHEEventProduct>( "lhesrc" ) )
+  _lhetoken( GetToken<LHEEventProduct>( "lhesrc" ) ),
+
+  _mettriggertoken( GetToken<edm::TriggerResults>( "mettriggersrc" ) ),
+  _metbadmutoken( GetToken<bool>( "metbadmusrc" ) ),
+  _metbadchadtoken( GetToken<bool>( "metbadchadsrc" ) )
 {
 
 }
@@ -59,6 +64,10 @@ EvtGenNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByToken( _genevttoken,      _genevthandle      );
   iEvent.getByToken( _lhetoken,         _lhehandle         );
   iEvent.getByToken( _gendigitoken,     _recordhandle      );
+
+  iEvent.getByToken( _mettriggertoken,  _mettriggerhandle );
+  iEvent.getByToken( _metbadmutoken,    _metbadmuhandle   );
+  iEvent.getByToken( _metbadchadtoken,  _metbadchadhandle );
 
   bool changed = true;
   _hltconfig.init( iEvent.getRun(), iSetup, "HLT", changed );

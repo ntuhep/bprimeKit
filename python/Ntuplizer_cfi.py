@@ -22,16 +22,20 @@ gensrc      = cms.InputTag( 'prunedGenParticles' )
 #   EvtGen settings
 #-------------------------------------------------------------------------------
 evtgenbase = cms.PSet(
-    rhosrc      = rhosrc,
-    metsrc      = cms.InputTag('slimmedMETs'),
-    puppimetsrc = cms.InputTag('slimmedMETsPuppi'),
-    pusrc       = cms.InputTag('slimmedAddPileupInfo'),
-    hltsrc      = hltsrc,
-    beamspotsrc = beamspotsrc,
-    genevtsrc   = cms.InputTag('generator'),
-    gensrc      = gensrc,
-    gtdigisrc   = cms.InputTag('gtDigis'),
-    lhesrc      = cms.InputTag('externalLHEProducer'),
+    rhosrc        = rhosrc,
+    metsrc        = cms.InputTag('slimmedMETs'),
+    puppimetsrc   = cms.InputTag('slimmedMETsPuppi'),
+    pusrc         = cms.InputTag('slimmedAddPileupInfo'),
+    hltsrc        = hltsrc,
+    beamspotsrc   = beamspotsrc,
+    genevtsrc     = cms.InputTag('generator'),
+    gensrc        = gensrc,
+    gtdigisrc     = cms.InputTag('gtDigis'),
+    lhesrc        = cms.InputTag('externalLHEProducer'),
+    metbadchadsrc = cms.InputTag("BadChargedCandidateFilter"),
+    metbadmusrc   = cms.InputTag("BadPFMuonFilter"),
+    mettriggersrc = cms.InputTag("TriggerResults","","RECO")
+
     )
 
 #-------------------------------------------------------------------------------

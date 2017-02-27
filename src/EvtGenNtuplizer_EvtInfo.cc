@@ -25,7 +25,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.Rho      = *_rhohandle;
 
   // ----- Pile up information  -----------------------------------------------------------------------
-  if( !iEvent.isRealData() ){  // Need to shutdown for Data
+  if( !iEvent.isRealData() ){// Need to shutdown for Data
     for( auto it = _pileuphandle->begin(); it != _pileuphandle->end(); ++it ){
       EvtInfo.nPU[EvtInfo.nBX]    = it->getPU_NumInteractions();
       EvtInfo.BXPU[EvtInfo.nBX]   = it->getBunchCrossing();
@@ -68,7 +68,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     EvtInfo.PFSumEt           = it_met->sumEt();
     EvtInfo.PFMETSig          = it_met->mEtSig();       // MET Significance = MET / std::sqrt(SumET)
     EvtInfo.PFMETRealSig      = it_met->significance();       // real MET significance
-    EvtInfo.PFMETlongitudinal = it_met->e_longitudinal();  // longitudinal component of the vector sum of energy over all object
+    EvtInfo.PFMETlongitudinal = it_met->e_longitudinal();// longitudinal component of the vector sum of energy over all object
     const reco::GenMET* genmet = it_met->genMET();
     if( genmet != NULL ){
       EvtInfo.PFGenMET    = genmet->pt();
@@ -84,7 +84,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     EvtInfo.PuppiSumEt           = it_met->sumEt();
     EvtInfo.PuppiMETSig          = it_met->mEtSig();       // MET Significance = MET / std::sqrt(SumET)
     EvtInfo.PuppiMETRealSig      = it_met->significance();       // real MET significance
-    EvtInfo.PuppiMETlongitudinal = it_met->e_longitudinal();  // longitudinal component of the vector sum of energy over all object
+    EvtInfo.PuppiMETlongitudinal = it_met->e_longitudinal();// longitudinal component of the vector sum of energy over all object
     const reco::GenMET* genmet = it_met->genMET();
     if( genmet != NULL ){
       EvtInfo.PuppiGenMET    = genmet->pt();
@@ -106,7 +106,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   // ----- Level 1 trigger and technical trigger bits  ------------------------
   if( _recordhandle.isValid() ){
     DecisionWord dWord = _recordhandle->decisionWord();
-    if( !dWord.empty() ){  // if board not there this is zero
+    if( !dWord.empty() ){// if board not there this is zero
       // loop over dec. bit to get total rate (no overlap)
       for( int i = 0; i < 128; ++i ){
         EvtInfo.L1[i] = dWord[i];
@@ -132,15 +132,15 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   for( size_t i = 0; i < N_TRIGGER_BOOKINGS; ++i ){
     unsigned int TrgIndex = TrgNames.triggerIndex( TriggerBooking[i] );
     if( TrgIndex == TrgNames.size() ){
-      EvtInfo.TrgBook[i] = -4;   // The trigger path is not known in this event.
+      EvtInfo.TrgBook[i] = -4;// The trigger path is not known in this event.
     } else if( !_triggerhandle->wasrun( TrgIndex ) ){
-      EvtInfo.TrgBook[i] = -3;   // The trigger path was not included in this event.
+      EvtInfo.TrgBook[i] = -3;// The trigger path was not included in this event.
     } else if( !_triggerhandle->accept( TrgIndex ) ){
-      EvtInfo.TrgBook[i] = -2;   // The trigger path was not accepted in this event.
+      EvtInfo.TrgBook[i] = -2;// The trigger path was not accepted in this event.
     } else if( _triggerhandle->error( TrgIndex ) ){
-      EvtInfo.TrgBook[i] = -1;   // The trigger path has an error in this event.
+      EvtInfo.TrgBook[i] = -1;// The trigger path has an error in this event.
     } else {
-      EvtInfo.TrgBook[i] = +1;   // It's triggered.
+      EvtInfo.TrgBook[i] = +1;// It's triggered.
       EvtInfo.TrgCount++;
     }
   }
@@ -155,5 +155,29 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     EvtInfo.HLTPrescaleFactor[i] = _hltconfig.prescaleValue( 0, name );
     EvtInfo.HLTName2enum[i]      = bprimeKit::GetTriggerIdx( name );
   }
+
+  /*******************************************************************************
+  *   MET filter requirements
+  *******************************************************************************/
+  const edm::TriggerNames& mettriggername = iEvent.triggerNames( *_mettriggerhandle );
+
+  // lambda function for MET filter trigger parsing
+  auto checkMETfilter
+    = [
+    this,
+    &mettriggername
+      ]( const std::string& triggername ){
+        const unsigned index = mettriggername.triggerIndex( triggername );
+        return this->_mettriggerhandle->accept( index ) && this->_mettriggerhandle->wasrun( index ) && !this->_mettriggerhandle->error( index );
+      };
+
+  EvtInfo.Flag_badMuon                   = *_metbadmuhandle;
+  EvtInfo.Flag_badChargedhadron          = *_metbadchadhandle;
+  EvtInfo.Flag_HBHENoiseFilter           = checkMETfilter( "Flag_HBHENoiseFilter" );
+  EvtInfo.Flag_HBHENoiseIsoFilter        = checkMETfilter( "Flag_HBHENoiseIsoFilter" );
+  EvtInfo.Flag_EcalDeadCell              = checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" );
+  EvtInfo.Flag_goodVertices              = checkMETfilter( "Flag_goodVertices" );
+  EvtInfo.Flag_eeBadScFilter             = checkMETfilter( "Flag_eeBadScFilter" );
+  EvtInfo.Flag_globalTightHalo2016Filter = checkMETfilter( "Flag_globalTightHalo2016Filter" );
 
 }

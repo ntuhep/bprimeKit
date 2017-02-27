@@ -48,6 +48,10 @@ private:
   const edm::EDGetToken _gendigitoken;
   const edm::EDGetToken _lhetoken;
 
+  const edm::EDGetToken _mettriggertoken;
+  const edm::EDGetToken _metbadmutoken;
+  const edm::EDGetToken _metbadchadtoken;
+
   edm::Handle<double> _rhohandle;
   edm::Handle<std::vector<pat::MET>> _methandle;
   edm::Handle<std::vector<pat::MET>> _pmethandle;
@@ -57,13 +61,16 @@ private:
   edm::Handle<L1GlobalTriggerReadoutRecord> _recordhandle;
   HLTConfigProvider _hltconfig;
 
-  // ----- fGenInfo Handles  -------------------------------------------------------
   edm::Handle<GenEventInfoProduct> _genevthandle;
   edm::Handle<std::vector<reco::GenParticle> > _genparticlehandle;
   edm::Handle<LHEEventProduct> _lhehandle;
 
   edm::Handle<std::vector<reco::Vertex> > _vtxhandle;
   edm::Handle<std::vector<reco::Vertex> > _vtxBShandle;
+
+  edm::Handle<bool> _metbadmuhandle;
+  edm::Handle<bool> _metbadchadhandle;
+  edm::Handle<edm::TriggerResults> _mettriggerhandle;
 
   /*******************************************************************************
   *   Helper private functions
