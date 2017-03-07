@@ -8,11 +8,11 @@
 import re
 
 def getdataprocess( dataset ):
-    if re.match( '/.*/Run2016H.*-03Feb2017-v.*/MINIAOD', dataset ):
-        return 'Data03Feb2017_BtoG'
-    elif re.match( '/.*/Run2016[B-G].*-03Feb2017-v.*/MINIAOD', dataset ):
+    if re.match( r'/.*/Run2016H.*-03Feb2017.*/MINIAOD', dataset ):
         return 'Data03Feb2017_H'
-    elif re.match("/.*/.*RunIISummer16MiniAODv2.*/MINIAODSIM" , dataset ):
+    elif re.match( r'/.*/Run2016[B-G].*-03Feb2017.*/MINIAOD', dataset ):
+        return 'Data03Feb2017_BtoG'
+    elif re.match( r'/.*/.*RunIISummer16MiniAODv2.*/MINIAODSIM' , dataset ):
         return 'MC_Summer16'
     else:
         print "Error! Dataset pattern is not recognized!"
@@ -26,7 +26,7 @@ def makename( dataset ):
         return entries[1]
 
 def isdata( dataset ):
-    if re.match( '/.*/./*Run[0-9]{4}.*/.*' , dataset ):
+    if re.match( r'/.*/.*Run[0-9]{4}.*/.*' , dataset ):
         return True;
     else:
         return False

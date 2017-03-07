@@ -171,13 +171,15 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
         return this->_mettriggerhandle->accept( index ) && this->_mettriggerhandle->wasrun( index ) && !this->_mettriggerhandle->error( index );
       };
 
-  EvtInfo.Flag_badMuon                   = *_metbadmuhandle;
-  EvtInfo.Flag_badChargedhadron          = *_metbadchadhandle;
-  EvtInfo.Flag_HBHENoiseFilter           = checkMETfilter( "Flag_HBHENoiseFilter" );
-  EvtInfo.Flag_HBHENoiseIsoFilter        = checkMETfilter( "Flag_HBHENoiseIsoFilter" );
-  EvtInfo.Flag_EcalDeadCell              = checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" );
-  EvtInfo.Flag_goodVertices              = checkMETfilter( "Flag_goodVertices" );
-  EvtInfo.Flag_eeBadScFilter             = checkMETfilter( "Flag_eeBadScFilter" );
-  EvtInfo.Flag_globalTightHalo2016Filter = checkMETfilter( "Flag_globalTightHalo2016Filter" );
+  EvtInfo.McSigTag = (
+    *_metbadmuhandle
+    && *_metbadchadhandle
+    && checkMETfilter( "Flag_HBHENoiseFilter" )
+    && checkMETfilter( "Flag_HBHENoiseIsoFilter" )
+    && checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" )
+    && checkMETfilter( "Flag_goodVertices" )
+    && checkMETfilter( "Flag_eeBadScFilter" )
+    && checkMETfilter( "Flag_globalTightHalo2016Filter" )
+    );
 
 }

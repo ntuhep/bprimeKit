@@ -53,8 +53,9 @@ JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
       JetCorrectorParameters( edm::FileInPath( prefix + _jecversion + "_L3Absolute_" +   _jettype + ".txt" ).fullPath() ),
       JetCorrectorParameters( edm::FileInPath( prefix + _jecversion + "_L2L3Residual_" + _jettype + ".txt" ).fullPath() )
     } );
-    _jetunc =
-      new JetCorrectionUncertainty( edm::FileInPath( prefix + _jecversion + "_Uncertainty_" + _jettype + ".txt" ).fullPath() );
+    _jetunc = new JetCorrectionUncertainty(
+      edm::FileInPath( prefix + _jecversion + "_Uncertainty_" + _jettype + ".txt" ).fullPath()
+      );
   } else {
     _jetcorrector = nullptr;
     _jetunc       = nullptr;
@@ -92,7 +93,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 
   memset( &JetInfo, 0x00, sizeof( JetInfo ) );
 
-  const double pt_cut   = IsAK4() ? 15. : 100;
+  const double pt_cut = IsAK4() ? 15. : 100;
 
   iSetup.get<JetCorrectionsRecord>().get( _jettype.c_str(), jetCorParColl );
   const JetCorrectorParameters& jetCorPar = ( *jetCorParColl )["Uncertainty"];
@@ -186,8 +187,6 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.JetIDLOOSE[JetInfo.Size] = ( jetID ) ?  1 : 0;
 
     // ----- Jet Uncertainty  ----------------------------------------------------
-    jecUnc.setJetEta( it_jet->eta() );
-    jecUnc.setJetPt( it_jet->pt() );// here you must use the CORRECTED jet pt
     if( fabs( it_jet->eta() ) <= 5.0 ){
       if( _jetcorrector && _jetunc ){
         _jetcorrector->setJetEta( it_jet->eta() );
@@ -201,12 +200,15 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         _jetunc->setJetPt( it_jet->pt() * unc );
         JetInfo.JesUnc[JetInfo.Size] = _jetunc->getUncertainty( true );
       } else {
-        JetInfo.Unc[JetInfo.Size]    = jecUnc.getUncertainty( true );
-        JetInfo.JesUnc[JetInfo.Size] = jecUnc.getUncertainty( true );
+        jecUnc.setJetEta( it_jet->eta() );
+        jecUnc.setJetPt( it_jet->pt() );// here you must use the CORRECTED jet pt
+        const double tmp = jecUnc.getUncertainty( true ); // must only be evaluated once.
+        JetInfo.Unc[JetInfo.Size]    = tmp;
+        JetInfo.JesUnc[JetInfo.Size] = tmp;
       }
     }
 
-    // Jet Resolution information
+    // Jet Resolution information --------------------------------------------------
     JME::JetParameters jetparm;
     jetparm.setJetPt( it_jet->pt() ).setJetEta( it_jet->eta() ).setRho( *_rhohandle );
     JetInfo.JERPt [JetInfo.Size]   = jetptres.getResolution( jetparm );

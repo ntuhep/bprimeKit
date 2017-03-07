@@ -78,6 +78,10 @@ triggerbase = cms.PSet(
             HLTFilter=cms.string('hltEle27erWPLooseGsfTrackIsoFilter')
         ),
         cms.PSet(
+            HLTPath=cms.string('HLT_Ele32_eta2p1_WPTight_Gsf_v*'),
+            HLTFilter=cms.string('hltEle32WPTightGsfTrackIsoFilter')
+        ),
+        cms.PSet(
             HLTPath=cms.string('HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v*'),
             HLTFilter=cms.string('hltDiPFJet50') ## For jets
         ),
