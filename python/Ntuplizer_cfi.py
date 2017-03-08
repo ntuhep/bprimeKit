@@ -23,8 +23,8 @@ gensrc      = cms.InputTag( 'prunedGenParticles' )
 #-------------------------------------------------------------------------------
 evtgenbase = cms.PSet(
     rhosrc        = rhosrc,
-    metsrc        = cms.InputTag('slimmedMETs'),
-    puppimetsrc   = cms.InputTag('slimmedMETsPuppi'),
+    metsrc        = cms.InputTag('slimmedMETsMuEGClean'),
+    puppimetsrc   = cms.InputTag('slimmedMETs'),
     pusrc         = cms.InputTag('slimmedAddPileupInfo'),
     hltsrc        = hltsrc,
     beamspotsrc   = beamspotsrc,
