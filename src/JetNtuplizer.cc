@@ -227,9 +227,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     if( IsAK4() ){
       if( _jetname == "JetInfo" ){
         JetInfo.QGTagsLikelihood [JetInfo.Size] = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
-      } else if( _jetname == "JetInfoPuppi" ){
       }
-      // ----- Particle flow information  -----------------------------------------------------------------
     }
 
     // ------------------------------------------------------------------------------
