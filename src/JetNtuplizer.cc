@@ -131,6 +131,11 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.PtCorrRaw   [JetInfo.Size] = it_jet->correctedJet( "Uncorrected" ).pt();
     JetInfo.PtCorrL2    [JetInfo.Size] = it_jet->correctedJet( "L2Relative" ).pt();// L2(rel)
     JetInfo.PtCorrL3    [JetInfo.Size] = it_jet->correctedJet( "L3Absolute" ).pt();// L3(abs)
+    JetInfo.NCH         [JetInfo.Size] = it_jet->chargedMultiplicity();
+    JetInfo.CEF         [JetInfo.Size] = it_jet->chargedEmEnergyFraction();
+    JetInfo.NHF         [JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
+    JetInfo.NEF         [JetInfo.Size] = it_jet->neutralEmEnergyFraction();
+    JetInfo.CHF         [JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
 
     // Legacy corrections?
     // JetInfo.PtCorrL7g   [JetInfo.Size] = it_jet->correctedJet( "L7Parton", "gluon"  ).pt();// L7(gluon)
