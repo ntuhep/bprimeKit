@@ -172,9 +172,9 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
       };
 
   EvtInfo.McSigTag = (
-    *_metbadmuhandle
-    && *_metbadchadhandle
-    && checkMETfilter( "Flag_HBHENoiseFilter" )
+    // *_metbadmuhandle
+    //&& *_metbadchadhandle &&
+    checkMETfilter( "Flag_HBHENoiseFilter" )
     && checkMETfilter( "Flag_HBHENoiseIsoFilter" )
     && checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" )
     && checkMETfilter( "Flag_goodVertices" )

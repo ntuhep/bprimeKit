@@ -39,7 +39,7 @@ JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
   NtuplizerBase( iConfig, bpk ),
   _jetname( iConfig.getParameter<std::string>( "jetname" ) ),
   _jettype( iConfig.getParameter<std::string>( "jettype" ) ),
-  _jecversion( iConfig.getParameter<string>( "jecversion" ) ),
+  _jecversion( iConfig.getParameter<std::string>( "jecversion" ) ),
   _rhotoken( GetToken<double>( "rhosrc" ) ),
   _vtxtoken( GetToken<std::vector<reco::Vertex> >( "vtxsrc" ) ),
   _jettoken( GetToken<std::vector<pat::Jet> >( "jetsrc" ) ),
@@ -47,6 +47,8 @@ JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
   _subjettoken( GetToken<std::vector<pat::Jet> >( "subjetsrc" ) )
 {
   if( _jecversion != "" ){
+     cout << "Jec version:" << _jecversion << endl;
+     cout << "Jet type:" << _jettype << endl; 
     _jetcorrector = new FactorizedJetCorrector( {
       JetCorrectorParameters( edm::FileInPath( prefix + _jecversion + "_L1FastJet_" +    _jettype + ".txt" ).fullPath() ),
       JetCorrectorParameters( edm::FileInPath( prefix + _jecversion + "_L2Relative_" +   _jettype + ".txt" ).fullPath() ),
@@ -221,7 +223,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     // ------------------------------------------------------------------------------
     if( IsAK4() ){
       if( _jetname == "JetInfo" ){
-        JetInfo.QGTagsLikelihood [JetInfo.Size] = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
+        // JetInfo.QGTagsLikelihood [JetInfo.Size] = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
       } else if( _jetname == "JetInfoPuppi" ){
       }
       // ----- Particle flow information  -----------------------------------------------------------------

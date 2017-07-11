@@ -17,7 +17,7 @@ bprimeKit::FillRunInfo()
   if( _runinfohandle.isValid() ){
     RunInfo.PdfID = _runinfohandle->heprup().PDFSUP.first;
   } else {
-    cerr << "Invalid handle!" << endl;
+    cerr << "Invalid handle! Assumming is data" << endl;
   }
 }
 

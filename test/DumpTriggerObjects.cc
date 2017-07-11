@@ -58,16 +58,15 @@ main( int argc, char const* argv[] )
   unsigned i = 1;
 
   for( ev.toBegin(); !ev.atEnd(); ++ev, ++i ){
-    triggerobj_handle.getByLabel( ev, "selectedPatTrigger" );
+    triggerobj_handle.getByLabel( ev, "slimmedPatTrigger" );
     trigger_handle.getByLabel( ev, "TriggerResults", "", hlt.c_str() );
-    const auto& triggernames = ev.triggerNames( *trigger_handle );
 
     fprintf( stdout, "Event [%u/%lld]\n", i, ev.size() );
 
     unsigned j = 0;
 
     for( auto obj : *triggerobj_handle ){
-      obj.unpackPathNames( triggernames );
+      obj.unpackNamesAndLabels( ev, *trigger_handle );
 
       // Checking path
       bool haspath = false;

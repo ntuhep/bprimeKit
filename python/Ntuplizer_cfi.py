@@ -32,9 +32,10 @@ evtgenbase = cms.PSet(
     gensrc        = gensrc,
     gtdigisrc     = cms.InputTag('gtDigis'),
     lhesrc        = cms.InputTag('externalLHEProducer'),
-    metbadchadsrc = cms.InputTag("BadChargedCandidateFilter"),
-    metbadmusrc   = cms.InputTag("BadPFMuonFilter"),
-    mettriggersrc = cms.InputTag("TriggerResults","","RECO")
+    mettriggersrc = cms.InputTag("TriggerResults","","RECO"),
+    ## Disabling on-the-fly MET filters until available
+    # metbadchadsrc = cms.InputTag("BadChargedCandidateFilter"),
+    # metbadmusrc   = cms.InputTag("BadPFMuonFilter"),
 
     )
 
@@ -51,43 +52,19 @@ vertexbase = cms.PSet(
 #-------------------------------------------------------------------------------
 triggerbase = cms.PSet(
     triggersrc    = hltsrc,
-    triggerobjsrc = cms.InputTag( 'selectedPatTrigger'),
+    triggerobjsrc = cms.InputTag( 'slimmedPatTrigger'),
     triggerlist   = cms.VPSet(
-        cms.PSet(
-            HLTPath=cms.string('HLT_IsoMu27_v*'),
-            HLTFilter=cms.string("hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09"),
-            ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Mu45_eta2p1_v*'),
-            HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered45e2p1Q')
-        ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Ele45_WPLoose_Gsf_v*'),
-            HLTFilter=cms.string('hltEle45WPLooseGsfTrackIsoFilter')
-        ),
-        cms.PSet(
+                cms.PSet(
             HLTPath=cms.string('HLT_Mu50_v*'),
+            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele35_WPTight_Gsf_v*'),
+            HLTFilter=cms.string('hltEle40noerWPTightGsfTrackIsoFilter')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele40_WPTight_Gsf_v*'),
             HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q')
-        ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_TkMu50_v*'),
-            HLTFilter=cms.string('hltL3fL1sMu25f0TkFiltered50Q')
-        ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Ele27_eta2p1_WPLoose_Gsf_v*'),
-            HLTFilter=cms.string('hltEle27erWPLooseGsfTrackIsoFilter')
-        ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Ele32_eta2p1_WPTight_Gsf_v*'),
-            HLTFilter=cms.string('hltEle32WPTightGsfTrackIsoFilter')
-        ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v*'),
-            HLTFilter=cms.string('hltDiPFJet50') ## For jets
-        ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Ele45_CaloIdVT_GsfTrkIdT_PFJet200_PFJet50_v*'),
-            HLTFilter=cms.string('hltEle45CaloIdVTGsfTrkIdTGsfDphiFilter') ## For Electron
         ),
     )
 )
@@ -155,6 +132,10 @@ ak4jetbase = jetcommon.clone()
 ak4jetbase.jettype = cms.string('AK4PFchs')
 ak4jetbase.jetsrc  = cms.InputTag('selectedPatJetsAK4PFCHS')
 
+ak4jetpuppi = jetcommon.clone()
+ak4jetpuppi.jettype = cms.string('AK4PFPuppi')
+ak4jetpuppi.jetsrc  = cms.InputTag('selectedPatJetsAK4PFPuppi')
+
 #-------------------------------------------------------------------------
 #   AK8/CA8 jet common settings
 #-------------------------------------------------------------------------
@@ -163,9 +144,24 @@ ak8jetbase.jetname   = cms.string('JetAK8Info')
 ak8jetbase.jettype   = cms.string('AK8PFchs')
 ak8jetbase.jetsrc    = cms.InputTag('selectedPatJetsAK8PFCHS')
 ak8jetbase.subjetsrc = cms.InputTag('selectedPatJetsAK8PFCHSSoftDropPacked')
-##
+
+
+ak8jetpuppi = jetcommon.clone()
+ak8jetpuppi.jetname   = cms.string('JetAK8Puppi')
+ak8jetpuppi.jettype   = cms.string('AK8PFPuppi')
+ak8jetpuppi.jetsrc    = cms.InputTag('selectedPatJetsAK8PFPuppi')
+ak8jetpuppi.subjetsrc = cms.InputTag('selectedPatJetsAK8PFPuppiSoftDropPacked')
+
+################
+
 ca8jetbase = jetcommon.clone()
 ca8jetbase.jetname   = cms.string('JetCA8Info')
 ca8jetbase.jettype   = cms.string('AK8PFchs')
 ca8jetbase.jetsrc    = cms.InputTag('selectedPatJetsAK8PFCHS')
 ca8jetbase.subjetsrc = cms.InputTag('patJetsCMSTopTagCHSPacked')
+
+ca8jetpuppi = jetcommon.clone()
+ca8jetpuppi.jetname   = cms.string('JetCA8Puppi')
+ca8jetpuppi.jettype   = cms.string('AK8PFPuppi')
+ca8jetpuppi.jetsrc    = cms.InputTag('selectedPatJetsAK8PFPuppi')
+ca8jetpuppi.subjetsrc = cms.InputTag('patJetsCMSTopTagPuppiPacked')

@@ -26,9 +26,10 @@ EvtGenNtuplizer::EvtGenNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _gendigitoken( GetToken<L1GlobalTriggerReadoutRecord>( "gtdigisrc" ) ),
   _lhetoken( GetToken<LHEEventProduct>( "lhesrc" ) ),
 
-  _mettriggertoken( GetToken<edm::TriggerResults>( "mettriggersrc" ) ),
-  _metbadmutoken( GetToken<bool>( "metbadmusrc" ) ),
-  _metbadchadtoken( GetToken<bool>( "metbadchadsrc" ) )
+  _mettriggertoken( GetToken<edm::TriggerResults>( "mettriggersrc" ) )
+  // Disabling on-the-fly MET filters,
+  //_metbadmutoken( GetToken<bool>( "metbadmusrc" ) ),
+  //_metbadchadtoken( GetToken<bool>( "metbadchadsrc" ) )
 {
 
 }
@@ -66,8 +67,9 @@ EvtGenNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByToken( _gendigitoken,     _recordhandle      );
 
   iEvent.getByToken( _mettriggertoken,  _mettriggerhandle );
-  iEvent.getByToken( _metbadmutoken,    _metbadmuhandle   );
-  iEvent.getByToken( _metbadchadtoken,  _metbadchadhandle );
+  // Disabling on-the-fly MET filters
+  // iEvent.getByToken( _metbadmutoken,    _metbadmuhandle   );
+  // iEvent.getByToken( _metbadchadtoken,  _metbadchadhandle );
 
   bool changed = true;
   _hltconfig.init( iEvent.getRun(), iSetup, "HLT", changed );

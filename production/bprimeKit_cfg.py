@@ -30,7 +30,7 @@ process.options.allowUnscheduled = cms.untracked.bool(True) ## Run all processes
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.categories.append('HLTrigReport')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 if( options.Debug ):
    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
@@ -39,17 +39,26 @@ process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
-process.load("RecoEgamma/PhotonIdentification/PhotonIDValueMapProducer_cfi")
+process.load("RecoEgamma.PhotonIdentification.PhotonIDValueMapProducer_cfi")
 process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag.globaltag = mysetting.GlobalTag
+
+print "\nFinished basic setups...\n"
+
+#-------------------------------------------------------------------------------
+#   JEC settings
+#-------------------------------------------------------------------------------
+
 
 #-------------------------------------------------------------------------------
 #   Reprocessing Jets
 #     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
+print "\nBeginning jet toolbox setup.....\n"
 from bpkFrameWork.bprimeKit.jettoolbox_settings import *
 jettoolbox_settings( process, "Data" not in options.DataProcessing )
+print "\nFinished jet toolbox setup.....\n"
 
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
@@ -76,15 +85,15 @@ for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 #-------------------------------------------------------------------------------
-#   MET on-the-fly filter setups
+#   MET on-the-fly filter setups ( Disabled until available in 2017 Runs )
 #-------------------------------------------------------------------------------
-process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+#process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+#process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
-process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+#process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
@@ -102,5 +111,6 @@ process.bprimeKit = mysetting.bprimeKit
 # process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
 
 process.Path = cms.Path(
+    process.jettoolboxseq *
     process.bprimeKit
 )

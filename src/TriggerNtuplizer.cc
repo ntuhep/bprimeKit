@@ -51,12 +51,10 @@ TriggerNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSet
   iEvent.getByToken( _triggertoken, _triggerhandle );
   iEvent.getByToken( _triggerobjtoken, _triggerobjhandle );
 
-  const edm::TriggerNames& TrgNames = iEvent.triggerNames( *_triggerhandle );
-
   memset( &TrgInfo, 0x00, sizeof( TrgInfo ) );
 
   for( auto obj : *_triggerobjhandle ){
-    obj.unpackPathNames( TrgNames );
+    obj.unpackNamesAndLabels( iEvent, *_triggerhandle );
 
     for( const auto& hltpair : _triggerlist ){
       if( TrgInfo.Size >= 64 ){ break; }

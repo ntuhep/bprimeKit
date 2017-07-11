@@ -13,7 +13,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer_cfi as ntpl
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-GlobalTag            = "80X_dataRun2_Prompt_v16"
+GlobalTag            = "92X_dataRun2_Prompt_v4"
 ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
 ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
 
@@ -43,6 +43,9 @@ bprimeKit = cms.EDAnalyzer(
     jetsettings=cms.VPSet(
         ntpl.ak4jetbase,
         ntpl.ak8jetbase,
-        ntpl.ca8jetbase
+        ntpl.ca8jetbase,
+        ntpl.ak4jetpuppi,
+        ntpl.ak8jetpuppi,
+        ntpl.ca8jetpuppi
     )
 )
