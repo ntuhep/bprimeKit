@@ -9,7 +9,7 @@ import re
 
 def getdataprocess( dataset ):
     if re.match( r'/.*/Run2017.*-PromptReco.*/MINIAOD', dataset ):
-        return 'Run2017_PromptReco'
+        return 'DataRun2017_PromptReco'
     else:
         print "Error! Dataset pattern is not recognized!"
         raise Exception("Unrecognized data")

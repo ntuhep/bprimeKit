@@ -14,7 +14,7 @@ def submitlist( argv ):
     parser = optparse.OptionParser()
     parser.add_option( '-i', '--inputfile', dest='input', help='inputfile to read', default=None, type='string')
     parser.add_option('-s','--site',dest='site',help='which site to store output', default='T2_CH_CERN', type='string')
-    parser.add_option('-l','--lfndir',dest='lfndir',help='the storage lfn directory' , default='/store/group/phys_b2g/BprimeKit_Ntuples_CMSSW_80X', type='string')
+    parser.add_option('-l','--lfndir',dest='lfndir',help='the storage lfn directory' , default='/store/group/phys_b2g/BprimeKit_Ntuples_CMSSW_92X', type='string')
 
     opt, args = parser.parse_args( argv )
 
