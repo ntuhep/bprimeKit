@@ -2,7 +2,7 @@
  #
  #  Filename    : bprimeKit_MC_76X.py
  #  Description : Default settings for 76X
- #  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ #  Author      : Yi-Mu 'Enoch' Chen [ ensc@hep1.phys.ntu.edu.tw ]
  #
  #  Ditching original cfg framework 2016-03
  #
@@ -13,15 +13,16 @@ import bpkFrameWork.bprimeKit.Ntuplizer_cfi as ntpl
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-GlobalTag            = "92X_dataRun2_Prompt_v4"
-ElectronIDHEEPModule = "RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff"
-ElectronIDModule     = "RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff"
+isData               = True
+GlobalTag            = '92X_dataRun2_Prompt_v4'
+ElectronIDHEEPModule = 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
+ElectronIDModule     = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff'
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags
 #-------------------------------------------------------------------------------
 bprimeKit = cms.EDAnalyzer(
-    "bprimeKit",
+    'bprimeKit',
 
     lherunsrc=cms.InputTag('externalLHEProducer'),
 

@@ -104,7 +104,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
       LepInfo.EgammaCutBasedEleIdTIGHT  [LepInfo.Size] = (int)( ( *_electronIDTight )[el] );
       // LepInfo.EgammaCutBasedEleIdHEEP   [LepInfo.Size] = (int)((*fElectronIDHEEP_H)[el]);
     } catch( cms::Exception& x ){
-      cout << "Weird electron found!" << endl;
+      // cout << "Weird electron found!" << endl;
     }
     LepInfo.ChargedHadronIso            [LepInfo.Size] = it_el->pfIsolationVariables().sumChargedHadronPt;
     LepInfo.NeutralHadronIso            [LepInfo.Size] = it_el->pfIsolationVariables().sumPhotonEt;

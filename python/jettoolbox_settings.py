@@ -2,7 +2,7 @@
  #
  #  Filename    : jettoolbox_settings.py
  #  Description : Configuration settings for jet settings
- #  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+ #  Author      : Yi-Mu 'Enoch' Chen [ ensc@hep1.phys.ntu.edu.tw ]
  #
 #*******************************************************************************
 import FWCore.ParameterSet.Config     as cms
@@ -379,7 +379,7 @@ def jettoolbox_settings( process , runMC ):
         process.patJetsCMSTopTagPuppiPacked
     )
 
-    process.jettoolboxseq = cms.Sequence(
+    return cms.Sequence(
         process.chs *
         process.puppi    *
         process.inclusiveCandidateVertexFinderCvsL *

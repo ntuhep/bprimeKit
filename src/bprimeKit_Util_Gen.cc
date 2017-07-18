@@ -57,11 +57,9 @@ std::map<std::string,int> bprimeKit::_hltmap;
 int
 bprimeKit::GetTriggerIdx( const string& triggername )
 {
-  const auto& result = _hltmap.find( triggername  );
-  if( result != _hltmap.end() ){
-    return result->second;
+  if( _hltmap.count( triggername ) ){
+    return _hltmap.at(triggername);
   } else {
-    // cout << "Cannot find trigger index for " << triggername << endl;
     return -1;
   }
 }

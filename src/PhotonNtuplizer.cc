@@ -115,7 +115,7 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
       PhotonInfo.isoPhoEffArea [PhotonInfo.Size] = std::max( 0.0,  isopho - rho * areapho );
       PhotonInfo.isoNeuEffArea [PhotonInfo.Size] = std::max( 0.0, isonuhad - rho*areanuhad );
     } catch( std::exception& e ){
-      cout << "Wierd photon found!!" << endl;
+      // cout << "Weird photon found!!" << endl;
     }
 
     // ----- Generation MC information  ---------------------------------------------

@@ -13,6 +13,7 @@
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 
 #include "TFile.h"
+#include <boost/format.hpp>
 #include <boost/program_options.hpp>
 #include <cstdio>
 #include <string>
@@ -29,7 +30,6 @@ main( int argc, char const* argv[] )
   desc.add_options()
     ( "file,f", opt::value<string>(), "Path to file" )
     ( "path,p", opt::value<string>(), "HLT Path to use" )
-    ( "HLT,h", opt::value<string>(), "HLT Process to use (HLT for data, HLT2 for reHLT MC samples)" )
     ( "filter,l", opt::value<string>(), "HLT Filter path to use" )
     ( "help", "produces help message and exit" )
   ;
@@ -41,14 +41,12 @@ main( int argc, char const* argv[] )
     cout << desc << endl;
     return 0;
   }
-  if( !input.count( "file" ) ){ cout << "file not specified!" << endl;     return 1; }
-  if( !input.count( "path" ) ){ cout << "HLT path not specified!" << endl; return 1; }
-  if( !input.count( "HLT" ) ){ cout << "HLT process not specified!" << endl; return 1; }
-  if( !input.count( "filter" ) ){ cout << "HLT filter process not specified!" << endl; return 1; }
+  if( !input.count( "file" ) ){ cout << "file not specified!" << endl << desc << endl;     return 1; }
+  if( !input.count( "path" ) ){ cout << "HLT path not specified!" << endl << desc << endl; return 1; }
+  if( !input.count( "filter" ) ){ cout << "HLT filter process not specified!" << endl << desc << endl; return 1; }
 
   const string filename = input["file"].as<string>();
   const string reqpath  = input["path"].as<string>();
-  const string hlt      = input["HLT"].as<string>();
   const string filter   = input["filter"].as<string>();
 
   fwlite::Event ev( TFile::Open( filename.c_str() ) );
@@ -59,7 +57,7 @@ main( int argc, char const* argv[] )
 
   for( ev.toBegin(); !ev.atEnd(); ++ev, ++i ){
     triggerobj_handle.getByLabel( ev, "slimmedPatTrigger" );
-    trigger_handle.getByLabel( ev, "TriggerResults", "", hlt.c_str() );
+    trigger_handle.getByLabel( ev, "TriggerResults", "", "HLT" );
 
     fprintf( stdout, "Event [%u/%lld]\n", i, ev.size() );
 
@@ -72,52 +70,56 @@ main( int argc, char const* argv[] )
       bool haspath = false;
 
       for( const auto& path : obj.pathNames() ){
-        if( path.find( reqpath ) != std::string::npos && obj.hasPathName( path ) ){ haspath = true; break; }
+        if( path.find( reqpath ) != std::string::npos ){
+          haspath = true;
+          break;
+        }
       }
 
-      if( !haspath ){ continue; }
       // Checking filter
       bool hasfilter = false;
 
       for( const auto& objfilter : obj.filterLabels() ){
-        if( objfilter.find( filter ) != std::string::npos ){ hasfilter = true; break; }
+        if( objfilter.find( filter ) != std::string::npos ){
+          hasfilter = true;
+          break;
+        }
       }
 
+      if( !haspath   ){ continue; }
       if( !hasfilter ){ continue; }
 
-      fprintf(
-        stdout, "\tTrigger object [%d] pt:%lf eta:%lf phi%lf\n",
-        j, obj.pt(), obj.eta(), obj.phi()
-        );
+      cout << boost::format( "\tTrigger object [%d] pt:%lf eta:%lf phi%lf" )
+        % j % obj.pt() % obj.eta() %  obj.phi()
+           << endl;
 
-      fprintf(
-        stdout, "\t\tCollection\t %s\n",
-        obj.collection().c_str()
-        );
+      cout << boost::format( "\t\tCollection\t %s" )
+        % obj.collection()
+           << endl;
 
-      fprintf( stdout, "\t\tFilter IDs:\t" );
+      cout << "\t\tFilter IDs:\t" << flush;
 
       for( const auto& id : obj.filterIds() ){
-        fprintf( stdout, " %d", id );
+        cout << boost::format( " %d" ) % id << flush;
       }
 
-      fprintf( stdout, "\n" );
+      cout << endl;
 
-      fprintf( stdout, "\t\tFilter Names:\t" );
+      cout <<  "\t\tFilter Names:\t"  << flush;
 
       for( const auto& filter : obj.filterLabels() ){
-        fprintf( stdout, " %s", filter.c_str() );
+        cout << boost::format( " %s" ) % filter << flush;
       }
 
-      fprintf( stdout, "\n" );
+      cout << endl;
 
-      fprintf( stdout, "\t\tHLT Paths:\t" );
+      cout << "\t\tHLT Paths:\t" << flush;
 
       for( const auto& path : obj.pathNames() ){
-        fprintf( stdout, " %s", path.c_str() );
+        cout << boost::format( " %s" ) % path << flush;
       }
 
-      fprintf( stdout, "\n\n" );
+      cout << endl << endl;
       ++j;
     }
   }

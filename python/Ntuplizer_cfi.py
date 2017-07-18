@@ -2,7 +2,7 @@
 #
 #  Filename    : Ntuplizer_cfi.
 #  Description : Settings for common ntuplizer settings
-#  Author      : Yi-Mu "Enoch" Chen [ ensc@hep1.phys.ntu.edu.tw ]
+#  Author      : Yi-Mu 'Enoch' Chen [ ensc@hep1.phys.ntu.edu.tw ]
 #
 #*************************************************************************
 import FWCore.ParameterSet.Config as cms
@@ -32,10 +32,10 @@ evtgenbase = cms.PSet(
     gensrc        = gensrc,
     gtdigisrc     = cms.InputTag('gtDigis'),
     lhesrc        = cms.InputTag('externalLHEProducer'),
-    mettriggersrc = cms.InputTag("TriggerResults","","RECO"),
+    mettriggersrc = cms.InputTag('TriggerResults','','RECO'),
     ## Disabling on-the-fly MET filters until available
-    # metbadchadsrc = cms.InputTag("BadChargedCandidateFilter"),
-    # metbadmusrc   = cms.InputTag("BadPFMuonFilter"),
+    # metbadchadsrc = cms.InputTag('BadChargedCandidateFilter'),
+    # metbadmusrc   = cms.InputTag('BadPFMuonFilter'),
 
     )
 
@@ -54,17 +54,21 @@ triggerbase = cms.PSet(
     triggersrc    = hltsrc,
     triggerobjsrc = cms.InputTag( 'slimmedPatTrigger'),
     triggerlist   = cms.VPSet(
-                cms.PSet(
+        cms.PSet(
             HLTPath=cms.string('HLT_Mu50_v*'),
-            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07')
+            HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_Ele35_WPTight_Gsf_v*'),
-            HLTFilter=cms.string('hltEle40noerWPTightGsfTrackIsoFilter')
+            HLTFilter=cms.string('hltEle35noerWPTightGsfTrackIsoFilter')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele38_WPTight_Gsf_v*'),
+            HLTFilter=cms.string('hltEle38noerWPTightGsfTrackIsoFilter')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_Ele40_WPTight_Gsf_v*'),
-            HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q')
+            HLTFilter=cms.string('hltEle40noerWPTightGsfTrackIsoFilter')
         ),
     )
 )
@@ -79,13 +83,13 @@ photonbase = cms.PSet(
     phoLooseIdMap  = cms.InputTag(  'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose'),
     phoMediumIdMap = cms.InputTag( 'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium'),
     phoTightIdMap  = cms.InputTag(  'egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-tight'),
-    phoChargedIsolation       = cms.InputTag( "photonIDValueMapProducer:phoChargedIsolation"),
-    phoNeutralHadronIsolation = cms.InputTag("photonIDValueMapProducer:phoNeutralHadronIsolation"),
-    phoPhotonIsolation        = cms.InputTag( "photonIDValueMapProducer:phoPhotonIsolation"),
-    full5x5SigmaIEtaIEtaMap   = cms.InputTag("photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta"),
-    effAreaChHadFile  = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfChargedHadrons_V2.txt"),
-    effAreaNeuHadFile = cms.FileInPath("RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfNeutralHadrons_V2.txt"),
-    effAreaPhoFile    = cms.FileInPath( "RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfPhotons_V2.txt"),
+    phoChargedIsolation       = cms.InputTag( 'photonIDValueMapProducer:phoChargedIsolation'),
+    phoNeutralHadronIsolation = cms.InputTag('photonIDValueMapProducer:phoNeutralHadronIsolation'),
+    phoPhotonIsolation        = cms.InputTag( 'photonIDValueMapProducer:phoPhotonIsolation'),
+    full5x5SigmaIEtaIEtaMap   = cms.InputTag('photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta'),
+    effAreaChHadFile  = cms.FileInPath('RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfChargedHadrons_V2.txt'),
+    effAreaNeuHadFile = cms.FileInPath('RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfNeutralHadrons_V2.txt'),
+    effAreaPhoFile    = cms.FileInPath( 'RecoEgamma/PhotonIdentification/data/PHYS14/effAreaPhotons_cone03_pfPhotons_V2.txt'),
 
 )
 
@@ -133,6 +137,7 @@ ak4jetbase.jettype = cms.string('AK4PFchs')
 ak4jetbase.jetsrc  = cms.InputTag('selectedPatJetsAK4PFCHS')
 
 ak4jetpuppi = jetcommon.clone()
+ak4jetpuppi.jetname = cms.string('JetInfoPuppi')
 ak4jetpuppi.jettype = cms.string('AK4PFPuppi')
 ak4jetpuppi.jetsrc  = cms.InputTag('selectedPatJetsAK4PFPuppi')
 
