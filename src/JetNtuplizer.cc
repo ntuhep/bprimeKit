@@ -48,7 +48,7 @@ JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
 {
   if( _jecversion != "" ){
      cout << "Jec version:" << _jecversion << endl;
-     cout << "Jet type:" << _jettype << endl; 
+     cout << "Jet type:" << _jettype << endl;
     _jetcorrector = new FactorizedJetCorrector( {
       JetCorrectorParameters( edm::FileInPath( prefix + _jecversion + "_L1FastJet_" +    _jettype + ".txt" ).fullPath() ),
       JetCorrectorParameters( edm::FileInPath( prefix + _jecversion + "_L2Relative_" +   _jettype + ".txt" ).fullPath() ),
@@ -133,12 +133,6 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.PtCorrRaw   [JetInfo.Size] = it_jet->correctedJet( "Uncorrected" ).pt();
     JetInfo.PtCorrL2    [JetInfo.Size] = it_jet->correctedJet( "L2Relative" ).pt();// L2(rel)
     JetInfo.PtCorrL3    [JetInfo.Size] = it_jet->correctedJet( "L3Absolute" ).pt();// L3(abs)
-
-    // Legacy corrections?
-    // JetInfo.PtCorrL7g   [JetInfo.Size] = it_jet->correctedJet( "L7Parton", "gluon"  ).pt();// L7(gluon)
-    // JetInfo.PtCorrL7uds [JetInfo.Size] = it_jet->correctedJet( "L7Parton", "uds"    ).pt();// L7(uds-jet)
-    // JetInfo.PtCorrL7c   [JetInfo.Size] = it_jet->correctedJet( "L7Parton", "charm"  ).pt();// L7(c-jet)
-    // JetInfo.PtCorrL7b   [JetInfo.Size] = it_jet->correctedJet( "L7Parton", "bottom" ).pt();// L7(b-jet)
 
     // ----- B Tagging discriminators  ------------------------------------------------------------------
     JetInfo.pfJetBProbabilityBJetTags[JetInfo.Size]
