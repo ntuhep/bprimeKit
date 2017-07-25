@@ -14,7 +14,6 @@ rhosrc      = cms.InputTag( 'fixedGridRhoFastjetAll' )
 vtxsrc      = cms.InputTag( 'offlineSlimmedPrimaryVertices' )
 vtxBSsrc    = cms.InputTag( 'offlinePrimaryVerticesWithBS' )
 beamspotsrc = cms.InputTag( 'offlineBeamSpot' )
-hltsrc      = cms.InputTag( 'TriggerResults::HLT' )
 gensrc      = cms.InputTag( 'prunedGenParticles' )
 
 
@@ -26,11 +25,9 @@ evtgenbase = cms.PSet(
     metsrc        = cms.InputTag('slimmedMETs'),
     puppimetsrc   = cms.InputTag('slimmedMETsPuppi'),
     pusrc         = cms.InputTag('slimmedAddPileupInfo'),
-    hltsrc        = hltsrc,
     beamspotsrc   = beamspotsrc,
     genevtsrc     = cms.InputTag('generator'),
     gensrc        = gensrc,
-    gtdigisrc     = cms.InputTag('gtDigis'),
     lhesrc        = cms.InputTag('externalLHEProducer'),
     mettriggersrc = cms.InputTag('TriggerResults','','RECO'),
     ## Disabling on-the-fly MET filters until available
@@ -51,8 +48,9 @@ vertexbase = cms.PSet(
 #   Trigger object settings
 #-------------------------------------------------------------------------------
 triggerbase = cms.PSet(
-    triggersrc    = hltsrc,
+    triggersrc      = cms.InputTag( 'TriggerResults::HLT' ),
     triggerobjsrc = cms.InputTag( 'slimmedPatTrigger'),
+    gtdigisrc     = cms.InputTag('gtDigis'),
     triggerlist   = cms.VPSet(
         cms.PSet(
             HLTPath=cms.string('HLT_Mu50_v*'),

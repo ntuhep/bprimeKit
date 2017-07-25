@@ -7,6 +7,7 @@
 *******************************************************************************/
 #include "DataFormats/HLTReco/interface/TriggerTypeDefs.h"
 #include "bpkFrameWork/bprimeKit/interface/TriggerNtuplizer.hpp"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include <regex>
 using namespace std;
 
@@ -16,7 +17,8 @@ using namespace std;
 TriggerNtuplizer::TriggerNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ):
   NtuplizerBase( iConfig, bpk ),
   _triggertoken( GetToken<edm::TriggerResults>("triggersrc") ),
-  _triggerobjtoken( GetToken<std::vector<pat::TriggerObjectStandAlone>>("triggerobjsrc") )
+  _triggerobjtoken( GetToken<std::vector<pat::TriggerObjectStandAlone>>("triggerobjsrc") ),
+  _gendigitoken( GetToken<L1GlobalTriggerReadoutRecord>( "gtdigisrc" ) )
 {
 
   for( const auto& paramset : iConfig.getParameter<std::vector<edm::ParameterSet> >( "triggerlist" ) ){
@@ -50,8 +52,68 @@ TriggerNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSet
 {
   iEvent.getByToken( _triggertoken, _triggerhandle );
   iEvent.getByToken( _triggerobjtoken, _triggerobjhandle );
+  iEvent.getByToken( _gendigitoken,     _recordhandle      );
 
   memset( &TrgInfo, 0x00, sizeof( TrgInfo ) );
+
+
+  TrgInfo.nTrgBook = N_TRIGGER_BOOKINGS;
+
+  bool changed = true;
+  _hltconfig.init( iEvent.getRun(), iSetup, "HLT", changed );
+  
+  // ----- Level 1 trigger and technical trigger bits  ------------------------
+  if( _recordhandle.isValid() ){
+    DecisionWord dWord = _recordhandle->decisionWord();
+    if( !dWord.empty() ){// if board not there this is zero
+      // loop over dec. bit to get total rate (no overlap)
+      for( int i = 0; i < 128; ++i ){
+        TrgInfo.L1[i] = dWord[i];
+      }
+    }
+    TechnicalTriggerWord tw = _recordhandle->technicalTriggerWord();
+    if( !tw.empty() ){
+      // loop over dec. bit to get total rate (no overlap)
+      for( int i = 0; i < 64; ++i ){
+        TrgInfo.TT[i] = tw[i];
+      }
+    }
+  }
+  
+  /*******************************************************************************
+  *   Trigger variables
+  *******************************************************************************/
+  const edm::TriggerNames& TrgNames = iEvent.triggerNames( *_triggerhandle );
+
+  // Getting trigger table
+  TrgInfo.TrgCount = 0;
+
+  for( size_t i = 0; i < N_TRIGGER_BOOKINGS; ++i ){
+    unsigned int TrgIndex = TrgNames.triggerIndex( TriggerBooking[i] );
+    if( TrgIndex == TrgNames.size() ){
+      TrgInfo.TrgBook[i] = -4;// The trigger path is not known in this event.
+    } else if( !_triggerhandle->wasrun( TrgIndex ) ){
+      TrgInfo.TrgBook[i] = -3;// The trigger path was not included in this event.
+    } else if( !_triggerhandle->accept( TrgIndex ) ){
+      TrgInfo.TrgBook[i] = -2;// The trigger path was not accepted in this event.
+    } else if( _triggerhandle->error( TrgIndex ) ){
+      TrgInfo.TrgBook[i] = -1;// The trigger path has an error in this event.
+    } else {
+      TrgInfo.TrgBook[i] = +1;// It's triggered.
+      TrgInfo.TrgCount++;
+    }
+  }
+
+  TrgInfo.nHLT = TrgNames.size();
+
+  // TODO Assuming prescale set = 0 , check.
+  // Enoch 2016-02-04
+  for( size_t i = 0; i < TrgNames.size(); ++i ){
+    const std::string name = TrgNames.triggerName( i );
+    TrgInfo.HLTbits[i]           = _triggerhandle->accept( i ) ? 1 : 0;
+    TrgInfo.HLTPrescaleFactor[i] = _hltconfig.prescaleValue( 0, name );
+    TrgInfo.HLTName2enum[i]      = bprimeKit::GetTriggerIdx( name );
+  }
 
   for( auto obj : *_triggerobjhandle ){
     obj.unpackNamesAndLabels( iEvent, *_triggerhandle );
