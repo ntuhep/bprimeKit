@@ -48,7 +48,7 @@ vertexbase = cms.PSet(
 #   Trigger object settings
 #-------------------------------------------------------------------------------
 triggerbase = cms.PSet(
-    triggersrc      = cms.InputTag( 'TriggerResults::HLT' ),
+    triggersrc    = cms.InputTag( 'TriggerResults::HLT' ),
     triggerobjsrc = cms.InputTag( 'slimmedPatTrigger'),
     gtdigisrc     = cms.InputTag('gtDigis'),
     triggerlist   = cms.VPSet(
