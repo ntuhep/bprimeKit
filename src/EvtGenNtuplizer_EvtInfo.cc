@@ -98,5 +98,15 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   //EvtInfo.Flag_badMuon                   = *_metbadmuhandle;
   //EvtInfo.Flag_badChargedhadron          = *_metbadchadhandle;
 
+  EvtInfo.Flag_METFilter = (
+    EvtInfo.Flag_HBHENoiseFilter
+    && EvtInfo.Flag_HBHENoiseIsoFilter
+    && EvtInfo.Flag_EcalDeadCell
+    && EvtInfo.Flag_goodVertices
+    && EvtInfo.Flag_eeBadScFilter
+    && EvtInfo.Flag_globalTightHalo2016Filter
+    // && EvtInfo.Flag_badMuon
+    // && EvtInfo.Flag_badChargedhadron
+    );
 
 }

@@ -18,7 +18,6 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
   // Early exit for data
   if( iEvent.isRealData() ){ return; }
 
-  const reco::Candidate* MCDaughters[14];
   const reco::Candidate* dau1;
   const reco::Candidate* dau2;
   std::vector<const reco::Candidate*> cands;
@@ -27,7 +26,7 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
   std::vector<const reco::Candidate*>::const_iterator mother1, mother2;
   std::vector<const reco::Candidate*>::const_iterator gmother1, gmother2;
   int NMo, NDa;
-  int pdgId, dauId1, dauId2, monId;
+  int dauId1, dauId2, monId;
 
   bool isTZTZ = false;
   bool isTZTH = false;
@@ -37,11 +36,6 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
   bool isBWBW = false;
   vector<int> quarkID;
   vector<int> bosonID;
-
-  for( int i = 0; i < 14; i++ ){
-    MCDaughters[i] = NULL;
-  }
-
 
   for( auto it_gen = _genparticlehandle->begin(); it_gen != _genparticlehandle->end(); it_gen++ ){
     cands.push_back( &*it_gen );
@@ -78,7 +72,6 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     // ----- Setting up common variable  -------------------------------------
     dauId1 = dauId2 = monId = 0;
     dau1   = dau2 = NULL;
-    pdgId  = it_gen->pdgId();
     NMo    = it_gen->numberOfMothers();
     NDa    = it_gen->numberOfDaughters();
 
@@ -177,81 +170,7 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     if( NMo >= 1 ){
       monId = it_gen->mother( 0 )->pdgId();
     }
-
-    // ----- b' decay mode  --------------------------------------------------
-    // b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH
-    if( pdgId == +7 ){
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[0] = dau1; }
-    } else if( pdgId == -7 ){
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[1] = dau1; }
-    }
-    // ----- t' decay mode  --------------------------------------------------
-    // 0:other, 1bW, 2:tZ, 3:tH , 4:tGamma
-    else if( pdgId == +8 ){
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[0] = dau1; }
-    } else if( pdgId == -8 ){
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[1] = dau1; }
-    } 
-    // ----- W decay mode  ---------------------------------------------------
-    // 0:others, 1:enu, 2:munu, 3:taunu, 4:jj
-    else if( pdgId == -24 && ( monId == +7 || monId == -8 ) ){// W- from b' or t' bar
-      MCDaughters[2] = dau1;
-      MCDaughters[3] = dau2;
-    } else if( pdgId == +24 && monId == +6 ){// W+ from t
-      MCDaughters[4] = dau1;
-      MCDaughters[5] = dau2;
-    } else if( pdgId == +24 && ( monId == -7 || monId == +8 ) ){// W+ from b'bar or t'
-      MCDaughters[6] = dau1;
-      MCDaughters[7] = dau2;
-    } else if( pdgId == -24 && monId == -6 ){// W- from tbar
-      MCDaughters[8] = dau1;
-      MCDaughters[9] = dau2;
-    }
-    // ----- Z decay mode  ---------------------------------------------------
-    // 0:others, 1:ee, 2:mumu, 3:tautau, 4:nunu, 5:bb, b:jj
-    else if( pdgId == 23 && ( monId == +7 || monId == +8 ) ){// Z from b' or t'
-      MCDaughters[10] = dau1;
-      MCDaughters[11] = dau2;
-    } else if( pdgId == 23 && ( monId == -7 || monId == -8 ) ){// Z from b'bar or t'bar
-      MCDaughters[12] = dau1;
-      MCDaughters[13] = dau2;
-    }
   }
-
-  // ----- Fill generation daughters  -----------------------------------------
-  // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
-  for( int i = 0; i < 14; i++ ){
-    if( MCDaughters[i] == NULL ){ continue; }
-  }
-
   // --------------------------------------------------------------------------
   //   Begin main part of ljmet algorithm
   //   Main reference: https://github.com/cms-ljmet/Ljmet-Com/blob/master/src/TpTpCalc.cc
@@ -326,14 +245,17 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     for( size_t i = 0; i < bosonID.size(); i++ ){
       cout << "boson " << i << " = " << bosonID[i] << endl;
     }
-  }
+ }
 
+  
   GenInfo.McIsTZTZ = isTZTZ;
   GenInfo.McIsTHTH = isTHTH;
   GenInfo.McIsTZTH = isTZTH;
   GenInfo.McIsTZBW = isTZBW;
   GenInfo.McIsTHBW = isTHBW;
   GenInfo.McIsBWBW = isBWBW;
+  
+ 
 }
 
 /*******************************************************************************
