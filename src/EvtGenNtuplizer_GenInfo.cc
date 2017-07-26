@@ -18,7 +18,6 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
   // Early exit for data
   if( iEvent.isRealData() ){ return; }
 
-  const reco::Candidate* MCDaughters[14];
   const reco::Candidate* dau1;
   const reco::Candidate* dau2;
   std::vector<const reco::Candidate*> cands;
@@ -27,7 +26,7 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
   std::vector<const reco::Candidate*>::const_iterator mother1, mother2;
   std::vector<const reco::Candidate*>::const_iterator gmother1, gmother2;
   int NMo, NDa;
-  int pdgId, dauId1, dauId2, monId;
+  int dauId1, dauId2, monId;
 
   bool isTZTZ = false;
   bool isTZTH = false;
@@ -38,22 +37,28 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
   vector<int> quarkID;
   vector<int> bosonID;
 
-  for( int i = 0; i < 14; i++ ){
-    MCDaughters[i] = NULL;
-  }
-
-
   for( auto it_gen = _genparticlehandle->begin(); it_gen != _genparticlehandle->end(); it_gen++ ){
     cands.push_back( &*it_gen );
   }
 
   // Event wide objects
   GenInfo.Weight            = _genevthandle->weight();
-  EvtInfo.ptHat             = _genevthandle->qScale();
+  GenInfo.ptHat             = _genevthandle->qScale();
   GenInfo.LHENominalWeight  = _lhehandle->hepeup().XWGTUP;
   GenInfo.LHEOriginalWeight = _lhehandle->originalXWGTUP();
   GenInfo.LHESize           = std::min( MAX_LHE, (int)( _lhehandle->weights().size() ) );
 
+  // ----- Generation information  --------------------------------------------
+  if( !iEvent.isRealData() && _genevthandle->hasPDF() ){
+    GenInfo.PDFid1   = _genevthandle->pdf()->id.first;
+    GenInfo.PDFid2   = _genevthandle->pdf()->id.second;
+    GenInfo.PDFx1    = _genevthandle->pdf()->x.first;
+    GenInfo.PDFx2    = _genevthandle->pdf()->x.second;
+    GenInfo.PDFscale = _genevthandle->pdf()->scalePDF;
+    GenInfo.PDFv1    = _genevthandle->pdf()->xPDF.first;
+    GenInfo.PDFv2    = _genevthandle->pdf()->xPDF.second;
+  }
+  
   for( int i = 0; i < GenInfo.LHESize; ++i ){
     GenInfo.LHESystematicWeights[i] = _lhehandle->weights().at( i ).wgt;
     GenInfo.LHESystematicId[i]      = std::stoi( _lhehandle->weights().at( i ).id.data() );
@@ -67,7 +72,6 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     // ----- Setting up common variable  -------------------------------------
     dauId1 = dauId2 = monId = 0;
     dau1   = dau2 = NULL;
-    pdgId  = it_gen->pdgId();
     NMo    = it_gen->numberOfMothers();
     NDa    = it_gen->numberOfDaughters();
 
@@ -166,159 +170,7 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     if( NMo >= 1 ){
       monId = it_gen->mother( 0 )->pdgId();
     }
-
-    // ----- b' decay mode  --------------------------------------------------
-    // b' decay - 0:other, 1:tW, 2:cW, 3:bZ 4:bH
-    if( pdgId == +7 ){
-      EvtInfo.McbprimeMass[0] = it_gen->p4().mag();
-      // b' decay mode      - 0: others, 1: tW, 2: cW, 3: bZ, 4: bH
-      if( dauId1 == 6 && dauId2 == 24 ){ EvtInfo.McbprimeMode[0] = 1; }
-      if( dauId1 == 4 && dauId2 == 24 ){ EvtInfo.McbprimeMode[0] = 2; }
-      if( dauId1 == 5 && dauId2 == 23 ){ EvtInfo.McbprimeMode[0] = 3; }
-      if( dauId1 == 5 && dauId2 == 25 ){ EvtInfo.McbprimeMode[0] = 4; }
-      if( EvtInfo.McbprimeMode[0] == 0 ){ continue; }
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[0] = dau1; }
-    } else if( pdgId == -7 ){
-      EvtInfo.McbprimeMass[1] = it_gen->p4().mag();
-      if( dauId1 == 6 && dauId2 == 24 ){ EvtInfo.McbprimeMode[1] = 1; }
-      if( dauId1 == 4 && dauId2 == 24 ){ EvtInfo.McbprimeMode[1] = 2; }
-      if( dauId1 == 5 && dauId2 == 23 ){ EvtInfo.McbprimeMode[1] = 3; }
-      if( dauId1 == 5 && dauId2 == 25 ){ EvtInfo.McbprimeMode[1] = 4; }
-      if( EvtInfo.McbprimeMode[1] == 0 ){ continue; }
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[1] = dau1; }
-    }
-    // ----- t' decay mode  --------------------------------------------------
-    // 0:other, 1bW, 2:tZ, 3:tH , 4:tGamma
-    else if( pdgId == +8 ){
-      EvtInfo.MctprimeMass[0] = it_gen->p4().mag();
-      if( dauId1 == 5 && dauId2 == 24 ){ EvtInfo.MctprimeMode[0] = 1; }
-      if( dauId1 == 6 && dauId2 == 23 ){ EvtInfo.MctprimeMode[0] = 2; }
-      if( dauId1 == 6 && dauId2 == 25 ){ EvtInfo.MctprimeMode[0] = 3; }
-      if( dauId1 == 6 && dauId2 == 22 ){ EvtInfo.MctprimeMode[0] = 4; }
-      if( EvtInfo.MctprimeMode[0] == 0 ){ continue; }
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[0] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[0] = dau1; }
-    } else if( pdgId == -8 ){
-      EvtInfo.MctprimeMass[1] = it_gen->p4().mag();
-      if( dauId1 == 5 && dauId2 == 24 ){ EvtInfo.MctprimeMode[1] = 1; }
-      if( dauId1 == 6 && dauId2 == 23 ){ EvtInfo.MctprimeMode[1] = 2; }
-      if( dauId1 == 6 && dauId2 == 25 ){ EvtInfo.MctprimeMode[1] = 3; }
-      if( dauId1 == 6 && dauId2 == 22 ){ EvtInfo.MctprimeMode[1] = 4; }
-      if( EvtInfo.MctprimeMode[1] == 0 ){ continue; }
-      if( dauId1 == 6 ){
-        if( abs( dau1->daughter( 0 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 0 );
-        }
-        if( abs( dau1->daughter( 1 )->pdgId() ) == 5 ){
-          MCDaughters[1] = dau1->daughter( 1 );
-        }
-      } else { MCDaughters[1] = dau1; }
-    } else if( pdgId == +6 ){// find top
-      EvtInfo.MctopMass[0] = it_gen->p4().mag();
-    } else if( pdgId == -6 ){// find tbar
-      EvtInfo.MctopMass[1] = it_gen->p4().mag();
-    }
-    // ----- W decay mode  ---------------------------------------------------
-    // 0:others, 1:enu, 2:munu, 3:taunu, 4:jj
-    else if( pdgId == -24 && ( monId == +7 || monId == -8 ) ){// W- from b' or t' bar
-      EvtInfo.McWMass[0] = it_gen->p4().mag();
-      if( dauId1 == 11 && dauId2 == 12 ){ EvtInfo.McWMode[0] = 1; }
-      if( dauId1 == 13 && dauId2 == 14 ){ EvtInfo.McWMode[0] = 2; }
-      if( dauId1 == 15 && dauId2 == 16 ){ EvtInfo.McWMode[0] = 3; }
-      if( dauId1 >= 1  && dauId2 <= 5  ){ EvtInfo.McWMode[0] = 4; }
-      if( EvtInfo.McWMode[0] == 0 ){ continue; }
-      MCDaughters[2] = dau1;
-      MCDaughters[3] = dau2;
-    } else if( pdgId == +24 && monId == +6 ){// W+ from t
-      EvtInfo.McWMass[1] = it_gen->p4().mag();
-      if( dauId1 == 11 && dauId2 == 12 ){ EvtInfo.McWMode[1] = 1; }
-      if( dauId1 == 13 && dauId2 == 14 ){ EvtInfo.McWMode[1] = 2; }
-      if( dauId1 == 15 && dauId2 == 16 ){ EvtInfo.McWMode[1] = 3; }
-      if( dauId1 >= 1 && dauId2 <= 5 ){ EvtInfo.McWMode[1] = 4; }
-      if( EvtInfo.McWMode[1] == 0 ){ continue; }
-      MCDaughters[4] = dau1;
-      MCDaughters[5] = dau2;
-    } else if( pdgId == +24 && ( monId == -7 || monId == +8 ) ){// W+ from b'bar or t'
-      EvtInfo.McWMass[2] = it_gen->p4().mag();
-      if( dauId1 == 11 && dauId2 == 12 ){ EvtInfo.McWMode[2] = 1; }
-      if( dauId1 == 13 && dauId2 == 14 ){ EvtInfo.McWMode[2] = 2; }
-      if( dauId1 == 15 && dauId2 == 16 ){ EvtInfo.McWMode[2] = 3; }
-      if( dauId1 >= 1 && dauId2 <= 5 ){ EvtInfo.McWMode[2] = 4; }
-      if( EvtInfo.McWMode[2] == 0 ){ continue; }
-      MCDaughters[6] = dau1;
-      MCDaughters[7] = dau2;
-    } else if( pdgId == -24 && monId == -6 ){// W- from tbar
-      EvtInfo.McWMass[3] = it_gen->p4().mag();
-      if( dauId1 == 11 && dauId2 == 12 ){ EvtInfo.McWMode[3] = 1; }
-      if( dauId1 == 13 && dauId2 == 14 ){ EvtInfo.McWMode[3] = 2; }
-      if( dauId1 == 15 && dauId2 == 16 ){ EvtInfo.McWMode[3] = 3; }
-      if( dauId1 >= 1 && dauId2 <= 5 ){ EvtInfo.McWMode[3] = 4; }
-      if( EvtInfo.McWMode[3] == 0 ){ continue; }
-      MCDaughters[8] = dau1;
-      MCDaughters[9] = dau2;
-    }
-    // ----- Z decay mode  ---------------------------------------------------
-    // 0:others, 1:ee, 2:mumu, 3:tautau, 4:nunu, 5:bb, b:jj
-    else if( pdgId == 23 && ( monId == +7 || monId == +8 ) ){// Z from b' or t'
-      EvtInfo.McZMass[0] = it_gen->p4().mag();
-      if( dauId1 == 11 && dauId2 == 11 ){ EvtInfo.McZMode[0] = 1; }
-      if( dauId1 == 13 && dauId2 == 13 ){ EvtInfo.McZMode[0] = 2; }
-      if( dauId1 == 15 && dauId2 == 15 ){ EvtInfo.McZMode[0] = 3; }
-      if( ( dauId1 == 12 && dauId2 == 12 ) ||
-          ( dauId1 == 14 && dauId2 == 14 ) ||
-          ( dauId1 == 16 && dauId2 == 16 ) ){ EvtInfo.McZMode[0] = 4; }
-      if( dauId1 == 5 && dauId2 == 5 ){ EvtInfo.McZMode[0] = 5; }
-      if( dauId1 >= 1 && dauId2 <= 4 ){ EvtInfo.McZMode[0] = 6; }
-      if( EvtInfo.McZMode[0] == 0 ){ continue; }
-      MCDaughters[10] = dau1;
-      MCDaughters[11] = dau2;
-    } else if( pdgId == 23 && ( monId == -7 || monId == -8 ) ){// Z from b'bar or t'bar
-      EvtInfo.McZMass[1] = it_gen->p4().mag();
-      if( dauId1 == 11 && dauId2 == 11 ){ EvtInfo.McZMode[1] = 1; }
-      if( dauId1 == 13 && dauId2 == 13 ){ EvtInfo.McZMode[1] = 2; }
-      if( dauId1 == 15 && dauId2 == 15 ){ EvtInfo.McZMode[1] = 3; }
-      if( ( dauId1 == 12 && dauId2 == 12 ) ||
-          ( dauId1 == 14 && dauId2 == 14 ) ||
-          ( dauId1 == 16 && dauId2 == 16 ) ){ EvtInfo.McZMode[1] = 4; }
-      if( dauId1 == 5 && dauId2 == 5 ){ EvtInfo.McZMode[1] = 5; }
-      if( dauId1 >= 1 && dauId2 <= 4 ){ EvtInfo.McZMode[1] = 6; }
-      if( EvtInfo.McZMode[0] == 0 ){ continue; }
-
-      MCDaughters[12] = dau1;
-      MCDaughters[13] = dau2;
-    }
   }
-
-  // ----- Fill generation daughters  -----------------------------------------
-  // MC daughters: 0-1: hard jet from b'bar/t'bar, 2-9: W daughters, 10-13: Z daughters
-  for( int i = 0; i < 14; i++ ){
-    if( MCDaughters[i] == NULL ){ continue; }
-    EvtInfo.McDauPt[i]    = MCDaughters[i]->pt();
-    EvtInfo.McDauEta[i]   = MCDaughters[i]->eta();
-    EvtInfo.McDauPhi[i]   = MCDaughters[i]->phi();
-    EvtInfo.McDauPdgID[i] = MCDaughters[i]->pdgId();
-  }
-
   // --------------------------------------------------------------------------
   //   Begin main part of ljmet algorithm
   //   Main reference: https://github.com/cms-ljmet/Ljmet-Com/blob/master/src/TpTpCalc.cc
@@ -393,14 +245,17 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     for( size_t i = 0; i < bosonID.size(); i++ ){
       cout << "boson " << i << " = " << bosonID[i] << endl;
     }
-  }
+ }
 
-  EvtInfo.McIsTZTZ = isTZTZ;
-  EvtInfo.McIsTHTH = isTHTH;
-  EvtInfo.McIsTZTH = isTZTH;
-  EvtInfo.McIsTZBW = isTZBW;
-  EvtInfo.McIsTHBW = isTHBW;
-  EvtInfo.McIsBWBW = isBWBW;
+  
+  GenInfo.McIsTZTZ = isTZTZ;
+  GenInfo.McIsTHTH = isTHTH;
+  GenInfo.McIsTZTH = isTZTH;
+  GenInfo.McIsTZBW = isTZBW;
+  GenInfo.McIsTHBW = isTHBW;
+  GenInfo.McIsBWBW = isBWBW;
+  
+ 
 }
 
 /*******************************************************************************

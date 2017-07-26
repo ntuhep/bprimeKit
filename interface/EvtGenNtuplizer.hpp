@@ -12,9 +12,7 @@
 #include "format.h"
 
 #include "DataFormats/Common/interface/TriggerResults.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
-#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
@@ -45,7 +43,6 @@ private:
 
   const edm::EDGetToken _genevttoken;
   const edm::EDGetToken _genparticletoken;
-  const edm::EDGetToken _gendigitoken;
   const edm::EDGetToken _lhetoken;
 
   const edm::EDGetToken _mettriggertoken;
@@ -58,8 +55,6 @@ private:
   edm::Handle<std::vector<PileupSummaryInfo> > _pileuphandle;
   edm::Handle<edm::TriggerResults> _triggerhandle;
   edm::Handle<reco::BeamSpot> _beamspothandle;
-  edm::Handle<L1GlobalTriggerReadoutRecord> _recordhandle;
-  HLTConfigProvider _hltconfig;
 
   edm::Handle<GenEventInfoProduct> _genevthandle;
   edm::Handle<std::vector<reco::GenParticle> > _genparticlehandle;
