@@ -58,7 +58,7 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     GenInfo.PDFv1    = _genevthandle->pdf()->xPDF.first;
     GenInfo.PDFv2    = _genevthandle->pdf()->xPDF.second;
   }
-  
+
   for( int i = 0; i < GenInfo.LHESize; ++i ){
     GenInfo.LHESystematicWeights[i] = _lhehandle->weights().at( i ).wgt;
     GenInfo.LHESystematicId[i]      = std::stoi( _lhehandle->weights().at( i ).id.data() );
@@ -247,15 +247,15 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     }
  }
 
-  
+
   GenInfo.McIsTZTZ = isTZTZ;
   GenInfo.McIsTHTH = isTHTH;
   GenInfo.McIsTZTH = isTZTH;
   GenInfo.McIsTZBW = isTZBW;
   GenInfo.McIsTHBW = isTHBW;
   GenInfo.McIsBWBW = isBWBW;
-  
- 
+
+
 }
 
 /*******************************************************************************

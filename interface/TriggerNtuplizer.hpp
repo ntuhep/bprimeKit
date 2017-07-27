@@ -38,7 +38,7 @@ private:
   edm::Handle<L1GlobalTriggerReadoutRecord> _recordhandle;
 
   HLTConfigProvider _hltconfig;
-  
+
   // Helper container classes
   std::vector<std::pair<std::string,std::string>> _triggerlist;
 

@@ -74,7 +74,7 @@ print '\nFinished basic setups...\n'
 #-------------------------------------------------------------------------------
 print '\nBeginning jet toolbox setup.....\n'
 from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-process.jettoolboxseq = jettoolbox_settings( process, mysetting.isData )
+process.jettoolboxseq = jettoolbox_settings( process, not mysetting.isData )
 print '\nFinished jet toolbox setup.....\n'
 
 #-------------------------------------------------------------------------------
