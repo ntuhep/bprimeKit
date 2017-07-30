@@ -18,7 +18,6 @@ EvtGenNtuplizer::EvtGenNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _mettoken( GetToken<vector<pat::MET> >( "metsrc" ) ),
   _pmettoken( GetToken<vector<pat::MET> >( "puppimetsrc" ) ),
   _pileuptoken( GetToken<vector<PileupSummaryInfo> >( "pusrc" ) ),
-  _hlttoken( GetToken<edm::TriggerResults>( "hltsrc" ) ),
   _beamspottoken( GetToken<reco::BeamSpot>( "beamspotsrc" ) ),
   _genevttoken( GetToken<GenEventInfoProduct>( "genevtsrc" ) ),
   _genparticletoken( GetToken<vector<reco::GenParticle> >( "gensrc" ) ),

@@ -36,7 +36,6 @@ private:
   const edm::EDGetToken _mettoken;
   const edm::EDGetToken _pmettoken;
   const edm::EDGetToken _pileuptoken;
-  const edm::EDGetToken _hlttoken;
   const edm::EDGetToken _vtxtoken;
   const edm::EDGetToken _vtxBStoken;
   const edm::EDGetToken _beamspottoken;
@@ -53,7 +52,6 @@ private:
   edm::Handle<std::vector<pat::MET>> _methandle;
   edm::Handle<std::vector<pat::MET>> _pmethandle;
   edm::Handle<std::vector<PileupSummaryInfo> > _pileuphandle;
-  edm::Handle<edm::TriggerResults> _triggerhandle;
   edm::Handle<reco::BeamSpot> _beamspothandle;
 
   edm::Handle<GenEventInfoProduct> _genevthandle;
