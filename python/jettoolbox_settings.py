@@ -104,6 +104,9 @@ def jettoolbox_settings( process , runMC ):
         Cut                = ''
     )
 
+    #Avoid producing additional JetToolBox format files
+    delattr(process, 'edmOut')
+
     # Required because allowedUnsheduled is broken?
     # Or the jetttoolbox is not adding all the sequences
     process.ak4chs = cms.Sequence(
