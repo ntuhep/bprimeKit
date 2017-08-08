@@ -104,8 +104,9 @@ def jettoolbox_settings( process , runMC ):
         Cut                = ''
     )
 
-    #Avoid producing additional JetToolBox format files, kick out the "EndPath" attribute of process.
+    #To avoid producing additional JetToolBox format files, kick out the "EndPath" attribute of process.
     #Aditionally remove the unscheduled mode added by JetToolBox which results in segmentation violation???
+    #(temporary!!)
     delattr(process, 'endpath')
 
     # Required because allowedUnsheduled is broken?
