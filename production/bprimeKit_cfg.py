@@ -130,6 +130,7 @@ process.bprimeKit = mysetting.bprimeKit
 
 process.Path = cms.Path(
 #    process.jettoolboxseq *
+    process.egmGsfElectronIDSequence*
     process.bprimeKit,
     jettoolboxTask
 )

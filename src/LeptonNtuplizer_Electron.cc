@@ -97,15 +97,11 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
 
     // ----- Isolation variables  -----------------------------------------------------------------------
     const edm::Ptr<pat::Electron> el( _electronhandle, it_el - _electronhandle->begin() );
-    try {
-      LepInfo.EgammaCutBasedEleIdVETO   [LepInfo.Size] = (int)( ( *_electronIDVeto )[el] );
-      LepInfo.EgammaCutBasedEleIdLOOSE  [LepInfo.Size] = (int)( ( *_electronIDLoose )[el] );
-      LepInfo.EgammaCutBasedEleIdMEDIUM [LepInfo.Size] = (int)( ( *_electronIDMedium )[el] );
-      LepInfo.EgammaCutBasedEleIdTIGHT  [LepInfo.Size] = (int)( ( *_electronIDTight )[el] );
-      // LepInfo.EgammaCutBasedEleIdHEEP   [LepInfo.Size] = (int)((*fElectronIDHEEP_H)[el]);
-    } catch( cms::Exception& x ){
-      // cout << "Weird electron found!" << endl;
-    }
+    LepInfo.EgammaCutBasedEleIdVETO     [LepInfo.Size] = (int)( ( *_electronIDVeto )[el] );
+    LepInfo.EgammaCutBasedEleIdLOOSE    [LepInfo.Size] = (int)( ( *_electronIDLoose )[el] );
+    LepInfo.EgammaCutBasedEleIdMEDIUM   [LepInfo.Size] = (int)( ( *_electronIDMedium )[el] );
+    LepInfo.EgammaCutBasedEleIdTIGHT    [LepInfo.Size] = (int)( ( *_electronIDTight )[el] );
+    // LepInfo.EgammaCutBasedEleIdHEEP   [LepInfo.Size] = (int)((*fElectronIDHEEP_H)[el]);
     LepInfo.ChargedHadronIso            [LepInfo.Size] = it_el->pfIsolationVariables().sumChargedHadronPt;
     LepInfo.NeutralHadronIso            [LepInfo.Size] = it_el->pfIsolationVariables().sumPhotonEt;
     LepInfo.PhotonIso                   [LepInfo.Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
