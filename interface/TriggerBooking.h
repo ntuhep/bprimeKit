@@ -3,7 +3,7 @@
 
 #define N_TRIGGER_BOOKINGS 486
 
-//update to 2.2.2V4
+//update to 2.2.3V1
 
 const std::string TriggerBooking[N_TRIGGER_BOOKINGS] = {
 
