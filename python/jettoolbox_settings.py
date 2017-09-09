@@ -125,12 +125,3 @@ def jettoolbox_settings( process , runMC ):
     #Use new Task() attribute of python
     JetToolBoxSequence = cms.Sequence( process.myTask )
     setattr( process, 'JetToolBoxSequence', JetToolBoxSequence)
-
-    # process.QGTaggerAK4PFPuppi *
-    # process.ak8PFJetsPuppiPruned *
-    # process.ak8PFJetsPuppiTrimmed *
-    # process.ak8PFJetsPuppiFiltered *
-    # process.ak8PFJetsPuppiFilteredMass *
-    # process.ak8PFJetsPuppiTrimmedMass *
-    # process.ak8PFJetsPuppiPrunedMass *
-    # process.ak8PFJetsPuppiSoftDropMass *
