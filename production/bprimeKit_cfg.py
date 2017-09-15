@@ -48,7 +48,6 @@ process.source = cms.Source('PoolSource',
     fileNames = cms.untracked.vstring(options.sample))
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
-process.options.allowUnscheduled = cms.untracked.bool(True) ## Run all processes regardless of definition
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.categories.append('HLTrigReport')
@@ -74,7 +73,7 @@ print '\nFinished basic setups...\n'
 #-------------------------------------------------------------------------------
 print '\nBeginning jet toolbox setup.....\n'
 from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-process.jettoolboxseq = jettoolbox_settings( process, not mysetting.isData )
+jettoolbox_settings( process, not mysetting.isData )
 print '\nFinished jet toolbox setup.....\n'
 
 #-------------------------------------------------------------------------------
@@ -128,6 +127,7 @@ process.bprimeKit = mysetting.bprimeKit
 # process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',ignoreTotal = cms.untracked.int32(1) )
 
 process.Path = cms.Path(
-    process.jettoolboxseq *
+    process.egmGsfElectronIDSequence*
+    process.JetToolBoxSequence*
     process.bprimeKit
 )
