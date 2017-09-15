@@ -17,6 +17,7 @@ isData               = True
 GlobalTag            = '92X_dataRun2_Prompt_v8'
 ElectronIDHEEPModule = 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
 ElectronIDModule     = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff'
+PhotonIDModule       = 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff'
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags
