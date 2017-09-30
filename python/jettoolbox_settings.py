@@ -8,17 +8,16 @@
 import FWCore.ParameterSet.Config     as cms
 from   JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 
-listBTagInfos = [
-    'pfInclusiveSecondaryVertexFinderTagInfos',
-]
-
 listBtagDiscriminators = [
-    'pfJetProbabilityBJetTags',
+    #Standard CSVv2 b-tagging discriminator
     'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-    'pfCombinedMVAV2BJetTags',
+    #AK8 double b-tagging discriminator
     'pfBoostedDoubleSecondaryVertexAK8BJetTags',
-    'pfCombinedCvsLJetTags',
-    'pfCombinedCvsBJetTags'
+    #Deep CSV
+    'pfDeepCSVJetTags:probb',
+    'pfDeepCSVJetTags:probc',
+    'pfDeepCSVJetTags:probudsg'
+#    'pfDeepCSVJetTags:probbb'
 ]
 
 ak4Cut='pt > 25 && abs(eta) < 5.'
@@ -33,18 +32,18 @@ def jettoolbox_settings( process , runMC ):
     jetToolbox( process, 'ak4', 'ak4chs', 'edmOut',
         runOnMC            = runMC,
         addQGTagger        = True,
-        bTagInfos          = listBTagInfos,
         bTagDiscriminators = listBtagDiscriminators,
-        Cut                = ak4Cut )
+        Cut                = ak4Cut
+    )
 
     jetToolbox( process, 'ak4', 'ak4puppi', 'edmOut',
-        runOnMC=runMC,
-        PUMethod='Puppi',
-        newPFCollection=True,
+        runOnMC            =runMC,
+        PUMethod           ='Puppi',
+        newPFCollection    =True,
         nameNewPFCollection='puppi',
-        bTagInfos=listBTagInfos,
-        bTagDiscriminators=listBtagDiscriminators,
-        Cut=ak4Cut )
+        bTagDiscriminators =listBtagDiscriminators,
+        Cut                =ak4Cut
+    )
 
     jetToolbox( process, 'ak8', 'ak8chs', 'edmOut',
         runOnMC            = runMC,
@@ -55,31 +54,30 @@ def jettoolbox_settings( process , runMC ):
         addFiltering       = True,
         addSoftDrop        = True,
         addNsub            = True,
-        bTagInfos          = listBTagInfos,
         bTagDiscriminators = listBtagDiscriminators,
         addCMSTopTagger    = True,
         Cut                = ak8Cut ,
         addNsubSubjets     = True,
-        subjetMaxTau       = 4 )
+        subjetMaxTau       = 4
+    )
 
     jetToolbox( process, 'ak8', 'ak8puppi', 'edmOut',
-        runOnMC=runMC,
-        PUMethod='Puppi',
-        newPFCollection=True,
+        runOnMC            =runMC,
+        PUMethod           ='Puppi',
+        newPFCollection    =True,
         nameNewPFCollection='puppi',
-        addSoftDropSubjets=True,
-        addTrimming=True,
-        addPruning=True,
-        addFiltering=True,
-        addSoftDrop=True,
-        addNsub=True,
-        bTagInfos=listBTagInfos,
-        bTagDiscriminators=listBtagDiscriminators,
-        addCMSTopTagger=True,
-        Cut=ak8Cut,
-        addNsubSubjets=True,
-        subjetMaxTau=4
-        )
+        addSoftDropSubjets =True,
+        addTrimming        =True,
+        addPruning         =True,
+        addFiltering       =True,
+        addSoftDrop        =True,
+        addNsub            =True,
+        bTagDiscriminators =listBtagDiscriminators,
+        addCMSTopTagger    =True,
+        Cut                =ak8Cut,
+        addNsubSubjets     =True,
+        subjetMaxTau       =4
+    )
 
     jetToolbox( process, 'ca8', 'ca8chs', 'edmOut',
         runOnMC            = runMC ,
