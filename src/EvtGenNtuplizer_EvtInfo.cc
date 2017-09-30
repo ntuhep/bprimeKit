@@ -94,7 +94,9 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.Flag_EcalDeadCell              = checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" );
   EvtInfo.Flag_goodVertices              = checkMETfilter( "Flag_goodVertices" );
   EvtInfo.Flag_eeBadScFilter             = checkMETfilter( "Flag_eeBadScFilter" );
-  EvtInfo.Flag_globalTightHalo2016Filter = checkMETfilter( "Flag_globalTightHalo2016Filter" );
+  EvtInfo.Flag_globalTightHalo2016Filter = checkMETfilter( "Flag_globalSuperTightHalo2016Filter" );
+  EvtInfo.Flag_badMuon                   = checkMETfilter( "Flag_BadPFMuonFilter" );
+  EvtInfo.Flag_badChargedhadron          = checkMETfilter( "Flag_BadChargedCandidateFilter" );
   //EvtInfo.Flag_badMuon                   = *_metbadmuhandle;
   //EvtInfo.Flag_badChargedhadron          = *_metbadchadhandle;
 
@@ -105,8 +107,8 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     && EvtInfo.Flag_goodVertices
     && EvtInfo.Flag_eeBadScFilter
     && EvtInfo.Flag_globalTightHalo2016Filter
-    // && EvtInfo.Flag_badMuon
-    // && EvtInfo.Flag_badChargedhadron
+    && EvtInfo.Flag_badMuon
+    && EvtInfo.Flag_badChargedhadron
     );
 
 }

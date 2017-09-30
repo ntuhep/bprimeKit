@@ -135,12 +135,15 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.PtCorrL3    [JetInfo.Size] = it_jet->correctedJet( "L3Absolute" ).pt();// L3(abs)
 
     // ----- B Tagging discriminators  ------------------------------------------------------------------
+    JetInfo.pfCombinedInclusiveSecondaryVertexV2BJetTags[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" );
     JetInfo.pfJetBProbabilityBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfBoostedDoubleSecondaryVertexAK8BJetTags"    );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probb"                       );
     JetInfo.combinedSecondaryVertexBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "combinedSecondaryVertexBJetTags"              );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                       );
     JetInfo.pfJetProbabilityBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfJetProbabilityBJetTags"                     );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                    );
+    //Old b-tagging discriminators
     JetInfo.pfTrackCountingHighPurBJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfTrackCountingHighPurBJetTags"               );
     JetInfo.pfTrackCountingHighEffBJetTags[JetInfo.Size]
@@ -153,8 +156,6 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       = it_jet->bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags"          );
     JetInfo.pfCombinedMVABJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfCombinedMVABJetTags"                        );
-    JetInfo.pfCombinedInclusiveSecondaryVertexV2BJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" );
     JetInfo.pfCombinedSecondaryVertexSoftLeptonBJetTags [JetInfo.Size]
       = it_jet->bDiscriminator( "pfCombinedSecondaryVertexSoftLeptonBJetTags"  );
 
