@@ -1,10 +1,9 @@
 #ifndef __TRIGGERBOOKING_H__
 #define __TRIGGERBOOKING_H__
 
-#define N_TRIGGER_BOOKINGS 677
+#define N_TRIGGER_BOOKINGS 697
 
-//update to 3.1.0v1
-
+//update to 4.0.2V1
 
 const std::string TriggerBooking[N_TRIGGER_BOOKINGS] = {
 
@@ -684,7 +683,27 @@ const std::string TriggerBooking[N_TRIGGER_BOOKINGS] = {
      "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10",
      "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8",
      "HLT_Mu8_TrkIsoVVL_v10",
-     "HLT_Mu8_v10"
+     "HLT_Mu8_v10",
+     "HLT_Ele30_eta2p1_WPTight_Gsf_CentralPFJet35_EleCleaned_v10",
+     "HLT_IsoMu27_LooseChargedIsoPFTau20_SingleL1_v1",
+     "HLT_IsoMu27_MediumChargedIsoPFTau20_SingleL1_v1",
+     "HLT_IsoMu27_TightChargedIsoPFTau20_SingleL1_v1",
+     "HLT_Mu12_DoublePFJets100_CaloBTagCSV_p33_v6",
+     "HLT_Mu12_DoublePFJets200_CaloBTagCSV_p33_v6",
+     "HLT_Mu12_DoublePFJets350_CaloBTagCSV_p33_v6",
+     "HLT_Mu12_DoublePFJets40_CaloBTagCSV_p33_v6",
+     "HLT_Mu18_Mu9_DZ_v2",
+     "HLT_Mu18_Mu9_SameSign_DZ_v2",
+     "HLT_Mu18_Mu9_SameSign_v2",
+     "HLT_Mu18_Mu9_v2",
+     "HLT_Mu20_Mu10_DZ_v2",
+     "HLT_Mu20_Mu10_SameSign_DZ_v2",
+     "HLT_Mu20_Mu10_SameSign_v2",
+     "HLT_Mu20_Mu10_v2",
+     "HLT_Mu23_Mu12_DZ_v2",
+     "HLT_Mu23_Mu12_SameSign_DZ_v2",
+     "HLT_Mu23_Mu12_SameSign_v2",
+     "HLT_Mu23_Mu12_v2"
 
 };
 
@@ -1366,7 +1385,27 @@ enum TriggerBitNumber {
     HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v10 = 673,
     HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v8 = 674,
     HLT_Mu8_TrkIsoVVL_v10 = 675,
-    HLT_Mu8_v10 = 676
+    HLT_Mu8_v10 = 676,
+    HLT_Ele30_eta2p1_WPTight_Gsf_CentralPFJet35_EleCleaned_v10 = 677,
+    HLT_IsoMu27_LooseChargedIsoPFTau20_SingleL1_v1 = 678,
+    HLT_IsoMu27_MediumChargedIsoPFTau20_SingleL1_v1 = 679,
+    HLT_IsoMu27_TightChargedIsoPFTau20_SingleL1_v1 = 680,
+    HLT_Mu12_DoublePFJets100_CaloBTagCSV_p33_v6 = 681,
+    HLT_Mu12_DoublePFJets200_CaloBTagCSV_p33_v6 = 682,
+    HLT_Mu12_DoublePFJets350_CaloBTagCSV_p33_v6 = 683,
+    HLT_Mu12_DoublePFJets40_CaloBTagCSV_p33_v6 = 684,
+    HLT_Mu18_Mu9_DZ_v2 = 685,
+    HLT_Mu18_Mu9_SameSign_DZ_v2 = 686,
+    HLT_Mu18_Mu9_SameSign_v2 = 687,
+    HLT_Mu18_Mu9_v2 = 688,
+    HLT_Mu20_Mu10_DZ_v2 = 689,
+    HLT_Mu20_Mu10_SameSign_DZ_v2 = 690,
+    HLT_Mu20_Mu10_SameSign_v2 = 691,
+    HLT_Mu20_Mu10_v2 = 692,
+    HLT_Mu23_Mu12_DZ_v2 = 693,
+    HLT_Mu23_Mu12_SameSign_DZ_v2 = 694,
+    HLT_Mu23_Mu12_SameSign_v2 = 695,
+    HLT_Mu23_Mu12_v2 = 696
 
 };
 
