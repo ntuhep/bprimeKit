@@ -14,7 +14,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer_cfi as ntpl
 #   Additional tag settings
 #-------------------------------------------------------------------------------
 isData               = True
-GlobalTag            = '92X_dataRun2_Prompt_v8'
+GlobalTag            = '92X_dataRun2_Prompt_v10'
 ElectronIDHEEPModule = 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff'
 ElectronIDModule     = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff'
 PhotonIDModule       = 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff'

@@ -16,8 +16,11 @@ listBtagDiscriminators = [
     #Deep CSV
     'pfDeepCSVJetTags:probb',
     'pfDeepCSVJetTags:probc',
-    'pfDeepCSVJetTags:probudsg'
-#    'pfDeepCSVJetTags:probbb'
+    'pfDeepCSVJetTags:probudsg',
+    'pfDeepCSVJetTags:probbb',
+#    'pfDeepCSVJetTags:probcc',
+    'pfCombinedSecondaryVertexV2BJetTags',
+    'pfCombinedMVAV2BJetTags'
 ]
 
 ak4Cut='pt > 25 && abs(eta) < 5.'
