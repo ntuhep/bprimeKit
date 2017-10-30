@@ -143,11 +143,11 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                       );
     JetInfo.pfJetProbabilityBJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                    );
-    //Old b-tagging discriminators
     JetInfo.pfTrackCountingHighPurBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfTrackCountingHighPurBJetTags"               );
-    JetInfo.pfTrackCountingHighEffBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfTrackCountingHighEffBJetTags"               );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probbb"                      );
+    //JetInfo.pfTrackCountingHighEffBJetTags[JetInfo.Size]
+    //  = it_jet->bDiscriminator( "pfDeepCSVJetTags:probcc"                      );
+    //Old b-tagging discriminators
     JetInfo.pfSimpleSecondaryVertexHighEffBJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfSimpleSecondaryVertexHighEffBJetTags"       );
     JetInfo.pfSimpleSecondaryVertexHighPurBJetTags[JetInfo.Size]
