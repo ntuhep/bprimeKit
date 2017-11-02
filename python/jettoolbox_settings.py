@@ -108,6 +108,19 @@ def jettoolbox_settings( process , runMC ):
     #To avoid producing additional JetToolBox format files, kick out the "EndPath" attribute of process.
     delattr(process, 'endpath')
 
+    #Additional QGTagger Information
+    process.QGTaggerAK4PFCHS.srcVertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices')
+
+    from RecoJets.JetProducers.QGTagger_cfi import QGTagger
+    setattr( process, 'QGTaggerAK4PFPuppi',
+                    QGTagger.clone(
+                                    srcJets              = cms.InputTag('ak4PFJetsPuppi'),
+                                    jetsLabel            = cms.string('QGL_AK4PFchs'), # Other options : see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
+                                    srcVertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices')
+                    )
+    )
+    getattr( process, 'patJetsAK4PFPuppi').userData.userFloats.src += ['QGTaggerAK4PFPuppi:qgLikelihood']
+
     #Fix the crash of JetToolbox for bTagging part when CHS is called
     #(temporary!!)
     process.pfImpactParameterTagInfosAK4PFCHS.computeGhostTrack                  =  cms.bool(False)
@@ -124,5 +137,6 @@ def jettoolbox_settings( process , runMC ):
     process.pfImpactParameterTagInfosCMSTopTagPuppiSubjets.computeGhostTrack     =  cms.bool(False)
 
     #Use new Task() attribute of python
+    process.myTask.add( process.QGTaggerAK4PFPuppi )
     JetToolBoxSequence = cms.Sequence( process.myTask )
     setattr( process, 'JetToolBoxSequence', JetToolBoxSequence)
