@@ -109,32 +109,35 @@ def jettoolbox_settings( process , runMC ):
     delattr(process, 'endpath')
 
     #Additional QGTagger Information
+    #How to include QGL database : https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood#Step_0_only_for_MiniAOD_CMSSW_7
+    from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
+
+    #Latest QGL database : https://github.com/cms-jet/QGLDatabase/tree/master/SQLiteFiles
+    qgDatabaseVersion = 'cmssw8020_v2'
+    process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+        CondDBSetup,
+        toGet = cms.VPSet(
+            cms.PSet(
+                record = cms.string('QGLikelihoodRcd'),
+                tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+                label  = cms.untracked.string('QGL_AK4PFchs')
+            ),
+        ),
+        connect = cms.string('sqlite_fip:bpkFrameWork/bprimeKit/data/QGL_'+qgDatabaseVersion+'.db')
+    )
+    process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
+
     process.QGTaggerAK4PFCHS.srcVertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices')
 
     from RecoJets.JetProducers.QGTagger_cfi import QGTagger
     setattr( process, 'QGTaggerAK4PFPuppi',
                     QGTagger.clone(
-                                    srcJets              = cms.InputTag('ak4PFJetsPuppi'),
-                                    jetsLabel            = cms.string('QGL_AK4PFchs'), # Other options : see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
-                                    srcVertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices')
+                        srcJets              = cms.InputTag('ak4PFJetsPuppi'),
+                        jetsLabel            = cms.string('QGL_AK4PFchs'), # Other options : see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
+                        srcVertexCollection  = cms.InputTag('offlineSlimmedPrimaryVertices')
                     )
     )
     getattr( process, 'patJetsAK4PFPuppi').userData.userFloats.src += ['QGTaggerAK4PFPuppi:qgLikelihood']
-
-    #Fix the crash of JetToolbox for bTagging part when CHS is called
-    #(temporary!!)
-    process.pfImpactParameterTagInfosAK4PFCHS.computeGhostTrack                  =  cms.bool(False)
-    process.pfImpactParameterTagInfosAK4PFPuppi.computeGhostTrack                =  cms.bool(False)
-    process.pfImpactParameterTagInfosAK8PFCHS.computeGhostTrack                  =  cms.bool(False)
-    process.pfImpactParameterTagInfosAK8PFCHSSoftDropSubjets.computeGhostTrack   =  cms.bool(False)
-    process.pfImpactParameterTagInfosAK8PFPuppi.computeGhostTrack                =  cms.bool(False)
-    process.pfImpactParameterTagInfosAK8PFPuppiSoftDropSubjets.computeGhostTrack =  cms.bool(False)
-    process.pfImpactParameterTagInfosCA8PFCHS.computeGhostTrack                  =  cms.bool(False)
-    process.pfImpactParameterTagInfosCA8PFPuppi.computeGhostTrack                =  cms.bool(False)
-    process.pfImpactParameterTagInfosCMSTopTagCHS.computeGhostTrack              =  cms.bool(False)
-    process.pfImpactParameterTagInfosCMSTopTagCHSSubjets.computeGhostTrack       =  cms.bool(False)
-    process.pfImpactParameterTagInfosCMSTopTagPuppi.computeGhostTrack            =  cms.bool(False)
-    process.pfImpactParameterTagInfosCMSTopTagPuppiSubjets.computeGhostTrack     =  cms.bool(False)
 
     #Use new Task() attribute of python
     process.myTask.add( process.QGTaggerAK4PFPuppi )
