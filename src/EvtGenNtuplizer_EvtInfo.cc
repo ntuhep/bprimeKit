@@ -97,8 +97,6 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.Flag_globalTightHalo2016Filter = checkMETfilter( "Flag_globalSuperTightHalo2016Filter" );
   EvtInfo.Flag_badMuon                   = checkMETfilter( "Flag_BadPFMuonFilter" );
   EvtInfo.Flag_badChargedhadron          = checkMETfilter( "Flag_BadChargedCandidateFilter" );
-  //EvtInfo.Flag_badMuon                   = *_metbadmuhandle;
-  //EvtInfo.Flag_badChargedhadron          = *_metbadchadhandle;
 
   EvtInfo.Flag_METFilter = (
     EvtInfo.Flag_HBHENoiseFilter

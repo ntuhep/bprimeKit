@@ -23,9 +23,6 @@ EvtGenNtuplizer::EvtGenNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _genparticletoken( GetToken<vector<reco::GenParticle> >( "gensrc" ) ),
   _lhetoken( GetToken<LHEEventProduct>( "lhesrc" ) ),
   _mettriggertoken( GetToken<edm::TriggerResults>( "mettriggersrc" ) )
-  // Disabling on-the-fly MET filters,
-  //_metbadmutoken( GetToken<bool>( "metbadmusrc" ) ),
-  //_metbadchadtoken( GetToken<bool>( "metbadchadsrc" ) )
 {
 
 }
@@ -60,9 +57,6 @@ EvtGenNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByToken( _genevttoken,      _genevthandle      );
   iEvent.getByToken( _lhetoken,         _lhehandle         );
   iEvent.getByToken( _mettriggertoken,  _mettriggerhandle );
-  // Disabling on-the-fly MET filters
-  // iEvent.getByToken( _metbadmutoken,    _metbadmuhandle   );
-  // iEvent.getByToken( _metbadchadtoken,  _metbadchadhandle );
 
   memset( &GenInfo, 0x00, sizeof( GenInfo ) );
   memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );

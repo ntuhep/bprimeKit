@@ -98,17 +98,6 @@ for idmod in my_phoid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 #-------------------------------------------------------------------------------
-#   MET on-the-fly filter setups ( Disabled until available in 2017 Runs )
-#-------------------------------------------------------------------------------
-#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-#process.BadPFMuonFilter.muons = cms.InputTag('slimmedMuons')
-#process.BadPFMuonFilter.PFCandidates = cms.InputTag('packedPFCandidates')
-
-#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-#process.BadChargedCandidateFilter.muons = cms.InputTag('slimmedMuons')
-#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag('packedPFCandidates')
-
-#-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
 #-------------------------------------------------------------------------------
 process.TFileService = cms.Service('TFileService',
