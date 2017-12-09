@@ -137,27 +137,16 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     // ----- B Tagging discriminators  ------------------------------------------------------------------
     JetInfo.pfCombinedInclusiveSecondaryVertexV2BJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" );
-    JetInfo.pfJetBProbabilityBJetTags[JetInfo.Size]
+    JetInfo.pfCombinedMVAV2BJetTags[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfCombinedMVAV2BJetTags"                      );
+    JetInfo.pfDeepCSVJetTags_probb[JetInfo.Size]
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probb"                       );
-    JetInfo.combinedSecondaryVertexBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                       );
-    JetInfo.pfJetProbabilityBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                    );
-    JetInfo.pfTrackCountingHighPurBJetTags[JetInfo.Size]
+    JetInfo.pfDeepCSVJetTags_probbb[JetInfo.Size]
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probbb"                      );
-    //JetInfo.pfTrackCountingHighEffBJetTags[JetInfo.Size]
-    //  = it_jet->bDiscriminator( "pfDeepCSVJetTags:probcc"                      );
-    //Old b-tagging discriminators
-    JetInfo.pfSimpleSecondaryVertexHighEffBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfSimpleSecondaryVertexHighEffBJetTags"       );
-    JetInfo.pfSimpleSecondaryVertexHighPurBJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfSimpleSecondaryVertexHighPurBJetTags"       );
-    JetInfo.pfCombinedSecondaryVertexV2BJetTags [JetInfo.Size]
-      = it_jet->bDiscriminator( "pfCombinedSecondaryVertexV2BJetTags"          );
-    JetInfo.pfCombinedMVABJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfCombinedMVABJetTags"                        );
-    JetInfo.pfCombinedSecondaryVertexSoftLeptonBJetTags [JetInfo.Size]
-      = it_jet->bDiscriminator( "pfCombinedSecondaryVertexSoftLeptonBJetTags"  );
+    JetInfo.pfDeepCSVJetTags_probc[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                       );
+    JetInfo.pfDeepCSVJetTags_probudsg[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                    );
 
     // ----- Cleaned Jet four momentum  -----------------------------------------
     const TLorentzVector cleanedJet =
@@ -218,9 +207,11 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     // ------------------------------------------------------------------------------
     if( IsAK4() ){
       if( _jetname == "JetInfo" ){
-        JetInfo.QGTagsLikelihood [JetInfo.Size] = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
+        JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
+        JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "AK4PFCHSpileupJetIdEvaluator:fullDiscriminant" );
       } else if ( _jetname == "JetInfoPuppi" ){
-        JetInfo.QGTagsLikelihood [JetInfo.Size] = it_jet->userFloat( "QGTaggerAK4PFPuppi:qgLikelihood" );
+        JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTaggerAK4PFPuppi:qgLikelihood" );
+        JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "AK4PFPuppipileupJetIdEvaluator:fullDiscriminant" );
       }
       // ----- Particle flow information  -----------------------------------------------------------------
       JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
@@ -263,6 +254,10 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
           JetInfo.SubjetArea_w.push_back( subjet->jetArea() );
           JetInfo.SubjetPtUncorr_w.push_back( subjet->pt()*subjet->jecFactor( "Uncorrected" ) );
           JetInfo.SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
+          JetInfo.SubjetDeepCSVJetTags_probb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probb" ) );
+          JetInfo.SubjetDeepCSVJetTags_probbb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probbb" ) );
+          JetInfo.SubjetDeepCSVJetTags_probc_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probc" ) );
+          JetInfo.SubjetDeepCSVJetTags_probudsg_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probudsg" ) );
           if( !iEvent.isRealData() ){
             JetInfo.SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
             JetInfo.SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );

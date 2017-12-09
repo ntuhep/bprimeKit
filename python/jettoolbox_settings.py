@@ -11,16 +11,15 @@ from   JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 listBtagDiscriminators = [
     #Standard CSVv2 b-tagging discriminator
     'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-    #AK8 double b-tagging discriminator
-    'pfBoostedDoubleSecondaryVertexAK8BJetTags',
+    'pfCombinedMVAV2BJetTags',
     #Deep CSV
     'pfDeepCSVJetTags:probb',
+    'pfDeepCSVJetTags:probbb',
     'pfDeepCSVJetTags:probc',
     'pfDeepCSVJetTags:probudsg',
-    'pfDeepCSVJetTags:probbb',
-#    'pfDeepCSVJetTags:probcc',
-    'pfCombinedSecondaryVertexV2BJetTags',
-    'pfCombinedMVAV2BJetTags'
+    #'pfDeepCSVJetTags:probcc',
+    #AK8 double b-tagging discriminator
+    'pfBoostedDoubleSecondaryVertexAK8BJetTags'
 ]
 
 ak4Cut='pt > 25 && abs(eta) < 5.'
@@ -35,17 +34,19 @@ def jettoolbox_settings( process , runMC ):
     jetToolbox( process, 'ak4', 'ak4chs', 'edmOut',
         runOnMC            = runMC,
         addQGTagger        = True,
+        addPUJetID         = True,
         bTagDiscriminators = listBtagDiscriminators,
         Cut                = ak4Cut
     )
 
     jetToolbox( process, 'ak4', 'ak4puppi', 'edmOut',
-        runOnMC            =runMC,
-        PUMethod           ='Puppi',
-        newPFCollection    =True,
-        nameNewPFCollection='puppi',
-        bTagDiscriminators =listBtagDiscriminators,
-        Cut                =ak4Cut
+        runOnMC            = runMC,
+        PUMethod           = 'Puppi',
+        addPUJetID         = True,
+        newPFCollection    = True,
+        nameNewPFCollection= 'puppi',
+        bTagDiscriminators = listBtagDiscriminators,
+        Cut                = ak4Cut
     )
 
     jetToolbox( process, 'ak8', 'ak8chs', 'edmOut',
