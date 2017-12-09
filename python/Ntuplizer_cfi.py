@@ -30,11 +30,7 @@ evtgenbase = cms.PSet(
     gensrc        = gensrc,
     lhesrc        = cms.InputTag('externalLHEProducer'),
     mettriggersrc = cms.InputTag('TriggerResults','','RECO'),
-    ## Disabling on-the-fly MET filters until available
-    # metbadchadsrc = cms.InputTag('BadChargedCandidateFilter'),
-    # metbadmusrc   = cms.InputTag('BadPFMuonFilter'),
-
-    )
+)
 
 #-------------------------------------------------------------------------------
 #   Vertex settings
