@@ -54,13 +54,13 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
 {
   iEvent.getByToken( _rhotoken,                      _rhohandle                 );
   iEvent.getByToken( _photontoken,                   _photonhandle              );
-  //iEvent.getByToken( _photonLooseIDToken,            _photonIDLoose             );
-  //iEvent.getByToken( _photonMediumIDToken,           _photonIDMedium            );
-  //iEvent.getByToken( _photonTightIDToken,            _photonIDTight             );
-  //iEvent.getByToken( _photonIsolation_Charged_Token, _photonIsolation_Charged_H );
-  //iEvent.getByToken( _photonIsolation_Neutral_Token, _photonIsolation_Neutral_H );
-  //iEvent.getByToken( _photonIsolation_Photon_Token,  _photonIsolation_Photon_H  );
-  //iEvent.getByToken( _photonSignaIEtaIEtaToken,      _photonSigmaIEtaIEta_H     );
+  iEvent.getByToken( _photonLooseIDToken,            _photonIDLoose             );
+  iEvent.getByToken( _photonMediumIDToken,           _photonIDMedium            );
+  iEvent.getByToken( _photonTightIDToken,            _photonIDTight             );
+  iEvent.getByToken( _photonIsolation_Charged_Token, _photonIsolation_Charged_H );
+  iEvent.getByToken( _photonIsolation_Neutral_Token, _photonIsolation_Neutral_H );
+  iEvent.getByToken( _photonIsolation_Photon_Token,  _photonIsolation_Photon_H  );
+  iEvent.getByToken( _photonSignaIEtaIEtaToken,      _photonSigmaIEtaIEta_H     );
 
   memset( &PhotonInfo, 0x00, sizeof( PhotonInfo ) );
 
@@ -94,30 +94,25 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     // -----------------------  Filling in isolation information  ------------------------
     const edm::Ptr<pat::Photon> pho( _photonhandle, it_pho - _photonhandle->begin() );
-    //Avoid error in CMSSW_9_2_10
-    //try {
-    //  PhotonInfo.phoPFChIso    [PhotonInfo.Size] = ( *_photonIsolation_Charged_H )[pho];
-    //  PhotonInfo.phoPFPhoIso   [PhotonInfo.Size] = ( *_photonIsolation_Photon_H )[pho];
-    //  PhotonInfo.phoPFNeuIso   [PhotonInfo.Size] = ( *_photonIsolation_Neutral_H )[pho];
-    //  PhotonInfo.sigmaIetaIeta [PhotonInfo.Size] = ( *_photonSigmaIEtaIEta_H )[pho];
-    //  PhotonInfo.phoPassLoose  [PhotonInfo.Size] = ( *_photonIDLoose )[pho];
-    //  PhotonInfo.phoPassMedium [PhotonInfo.Size] = ( *_photonIDMedium )[pho];
-    //  PhotonInfo.phoPassTight  [PhotonInfo.Size] = ( *_photonIDTight )[pho];
+    PhotonInfo.phoPFChIso    [PhotonInfo.Size] = ( *_photonIsolation_Charged_H )[pho];
+    PhotonInfo.phoPFPhoIso   [PhotonInfo.Size] = ( *_photonIsolation_Photon_H )[pho];
+    PhotonInfo.phoPFNeuIso   [PhotonInfo.Size] = ( *_photonIsolation_Neutral_H )[pho];
+    PhotonInfo.sigmaIetaIeta [PhotonInfo.Size] = ( *_photonSigmaIEtaIEta_H )[pho];
+    PhotonInfo.phoPassLoose  [PhotonInfo.Size] = ( *_photonIDLoose )[pho];
+    PhotonInfo.phoPassMedium [PhotonInfo.Size] = ( *_photonIDMedium )[pho];
+    PhotonInfo.phoPassTight  [PhotonInfo.Size] = ( *_photonIDTight )[pho];
 
-    //  const double rho       = *_rhohandle;
-    //  const double isochhad  = ( *_photonIsolation_Charged_H )[pho];
-    //  const double isopho    = ( *_photonIsolation_Photon_H )[pho];
-    //  const double isonuhad  = ( *_photonIsolation_Neutral_H )[pho];
-    //  const double areachhad = _photonEffectiveArea_ChargeHadron.getEffectiveArea( abs( it_pho->eta() ) );
-    //  const double areapho   = _photonEffectiveArea_Photons.getEffectiveArea( abs( it_pho->eta() ) );
-    //  const double areanuhad = _photonEffectiveArea_NeutralHadron.getEffectiveArea( abs( it_pho->eta() ) );
+    const double rho       = *_rhohandle;
+    const double isochhad  = ( *_photonIsolation_Charged_H )[pho];
+    const double isopho    = ( *_photonIsolation_Photon_H )[pho];
+    const double isonuhad  = ( *_photonIsolation_Neutral_H )[pho];
+    const double areachhad = _photonEffectiveArea_ChargeHadron.getEffectiveArea( abs( it_pho->eta() ) );
+    const double areapho   = _photonEffectiveArea_Photons.getEffectiveArea( abs( it_pho->eta() ) );
+    const double areanuhad = _photonEffectiveArea_NeutralHadron.getEffectiveArea( abs( it_pho->eta() ) );
 
-    //  PhotonInfo.isoChEffArea  [PhotonInfo.Size] = std::max( 0.0, isochhad - rho* areachhad );
-    //  PhotonInfo.isoPhoEffArea [PhotonInfo.Size] = std::max( 0.0,  isopho - rho * areapho );
-    //  PhotonInfo.isoNeuEffArea [PhotonInfo.Size] = std::max( 0.0, isonuhad - rho*areanuhad );
-    //} catch( std::exception& e ){
-    //  // cout << "Weird photon found!!" << endl;
-    //}
+    PhotonInfo.isoChEffArea  [PhotonInfo.Size] = std::max( 0.0, isochhad - rho * areachhad );
+    PhotonInfo.isoPhoEffArea [PhotonInfo.Size] = std::max( 0.0, isopho   - rho * areapho   );
+    PhotonInfo.isoNeuEffArea [PhotonInfo.Size] = std::max( 0.0, isonuhad - rho * areanuhad );
 
     // ----- Generation MC information  ---------------------------------------------
     if( !iEvent.isRealData() ){

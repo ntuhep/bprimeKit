@@ -101,7 +101,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.EgammaCutBasedEleIdLOOSE    [LepInfo.Size] = (int)( ( *_electronIDLoose )[el] );
     LepInfo.EgammaCutBasedEleIdMEDIUM   [LepInfo.Size] = (int)( ( *_electronIDMedium )[el] );
     LepInfo.EgammaCutBasedEleIdTIGHT    [LepInfo.Size] = (int)( ( *_electronIDTight )[el] );
-    // LepInfo.EgammaCutBasedEleIdHEEP   [LepInfo.Size] = (int)((*fElectronIDHEEP_H)[el]);
+    LepInfo.EgammaCutBasedEleIdHEEP     [LepInfo.Size] = (int)( ( *_electronIDHEEP )[el] );
     LepInfo.ChargedHadronIso            [LepInfo.Size] = it_el->pfIsolationVariables().sumChargedHadronPt;
     LepInfo.NeutralHadronIso            [LepInfo.Size] = it_el->pfIsolationVariables().sumPhotonEt;
     LepInfo.PhotonIso                   [LepInfo.Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;

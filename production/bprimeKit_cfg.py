@@ -60,8 +60,6 @@ process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
-#process.load('RecoEgamma.PhotonIdentification.PhotonIDValueMapProducer_cfi')
-process.load('RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag.globaltag = mysetting.GlobalTag
 
@@ -79,11 +77,10 @@ print '\nFinished jet toolbox setup.....\n'
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
 #-------------------------------------------------------------------------------
-from PhysicsTools.PatAlgos.tools.coreTools import *
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 
 dataFormat = DataFormat.MiniAOD
-#switchOnVIDPhotonIdProducer(process, dataFormat)
+switchOnVIDPhotonIdProducer(process, dataFormat)
 switchOnVIDElectronIdProducer(process, dataFormat)
 
 my_elid_modules  = []
@@ -97,8 +94,8 @@ my_phoid_modules.append( mysetting.PhotonIDModule )
 for idmod in my_elid_modules:
    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
-#for idmod in my_phoid_modules:
-#   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+for idmod in my_phoid_modules:
+   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 #-------------------------------------------------------------------------------
 #   MET on-the-fly filter setups ( Disabled until available in 2017 Runs )
@@ -128,7 +125,7 @@ process.bprimeKit = mysetting.bprimeKit
 
 process.Path = cms.Path(
     process.egmGsfElectronIDSequence*
-#    process.egmPhotonIDSequence*
+    process.egmPhotonIDSequence*
     process.JetToolBoxSequence*
     process.bprimeKit
 )
