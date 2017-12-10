@@ -61,9 +61,6 @@ private:
   edm::Handle<std::vector<reco::Vertex> > _vtxhandle;
   edm::Handle<std::vector<reco::Vertex> > _vtxBShandle;
 
-  // Disabling on-the-fly MET filters
-  // edm::Handle<bool> _metbadmuhandle;
-  // edm::Handle<bool> _metbadchadhandle;
   edm::Handle<edm::TriggerResults> _mettriggerhandle;
 
   /*******************************************************************************

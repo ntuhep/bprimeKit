@@ -30,11 +30,7 @@ evtgenbase = cms.PSet(
     gensrc        = gensrc,
     lhesrc        = cms.InputTag('externalLHEProducer'),
     mettriggersrc = cms.InputTag('TriggerResults','','RECO'),
-    ## Disabling on-the-fly MET filters until available
-    # metbadchadsrc = cms.InputTag('BadChargedCandidateFilter'),
-    # metbadmusrc   = cms.InputTag('BadPFMuonFilter'),
-
-    )
+)
 
 #-------------------------------------------------------------------------------
 #   Vertex settings
@@ -104,7 +100,7 @@ leptonbase = cms.PSet(
     eleLooseIdMap  = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose'),
     eleMediumIdMap = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium'),
     eleTightIdMap  = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight'),
-    eleHEEPIdMap   = cms.InputTag('egmGsfElectronIDs:heepElectronID-HEEPV60'),
+    eleHEEPIdMap   = cms.InputTag('egmGsfElectronIDs:heepElectronID-HEEPV70'),
     conversionsrc  = cms.InputTag('reducedEgamma', 'reducedConversions'),
     rhosrc         = rhosrc,
     vtxsrc         = vtxsrc,
