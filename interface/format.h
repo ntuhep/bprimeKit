@@ -113,11 +113,11 @@ public:
     root->Branch( ( name+".PuppiMETRealSig" ).c_str(),                           &PuppiMETRealSig,                           ( name+"PuppiMETRealSig/F" ).c_str() );
     root->Branch( ( name+".PuppiGenMET" ).c_str(),                               &PuppiGenMET,                               ( name+"PuppiGenMET/F" ).c_str() );
     root->Branch( ( name+".PuppiGenMETPhi" ).c_str(),                            &PuppiGenMETPhi,                            ( name+"PuppiGenMETPhi/F" ).c_str() );
-  }
-
+  } 
+    
   void
   Register( TTree* root, const std::string& name = "EvtInfo" )
-  {
+  { 
     root->SetBranchAddress( ( name+".RunNo" ).c_str(),                                     &RunNo );
     root->SetBranchAddress( ( name+".EvtNo" ).c_str(),                                     &EvtNo );
     root->SetBranchAddress( ( name+".BxNo" ).c_str(),                                      &BxNo );
@@ -339,6 +339,7 @@ public:
   Float_t JERScale [MAX_JETS];
   Float_t QGTagsLikelihood [MAX_JETS];
   Float_t PUJetIDfullDiscriminant [MAX_JETS];
+  Int_t PUJetIDcutbased [MAX_JETS];
   Int_t NCH [MAX_JETS];
   Float_t CEF [MAX_JETS];
   Float_t NHF [MAX_JETS];
@@ -449,6 +450,7 @@ public:
     root->Branch( ( name+".JERScale" ).c_str(),                                     JERScale,                                     ( name+".JERScale["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".QGTagsLikelihood" ).c_str(),                             QGTagsLikelihood,                             ( name+".QGTagsLikelihood["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PUJetIDfullDiscriminant" ).c_str(),                      PUJetIDfullDiscriminant,                      ( name+".PUJetIDfullDiscriminant["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased,                              ( name+".PUJetIDcutbased["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".NCH" ).c_str(),                                          NCH,                                          ( name+".NCH["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".CEF" ).c_str(),                                          CEF,                                          ( name+".CEF["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".NHF" ).c_str(),                                          NHF,                                          ( name+".NHF["+name+".Size]/F" ).c_str() );
@@ -545,6 +547,7 @@ public:
     root->SetBranchAddress( ( name+".JERScale" ).c_str(),                                     JERScale );
     root->SetBranchAddress( ( name+".QGTagsLikelihood" ).c_str(),                             QGTagsLikelihood );
     root->SetBranchAddress( ( name+".PUJetIDfullDiscriminant" ).c_str(),                      PUJetIDfullDiscriminant );
+    root->SetBranchAddress( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased );
     root->SetBranchAddress( ( name+".NCH" ).c_str(),                                          NCH );
     root->SetBranchAddress( ( name+".CEF" ).c_str(),                                          CEF );
     root->SetBranchAddress( ( name+".NHF" ).c_str(),                                          NHF );
