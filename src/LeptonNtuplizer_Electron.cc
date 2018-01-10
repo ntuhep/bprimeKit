@@ -74,7 +74,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.ElNumberOfBrems   [LepInfo.Size] = it_el->numberOfBrems();
     LepInfo.vertexZ           [LepInfo.Size] = it_el->vertex().z();// Uly 2011-04-04
     LepInfo.NumberOfExpectedInnerHits [LepInfo.Size]
-      = it_el->gsfTrack()->hitPattern().numberOfHits( reco::HitPattern::MISSING_INNER_HITS );// Add by Jacky
+      = it_el->gsfTrack()->hitPattern().numberOfAllHits( reco::HitPattern::MISSING_INNER_HITS );// Add by Jacky
 
     // ----- MiniPFIsolation -----
     // https://github.com/manuelfs/CfANtupler/blob/master/minicfa/interface/miniAdHocNTupler.h#L54
