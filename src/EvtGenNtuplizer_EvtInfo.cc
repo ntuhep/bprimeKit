@@ -36,7 +36,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.BeamSpotX = _beamspothandle->position().x();
   EvtInfo.BeamSpotY = _beamspothandle->position().y();
   EvtInfo.BeamSpotZ = _beamspothandle->position().z();
-
+  
   // ----- Getting missing momentum information  --------------------------------
   for( auto it_met = _methandle->begin(); it_met != _methandle->end(); it_met++ ){
     EvtInfo.PFMET             = it_met->pt();
@@ -55,7 +55,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
       EvtInfo.PFGenMETPhi = genmet->phi();
     }
   }
-
+  
   for( auto it_met = _pmethandle->begin(); it_met != _pmethandle->end(); it_met++ ){
     EvtInfo.PuppiMET             = it_met->pt();
     EvtInfo.PuppiMETPhi          = it_met->phi();
@@ -71,7 +71,6 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
       EvtInfo.PuppiGenMETPhi = genmet->phi();
     }
   }
-
 
 
   /*******************************************************************************
@@ -94,10 +93,12 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     && checkMETfilter( "Flag_HBHENoiseIsoFilter" )
     && checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" )
     && checkMETfilter( "Flag_goodVertices" )
-    && checkMETfilter( "Flag_eeBadScFilter" )
-    && checkMETfilter( "Flag_globalSuperTightHalo2016Filter" )
+    && checkMETfilter( "Flag_globalTightHalo2016Filter" )
     && checkMETfilter( "Flag_BadPFMuonFilter" )
     && checkMETfilter( "Flag_BadChargedCandidateFilter" )
+    && checkMETfilter( "Flag_ecalBadCalibFilter" )
   );
+  //MC isn't suggested to use Flag_eeBadScFilter
+  if ( iEvent.isRealData() ) EvtInfo.Flag_METFilter = EvtInfo.Flag_METFilter && checkMETfilter( "Flag_eeBadScFilter" );
 
 }
