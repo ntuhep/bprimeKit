@@ -21,7 +21,8 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.BxNo     = iEvent.bunchCrossing();
   EvtInfo.LumiNo   = iEvent.luminosityBlock();
   EvtInfo.Orbit    = iEvent.orbitNumber();
-  EvtInfo.Rho      = *_rhohandle; 
+  EvtInfo.Rho      = *_rhohandle;
+
   // ----- Pile up information  -----------------------------------------------------------------------
   if( !iEvent.isRealData() ){// Need to shutdown for Data
     for( auto it = _pileuphandle->begin(); it != _pileuphandle->end(); ++it ){
