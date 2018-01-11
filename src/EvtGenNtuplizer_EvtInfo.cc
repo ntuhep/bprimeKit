@@ -21,8 +21,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.BxNo     = iEvent.bunchCrossing();
   EvtInfo.LumiNo   = iEvent.luminosityBlock();
   EvtInfo.Orbit    = iEvent.orbitNumber();
-  EvtInfo.Rho      = *_rhohandle;
-  
+  EvtInfo.Rho      = *_rhohandle; 
   // ----- Pile up information  -----------------------------------------------------------------------
   if( !iEvent.isRealData() ){// Need to shutdown for Data
     for( auto it = _pileuphandle->begin(); it != _pileuphandle->end(); ++it ){
@@ -98,6 +97,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     && checkMETfilter( "Flag_BadChargedCandidateFilter" )
     && checkMETfilter( "Flag_ecalBadCalibFilter" )
   );
+  //MC isn't suggested to use Flag_eeBadScFilter
   if ( iEvent.isRealData() ) EvtInfo.Flag_METFilter = EvtInfo.Flag_METFilter && checkMETfilter( "Flag_eeBadScFilter" );
 
 }
