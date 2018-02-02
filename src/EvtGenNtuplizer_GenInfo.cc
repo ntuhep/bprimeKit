@@ -41,14 +41,10 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     cands.push_back( &*it_gen );
   }
 
-  // Event wide objects
+  // ----- Generation information  --------------------------------------------
   GenInfo.Weight            = _genevthandle->weight();
   GenInfo.ptHat             = _genevthandle->qScale();
-  GenInfo.LHENominalWeight  = _lhehandle->hepeup().XWGTUP;
-  GenInfo.LHEOriginalWeight = _lhehandle->originalXWGTUP();
-  GenInfo.LHESize           = std::min( MAX_LHE, (int)( _lhehandle->weights().size() ) );
 
-  // ----- Generation information  --------------------------------------------
   if( !iEvent.isRealData() && _genevthandle->hasPDF() ){
     GenInfo.PDFid1   = _genevthandle->pdf()->id.first;
     GenInfo.PDFid2   = _genevthandle->pdf()->id.second;
@@ -59,9 +55,18 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     GenInfo.PDFv2    = _genevthandle->pdf()->xPDF.second;
   }
 
-  for( int i = 0; i < GenInfo.LHESize; ++i ){
-    GenInfo.LHESystematicWeights[i] = _lhehandle->weights().at( i ).wgt;
-    GenInfo.LHESystematicId[i]      = std::stoi( _lhehandle->weights().at( i ).id.data() );
+  //LHE Info                                                                                  
+  if( _lhehandle.isValid() ){
+    GenInfo.LHENominalWeight  = _lhehandle->hepeup().XWGTUP;
+    GenInfo.LHEOriginalWeight = _lhehandle->originalXWGTUP();
+    GenInfo.LHESize           = std::min( MAX_LHE, (int)( _lhehandle->weights().size() ) );
+    for( int i = 0; i < GenInfo.LHESize; ++i ){
+      GenInfo.LHESystematicWeights[i] = _lhehandle->weights().at( i ).wgt;
+      GenInfo.LHESystematicId[i]      = std::stoi( _lhehandle->weights().at( i ).id.data() );
+    }
+  }else{
+    //No LHE Info in this MC sample
+    GenInfo.LHESize           = -1;
   }
 
   /*******************************************************************************
