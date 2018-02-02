@@ -17,7 +17,7 @@ bprimeKit::FillRunInfo()
   if( _runinfohandle.isValid() ){
     RunInfo.PdfID = _runinfohandle->heprup().PDFSUP.first;
   } else {
-    cerr << "Invalid handle! Assumming is data" << endl;
+    cerr << "Invalid handle! No LHE Info in this MC sample or the dataset is RealData." << endl;
   }
 }
 
