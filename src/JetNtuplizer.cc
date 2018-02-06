@@ -218,9 +218,11 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       // ----- Particle flow information  -----------------------------------------------------------------
       JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
       JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
-      JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
-      JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
       JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
+      JetInfo.NNH[JetInfo.Size] = it_jet->neutralMultiplicity();
+      JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
+      JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
+      JetInfo.MUF[JetInfo.Size] = it_jet->muonEnergyFraction();
     }
 
     // ------------------------------------------------------------------------------
