@@ -176,21 +176,20 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     if( fabs( it_jet->eta() ) <= 5.0 ){
       if( _jetcorrector && _jetunc ){
         _jetcorrector->setJetEta( it_jet->eta() );
-        _jetcorrector->setJetPt( it_jet->pt() );
+        _jetcorrector->setJetPt( it_jet->correctedJet( "Uncorrected" ).pt() );
         _jetcorrector->setJetA( it_jet->jetArea() );
         _jetcorrector->setRho( *_rhohandle );
         const double unc = _jetcorrector->getCorrection();
         JetInfo.Unc[JetInfo.Size] = unc;
 
         _jetunc->setJetEta( it_jet->eta() );
-        _jetunc->setJetPt( it_jet->pt() * unc );
+        _jetunc->setJetPt( it_jet->correctedJet( "Uncorrected" ).pt() * unc );
         JetInfo.JesUnc[JetInfo.Size] = _jetunc->getUncertainty( true );
       } else {
         jecUnc.setJetEta( it_jet->eta() );
         jecUnc.setJetPt( it_jet->pt() );// here you must use the CORRECTED jet pt
-        const double tmp = jecUnc.getUncertainty( true ); // must only be evaluated once.
-        JetInfo.Unc[JetInfo.Size]    = tmp;
-        JetInfo.JesUnc[JetInfo.Size] = tmp;
+        JetInfo.Unc[JetInfo.Size]    = it_jet->pt() / it_jet->correctedJet( "Uncorrected" ).pt();
+        JetInfo.JesUnc[JetInfo.Size] = jecUnc.getUncertainty( true );
       }
     }
 
