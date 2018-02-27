@@ -31,7 +31,7 @@ options.register('Debug',
          opts.VarParsing.varType.int,
          'Debugging output level' )
 
-options.setDefault('maxEvents', 1000 )
+options.setDefault('maxEvents', 100 )
 
 options.parseArguments()
 
