@@ -101,7 +101,7 @@ for idmod in my_phoid_modules:
 #RecoEgamma/PhotonIdentification/data/Fall17/HggPhoId_92X_endcap_BDT.weights.xml
 #https://github.com/lsoffi/cmssw/blob/CMSSW_9_4_0_pre3_TnP/RecoEgamma/PhotonIdentification/python/Identification/mvaPhotonID_RunIIFall17_v1_cff.py#L29
 #which are not used by bprimekit.
-delattr(process, 'photonMVAValueMapProducer')
+#delattr(process, 'photonMVAValueMapProducer')
 
 
 #-------------------------------------------------------------------------------

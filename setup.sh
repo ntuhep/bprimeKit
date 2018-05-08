@@ -10,7 +10,7 @@ echo
 
 
 echo "Set up JetToolBox"
-git clone https://github.com/youyingli/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X
+git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X_v1
 echo
 
 echo "Set up Muon user code"
