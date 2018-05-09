@@ -12,7 +12,7 @@ def getdataprocess( dataset ):
         return 'Data31Mar2018'
     elif re.match( r'/.*/Run2017.*-17Nov2017.*/MINIAOD', dataset ):
         return 'Data17Nov2017'
-    elif re.match( r'/.*/RunIIFall17MiniAOD.*-94X_mc2017_realistic.*/MINIAOD', dataset ):
+    elif re.match( r'/.*/RunIIFall17MiniAOD.*-94X_mc2017_realistic.*/MINIAODSIM', dataset ):
         return 'MC_RunIIFall17'
     elif re.match( r'/.*/RunIIFall17MiniAODv2-PU2017.*/MINIAODSIM', dataset ):
         return 'MC_RunIIFall17'
