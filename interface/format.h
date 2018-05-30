@@ -342,6 +342,7 @@ public:
   Int_t PUJetIDcutbased [MAX_JETS];
   Int_t NCH [MAX_JETS];
   Int_t NNH [MAX_JETS];
+  Int_t JM [MAX_JETS];
   Float_t CEF [MAX_JETS];
   Float_t CHF [MAX_JETS];
   Float_t NEF [MAX_JETS];
@@ -372,6 +373,8 @@ public:
   Float_t NjettinessAK8tau1 [MAX_JETS];
   Float_t NjettinessAK8tau2 [MAX_JETS];
   Float_t NjettinessAK8tau3 [MAX_JETS];
+  Float_t PuppiSoftDrop_ECFb1N2 [MAX_JETS];
+  Float_t PuppiSoftDrop_ECFb1N3 [MAX_JETS];
   Float_t ak8PFJetsCHSSoftDropMass [MAX_JETS];
   Float_t ak8PFJetsCHSPrunedMass [MAX_JETS];
   Float_t ak8PFJetsCHSTrimmedMass [MAX_JETS];
@@ -391,6 +394,8 @@ public:
   std::vector<Float_t>* SubjetDeepCSVJetTags_probbb;
   std::vector<Float_t>* SubjetDeepCSVJetTags_probc;
   std::vector<Float_t>* SubjetDeepCSVJetTags_probudsg;
+  std::vector<Float_t>* PuppiSoftDrop_SubjetECFb1N2;
+  std::vector<Float_t>* PuppiSoftDrop_SubjetECFb1N3;
   std::vector<Float_t>* SubjetGenPdgId;
   std::vector<Float_t>* SubjetGenFlavour;
   std::vector<Float_t>* SubjetHadronFlavour;
@@ -406,6 +411,8 @@ public:
   std::vector<Float_t> SubjetDeepCSVJetTags_probbb_w;
   std::vector<Float_t> SubjetDeepCSVJetTags_probc_w;
   std::vector<Float_t> SubjetDeepCSVJetTags_probudsg_w;
+  std::vector<Float_t> PuppiSoftDrop_SubjetECFb1N2_w;
+  std::vector<Float_t> PuppiSoftDrop_SubjetECFb1N3_w;
   std::vector<Float_t> SubjetGenPdgId_w;
   std::vector<Float_t> SubjetGenFlavour_w;
   std::vector<Float_t> SubjetHadronFlavour_w;
@@ -455,6 +462,7 @@ public:
     root->Branch( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased,                              ( name+".PUJetIDcutbased["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".NCH" ).c_str(),                                          NCH,                                          ( name+".NCH["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".NNH" ).c_str(),                                          NNH,                                          ( name+".NNH["+name+".Size]/I" ).c_str() );
+    root->Branch( ( name+".JM" ).c_str(),                                           JM,                                           ( name+".JM["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".CEF" ).c_str(),                                          CEF,                                          ( name+".CEF["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".CHF" ).c_str(),                                          CHF,                                          ( name+".CHF["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".NEF" ).c_str(),                                          NEF,                                          ( name+".NEF["+name+".Size]/F" ).c_str() );
@@ -485,6 +493,8 @@ public:
     root->Branch( ( name+".NjettinessAK8tau1" ).c_str(),                            NjettinessAK8tau1,                            ( name+".NjettinessAK8tau1["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".NjettinessAK8tau2" ).c_str(),                            NjettinessAK8tau2,                            ( name+".NjettinessAK8tau2["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".NjettinessAK8tau3" ).c_str(),                            NjettinessAK8tau3,                            ( name+".NjettinessAK8tau3["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".PuppiSoftDrop_ECFb1N2" ).c_str(),                        PuppiSoftDrop_ECFb1N2,                        ( name+".PuppiSoftDrop_ECFb1N2["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".PuppiSoftDrop_ECFb1N3" ).c_str(),                        PuppiSoftDrop_ECFb1N3,                        ( name+".PuppiSoftDrop_ECFb1N3["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ak8PFJetsCHSSoftDropMass" ).c_str(),                     ak8PFJetsCHSSoftDropMass,                     ( name+".ak8PFJetsCHSSoftDropMass["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ak8PFJetsCHSPrunedMass" ).c_str(),                       ak8PFJetsCHSPrunedMass,                       ( name+".ak8PFJetsCHSPrunedMass["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ak8PFJetsCHSTrimmedMass" ).c_str(),                      ak8PFJetsCHSTrimmedMass,                      ( name+".ak8PFJetsCHSTrimmedMass["+name+".Size]/F" ).c_str() );
@@ -504,6 +514,8 @@ public:
     root->Branch( ( name+".SubjetDeepCSVJetTags_probbb" ).c_str(),                  &SubjetDeepCSVJetTags_probbb_w );
     root->Branch( ( name+".SubjetDeepCSVJetTags_probc" ).c_str(),                   &SubjetDeepCSVJetTags_probc_w );
     root->Branch( ( name+".SubjetDeepCSVJetTags_probudsg" ).c_str(),                &SubjetDeepCSVJetTags_probudsg_w );
+    root->Branch( ( name+".PuppiSoftDrop_SubjetECFb1N2" ).c_str(),                  &PuppiSoftDrop_SubjetECFb1N2_w );
+    root->Branch( ( name+".PuppiSoftDrop_SubjetECFb1N3" ).c_str(),                  &PuppiSoftDrop_SubjetECFb1N3_w );
     root->Branch( ( name+".SubjetGenPdgId" ).c_str(),                               &SubjetGenPdgId_w );
     root->Branch( ( name+".SubjetGenFlavour" ).c_str(),                             &SubjetGenFlavour_w );
     root->Branch( ( name+".SubjetHadronFlavour" ).c_str(),                          &SubjetHadronFlavour_w );
@@ -554,6 +566,7 @@ public:
     root->SetBranchAddress( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased );
     root->SetBranchAddress( ( name+".NCH" ).c_str(),                                          NCH );
     root->SetBranchAddress( ( name+".NNH" ).c_str(),                                          NNH );
+    root->SetBranchAddress( ( name+".JM" ).c_str(),                                           JM );
     root->SetBranchAddress( ( name+".CEF" ).c_str(),                                          CEF );
     root->SetBranchAddress( ( name+".CHF" ).c_str(),                                          CHF );
     root->SetBranchAddress( ( name+".NEF" ).c_str(),                                          NEF );
@@ -584,6 +597,8 @@ public:
     root->SetBranchAddress( ( name+".NjettinessAK8tau1" ).c_str(),                            NjettinessAK8tau1 );
     root->SetBranchAddress( ( name+".NjettinessAK8tau2" ).c_str(),                            NjettinessAK8tau2 );
     root->SetBranchAddress( ( name+".NjettinessAK8tau3" ).c_str(),                            NjettinessAK8tau3 );
+    root->SetBranchAddress( ( name+".PuppiSoftDrop_ECFb1N2" ).c_str(),                        PuppiSoftDrop_ECFb1N2 );
+    root->SetBranchAddress( ( name+".PuppiSoftDrop_ECFb1N3" ).c_str(),                        PuppiSoftDrop_ECFb1N3 );
     root->SetBranchAddress( ( name+".ak8PFJetsCHSSoftDropMass" ).c_str(),                     ak8PFJetsCHSSoftDropMass );
     root->SetBranchAddress( ( name+".ak8PFJetsCHSPrunedMass" ).c_str(),                       ak8PFJetsCHSPrunedMass );
     root->SetBranchAddress( ( name+".ak8PFJetsCHSTrimmedMass" ).c_str(),                      ak8PFJetsCHSTrimmedMass );
@@ -615,6 +630,10 @@ public:
     root->SetBranchAddress( ( name+".SubjetDeepCSVJetTags_probc" ).c_str(),                   &SubjetDeepCSVJetTags_probc );
     SubjetDeepCSVJetTags_probudsg = 0;
     root->SetBranchAddress( ( name+".SubjetDeepCSVJetTags_probudsg" ).c_str(),                &SubjetDeepCSVJetTags_probudsg );
+    PuppiSoftDrop_SubjetECFb1N2 = 0;
+    root->SetBranchAddress( ( name+".PuppiSoftDrop_SubjetECFb1N2" ).c_str(),                  &PuppiSoftDrop_SubjetECFb1N2 );
+    PuppiSoftDrop_SubjetECFb1N3 = 0;
+    root->SetBranchAddress( ( name+".PuppiSoftDrop_SubjetECFb1N3" ).c_str(),                  &PuppiSoftDrop_SubjetECFb1N3 );
     SubjetGenPdgId = 0;
     root->SetBranchAddress( ( name+".SubjetGenPdgId" ).c_str(),                               &SubjetGenPdgId );
     SubjetGenFlavour = 0;
@@ -676,6 +695,9 @@ public:
   Bool_t isGoodMuonTMOneStationTight [MAX_LEPTONS];
   Bool_t isPFMuon [MAX_LEPTONS];
   Bool_t MuIDGlobalMuonPromptTight [MAX_LEPTONS];
+  Bool_t MuonCutBasedMuIdLOOSE [MAX_LEPTONS];
+  Bool_t MuonCutBasedMuIdMEDIUM [MAX_LEPTONS];
+  Bool_t MuonCutBasedMuIdTIGHT [MAX_LEPTONS];
   Float_t MuGlobalNormalizedChi2 [MAX_LEPTONS];
   Float_t MuCaloCompat [MAX_LEPTONS];
   Int_t MuNChambers [MAX_LEPTONS];
@@ -820,6 +842,9 @@ public:
     root->Branch( ( name+".isGoodMuonTMOneStationTight" ).c_str(),     isGoodMuonTMOneStationTight,     ( name+".isGoodMuonTMOneStationTight["+name+".Size]/O" ).c_str() );
     root->Branch( ( name+".isPFMuon" ).c_str(),                        isPFMuon,                        ( name+".isPFMuon["+name+".Size]/O" ).c_str() );
     root->Branch( ( name+".MuIDGlobalMuonPromptTight" ).c_str(),       MuIDGlobalMuonPromptTight,       ( name+".MuIDGlobalMuonPromptTight["+name+".Size]/O" ).c_str() );
+    root->Branch( ( name+".MuonCutBasedMuIdLOOSE" ).c_str(),           MuonCutBasedMuIdLOOSE,           ( name+".MuonCutBasedMuIdLOOSE["+name+".Size]/O" ).c_str() );
+    root->Branch( ( name+".MuonCutBasedMuIdMEDIUM" ).c_str(),          MuonCutBasedMuIdMEDIUM,          ( name+".MuonCutBasedMuIdMEDIUM["+name+".Size]/O" ).c_str() );
+    root->Branch( ( name+".MuonCutBasedMuIdTIGHT" ).c_str(),           MuonCutBasedMuIdTIGHT,           ( name+".MuonCutBasedMuIdTIGHT["+name+".Size]/O" ).c_str() );
     root->Branch( ( name+".MuGlobalNormalizedChi2" ).c_str(),          MuGlobalNormalizedChi2,          ( name+".MuGlobalNormalizedChi2["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".MuCaloCompat" ).c_str(),                    MuCaloCompat,                    ( name+".MuCaloCompat["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".MuNChambers" ).c_str(),                     MuNChambers,                     ( name+".MuNChambers["+name+".Size]/I" ).c_str() );
@@ -965,6 +990,9 @@ public:
     root->SetBranchAddress( ( name+".isGoodMuonTMOneStationTight" ).c_str(),     isGoodMuonTMOneStationTight );
     root->SetBranchAddress( ( name+".isPFMuon" ).c_str(),                        isPFMuon );
     root->SetBranchAddress( ( name+".MuIDGlobalMuonPromptTight" ).c_str(),       MuIDGlobalMuonPromptTight );
+    root->SetBranchAddress( ( name+".MuonCutBasedMuIdLOOSE" ).c_str(),           MuonCutBasedMuIdLOOSE );
+    root->SetBranchAddress( ( name+".MuonCutBasedMuIdMEDIUM" ).c_str(),          MuonCutBasedMuIdMEDIUM );
+    root->SetBranchAddress( ( name+".MuonCutBasedMuIdTIGHT" ).c_str(),           MuonCutBasedMuIdTIGHT );
     root->SetBranchAddress( ( name+".MuGlobalNormalizedChi2" ).c_str(),          MuGlobalNormalizedChi2 );
     root->SetBranchAddress( ( name+".MuCaloCompat" ).c_str(),                    MuCaloCompat );
     root->SetBranchAddress( ( name+".MuNChambers" ).c_str(),                     MuNChambers );
