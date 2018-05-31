@@ -359,6 +359,9 @@ public:
   Float_t pfDeepCSVJetTags_probbb [MAX_JETS];
   Float_t pfDeepCSVJetTags_probc [MAX_JETS];
   Float_t pfDeepCSVJetTags_probudsg [MAX_JETS];
+  Float_t summaryDeepCSVJetTags_BvsAll [MAX_JETS];
+  Float_t summaryDeepCSVJetTags_CvsB [MAX_JETS];
+  Float_t summaryDeepCSVJetTags_CvsL [MAX_JETS];
   Float_t pfBoostedDoubleSecondaryVertexAK8BJetTags [MAX_JETS];
   Float_t GenJetPt [MAX_JETS];
   Float_t GenJetEta [MAX_JETS];
@@ -396,6 +399,9 @@ public:
   std::vector<Float_t>* SubjetDeepCSVJetTags_probbb;
   std::vector<Float_t>* SubjetDeepCSVJetTags_probc;
   std::vector<Float_t>* SubjetDeepCSVJetTags_probudsg;
+  std::vector<Float_t>* SubjetsummaryDeepCSVJetTags_BvsAll;
+  std::vector<Float_t>* SubjetsummaryDeepCSVJetTags_CvsB;
+  std::vector<Float_t>* SubjetsummaryDeepCSVJetTags_CvsL;
   std::vector<Float_t>* PuppiSoftDrop_SubjetECFb1N2;
   std::vector<Float_t>* PuppiSoftDrop_SubjetECFb1N3;
   std::vector<Float_t>* SubjetGenPdgId;
@@ -413,6 +419,9 @@ public:
   std::vector<Float_t> SubjetDeepCSVJetTags_probbb_w;
   std::vector<Float_t> SubjetDeepCSVJetTags_probc_w;
   std::vector<Float_t> SubjetDeepCSVJetTags_probudsg_w;
+  std::vector<Float_t> SubjetsummaryDeepCSVJetTags_BvsAll_w;
+  std::vector<Float_t> SubjetsummaryDeepCSVJetTags_CvsB_w;
+  std::vector<Float_t> SubjetsummaryDeepCSVJetTags_CvsL_w;
   std::vector<Float_t> PuppiSoftDrop_SubjetECFb1N2_w;
   std::vector<Float_t> PuppiSoftDrop_SubjetECFb1N3_w;
   std::vector<Float_t> SubjetGenPdgId_w;
@@ -481,6 +490,9 @@ public:
     root->Branch( ( name+".pfDeepCSVJetTags_probbb" ).c_str(),                      pfDeepCSVJetTags_probbb,                      ( name+".pfDeepCSVJetTags_probbb["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfDeepCSVJetTags_probc" ).c_str(),                       pfDeepCSVJetTags_probc,                       ( name+".pfDeepCSVJetTags_probc["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfDeepCSVJetTags_probudsg" ).c_str(),                    pfDeepCSVJetTags_probudsg,                    ( name+".pfDeepCSVJetTags_probudsg["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".summaryDeepCSVJetTags_BvsAll" ).c_str(),                 summaryDeepCSVJetTags_BvsAll,                 ( name+".summaryDeepCSVJetTags_BvsAll["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".summaryDeepCSVJetTags_CvsB" ).c_str(),                   summaryDeepCSVJetTags_CvsB,                   ( name+".summaryDeepCSVJetTags_CvsB["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".summaryDeepCSVJetTags_CvsL" ).c_str(),                   summaryDeepCSVJetTags_CvsL,                   ( name+".summaryDeepCSVJetTags_CvsL["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags,    ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetPt" ).c_str(),                                     GenJetPt,                                     ( name+".GenJetPt["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetEta" ).c_str(),                                    GenJetEta,                                    ( name+".GenJetEta["+name+".Size]/F" ).c_str() );
@@ -518,6 +530,9 @@ public:
     root->Branch( ( name+".SubjetDeepCSVJetTags_probbb" ).c_str(),                  &SubjetDeepCSVJetTags_probbb_w );
     root->Branch( ( name+".SubjetDeepCSVJetTags_probc" ).c_str(),                   &SubjetDeepCSVJetTags_probc_w );
     root->Branch( ( name+".SubjetDeepCSVJetTags_probudsg" ).c_str(),                &SubjetDeepCSVJetTags_probudsg_w );
+    root->Branch( ( name+".SubjetsummaryDeepCSVJetTags_BvsAll" ).c_str(),           &SubjetsummaryDeepCSVJetTags_BvsAll_w );
+    root->Branch( ( name+".SubjetsummaryDeepCSVJetTags_CvsB" ).c_str(),             &SubjetsummaryDeepCSVJetTags_CvsB_w );
+    root->Branch( ( name+".SubjetsummaryDeepCSVJetTags_CvsL" ).c_str(),             &SubjetsummaryDeepCSVJetTags_CvsL_w );
     root->Branch( ( name+".PuppiSoftDrop_SubjetECFb1N2" ).c_str(),                  &PuppiSoftDrop_SubjetECFb1N2_w );
     root->Branch( ( name+".PuppiSoftDrop_SubjetECFb1N3" ).c_str(),                  &PuppiSoftDrop_SubjetECFb1N3_w );
     root->Branch( ( name+".SubjetGenPdgId" ).c_str(),                               &SubjetGenPdgId_w );
@@ -587,6 +602,9 @@ public:
     root->SetBranchAddress( ( name+".pfDeepCSVJetTags_probbb" ).c_str(),                      pfDeepCSVJetTags_probbb );
     root->SetBranchAddress( ( name+".pfDeepCSVJetTags_probc" ).c_str(),                       pfDeepCSVJetTags_probc );
     root->SetBranchAddress( ( name+".pfDeepCSVJetTags_probudsg" ).c_str(),                    pfDeepCSVJetTags_probudsg );
+    root->SetBranchAddress( ( name+".summaryDeepCSVJetTags_BvsAll" ).c_str(),                 summaryDeepCSVJetTags_BvsAll );
+    root->SetBranchAddress( ( name+".summaryDeepCSVJetTags_CvsB" ).c_str(),                   summaryDeepCSVJetTags_CvsB );
+    root->SetBranchAddress( ( name+".summaryDeepCSVJetTags_CvsL" ).c_str(),                   summaryDeepCSVJetTags_CvsL );
     root->SetBranchAddress( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags );
     root->SetBranchAddress( ( name+".GenJetPt" ).c_str(),                                     GenJetPt );
     root->SetBranchAddress( ( name+".GenJetEta" ).c_str(),                                    GenJetEta );
@@ -636,6 +654,12 @@ public:
     root->SetBranchAddress( ( name+".SubjetDeepCSVJetTags_probc" ).c_str(),                   &SubjetDeepCSVJetTags_probc );
     SubjetDeepCSVJetTags_probudsg = 0;
     root->SetBranchAddress( ( name+".SubjetDeepCSVJetTags_probudsg" ).c_str(),                &SubjetDeepCSVJetTags_probudsg );
+    SubjetsummaryDeepCSVJetTags_BvsAll = 0;
+    root->SetBranchAddress( ( name+".SubjetsummaryDeepCSVJetTags_BvsAll" ).c_str(),           &SubjetsummaryDeepCSVJetTags_BvsAll );
+    SubjetsummaryDeepCSVJetTags_CvsB = 0;
+    root->SetBranchAddress( ( name+".SubjetsummaryDeepCSVJetTags_CvsB" ).c_str(),             &SubjetsummaryDeepCSVJetTags_CvsB );
+    SubjetsummaryDeepCSVJetTags_CvsL = 0;
+    root->SetBranchAddress( ( name+".SubjetsummaryDeepCSVJetTags_CvsL" ).c_str(),             &SubjetsummaryDeepCSVJetTags_CvsL );
     PuppiSoftDrop_SubjetECFb1N2 = 0;
     root->SetBranchAddress( ( name+".PuppiSoftDrop_SubjetECFb1N2" ).c_str(),                  &PuppiSoftDrop_SubjetECFb1N2 );
     PuppiSoftDrop_SubjetECFb1N3 = 0;

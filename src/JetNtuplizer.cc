@@ -147,6 +147,12 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                       );
     JetInfo.pfDeepCSVJetTags_probudsg[JetInfo.Size]
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                    );
+    JetInfo.summaryDeepCSVJetTags_BvsAll[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:BvsAll"        );
+    JetInfo.summaryDeepCSVJetTags_CvsB[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsB"          );
+    JetInfo.summaryDeepCSVJetTags_CvsL[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsL"          );
 
     // ----- Cleaned Jet four momentum  -----------------------------------------
     const TLorentzVector cleanedJet =
@@ -267,6 +273,9 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
           JetInfo.SubjetDeepCSVJetTags_probbb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probbb" ) );
           JetInfo.SubjetDeepCSVJetTags_probc_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probc" ) );
           JetInfo.SubjetDeepCSVJetTags_probudsg_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probudsg" ) );
+          JetInfo.SubjetsummaryDeepCSVJetTags_BvsAll_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:BvsAll" ) );
+          JetInfo.SubjetsummaryDeepCSVJetTags_CvsB_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsB" ) );
+          JetInfo.SubjetsummaryDeepCSVJetTags_CvsL_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsL" ) );
           if (_jetname == "JetAK8Puppi"){
             JetInfo.PuppiSoftDrop_SubjetECFb1N2_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN2" ) );
             JetInfo.PuppiSoftDrop_SubjetECFb1N3_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN3" ) );

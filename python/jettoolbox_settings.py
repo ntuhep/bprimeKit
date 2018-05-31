@@ -17,6 +17,10 @@ listBtagDiscriminators = [
     'pfDeepCSVJetTags:probbb',
     'pfDeepCSVJetTags:probc',
     'pfDeepCSVJetTags:probudsg',
+    ##Deep CSV summary
+    'pfDeepCSVDiscriminatorsJetTags:BvsAll',
+    'pfDeepCSVDiscriminatorsJetTags:CvsB',
+    'pfDeepCSVDiscriminatorsJetTags:CvsL',
     #AK8 double b-tagging discriminator
     'pfBoostedDoubleSecondaryVertexAK8BJetTags'
 ]
@@ -141,6 +145,7 @@ def jettoolbox_settings( process , runMC ):
     )
     getattr( process, 'patJetsAK4PFPuppi').userData.userFloats.src += ['QGTaggerAK4PFPuppi:qgLikelihood']
 
+    #Add Weighted Puppi Multiplicity
     #Weighted Puppi Multiplicity https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/PatAlgos/test/patTuple_updateJets_fromMiniAOD_cfg.py#L83
     from PhysicsTools.PatAlgos.patPuppiJetSpecificProducer_cfi import patPuppiJetSpecificProducer
     process.patPuppiJetSpecificProducer = patPuppiJetSpecificProducer.clone(
