@@ -342,7 +342,9 @@ public:
   Int_t PUJetIDcutbased [MAX_JETS];
   Int_t NCH [MAX_JETS];
   Int_t NNH [MAX_JETS];
+  Int_t NNHw [MAX_JETS];
   Int_t JM [MAX_JETS];
+  Int_t JMw [MAX_JETS];
   Float_t CEF [MAX_JETS];
   Float_t CHF [MAX_JETS];
   Float_t NEF [MAX_JETS];
@@ -462,7 +464,9 @@ public:
     root->Branch( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased,                              ( name+".PUJetIDcutbased["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".NCH" ).c_str(),                                          NCH,                                          ( name+".NCH["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".NNH" ).c_str(),                                          NNH,                                          ( name+".NNH["+name+".Size]/I" ).c_str() );
+    root->Branch( ( name+".NNHw" ).c_str(),                                         NNHw,                                         ( name+".NNHw["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".JM" ).c_str(),                                           JM,                                           ( name+".JM["+name+".Size]/I" ).c_str() );
+    root->Branch( ( name+".JMw" ).c_str(),                                          JMw,                                          ( name+".JMw["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".CEF" ).c_str(),                                          CEF,                                          ( name+".CEF["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".CHF" ).c_str(),                                          CHF,                                          ( name+".CHF["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".NEF" ).c_str(),                                          NEF,                                          ( name+".NEF["+name+".Size]/F" ).c_str() );
@@ -566,7 +570,9 @@ public:
     root->SetBranchAddress( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased );
     root->SetBranchAddress( ( name+".NCH" ).c_str(),                                          NCH );
     root->SetBranchAddress( ( name+".NNH" ).c_str(),                                          NNH );
+    root->SetBranchAddress( ( name+".NNHw" ).c_str(),                                         NNHw );
     root->SetBranchAddress( ( name+".JM" ).c_str(),                                           JM );
+    root->SetBranchAddress( ( name+".JMw" ).c_str(),                                          JMw );
     root->SetBranchAddress( ( name+".CEF" ).c_str(),                                          CEF );
     root->SetBranchAddress( ( name+".CHF" ).c_str(),                                          CHF );
     root->SetBranchAddress( ( name+".NEF" ).c_str(),                                          NEF );
