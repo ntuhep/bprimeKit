@@ -131,7 +131,8 @@ ak4jetbase.jetsrc  = cms.InputTag('selectedPatJetsAK4PFCHS')
 ak4jetpuppi = jetcommon.clone()
 ak4jetpuppi.jetname = cms.string('JetInfoPuppi')
 ak4jetpuppi.jettype = cms.string('AK4PFPuppi')
-ak4jetpuppi.jetsrc  = cms.InputTag('updatedPatJetsSelectedAK4PFPuppi')
+ak4jetpuppi.jetsrc  = cms.InputTag('selectedPatJetsAK4PFPuppi')
+#ak4jetpuppi.jetsrc  = cms.InputTag('updatedPatJetsSelectedAK4PFPuppi')
 
 #-------------------------------------------------------------------------
 #   AK8/CA8 jet common settings
