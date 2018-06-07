@@ -8,6 +8,7 @@
 
 #include "TrackingTools/IPTools/interface/IPTools.h"
 #include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
 
 using namespace std;
 
@@ -50,6 +51,11 @@ LeptonNtuplizer::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSet
     // ----- Good Muon selection  -----------------------------------------------------------------------
     // https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Soft_Muon
     LepInfo.isGoodMuonTMOneStationTight    [LepInfo.Size] = muon::isGoodMuon( *it_mu, muon::TMOneStationTight );
+
+    // ----- CutBased Muon ID --------------------------------------------------------------------------
+    LepInfo.MuonCutBasedMuIdLOOSE          [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdLoose);
+    LepInfo.MuonCutBasedMuIdMEDIUM         [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdMedium);
+    LepInfo.MuonCutBasedMuIdTIGHT          [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdTight);
 
     // ----- MiniPFIsolation -----
     // https://github.com/manuelfs/CfANtupler/blob/master/minicfa/interface/miniAdHocNTupler.h#L54

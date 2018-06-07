@@ -16,7 +16,6 @@ vtxBSsrc    = cms.InputTag( 'offlinePrimaryVerticesWithBS' )
 beamspotsrc = cms.InputTag( 'offlineBeamSpot' )
 gensrc      = cms.InputTag( 'prunedGenParticles' )
 
-
 #-------------------------------------------------------------------------------
 #   EvtGen settings
 #-------------------------------------------------------------------------------
@@ -108,7 +107,6 @@ leptonbase = cms.PSet(
     beamspotsrc    = beamspotsrc,
 )
 
-
 #-------------------------------------------------------------------------------
 #   Jet settings
 #-------------------------------------------------------------------------------
@@ -134,6 +132,7 @@ ak4jetpuppi = jetcommon.clone()
 ak4jetpuppi.jetname = cms.string('JetInfoPuppi')
 ak4jetpuppi.jettype = cms.string('AK4PFPuppi')
 ak4jetpuppi.jetsrc  = cms.InputTag('selectedPatJetsAK4PFPuppi')
+#ak4jetpuppi.jetsrc  = cms.InputTag('updatedPatJetsSelectedAK4PFPuppi')
 
 #-------------------------------------------------------------------------
 #   AK8/CA8 jet common settings
@@ -143,7 +142,6 @@ ak8jetbase.jetname   = cms.string('JetAK8Info')
 ak8jetbase.jettype   = cms.string('AK8PFchs')
 ak8jetbase.jetsrc    = cms.InputTag('selectedPatJetsAK8PFCHS')
 ak8jetbase.subjetsrc = cms.InputTag('selectedPatJetsAK8PFCHSSoftDropPacked')
-
 
 ak8jetpuppi = jetcommon.clone()
 ak8jetpuppi.jetname   = cms.string('JetAK8Puppi')
