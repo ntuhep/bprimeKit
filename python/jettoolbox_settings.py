@@ -110,26 +110,26 @@ def jettoolbox_settings( process , runMC ):
     )
 
     jetToolbox( process, 'ca8', 'ca8chs', 'edmOut',
-        runOnMC            = runMC ,
+        runOnMC            = runMC,
         addMassDrop        = True,
         addCMSTopTagger    = True,
         GetJetMCFlavour    = True,
         GetSubjetMCFlavour = True,
-        bTagDiscriminators = listBtagDiscriminators ,
+        bTagDiscriminators = listBtagDiscriminators,
         Cut                = ''
     )
 
     jetToolbox( process, 'ca8', 'ca8puppi', 'edmOut',
-        runOnMC            = runMC ,
-        PUMethod           = 'Puppi',
-        newPFCollection    = True,
-        nameNewPFCollection= 'puppi',
-        addMassDrop        = True,
-        addCMSTopTagger    = True,
-        GetJetMCFlavour    = True,
-        GetSubjetMCFlavour = True,
-        bTagDiscriminators = listBtagDiscriminators ,
-        Cut                = ''
+        runOnMC             = runMC,
+        PUMethod            = 'Puppi',
+        newPFCollection     = True,
+        nameNewPFCollection = 'puppi',
+        addMassDrop         = True,
+        addCMSTopTagger     = True,
+        GetJetMCFlavour     = True,
+        GetSubjetMCFlavour  = True,
+        bTagDiscriminators  = listBtagDiscriminators,
+        Cut                 = ''
     )
 
     #To avoid producing additional JetToolBox format files, kick out the "EndPath" attribute of process.

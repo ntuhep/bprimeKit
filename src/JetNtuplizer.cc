@@ -328,7 +328,6 @@ JetNtuplizer::GetSubjetBunch( const vector<pat::Jet>::const_iterator& mainjet )
   return _subjethandle->end();
 }
 
-
 /*******************************************************************************
 *   Jet type parsing functions
 *******************************************************************************/

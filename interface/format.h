@@ -362,6 +362,12 @@ public:
   Float_t summaryDeepCSVJetTags_BvsAll [MAX_JETS];
   Float_t summaryDeepCSVJetTags_CvsB [MAX_JETS];
   Float_t summaryDeepCSVJetTags_CvsL [MAX_JETS];
+  //Float_t pfDeepFlavourJetTags_probb   [MAX_JETS];
+  //Float_t pfDeepFlavourJetTags_probbb  [MAX_JETS];
+  //Float_t pfDeepFlavourJetTags_problepb[MAX_JETS];
+  //Float_t pfDeepFlavourJetTags_probc   [MAX_JETS];
+  //Float_t pfDeepFlavourJetTags_probuds [MAX_JETS];
+  //Float_t pfDeepFlavourJetTags_probg   [MAX_JETS];
   Float_t pfBoostedDoubleSecondaryVertexAK8BJetTags [MAX_JETS];
   Float_t GenJetPt [MAX_JETS];
   Float_t GenJetEta [MAX_JETS];
@@ -493,6 +499,12 @@ public:
     root->Branch( ( name+".summaryDeepCSVJetTags_BvsAll" ).c_str(),                 summaryDeepCSVJetTags_BvsAll,                 ( name+".summaryDeepCSVJetTags_BvsAll["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".summaryDeepCSVJetTags_CvsB" ).c_str(),                   summaryDeepCSVJetTags_CvsB,                   ( name+".summaryDeepCSVJetTags_CvsB["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".summaryDeepCSVJetTags_CvsL" ).c_str(),                   summaryDeepCSVJetTags_CvsL,                   ( name+".summaryDeepCSVJetTags_CvsL["+name+".Size]/F" ).c_str() );
+    //root->Branch( ( name+".pfDeepFlavourJetTags_probb" ).c_str(),                   pfDeepFlavourJetTags_probb,                   ( name+".pfDeepFlavourJetTags_probb["+name+".Size]/F" ).c_str() );
+    //root->Branch( ( name+".pfDeepFlavourJetTags_probbb" ).c_str(),                  pfDeepFlavourJetTags_probbb,                  ( name+".pfDeepFlavourJetTags_probbb["+name+".Size]/F" ).c_str() );
+    //root->Branch( ( name+".pfDeepFlavourJetTags_problepb" ).c_str(),                pfDeepFlavourJetTags_problepb,                ( name+".pfDeepFlavourJetTags_problepb["+name+".Size]/F" ).c_str() );
+    //root->Branch( ( name+".pfDeepFlavourJetTags_probc" ).c_str(),                   pfDeepFlavourJetTags_probc,                   ( name+".pfDeepFlavourJetTags_probc["+name+".Size]/F" ).c_str() );
+    //root->Branch( ( name+".pfDeepFlavourJetTags_probuds" ).c_str(),                 pfDeepFlavourJetTags_probuds,                 ( name+".pfDeepFlavourJetTags_probuds["+name+".Size]/F" ).c_str() );
+    //root->Branch( ( name+".pfDeepFlavourJetTags_probg" ).c_str(),                   pfDeepFlavourJetTags_probg,                   ( name+".pfDeepFlavourJetTags_probg["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags,    ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetPt" ).c_str(),                                     GenJetPt,                                     ( name+".GenJetPt["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetEta" ).c_str(),                                    GenJetEta,                                    ( name+".GenJetEta["+name+".Size]/F" ).c_str() );
@@ -605,6 +617,12 @@ public:
     root->SetBranchAddress( ( name+".summaryDeepCSVJetTags_BvsAll" ).c_str(),                 summaryDeepCSVJetTags_BvsAll );
     root->SetBranchAddress( ( name+".summaryDeepCSVJetTags_CvsB" ).c_str(),                   summaryDeepCSVJetTags_CvsB );
     root->SetBranchAddress( ( name+".summaryDeepCSVJetTags_CvsL" ).c_str(),                   summaryDeepCSVJetTags_CvsL );
+    //root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probb" ).c_str(),                   pfDeepFlavourJetTags_probb );
+    //root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probbb" ).c_str(),                  pfDeepFlavourJetTags_probbb );
+    //root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_problepb" ).c_str(),                pfDeepFlavourJetTags_problepb );
+    //root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probc" ).c_str(),                   pfDeepFlavourJetTags_probc );
+    //root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probuds" ).c_str(),                 pfDeepFlavourJetTags_probuds );
+    //root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probg" ).c_str(),                   pfDeepFlavourJetTags_probg );
     root->SetBranchAddress( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags );
     root->SetBranchAddress( ( name+".GenJetPt" ).c_str(),                                     GenJetPt );
     root->SetBranchAddress( ( name+".GenJetEta" ).c_str(),                                    GenJetEta );
