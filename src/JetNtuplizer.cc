@@ -134,6 +134,16 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.PtCorrL2    [JetInfo.Size] = it_jet->correctedJet( "L2Relative" ).pt();// L2(rel)
     JetInfo.PtCorrL3    [JetInfo.Size] = it_jet->correctedJet( "L3Absolute" ).pt();// L3(abs)
 
+    // ----- Particle flow information  -----------------------------------------------------------------
+    JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
+    JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
+    JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
+    JetInfo.NNH[JetInfo.Size] = it_jet->neutralMultiplicity();
+    JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
+    JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
+    JetInfo.MUF[JetInfo.Size] = it_jet->muonEnergyFraction();
+    JetInfo.JM[JetInfo.Size]  = it_jet->chargedMultiplicity() + it_jet->neutralMultiplicity();
+
     // ----- B Tagging discriminators  ------------------------------------------------------------------
     JetInfo.pfCombinedInclusiveSecondaryVertexV2BJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" );
@@ -210,15 +220,6 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     //   AK4 Jet Specific variables
     // ------------------------------------------------------------------------------
     if( IsAK4() ){
-      JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
-      JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
-      JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
-      JetInfo.NNH[JetInfo.Size] = it_jet->neutralMultiplicity();
-      JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
-      JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
-      JetInfo.MUF[JetInfo.Size] = it_jet->muonEnergyFraction();
-      JetInfo.JM[JetInfo.Size]  = it_jet->chargedMultiplicity() + it_jet->neutralMultiplicity();
-
       if( _jetname == "JetInfo" ){
         JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
         JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "AK4PFCHSpileupJetIdEvaluator:fullDiscriminant" );
