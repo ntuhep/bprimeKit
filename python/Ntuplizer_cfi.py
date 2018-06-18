@@ -48,8 +48,20 @@ triggerbase = cms.PSet(
     gtdigisrc     = cms.InputTag('gtDigis'),
     triggerlist   = cms.VPSet(
         cms.PSet(
+            HLTPath=cms.string('HLT_IsoMu27_v*'),
+            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_IsoMu30_v*'),
+            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f30QL3trkIsoFiltered0p07')
+        ),
+        cms.PSet(
             HLTPath=cms.string('HLT_Mu50_v*'),
             HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Mu55_v*'),
+            HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered55Q')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_Ele35_WPTight_Gsf_v*'),
