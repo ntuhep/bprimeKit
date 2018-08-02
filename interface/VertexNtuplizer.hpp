@@ -27,10 +27,8 @@ private:
   VertexInfoBranches VertexInfo;
 
   const edm::EDGetToken _vtxtoken;
-  const edm::EDGetToken _vtxBStoken;
 
   edm::Handle<std::vector<reco::Vertex>> _vtxhandle;
-  edm::Handle<std::vector<reco::Vertex>> _vtxBShandle;
 
 };
 

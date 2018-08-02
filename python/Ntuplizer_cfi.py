@@ -10,25 +10,36 @@ import FWCore.ParameterSet.Config as cms
 #-------------------------------------------------------------------------------
 #   Common objects
 #-------------------------------------------------------------------------------
-rhosrc      = cms.InputTag( 'fixedGridRhoFastjetAll' )
-vtxsrc      = cms.InputTag( 'offlineSlimmedPrimaryVertices' )
-vtxBSsrc    = cms.InputTag( 'offlinePrimaryVerticesWithBS' )
-beamspotsrc = cms.InputTag( 'offlineBeamSpot' )
-gensrc      = cms.InputTag( 'prunedGenParticles' )
+rhosrc            = cms.InputTag( 'fixedGridRhoFastjetAll' )
+rhonofastjetsrc   = cms.InputTag( 'fixedGridRhoAll' )
+vtxsrc            = cms.InputTag( 'offlineSlimmedPrimaryVertices' )
+beamspotsrc       = cms.InputTag( 'offlineBeamSpot' )
+gensrc            = cms.InputTag( 'prunedGenParticles' )
 
 #-------------------------------------------------------------------------------
 #   EvtGen settings
 #-------------------------------------------------------------------------------
 evtgenbase = cms.PSet(
-    rhosrc        = rhosrc,
-    metsrc        = cms.InputTag('slimmedMETs'),
-    puppimetsrc   = cms.InputTag('slimmedMETsPuppi'),
-    pusrc         = cms.InputTag('slimmedAddPileupInfo'),
-    beamspotsrc   = beamspotsrc,
-    genevtsrc     = cms.InputTag('generator'),
-    gensrc        = gensrc,
-    lhesrc        = cms.InputTag('externalLHEProducer'),
-    mettriggersrc = cms.InputTag('TriggerResults','','RECO'),
+    rhosrc          = rhosrc,
+    rhonofastjetsrc = rhonofastjetsrc,
+    metsrc          = cms.InputTag('slimmedMETs'),
+    puppimetsrc     = cms.InputTag('slimmedMETsPuppi'),
+    pusrc           = cms.InputTag('slimmedAddPileupInfo'),
+    beamspotsrc     = beamspotsrc,
+    genevtsrc       = cms.InputTag('generator'),
+    gensrc          = gensrc,
+    lhesrc          = cms.InputTag('externalLHEProducer'),
+    mettriggersrc   = cms.InputTag('TriggerResults','','RECO'),
+    metfilter       = cms.vstring(
+                        "Flag_HBHENoiseFilter",
+                        "Flag_HBHENoiseIsoFilter",
+                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
+                        "Flag_goodVertices",
+                        "Flag_globalTightHalo2016Filter",
+                        "Flag_BadPFMuonFilter",
+                        "Flag_BadChargedCandidateFilter",
+                        "Flag_ecalBadCalibFilter",
+                    )
 )
 
 #-------------------------------------------------------------------------------
@@ -36,17 +47,17 @@ evtgenbase = cms.PSet(
 #-------------------------------------------------------------------------------
 vertexbase = cms.PSet(
     vtxsrc = vtxsrc,
-    vtxBSsrc = vtxBSsrc,
 )
 
 #-------------------------------------------------------------------------------
 #   Trigger object settings
 #-------------------------------------------------------------------------------
 triggerbase = cms.PSet(
-    triggersrc    = cms.InputTag( 'TriggerResults::HLT' ),
-    triggerobjsrc = cms.InputTag( 'slimmedPatTrigger'),
-    gtdigisrc     = cms.InputTag('gtDigis'),
-    triggerlist   = cms.VPSet(
+    triggersrc           = cms.InputTag( 'TriggerResults::HLT' ),
+    triggerprescalessrc  = cms.InputTag( 'patTrigger' ),
+    triggerobjsrc        = cms.InputTag( 'slimmedPatTrigger'),
+    gtdigisrc            = cms.InputTag('gtDigis'),
+    triggerlist          = cms.VPSet(
         cms.PSet(
             HLTPath=cms.string('HLT_IsoMu27_v*'),
             HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07')

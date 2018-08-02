@@ -33,11 +33,10 @@ private:
   GenInfoBranches GenInfo;
 
   const edm::EDGetToken _rhotoken;
+  const edm::EDGetToken _rhonofastjettoken;
   const edm::EDGetToken _mettoken;
   const edm::EDGetToken _pmettoken;
   const edm::EDGetToken _pileuptoken;
-  const edm::EDGetToken _vtxtoken;
-  const edm::EDGetToken _vtxBStoken;
   const edm::EDGetToken _beamspottoken;
 
   const edm::EDGetToken _genevttoken;
@@ -45,10 +44,10 @@ private:
   const edm::EDGetToken _lhetoken;
 
   const edm::EDGetToken _mettriggertoken;
-  const edm::EDGetToken _metbadmutoken;
-  const edm::EDGetToken _metbadchadtoken;
+  std::vector<std::string> _metfilter;
 
   edm::Handle<double> _rhohandle;
+  edm::Handle<double> _rhonofastjethandle;
   edm::Handle<std::vector<pat::MET>> _methandle;
   edm::Handle<std::vector<pat::MET>> _pmethandle;
   edm::Handle<std::vector<PileupSummaryInfo> > _pileuphandle;
@@ -57,9 +56,6 @@ private:
   edm::Handle<GenEventInfoProduct> _genevthandle;
   edm::Handle<std::vector<reco::GenParticle> > _genparticlehandle;
   edm::Handle<LHEEventProduct> _lhehandle;
-
-  edm::Handle<std::vector<reco::Vertex> > _vtxhandle;
-  edm::Handle<std::vector<reco::Vertex> > _vtxBShandle;
 
   edm::Handle<edm::TriggerResults> _mettriggerhandle;
 

@@ -18,7 +18,6 @@
 <use   name="JetMETCorrections/Objects"/>
 <use   name="JetMETCorrections/Modules"/>
 <use   name="EgammaAnalysis/ElectronTools"/>
-<use   name="HLTrigger/HLTcore"/>
 <use   name="SimGeneral/HepPDTRecord"/>
 <use   name="SimDataFormats/GeneratorProducts"/>
 <use   name="RecoBTag/SecondaryVertex"/>

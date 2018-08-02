@@ -11,10 +11,9 @@
 #include "bpkFrameWork/bprimeKit/interface/NtuplizerBase.hpp"
 
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
+#include "DataFormats/PatCandidates/interface/PackedTriggerPrescales.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-
-#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 class TriggerNtuplizer : public NtuplizerBase
 {
@@ -30,14 +29,14 @@ private:
   TrgInfoBranches TrgInfo;
 
   const edm::EDGetToken _triggertoken;
+  const edm::EDGetToken _triggerprescalestoken;
   const edm::EDGetToken _triggerobjtoken;
   const edm::EDGetToken _gendigitoken;
 
   edm::Handle<edm::TriggerResults> _triggerhandle;
+  edm::Handle<pat::PackedTriggerPrescales> _triggerprescaleshandle;
   edm::Handle<std::vector<pat::TriggerObjectStandAlone>> _triggerobjhandle;
   edm::Handle<L1GlobalTriggerReadoutRecord> _recordhandle;
-
-  HLTConfigProvider _hltconfig;
 
   // Helper container classes
   std::vector<std::pair<std::string,std::string>> _triggerlist;
