@@ -16,7 +16,6 @@ vtxBSsrc    = cms.InputTag( 'offlinePrimaryVerticesWithBS' )
 beamspotsrc = cms.InputTag( 'offlineBeamSpot' )
 gensrc      = cms.InputTag( 'prunedGenParticles' )
 
-
 #-------------------------------------------------------------------------------
 #   EvtGen settings
 #-------------------------------------------------------------------------------
@@ -49,8 +48,20 @@ triggerbase = cms.PSet(
     gtdigisrc     = cms.InputTag('gtDigis'),
     triggerlist   = cms.VPSet(
         cms.PSet(
+            HLTPath=cms.string('HLT_IsoMu27_v*'),
+            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_IsoMu30_v*'),
+            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f30QL3trkIsoFiltered0p07')
+        ),
+        cms.PSet(
             HLTPath=cms.string('HLT_Mu50_v*'),
             HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Mu55_v*'),
+            HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered55Q')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_Ele35_WPTight_Gsf_v*'),
@@ -80,7 +91,7 @@ photonbase = cms.PSet(
     phoChargedIsolation       = cms.InputTag('photonIDValueMapProducer:phoChargedIsolation'),
     phoNeutralHadronIsolation = cms.InputTag('photonIDValueMapProducer:phoNeutralHadronIsolation'),
     phoPhotonIsolation        = cms.InputTag('photonIDValueMapProducer:phoPhotonIsolation'),
-    full5x5SigmaIEtaIEtaMap   = cms.InputTag('photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta'),
+    #full5x5SigmaIEtaIEtaMap   = cms.InputTag('photonIDValueMapProducer:phoFull5x5SigmaIEtaIEta'),
     effAreaChHadFile  = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_TrueVtx.txt'),
     effAreaNeuHadFile = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_TrueVtx.txt'),
     effAreaPhoFile    = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_TrueVtx.txt'),
@@ -108,7 +119,6 @@ leptonbase = cms.PSet(
     beamspotsrc    = beamspotsrc,
 )
 
-
 #-------------------------------------------------------------------------------
 #   Jet settings
 #-------------------------------------------------------------------------------
@@ -133,7 +143,8 @@ ak4jetbase.jetsrc  = cms.InputTag('selectedPatJetsAK4PFCHS')
 ak4jetpuppi = jetcommon.clone()
 ak4jetpuppi.jetname = cms.string('JetInfoPuppi')
 ak4jetpuppi.jettype = cms.string('AK4PFPuppi')
-ak4jetpuppi.jetsrc  = cms.InputTag('selectedPatJetsAK4PFPuppi')
+#ak4jetpuppi.jetsrc  = cms.InputTag('selectedPatJetsAK4PFPuppi')
+ak4jetpuppi.jetsrc  = cms.InputTag('updatedPatJetsSelectedAK4PFPuppi')
 
 #-------------------------------------------------------------------------
 #   AK8/CA8 jet common settings
@@ -143,7 +154,6 @@ ak8jetbase.jetname   = cms.string('JetAK8Info')
 ak8jetbase.jettype   = cms.string('AK8PFchs')
 ak8jetbase.jetsrc    = cms.InputTag('selectedPatJetsAK8PFCHS')
 ak8jetbase.subjetsrc = cms.InputTag('selectedPatJetsAK8PFCHSSoftDropPacked')
-
 
 ak8jetpuppi = jetcommon.clone()
 ak8jetpuppi.jetname   = cms.string('JetAK8Puppi')

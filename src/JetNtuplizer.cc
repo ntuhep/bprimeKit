@@ -9,13 +9,6 @@
 // ----- Jet Specific CMSSW packages  ---------------------------------------------------------------
 #include "FWCore/Framework/interface/ESHandle.h"
 
-#include "DataFormats/BTauReco/interface/CATopJetTagInfo.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
-
-#include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
-#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
-#include "PhysicsTools/SelectorUtils/interface/strbitset.h"
-
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
@@ -124,15 +117,21 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.Eta           [JetInfo.Size] = it_jet->eta();
     JetInfo.Phi           [JetInfo.Size] = it_jet->phi();
     JetInfo.Energy        [JetInfo.Size] = it_jet->energy();
-    JetInfo.Px            [JetInfo.Size] = it_jet->px();
-    JetInfo.Py            [JetInfo.Size] = it_jet->py();
-    JetInfo.Pz            [JetInfo.Size] = it_jet->pz();
-    JetInfo.Et            [JetInfo.Size] = it_jet->et();
 
     // ----- Jet Correction Information  ----------------------------------------------------------------
     JetInfo.PtCorrRaw   [JetInfo.Size] = it_jet->correctedJet( "Uncorrected" ).pt();
     JetInfo.PtCorrL2    [JetInfo.Size] = it_jet->correctedJet( "L2Relative" ).pt();// L2(rel)
     JetInfo.PtCorrL3    [JetInfo.Size] = it_jet->correctedJet( "L3Absolute" ).pt();// L3(abs)
+
+    // ----- Particle flow information  -----------------------------------------------------------------
+    JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
+    JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
+    JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
+    JetInfo.NNH[JetInfo.Size] = it_jet->neutralMultiplicity();
+    JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
+    JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
+    JetInfo.MUF[JetInfo.Size] = it_jet->muonEnergyFraction();
+    JetInfo.JM[JetInfo.Size]  = it_jet->chargedMultiplicity() + it_jet->neutralMultiplicity();
 
     // ----- B Tagging discriminators  ------------------------------------------------------------------
     JetInfo.pfCombinedInclusiveSecondaryVertexV2BJetTags[JetInfo.Size]
@@ -147,6 +146,12 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                       );
     JetInfo.pfDeepCSVJetTags_probudsg[JetInfo.Size]
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                    );
+    JetInfo.summaryDeepCSVJetTags_BvsAll[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:BvsAll"        );
+    JetInfo.summaryDeepCSVJetTags_CvsB[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsB"          );
+    JetInfo.summaryDeepCSVJetTags_CvsL[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsL"          );
 
     // ----- Cleaned Jet four momentum  -----------------------------------------
     const TLorentzVector cleanedJet =
@@ -156,21 +161,6 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.Eta_MuonCleaned[JetInfo.Size]    = cleanedJet.Eta();
     JetInfo.Phi_MuonCleaned[JetInfo.Size]    = cleanedJet.Phi();
     JetInfo.Energy_MuonCleaned[JetInfo.Size] = cleanedJet.Energy();
-
-    // ----- Jet ID string insertions  -----------------------------------------
-    bool jetID = true;
-    if( IsAK4() ){
-      edm::ParameterSet jetidParam;
-      jetidParam.addParameter<std::string>( "version", "FIRSTDATA" );
-      jetidParam.addParameter<std::string>( "quality", "LOOSE" );
-      PFJetIDSelectionFunctor pfjetIDLOOSE( jetidParam );
-      pat::strbitset ret = pfjetIDLOOSE.getBitTemplate();
-      ret.set( false );
-      jetID = pfjetIDLOOSE( *it_jet, ret );
-    } else {
-      jetID = true;// Apply jetID in PAT level
-    }
-    JetInfo.JetIDLOOSE[JetInfo.Size] = ( jetID ) ?  1 : 0;
 
     // ----- Jet Uncertainty  ----------------------------------------------------
     if( fabs( it_jet->eta() ) <= 5.0 ){
@@ -198,8 +188,9 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     jetparm.setJetPt( it_jet->pt() ).setJetEta( it_jet->eta() ).setRho( *_rhohandle );
     JetInfo.JERPt [JetInfo.Size]   = jetptres.getResolution( jetparm );
     JetInfo.JERPhi[JetInfo.Size]   = jetphires.getResolution( jetparm );
-    JetInfo.JERScale[JetInfo.Size] = jetressf.getScaleFactor( jetparm );
-
+    JetInfo.JERScale    [JetInfo.Size] = jetressf.getScaleFactor( jetparm );
+    JetInfo.JERScaleUp  [JetInfo.Size] = jetressf.getScaleFactor( jetparm, Variation::UP );
+    JetInfo.JERScaleDown[JetInfo.Size] = jetressf.getScaleFactor( jetparm, Variation::DOWN );
 
     // ------------------------------------------------------------------------------
     //   AK4 Jet Specific variables
@@ -213,15 +204,9 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTaggerAK4PFPuppi:qgLikelihood" );
         JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "AK4PFPuppipileupJetIdEvaluator:fullDiscriminant" );
         JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "AK4PFPuppipileupJetIdEvaluator:fullId" );
+        JetInfo.NNHw[JetInfo.Size] = it_jet->userFloat( "patPuppiJetSpecificProducer:neutralPuppiMultiplicity" );
+        JetInfo.JMw[JetInfo.Size]  = it_jet->userFloat( "patPuppiJetSpecificProducer:puppiMultiplicity" );
       }
-      // ----- Particle flow information  -----------------------------------------------------------------
-      JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
-      JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
-      JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
-      JetInfo.NNH[JetInfo.Size] = it_jet->neutralMultiplicity();
-      JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
-      JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
-      JetInfo.MUF[JetInfo.Size] = it_jet->muonEnergyFraction();
     }
 
     // ------------------------------------------------------------------------------
@@ -233,6 +218,10 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       JetInfo.NjettinessAK8tau1        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau1"       );
       JetInfo.NjettinessAK8tau2        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau2"       );
       JetInfo.NjettinessAK8tau3        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau3"       );
+      if (_jetname == "JetAK8Puppi"){
+        JetInfo.PuppiSoftDrop_ECFb1N2  [JetInfo.Size] = it_jet->userFloat( "ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2" );
+        JetInfo.PuppiSoftDrop_ECFb1N3  [JetInfo.Size] = it_jet->userFloat( "ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3" );
+      }
       JetInfo.ak8PFJetsCHSSoftDropMass [JetInfo.Size] = it_jet->userFloat( UserFloatPrefix() + "SoftDropMass" );
       JetInfo.ak8PFJetsCHSPrunedMass   [JetInfo.Size] = it_jet->userFloat( UserFloatPrefix() + "PrunedMass"   );
 
@@ -257,10 +246,17 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
           JetInfo.SubjetArea_w.push_back( subjet->jetArea() );
           JetInfo.SubjetPtUncorr_w.push_back( subjet->pt()*subjet->jecFactor( "Uncorrected" ) );
           JetInfo.SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
-          JetInfo.SubjetDeepCSVJetTags_probb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probb" ) );
-          JetInfo.SubjetDeepCSVJetTags_probbb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probbb" ) );
-          JetInfo.SubjetDeepCSVJetTags_probc_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probc" ) );
-          JetInfo.SubjetDeepCSVJetTags_probudsg_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags_probudsg" ) );
+          JetInfo.SubjetDeepCSVJetTags_probb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probb" ) );
+          JetInfo.SubjetDeepCSVJetTags_probbb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probbb" ) );
+          JetInfo.SubjetDeepCSVJetTags_probc_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probc" ) );
+          JetInfo.SubjetDeepCSVJetTags_probudsg_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probudsg" ) );
+          JetInfo.SubjetsummaryDeepCSVJetTags_BvsAll_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:BvsAll" ) );
+          JetInfo.SubjetsummaryDeepCSVJetTags_CvsB_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsB" ) );
+          JetInfo.SubjetsummaryDeepCSVJetTags_CvsL_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsL" ) );
+          if (_jetname == "JetAK8Puppi"){
+            JetInfo.PuppiSoftDrop_SubjetECFb1N2_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN2" ) );
+            JetInfo.PuppiSoftDrop_SubjetECFb1N3_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN3" ) );
+          }
           if( !iEvent.isRealData() ){
             JetInfo.SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
             JetInfo.SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
@@ -308,7 +304,6 @@ JetNtuplizer::GetSubjetBunch( const vector<pat::Jet>::const_iterator& mainjet )
 
   return _subjethandle->end();
 }
-
 
 /*******************************************************************************
 *   Jet type parsing functions
