@@ -41,7 +41,6 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.BSsigmaZ  = _beamspothandle->sigmaZ();
   
   // ----- Getting missing momentum information  --------------------------------
-  cout << _methandle->size() << endl;
   for( auto it_met = _methandle->begin(); it_met != _methandle->end(); it_met++ ){
     EvtInfo.PFMET             = it_met->pt();
     EvtInfo.PFMETPhi          = it_met->phi();
@@ -95,7 +94,6 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     EvtInfo.PuppiMETType1CorrPhiShiftUnclusteredEnUp     = it_met->shiftedPhi( pat::MET::UnclusteredEnUp   );
     EvtInfo.PuppiMETType1CorrPhiShiftUnclusteredEnDown   = it_met->shiftedPhi( pat::MET::UnclusteredEnDown );
 
-    cout << it_met->shiftedPt(pat::MET::UnclusteredEnUp) << endl;
     const reco::GenMET* genmet = it_met->genMET();
     if( genmet != NULL ){
       EvtInfo.PuppiGenMET    = genmet->pt();
@@ -120,7 +118,8 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
       };
 
   EvtInfo.Flag_METFilter = true;
-  for( const auto& it_metfilter : _metfilter ) EvtInfo.Flag_METFilter = EvtInfo.Flag_METFilter && checkMETfilter( it_metfilter );
+  for( const auto& it_metfilter : _metfilter ) 
+      EvtInfo.Flag_METFilter = EvtInfo.Flag_METFilter && checkMETfilter( it_metfilter );
   //MC isn't suggested to use Flag_eeBadScFilter
   if ( iEvent.isRealData() ) EvtInfo.Flag_METFilter = EvtInfo.Flag_METFilter && checkMETfilter( "Flag_eeBadScFilter" );
 
