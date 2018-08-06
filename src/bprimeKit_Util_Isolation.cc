@@ -17,13 +17,13 @@
 using namespace std;
 
 double
-bprimeKit::GetMiniPFIsolation(
+bprimeKit::GetMiniPFIso(
    const edm::Handle<pat::PackedCandidateCollection>& pfcands,
    const reco::Candidate*                             ptcl,
-   const double                                       r_iso_min,
-   const double                                       r_iso_max,
-   const double                                       kt_scale,
-   const bool                                         charged_only )
+   const double&                                      r_iso_min,
+   const double&                                      r_iso_max,
+   const double&                                      kt_scale,
+   const bool&                                        charged_only )
 {
    if( ptcl->pt() < 5. ){ return 99999.; }
    double deadcone_nh = 0.;
@@ -100,7 +100,23 @@ bprimeKit::GetMiniPFIsolation(
          iso = iso_ch;
       }
    }
-   iso = iso/ptcl->pt();
 
    return iso;
+}
+
+double 
+bprimeKit::GetMiniPFIsoRhoCorr(
+   const pat::PFIsolation& iso,
+   const double&           pt,
+   const double&           rho,
+   const double&           effarea )
+{
+   const double mindr = 0.05;
+   const double maxdr = 0.2;
+   const double kt_scale = 10.;
+   double dr = max( mindr, min( maxdr, kt_scale/pt ) );
+   double correction = rho * effarea * (dr/0.3) * (dr/0.3);
+   double correctedIso = iso.chargedHadronIso() + max( 0.0, iso.neutralHadronIso() + iso.photonIso() - correction );
+
+   return correctedIso;
 }

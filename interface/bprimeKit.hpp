@@ -26,6 +26,7 @@
 
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/PatCandidates/interface/PFIsolation.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHERunInfoProduct.h"
 
 #include "bpkFrameWork/bprimeKit/interface/format.h"
@@ -52,13 +53,19 @@ public:
   *   Static member functions for uniformed object formats,
   *   For implementations see bprimeKit_utils_*.cc files
   *******************************************************************************/
-  static double GetMiniPFIsolation(
+  static double GetMiniPFIso(
     const edm::Handle<pat::PackedCandidateCollection>& pfcands,
     const reco::Candidate*                             ptcl,
-    const double                                       r_iso_min,
-    const double                                       r_iso_max,
-    const double                                       kt_scale,
-    const bool                                         charged_only );
+    const double&                                      r_iso_min,
+    const double&                                      r_iso_max,
+    const double&                                      kt_scale,
+    const bool&                                        charged_only );
+
+  static double GetMiniPFIsoRhoCorr(
+    const pat::PFIsolation& iso,
+    const double& pt,
+    const double& rho,
+    const double& effarea );
 
   static int GetGenMCTag( const reco::GenParticle* );
 
