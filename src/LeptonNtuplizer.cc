@@ -34,7 +34,8 @@ LeptonNtuplizer::LeptonNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _electronID_mediummap( iConfig.getParameter<string>( "eleMediumIdMap"  ) ),
   _electronID_tightmap( iConfig.getParameter<string>( "eleTightIdMap"   ) ),
   _electronID_HEEPmap( iConfig.getParameter<string>( "eleHEEPIdMap"    ) ),
-  _electronEffectiveAreaR03_NeuHadronAndPhoton( iConfig.getParameter<edm::FileInPath>( "effAreaNeuHadPhoFile" ).fullPath() ),
+  _electronEffectiveAreaR03_NeuHadronAndPhoton( iConfig.getParameter<edm::FileInPath>( "eleffAreaNeuHadPhoFile" ).fullPath() ),
+  _muonEffectiveAreaR03_NeuHadronAndPhoton( iConfig.getParameter<edm::FileInPath>( "mueffAreaNeuHadPhoFile" ).fullPath() ),
   _conversionstoken( GetToken<reco::ConversionCollection>( "conversionsrc" ) ),
   _vtxtoken( GetToken<std::vector<reco::Vertex> >( "vtxsrc" ) ),
   _beamspottoken( GetToken<reco::BeamSpot>( "beamspotsrc" ) )

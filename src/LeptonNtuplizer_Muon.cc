@@ -6,17 +6,13 @@
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/LeptonNtuplizer.hpp"
 
-#include "TrackingTools/IPTools/interface/IPTools.h"
-#include "UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h"
+//#include "DataFormats/MuonReco/interface/MuonSelectors.h"
 
 using namespace std;
 
 void
 LeptonNtuplizer::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-  MuonEffectiveArea::MuonEffectiveAreaTarget EATarget
-    = iEvent.isRealData() ? MuonEffectiveArea::kMuEAData2012 :
-      MuonEffectiveArea::kMuEAFall11MC;
 
   for( auto it_mu = _muonhandle->begin(); it_mu != _muonhandle->end(); ++it_mu ){
     if( LepInfo.Size >= MAX_LEPTONS ){
@@ -24,6 +20,11 @@ LeptonNtuplizer::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSet
       break;
     }
 
+    // ----- Very very loose pre-selection -----------------------------------------------------------------
+    if( it_mu->pt() < 5 ) continue;
+    if( !(it_mu->isPFMuon() || it_mu->isGlobalMuon() || it_mu->isTrackerMuon()) ) continue;
+
+    // ----- Basic kinematics ------------------------------------------------------------------------------
     LepInfo.Index                     [LepInfo.Size] = LepInfo.Size;
     LepInfo.LeptonType                [LepInfo.Size] = 13;
     LepInfo.Charge                    [LepInfo.Size] = it_mu->charge();
@@ -31,133 +32,148 @@ LeptonNtuplizer::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSet
     LepInfo.Pt                        [LepInfo.Size] = it_mu->pt();
     LepInfo.Eta                       [LepInfo.Size] = it_mu->eta();
     LepInfo.Phi                       [LepInfo.Size] = it_mu->phi();
-    LepInfo.Px                        [LepInfo.Size] = it_mu->px();// Uly 2011-04-04
-    LepInfo.Py                        [LepInfo.Size] = it_mu->py();// Uly 2011-04-04
-    LepInfo.Pz                        [LepInfo.Size] = it_mu->pz();// Uly 2011-04-04
-    LepInfo.TrackIso                  [LepInfo.Size] = it_mu->trackIso();
-    LepInfo.EcalIso                   [LepInfo.Size] = it_mu->ecalIso();
-    LepInfo.HcalIso                   [LepInfo.Size] = it_mu->hcalIso();
-    LepInfo.isPFMuon                  [LepInfo.Size] = it_mu->isPFMuon();
-    LepInfo.ChargedHadronIso          [LepInfo.Size] = it_mu->chargedHadronIso();
-    LepInfo.NeutralHadronIso          [LepInfo.Size] = it_mu->neutralHadronIso();
-    LepInfo.PhotonIso                 [LepInfo.Size] = it_mu->photonIso();
+    LepInfo.Px                        [LepInfo.Size] = it_mu->px();
+    LepInfo.Py                        [LepInfo.Size] = it_mu->py();
+    LepInfo.Pz                        [LepInfo.Size] = it_mu->pz();
     LepInfo.MuType                    [LepInfo.Size] = it_mu->type();
-    LepInfo.MuCaloCompat              [LepInfo.Size] = it_mu->caloCompatibility();
-    LepInfo.MuNChambers               [LepInfo.Size] = it_mu->numberOfChambers();
-    LepInfo.MuNChambersMatchesSegment [LepInfo.Size] = it_mu->numberOfMatches();// At least 2 Chambers matched with segments
-    LepInfo.MuNMatchedStations        [LepInfo.Size] = it_mu->numberOfMatchedStations();
+    LepInfo.isPFMuon                  [LepInfo.Size] = it_mu->isPFMuon();
 
-    // ----- Good Muon selection  -----------------------------------------------------------------------
-    // https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Soft_Muon
+    // Pat muon info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/PatCandidates/interface/Muon.h
+    // Reco muon info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/MuonReco/interface/Muon.h
+    // ----- CutBased muon ID ------------------------------------------------------------------------------
+    // Twiki : https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#Muon_selectors_Since_9_4_X
+    // Internal code : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/MuonReco/src/MuonSelectors.cc
+    // ----- Normal ID -----
+    LepInfo.MuonCutBasedMuIdLOOSE          [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdLoose);
+    LepInfo.MuonCutBasedMuIdMEDIUM         [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdMedium);
+    LepInfo.MuonCutBasedMuIdTIGHT          [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdTight);
+
+    // ----- High pt ID (Non Particle-Flow algorithm) -----
+    // Should use "TunePBestTrack" info for kinematics like pt
+    LepInfo.MuonCutBasedIdGlobalHighPt     [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdGlobalHighPt);
+    LepInfo.MuonCutBasedIdTrkHighPt        [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdTrkHighPt);
+
+    // ----- Good muon selection ---------------------------------------------------------------------------
+    // Twiki : https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMuonAnalysis#Muon_identification
+    // For : https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#Soft_Muon
     LepInfo.isGoodMuonTMOneStationTight    [LepInfo.Size] = muon::isGoodMuon( *it_mu, muon::TMOneStationTight );
+    // For : https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#HighPt_Muon
+    LepInfo.isGoodMuonGlobalMuonPromptTight[LepInfo.Size] = muon::isGoodMuon( *it_mu, muon::GlobalMuonPromptTight );
+
+    // ----- Muon isolation variables ----------------------------------------------------------------------
+    // Twiki : https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#Muon_Isolation
+
+    // ----- Tracker based isolation (R = 0.3) -----
+    LepInfo.TrackerBasedIsoR03     [LepInfo.Size] = it_mu->isolationR03().sumPt;
+
+    // ----- Particle-Flow based isolation with Delta Beta correction (R = 0.4) ----
+    LepInfo.ChargedHadronIsoR04    [LepInfo.Size] = it_mu->pfIsolationR04().sumChargedHadronPt;  // = it_mu->chargedHadronIso()
+    LepInfo.NeutralHadronIsoR04    [LepInfo.Size] = it_mu->pfIsolationR04().sumNeutralHadronEt;  // = it_mu->neutralHadronIso()
+    LepInfo.PhotonIsoR04           [LepInfo.Size] = it_mu->pfIsolationR04().sumPhotonEt;         // = it_mu->photonIso()
+    LepInfo.sumPUPtR04             [LepInfo.Size] = it_mu->pfIsolationR04().sumPUPt;
+    LepInfo.PFIsoDeltaBetaCorrR04  [LepInfo.Size] = LepInfo.ChargedHadronIsoR04[LepInfo.Size] +
+                        max( 0.0, LepInfo.NeutralHadronIsoR04[LepInfo.Size] + LepInfo.PhotonIsoR04[LepInfo.Size] - 0.5 * LepInfo.sumPUPtR04[LepInfo.Size] );
 
     // ----- MiniPFIsolation -----
+    // Twiki : https://twiki.cern.ch/twiki/bin/view/CMS/MiniIsolationSUSY
     // https://github.com/manuelfs/CfANtupler/blob/master/minicfa/interface/miniAdHocNTupler.h#L54
-    LepInfo.MiniIso [LepInfo.Size]
-      = bprimeKit::GetMiniPFIsolation(
-      _packedhandle,
-      dynamic_cast<const reco::Candidate*>( &*it_mu ),
-      0.05,
-      0.2,
-      10.,
-      false
-      );
+    // Modify to rho correction : https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/PatUtils/src/MiniIsolation.cc#L58
 
-    // ----- Muon isolation information  ----------------------------------------------------------------
-    //  1. Delta Beta     : I = [sumChargedHadronPt+ max(0.,sumNeutralHadronPt+sumPhotonPt-0.5sumPUPt]/pt
-    //  2. Rho Correction : https://indico.cern.ch/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=188494
-    //  Effective Area    : http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/UserCode/sixie/Muon/MuonAnalysisTools/interface/MuonEffectiveArea.h?revision=1.7&view=markup
-    if( it_mu->isPFMuon() && it_mu->isPFIsolationValid() ){
-      LepInfo.ChargedHadronIsoR03  [LepInfo.Size] = it_mu->pfIsolationR03().sumChargedHadronPt;
-      LepInfo.NeutralHadronIsoR03  [LepInfo.Size] = it_mu->pfIsolationR03().sumNeutralHadronEt;
-      LepInfo.PhotonIsoR03         [LepInfo.Size] = it_mu->pfIsolationR03().sumPhotonEt;
-      LepInfo.sumPUPtR03           [LepInfo.Size] = it_mu->pfIsolationR03().sumPUPt;
+    // --- Use Delta Beta corr ---
+    // LepInfo.MiniIso [LepInfo.Size]
+    //  = bprimeKit::GetMiniPFIso(
+    //  _packedhandle,
+    //  dynamic_cast<const reco::Candidate*>( &*it_mu ),
+    //  0.05,
+    //  0.2,
+    //  10.,
+    //  false
+    //  );
 
-      LepInfo.ChargedHadronIsoR04  [LepInfo.Size] = it_mu->pfIsolationR04().sumChargedHadronPt;
-      LepInfo.NeutralHadronIsoR04  [LepInfo.Size] = it_mu->pfIsolationR04().sumNeutralHadronEt;
-      LepInfo.PhotonIsoR04         [LepInfo.Size] = it_mu->pfIsolationR04().sumPhotonEt;
-      LepInfo.sumPUPtR04           [LepInfo.Size] = it_mu->pfIsolationR04().sumPUPt;
+    // --- Use rho corr ---
+    const double rho      = _rhohandle.isValid() ? (float)(*_rhohandle) : 0.;
+    const double AEffR03  = _muonEffectiveAreaR03_NeuHadronAndPhoton.getEffectiveArea( abs( it_mu->pt()) );
+    LepInfo.MiniIso [LepInfo.Size] 
+        = bprimeKit::GetMiniPFIsoRhoCorr( it_mu->miniPFIsolation(), it_mu->pt(), rho, AEffR03 );
 
-      const double rhoPrime = std::max( *_rhohandle, 0.0 );
+    // ----- Track and impact parameter info ---------------------------------------------------------------
+    // Track Info      : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/TrackBase.h
+    // HitPattern Info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/HitPattern.h
+    bool hasPV = !_vtxhandle->empty();
+    float max_value = numeric_limits<float>::max();
 
-      float AEffR03 = MuonEffectiveArea::GetMuonEffectiveArea(
-        MuonEffectiveArea::kMuGammaAndNeutralHadronIso03,
-        LepInfo.Eta[LepInfo.Size],
-        EATarget );
-      LepInfo.IsoRhoCorrR03[LepInfo.Size] = LepInfo.ChargedHadronIsoR03[LepInfo.Size] +
-                                             max( LepInfo.NeutralHadronIsoR03[LepInfo.Size] + LepInfo.PhotonIsoR03[LepInfo.Size] - rhoPrime * AEffR03, 0.0 );
+    // ----- Impact paramters -----
+    LepInfo.Ip3dPV                      [LepInfo.Size] = hasPV ? it_mu->dB(pat::Muon::PV3D)  : max_value;
+    LepInfo.Ip3dPVErr                   [LepInfo.Size] = hasPV ? it_mu->edB(pat::Muon::PV3D) : max_value;
+    LepInfo.Ip3dPVSignificance          [LepInfo.Size] = hasPV ? it_mu->dB(pat::Muon::PV3D) / it_mu->edB(pat::Muon::PV3D) : max_value;
 
-      float AEffR04 = MuonEffectiveArea::GetMuonEffectiveArea(
-        MuonEffectiveArea::kMuGammaAndNeutralHadronIso04,
-        LepInfo.Eta[LepInfo.Size],
-        EATarget );
-      LepInfo.IsoRhoCorrR04 [LepInfo.Size] = LepInfo.ChargedHadronIsoR04[LepInfo.Size] +
-                                             max( LepInfo.NeutralHadronIsoR04[LepInfo.Size] + LepInfo.PhotonIsoR04[LepInfo.Size] - rhoPrime * AEffR04, 0.0 );
-    }
-
-    // ----- Cosmic ray filters  ------------------------------------------------------------------------
-    if( it_mu->isTimeValid() ){
-      // ----- Number of muon stations used  --------------------------------------------------------------
-      LepInfo.MuontimenDof[LepInfo.Size] = it_mu->time().nDof;
-
-      // ----- Tim arrival at the impact point for the beta=1 hypothesis  ---------------------------------
-      // a) particle is moving from inside out
-      // b) particle is moving from outside in
-      // Direction:  Outside In = -1, Undefined = 0, Inside Out = 1
-      LepInfo.MuontimeAtIpInOut[LepInfo.Size] = it_mu->time().timeAtIpInOut;
-      LepInfo.MuontimeAtIpOutIn[LepInfo.Size] = it_mu->time().timeAtIpOutIn;
-      LepInfo.Muondirection    [LepInfo.Size] = it_mu->time().direction();
-    }
-    reco::MuonEnergy muEnergy = it_mu->calEnergy();
-    LepInfo.CaloEnergy [LepInfo.Size]                        = muEnergy.em + muEnergy.had + muEnergy.ho;
-    LepInfo.MuIDGlobalMuonPromptTight         [LepInfo.Size] = it_mu->muonID( "GlobalMuonPromptTight" );
-
-    // ----- Track and impact parameter information  ----------------------------------------------------
-    // Only valid for global Muons and tracker Muon
-    LepInfo.Ip3dPV             [LepInfo.Size] = -10000;
-    LepInfo.Ip3dPVErr          [LepInfo.Size] = -10000;
-    LepInfo.Ip3dPVSignificance [LepInfo.Size] = -10000;
-    if( ( it_mu->type() & 0x02 ) || ( it_mu->type() & 0x04 ) ){
-      LepInfo.innerTracknormalizedChi2 [LepInfo.Size] = it_mu->innerTrack()->normalizedChi2();
-      LepInfo.MuInnerPtError           [LepInfo.Size] = it_mu->innerTrack()->ptError();
-      LepInfo.MuInnerTrackDz           [LepInfo.Size] = it_mu->innerTrack()->dz( _vtxhandle->front().position() );
-      LepInfo.MuInnerTrackD0           [LepInfo.Size] = it_mu->innerTrack()->d0();
-      LepInfo.MuInnerTrackDxy_BS       [LepInfo.Size] = it_mu->innerTrack()->dxy( _beamspothandle->position() );
-      LepInfo.MuInnerTrackDxy_PV       [LepInfo.Size] = it_mu->innerTrack()->dxy( _vtxhandle->front().position() );
-      LepInfo.MuInnerTrackDxy_PVBS     [LepInfo.Size] = it_mu->innerTrack()->dxy( _vtxhandle->front().position() );
-      LepInfo.MuInnerTrackNHits        [LepInfo.Size] = it_mu->innerTrack()->numberOfValidHits();
-      LepInfo.MuNTrackerHits           [LepInfo.Size] = it_mu->innerTrack()->hitPattern().numberOfValidTrackerHits();
-      LepInfo.MuNPixelLayers           [LepInfo.Size] = it_mu->innerTrack()->hitPattern().numberOfValidPixelHits();
-      // not valid (https://cmssdt.cern.ch/SDT/lxr/source//DataFormats/TrackReco/interface/HitPattern.h)
-      LepInfo.MuNLostInnerHits     [LepInfo.Size]      = -1;
-      LepInfo.vertexZ              [LepInfo.Size]      = it_mu->vertex().z();   // Uly 2011-04-04
-      LepInfo.MuNPixelLayersWMeasurement[LepInfo.Size] = it_mu->innerTrack()->hitPattern().pixelLayersWithMeasurement();// Uly 2011-04-04
+    // ----- Muon inner track info -----
+    if( it_mu->innerTrack().isNonnull() ){
+      LepInfo.MuInnerPt                 [LepInfo.Size] = it_mu->innerTrack()->pt();
+      LepInfo.MuInnerEta                [LepInfo.Size] = it_mu->innerTrack()->eta();
+      LepInfo.MuInnerPhi                [LepInfo.Size] = it_mu->innerTrack()->phi();
+      LepInfo.MuInnerPtError            [LepInfo.Size] = it_mu->innerTrack()->ptError(); 
+      LepInfo.innerTracknormalizedChi2  [LepInfo.Size] = it_mu->innerTrack()->normalizedChi2();
+      LepInfo.MuInnerTrackDz            [LepInfo.Size] = hasPV ? it_mu->innerTrack()->dz( _vtxhandle->front().position() )  : max_value;
+      LepInfo.MuInnerTrackDxy           [LepInfo.Size] = hasPV ? it_mu->innerTrack()->dxy( _vtxhandle->front().position() ) : max_value;
+      LepInfo.MuInnerTrackVHitFrac      [LepInfo.Size] = it_mu->innerTrack()->validFraction();
+      LepInfo.MuInnerTrackHighPurity    [LepInfo.Size] = it_mu->innerTrack()->quality(reco::TrackBase::highPurity);
+      LepInfo.MuInnerTrackNHits         [LepInfo.Size] = it_mu->innerTrack()->numberOfValidHits();
+      LepInfo.MuNTrackerHits            [LepInfo.Size] = it_mu->innerTrack()->hitPattern().numberOfValidTrackerHits();
+      LepInfo.MuNPixelLayers            [LepInfo.Size] = it_mu->innerTrack()->hitPattern().numberOfValidPixelHits();
+      LepInfo.MuNPixelLayersWMeasurement[LepInfo.Size] = it_mu->innerTrack()->hitPattern().pixelLayersWithMeasurement();
       LepInfo.MuNTrackLayersWMeasurement[LepInfo.Size] = it_mu->innerTrack()->hitPattern().trackerLayersWithMeasurement();
-
-      // ----- Impact paramters  --------------------------------------------------------------------------
-      // const reco::TransientTrack& tt_mu = (fTrackBuilder_H.product())->build( it_mu->track() );
-      // reco::Vertex thevtx = (fVertex_H.product())->at( 0 );
-      // const std::pair<bool, Measurement1D>& ip3dpv =  IPTools::absoluteImpactParameter3D( tt_mu, thevtx );
-      // const double thesign   = ( ( -it_mu->track()->dxy( thevtx.position() ) ) >= 0 ) ? 1. : -1.;
-      // LepInfo.Ip3dPV             [LepInfo.Size] = thesign * ip3dpv.second.value();
-      // LepInfo.Ip3dPVErr          [LepInfo.Size] = ip3dpv.second.error();
-      // LepInfo.Ip3dPVSignificance [LepInfo.Size] = thesign * ip3dpv.second.value() / ip3dpv.second.error();
     }
 
-    // ----- Global muon specific parameters  -----------------------------------------------------------
-    if( it_mu->type() & 0x02 ){
-      LepInfo.MuGlobalPtError        [LepInfo.Size] = it_mu->globalTrack()->ptError();
-      LepInfo.MuGlobalNormalizedChi2 [LepInfo.Size] = it_mu->globalTrack()->normalizedChi2();
-      LepInfo.MuNMuonhits            [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonHits();
-      LepInfo.MuDThits               [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonDTHits();
-      LepInfo.MuCSChits              [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonCSCHits();
-      LepInfo.MuRPChits              [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonRPCHits();
+    // ----- Global muon infor -----
+    if( it_mu->globalTrack().isNonnull() ){
+      LepInfo.MuGlobalPt                [LepInfo.Size] = it_mu->globalTrack()->pt();
+      LepInfo.MuGlobalEta               [LepInfo.Size] = it_mu->globalTrack()->eta();
+      LepInfo.MuGlobalPhi               [LepInfo.Size] = it_mu->globalTrack()->phi();
+      LepInfo.MuGlobalPtError           [LepInfo.Size] = it_mu->globalTrack()->ptError();
+      LepInfo.MuGlobalNormalizedChi2    [LepInfo.Size] = it_mu->globalTrack()->normalizedChi2();
+      LepInfo.MuNMuonhits               [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonHits();
+      LepInfo.MuDThits                  [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonDTHits();
+      LepInfo.MuCSChits                 [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonCSCHits();
+      LepInfo.MuRPChits                 [LepInfo.Size] = it_mu->globalTrack()->hitPattern().numberOfValidMuonRPCHits();
     }
-    if( ( it_mu->type() & 0x02 ) || ( it_mu->type() & 0x08 ) ){
-      LepInfo.MuNLostOuterHits [LepInfo.Size] = -1;
+    LepInfo.MuSegCompatibility          [LepInfo.Size] = muon::segmentCompatibility(*it_mu);
+    LepInfo.MuSTATKMatchingChi2         [LepInfo.Size] = it_mu->combinedQuality().chi2LocalPosition; 
+    LepInfo.MuInnerTrackKinkVal         [LepInfo.Size] = it_mu->combinedQuality().trkKink;
+    // Get bit map of stations with matched segments
+    // bits 0-1-2-3 = DT stations 1-2-3-4
+    // bits 4-5-6-7 = CSC stations 1-2-3-4
+    LepInfo.MuStationMask               [LepInfo.Size] = it_mu->stationMask();
+    LepInfo.MuNMatchedStations          [LepInfo.Size] = it_mu->numberOfMatchedStations();
+    //LepInfo.MuExpectedNMatchedStations  [LepInfo.Size] = it_mu->expectedNnumberOfMatchedStations(); //Will be added in 102X
+
+    // ----- Muon bestTrack info -----
+    if( it_mu->muonBestTrack().isNonnull() ){
+    // Type {None = 0, InnerTrack = 1, OuterTrack = 2, CombinedTrack = 3, TPFMS = 4, Picky = 5, DYT = 6}
+      LepInfo.MuBestTrackType           [LepInfo.Size] = it_mu->muonBestTrackType();
+      LepInfo.MuBestTrackPt             [LepInfo.Size] = it_mu->muonBestTrack()->pt();
+      LepInfo.MuBestTrackEta            [LepInfo.Size] = it_mu->muonBestTrack()->eta();
+      LepInfo.MuBestTrackPhi            [LepInfo.Size] = it_mu->muonBestTrack()->phi();
+      LepInfo.MuBestTrackPtError        [LepInfo.Size] = it_mu->muonBestTrack()->ptError();
+      LepInfo.MuBestTrackDz             [LepInfo.Size] = hasPV ? it_mu->muonBestTrack()->dz(_vtxhandle->front().position())  : max_value;
+      LepInfo.MuBestTrackDxy            [LepInfo.Size] = hasPV ? it_mu->muonBestTrack()->dxy(_vtxhandle->front().position()) : max_value;
+      LepInfo.MuBestTrackNMuonhits      [LepInfo.Size] = it_mu->muonBestTrack()->hitPattern().numberOfValidMuonHits();
+    }
+    
+    // ----- Muon tunePBestTrack info (For muon high pt ID) -----
+    if( it_mu->tunePMuonBestTrack().isNonnull() ){
+    // Type {None = 0, InnerTrack = 1, OuterTrack = 2, CombinedTrack = 3, TPFMS = 4, Picky = 5, DYT = 6}
+      LepInfo.MuTunePBestTrackType      [LepInfo.Size] = it_mu->tunePMuonBestTrackType();
+      LepInfo.MuTunePBestTrackPt        [LepInfo.Size] = it_mu->tunePMuonBestTrack()->pt();
+      LepInfo.MuTunePBestTrackEta       [LepInfo.Size] = it_mu->tunePMuonBestTrack()->eta();
+      LepInfo.MuTunePBestTrackPhi       [LepInfo.Size] = it_mu->tunePMuonBestTrack()->phi();
+      LepInfo.MuTunePBestTrackPtError   [LepInfo.Size] = it_mu->tunePMuonBestTrack()->ptError();
+      LepInfo.MuTunePBestTrackDz        [LepInfo.Size] = hasPV ? it_mu->tunePMuonBestTrack()->dz(_vtxhandle->front().position())  : max_value;
+      LepInfo.MuTunePBestTrackDxy       [LepInfo.Size] = hasPV ? it_mu->tunePMuonBestTrack()->dxy(_vtxhandle->front().position()) : max_value;
+      LepInfo.MuTunePBestTrackNMuonhits [LepInfo.Size] = it_mu->tunePMuonBestTrack()->hitPattern().numberOfValidMuonHits();
     }
 
-    // ----- Generation Monte Carlo information  --------------------------------------------------------
+    // ----- Generation Monte Carlo information ------------------------------------------------------------
     if( !iEvent.isRealData() ){
       const reco::GenParticle* gen = it_mu->genLepton();
       if( gen != NULL ){

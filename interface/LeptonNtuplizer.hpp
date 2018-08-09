@@ -45,6 +45,7 @@ private:
   const std::string _electronID_tightmap;
   const std::string _electronID_HEEPmap;
   EffectiveAreas _electronEffectiveAreaR03_NeuHadronAndPhoton;
+  EffectiveAreas _muonEffectiveAreaR03_NeuHadronAndPhoton;
   const edm::EDGetToken _conversionstoken;
   const edm::EDGetToken _vtxtoken;
   const edm::EDGetToken _beamspottoken;
