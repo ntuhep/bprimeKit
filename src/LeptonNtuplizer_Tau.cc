@@ -30,7 +30,7 @@ LeptonNtuplizer::FillTau( const edm::Event& iEvent, const edm::EventSetup& iSetu
     LepInfo.Px               [LepInfo.Size] = it_tau->px();  
     LepInfo.Py               [LepInfo.Size] = it_tau->py();  
     LepInfo.Pz               [LepInfo.Size] = it_tau->pz();  
-    LepInfo.isPFTau          [LepInfo.Size] = it_tau->isPFTau();  // YoungKyu 2012-10-16
+    LepInfo.isPFTau          [LepInfo.Size] = it_tau->isPFTau();
 
     if( !iEvent.isRealData() ){
       const reco::Candidate* gen = it_tau->genLepton();

@@ -69,22 +69,22 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     // ----- Electron isolation variables ------------------------------------------------------------------
 
     // ----- Non particle-flow based isolation variables -----
-    LepInfo.TrackerBasedIsoR03   [LepInfo.Size] = it_el->dr03TkSumPt();
-    LepInfo.EcalBasedIsoR03      [LepInfo.Size] = it_el->dr03EcalRecHitSumEt();
-    LepInfo.HcalBasedIsoR03      [LepInfo.Size] = it_el->dr03HcalTowerSumEt();
-    LepInfo.HcalDepth1Iso        [LepInfo.Size] = it_el->dr03HcalDepth1TowerSumEt();
-    LepInfo.HcalDepth2Iso        [LepInfo.Size] = it_el->dr03HcalDepth2TowerSumEt();
-    LepInfo.HEEPTrackIso         [LepInfo.Size] = it_el->userFloat("heepTrkPtIso");
+    LepInfo.TrackerBasedIsoR03      [LepInfo.Size] = it_el->dr03TkSumPt();
+    LepInfo.EcalBasedIsoR03         [LepInfo.Size] = it_el->dr03EcalRecHitSumEt();
+    LepInfo.HcalBasedIsoR03         [LepInfo.Size] = it_el->dr03HcalTowerSumEt();
+    LepInfo.HcalDepth1Iso           [LepInfo.Size] = it_el->dr03HcalDepth1TowerSumEt();
+    LepInfo.HcalDepth2Iso           [LepInfo.Size] = it_el->dr03HcalDepth2TowerSumEt();
+    LepInfo.HEEPTrackIso            [LepInfo.Size] = it_el->userFloat("heepTrkPtIso");
 
     // ----- Particle-flow based isolation (R = 0.3) variables (use V2 effArea) -----
-    LepInfo.ChargedHadronIsoR03         [LepInfo.Size] = it_el->pfIsolationVariables().sumChargedHadronPt;
-    LepInfo.NeutralHadronIsoR03         [LepInfo.Size] = it_el->pfIsolationVariables().sumPhotonEt;
-    LepInfo.PhotonIsoR03                [LepInfo.Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
-    LepInfo.sumPUPtR03                  [LepInfo.Size] = it_el->pfIsolationVariables().sumPUPt;
+    LepInfo.ChargedHadronIsoR03     [LepInfo.Size] = it_el->pfIsolationVariables().sumChargedHadronPt;
+    LepInfo.NeutralHadronIsoR03     [LepInfo.Size] = it_el->pfIsolationVariables().sumPhotonEt;
+    LepInfo.PhotonIsoR03            [LepInfo.Size] = it_el->pfIsolationVariables().sumNeutralHadronEt;
+    LepInfo.sumPUPtR03              [LepInfo.Size] = it_el->pfIsolationVariables().sumPUPt;
 
-    const double rho      = _rhohandle.isValid() ? (float)(*_rhohandle) : 0;
+    const double rho      = _rhohandle.isValid() ? *_rhohandle : 0.;
     const double AEffR03  = _electronEffectiveAreaR03_NeuHadronAndPhoton.getEffectiveArea( abs( it_el->superCluster()->eta() ) );
-    LepInfo.PFIsoRhoCorrR03[LepInfo.Size] = LepInfo.ChargedHadronIsoR03[LepInfo.Size] +
+    LepInfo.PFIsoRhoCorrR03         [LepInfo.Size] = LepInfo.ChargedHadronIsoR03[LepInfo.Size] +
                                             max( 0.0, (double)( LepInfo.NeutralHadronIsoR03[LepInfo.Size] + LepInfo.PhotonIsoR03[LepInfo.Size] - rho * AEffR03 ) );
 
     // ----- MiniPFIsolation -----
