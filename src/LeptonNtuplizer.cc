@@ -19,6 +19,7 @@ LeptonNtuplizer::LeptonNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   NtuplizerBase( iConfig, bpk ),
   _leptonname( iConfig.getParameter<string>( "leptonname" ) ),
   _rhotoken( GetToken<double>( "rhosrc" ) ),
+  _rhocalotoken( GetToken<double>( "rhocalosrc" ) ),
   _muontoken( GetToken<std::vector<pat::Muon> >( "muonsrc"      ) ),
   _electrontoken( GetToken<std::vector<pat::Electron> >( "elecsrc"      ) ),
   _tautoken( GetToken<std::vector<pat::Tau> >( "tausrc"       ) ),
@@ -35,6 +36,8 @@ LeptonNtuplizer::LeptonNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _electronID_tightmap( iConfig.getParameter<string>( "eleTightIdMap"   ) ),
   _electronID_HEEPmap( iConfig.getParameter<string>( "eleHEEPIdMap"    ) ),
   _electronEffectiveAreaR03_NeuHadronAndPhoton( iConfig.getParameter<edm::FileInPath>( "eleffAreaNeuHadPhoFile" ).fullPath() ),
+  _electronEffectiveArea_HLT_ecalPFClusterIso( iConfig.getParameter<edm::FileInPath>( "eleffAreaHLTecalFile" ).fullPath() ),
+  _electronEffectiveArea_HLT_hcalPFClusterIso( iConfig.getParameter<edm::FileInPath>( "eleffAreaHLThcalFile" ).fullPath() ),
   _muonEffectiveAreaR03_NeuHadronAndPhoton( iConfig.getParameter<edm::FileInPath>( "mueffAreaNeuHadPhoFile" ).fullPath() ),
   _conversionstoken( GetToken<reco::ConversionCollection>( "conversionsrc" ) ),
   _vtxtoken( GetToken<std::vector<reco::Vertex> >( "vtxsrc" ) ),
@@ -63,6 +66,7 @@ void
 LeptonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
   iEvent.getByToken( _rhotoken,               _rhohandle      );
+  iEvent.getByToken( _rhocalotoken,           _rhocalohandle  );
   iEvent.getByToken( _muontoken,              _muonhandle     );
   iEvent.getByToken( _electrontoken,          _electronhandle );
   iEvent.getByToken( _tautoken,               _tauhandle      );

@@ -797,8 +797,8 @@ public:
   Float_t PhotonIsoR04 [MAX_LEPTONS];
   Float_t sumPUPtR04 [MAX_LEPTONS];
   Float_t PFIsoDeltaBetaCorrR04 [MAX_LEPTONS];
-  Float_t EcalPFIsoRhoCorr [MAX_LEPTONS];
-  Float_t HcalPFIsoRhoCorr [MAX_LEPTONS];
+  Float_t EcalPFIsoRhoCorr2016 [MAX_LEPTONS];
+  Float_t HcalPFIsoRhoCorr2016 [MAX_LEPTONS];
   Float_t Ip3dPV [MAX_LEPTONS];
   Float_t Ip3dPVErr [MAX_LEPTONS];
   Float_t Ip3dPVSignificance [MAX_LEPTONS];
@@ -965,8 +965,8 @@ public:
     root->Branch( ( name+".PhotonIsoR04" ).c_str(),                    PhotonIsoR04,                    ( name+".PhotonIsoR04["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".sumPUPtR04" ).c_str(),                      sumPUPtR04,                      ( name+".sumPUPtR04["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PFIsoDeltaBetaCorrR04" ).c_str(),           PFIsoDeltaBetaCorrR04,           ( name+".PFIsoDeltaBetaCorrR04["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".EcalPFIsoRhoCorr" ).c_str(),                EcalPFIsoRhoCorr,                ( name+".EcalPFIsoRhoCorr["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".HcalPFIsoRhoCorr" ).c_str(),                HcalPFIsoRhoCorr,                ( name+".HcalPFIsoRhoCorr["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".EcalPFIsoRhoCorr2016" ).c_str(),            EcalPFIsoRhoCorr2016,            ( name+".EcalPFIsoRhoCorr2016["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".HcalPFIsoRhoCorr2016" ).c_str(),            HcalPFIsoRhoCorr2016,            ( name+".HcalPFIsoRhoCorr2016["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".Ip3dPV" ).c_str(),                          Ip3dPV,                          ( name+".Ip3dPV["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".Ip3dPVErr" ).c_str(),                       Ip3dPVErr,                       ( name+".Ip3dPVErr["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".Ip3dPVSignificance" ).c_str(),              Ip3dPVSignificance,              ( name+".Ip3dPVSignificance["+name+".Size]/F" ).c_str() );
@@ -1135,8 +1135,8 @@ public:
     root->SetBranchAddress( ( name+".PhotonIsoR04" ).c_str(),                    PhotonIsoR04 );
     root->SetBranchAddress( ( name+".sumPUPtR04" ).c_str(),                      sumPUPtR04 );
     root->SetBranchAddress( ( name+".PFIsoDeltaBetaCorrR04" ).c_str(),           PFIsoDeltaBetaCorrR04 );
-    root->SetBranchAddress( ( name+".EcalPFIsoRhoCorr" ).c_str(),                EcalPFIsoRhoCorr );
-    root->SetBranchAddress( ( name+".HcalPFIsoRhoCorr" ).c_str(),                HcalPFIsoRhoCorr );
+    root->SetBranchAddress( ( name+".EcalPFIsoRhoCorr2016" ).c_str(),            EcalPFIsoRhoCorr2016 );
+    root->SetBranchAddress( ( name+".HcalPFIsoRhoCorr2016" ).c_str(),            HcalPFIsoRhoCorr2016 );
     root->SetBranchAddress( ( name+".Ip3dPV" ).c_str(),                          Ip3dPV );
     root->SetBranchAddress( ( name+".Ip3dPVErr" ).c_str(),                       Ip3dPVErr );
     root->SetBranchAddress( ( name+".Ip3dPVSignificance" ).c_str(),              Ip3dPVSignificance );

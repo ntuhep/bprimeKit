@@ -63,7 +63,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.EgammaCutBasedEleIdLOOSE    [LepInfo.Size] = (int) it_el->electronID( _electronID_loosemap  ); 
     LepInfo.EgammaCutBasedEleIdMEDIUM   [LepInfo.Size] = (int) it_el->electronID( _electronID_mediummap ); 
     LepInfo.EgammaCutBasedEleIdTIGHT    [LepInfo.Size] = (int) it_el->electronID( _electronID_tightmap  ); 
-    LepInfo.EgammaCutBasedEleIdHEEP     [LepInfo.Size] = (int) it_el->electronID( _electronID_HEEPmap   ); 
+    LepInfo.EgammaCutBasedEleIdHEEP     [LepInfo.Size] = (int) it_el->electronID( _electronID_HEEPmap   );
 
     // Full electron info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/EgammaCandidates/interface/GsfElectron.h
     // ----- Electron isolation variables ------------------------------------------------------------------
@@ -95,8 +95,11 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
         = bprimeKit::GetMiniPFIsoRhoCorr( it_el->miniPFIsolation(), it_el->pt(), rho, AEffR03 );
 
     // ----- Special isolation variables for 2016 HLT safe selection -----
-    LepInfo.EcalPFIsoRhoCorr [LepInfo.Size] = max( 0.0, it_el->ecalPFClusterIso() - rho * AEffR03 );
-    LepInfo.HcalPFIsoRhoCorr [LepInfo.Size] = max( 0.0, it_el->hcalPFClusterIso() - rho * AEffR03 );
+    const double rhocalo       = _rhocalohandle.isValid() ? *_rhocalohandle : 0.;
+    const double AEff_HLTecal  = _electronEffectiveArea_HLT_ecalPFClusterIso.getEffectiveArea( abs( it_el->superCluster()->eta() ) );
+    const double AEff_HLThcal  = _electronEffectiveArea_HLT_hcalPFClusterIso.getEffectiveArea( abs( it_el->superCluster()->eta() ) );
+    LepInfo.EcalPFIsoRhoCorr2016 [LepInfo.Size] = max( 0.0, it_el->ecalPFClusterIso() - rhocalo * AEff_HLTecal );
+    LepInfo.HcalPFIsoRhoCorr2016 [LepInfo.Size] = max( 0.0, it_el->hcalPFClusterIso() - rhocalo * AEff_HLThcal );
     
     // ----- Electron superCluster and shrower shape (Full 5x5, no ZS version) variables -------------------
     // ----- superCluster variables -----
