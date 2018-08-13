@@ -27,16 +27,10 @@ LeptonNtuplizer::FillTau( const edm::Event& iEvent, const edm::EventSetup& iSetu
     LepInfo.Pt               [LepInfo.Size] = it_tau->pt();
     LepInfo.Eta              [LepInfo.Size] = it_tau->eta();
     LepInfo.Phi              [LepInfo.Size] = it_tau->phi();
-    LepInfo.TrackIso         [LepInfo.Size] = it_tau->trackIso();
-    LepInfo.EcalIso          [LepInfo.Size] = it_tau->ecalIso();
-    LepInfo.HcalIso          [LepInfo.Size] = it_tau->hcalIso();
-    LepInfo.Px               [LepInfo.Size] = it_tau->px();  // Uly 2011-04-04
-    LepInfo.Py               [LepInfo.Size] = it_tau->py();  // Uly 2011-04-04
-    LepInfo.Pz               [LepInfo.Size] = it_tau->pz();  // Uly 2011-04-04
-    LepInfo.ChargedHadronIso [LepInfo.Size] = it_tau->chargedHadronIso();
-    LepInfo.NeutralHadronIso [LepInfo.Size] = it_tau->neutralHadronIso();
-    LepInfo.PhotonIso        [LepInfo.Size] = it_tau->photonIso();
-    LepInfo.isPFTau          [LepInfo.Size] = it_tau->isPFTau();  // YoungKyu 2012-10-16
+    LepInfo.Px               [LepInfo.Size] = it_tau->px();  
+    LepInfo.Py               [LepInfo.Size] = it_tau->py();  
+    LepInfo.Pz               [LepInfo.Size] = it_tau->pz();  
+    LepInfo.isPFTau          [LepInfo.Size] = it_tau->isPFTau();
 
     if( !iEvent.isRealData() ){
       const reco::Candidate* gen = it_tau->genLepton();

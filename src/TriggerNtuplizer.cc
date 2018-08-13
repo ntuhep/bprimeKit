@@ -17,6 +17,7 @@ using namespace std;
 TriggerNtuplizer::TriggerNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ):
   NtuplizerBase( iConfig, bpk ),
   _triggertoken( GetToken<edm::TriggerResults>("triggersrc") ),
+  _triggerprescalestoken( GetToken<pat::PackedTriggerPrescales>("triggerprescalessrc") ),
   _triggerobjtoken( GetToken<std::vector<pat::TriggerObjectStandAlone>>("triggerobjsrc") ),
   _gendigitoken( GetToken<L1GlobalTriggerReadoutRecord>( "gtdigisrc" ) )
 {
@@ -51,6 +52,7 @@ void
 TriggerNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
   iEvent.getByToken( _triggertoken, _triggerhandle );
+  iEvent.getByToken( _triggerprescalestoken, _triggerprescaleshandle );
   iEvent.getByToken( _triggerobjtoken, _triggerobjhandle );
   iEvent.getByToken( _gendigitoken,     _recordhandle      );
 
@@ -59,9 +61,6 @@ TriggerNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSet
 
   TrgInfo.nTrgBook = N_TRIGGER_BOOKINGS;
 
-  bool changed = true;
-  _hltconfig.init( iEvent.getRun(), iSetup, "HLT", changed );
-  
   // ----- Level 1 trigger and technical trigger bits  ------------------------
   if( _recordhandle.isValid() ){
     DecisionWord dWord = _recordhandle->decisionWord();
@@ -106,12 +105,10 @@ TriggerNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSet
 
   TrgInfo.nHLT = TrgNames.size();
 
-  // TODO Assuming prescale set = 0 , check.
-  // Enoch 2016-02-04
   for( size_t i = 0; i < TrgNames.size(); ++i ){
     const std::string name = TrgNames.triggerName( i );
     TrgInfo.HLTbits[i]           = _triggerhandle->accept( i ) ? 1 : 0;
-    TrgInfo.HLTPrescaleFactor[i] = _hltconfig.prescaleValue( 0, name );
+    TrgInfo.HLTPrescaleFactor[i] = _triggerprescaleshandle->getPrescaleForIndex(i);
     TrgInfo.HLTName2enum[i]      = bprimeKit::GetTriggerIdx( name );
   }
 

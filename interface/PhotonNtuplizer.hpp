@@ -38,7 +38,10 @@ private:
   const edm::EDGetToken _photonIsolation_Charged_Token;
   const edm::EDGetToken _photonIsolation_Neutral_Token;
   const edm::EDGetToken _photonIsolation_Photon_Token;
-  const edm::EDGetToken _photonSignaIEtaIEtaToken;
+  const std::string _photonID_loosemap;
+  const std::string _photonID_mediummap;
+  const std::string _photonID_tightmap;
+  const std::string _photonID_mva;
   EffectiveAreas _photonEffectiveArea_ChargeHadron;
   EffectiveAreas _photonEffectiveArea_NeutralHadron;
   EffectiveAreas _photonEffectiveArea_Photons;
@@ -51,7 +54,6 @@ private:
   edm::Handle<edm::ValueMap<float> > _photonIsolation_Charged_H;
   edm::Handle<edm::ValueMap<float> > _photonIsolation_Neutral_H;
   edm::Handle<edm::ValueMap<float> > _photonIsolation_Photon_H;
-  edm::Handle<edm::ValueMap<float> > _photonSigmaIEtaIEta_H;
 
 };
 

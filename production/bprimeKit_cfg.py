@@ -51,7 +51,7 @@ process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.categories.append('HLTrigReport')
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 if( options.Debug ):
    process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
@@ -77,32 +77,51 @@ print '\nFinished jet toolbox setup.....\n'
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification
 #-------------------------------------------------------------------------------
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 
-dataFormat = DataFormat.MiniAOD
-switchOnVIDPhotonIdProducer(process, dataFormat)
-switchOnVIDElectronIdProducer(process, dataFormat)
+# On the fly for Egamma ID tool but still keep
 
-my_elid_modules  = []
-my_phoid_modules = []
+#from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+#
+#dataFormat = DataFormat.MiniAOD
+#switchOnVIDPhotonIdProducer(process, dataFormat)
+#switchOnVIDElectronIdProducer(process, dataFormat)
+#
+#my_elid_modules  = []
+#my_phoid_modules = []
+#
+#my_elid_modules.append( mysetting.ElectronIDModule )
+#my_elid_modules.append( mysetting.ElectronIDHEEPModule )
+#
+#my_phoid_modules.append( mysetting.PhotonIDModule )
+#
+#for idmod in my_elid_modules:
+#   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+#
+#for idmod in my_phoid_modules:
+#   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-my_elid_modules.append( mysetting.ElectronIDModule )
-my_elid_modules.append( mysetting.ElectronIDHEEPModule )
+#-------------------------------------------------------------------------------
+#   Settings for Egamma energy correction bug fixing
+#-------------------------------------------------------------------------------
+# ref : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#2017_MiniAOD_V2
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(
+    process,
+    runVID=False, #saves CPU time by not needlessly re-running VID
+    era='2017-Nov17ReReco'
+    )
 
-my_phoid_modules.append( mysetting.PhotonIDModule )
-
-for idmod in my_elid_modules:
-   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-
-for idmod in my_phoid_modules:
-   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-#Avoid not to find 
-#RecoEgamma/PhotonIdentification/data/Fall17/HggPhoId_92X_barrel_BDT.weights.xml
-#RecoEgamma/PhotonIdentification/data/Fall17/HggPhoId_92X_endcap_BDT.weights.xml
-#https://github.com/lsoffi/cmssw/blob/CMSSW_9_4_0_pre3_TnP/RecoEgamma/PhotonIdentification/python/Identification/mvaPhotonID_RunIIFall17_v1_cff.py#L29
-#which are not used by bprimekit.
-#delattr(process, 'photonMVAValueMapProducer')
-
+#-------------------------------------------------------------------------------
+#   Settings for MET bug fixing
+#-------------------------------------------------------------------------------
+# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD (
+    process,
+    isData = mysetting.isData,
+    fixEE2017 = mysetting.isData,
+    postfix = "ModifiedMET"
+    )
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
@@ -119,9 +138,15 @@ process.bprimeKit = mysetting.bprimeKit
 #-------------------------------------------------------------------------------
 # process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',ignoreTotal = cms.untracked.int32(1) )
 
+process.bugfixingSequence = cms.Sequence()
+if ( mysetting.Year == '2017' ):
+    process.bugfixingSequence += process.egammaPostRecoSeq
+    process.bugfixingSequence += process.fullPatMetSequenceModifiedMET
+
 process.Path = cms.Path(
-    process.egmGsfElectronIDSequence*
-    process.egmPhotonIDSequence*
+    #process.egmGsfElectronIDSequence*
+    #process.egmPhotonIDSequence*
+    process.bugfixingSequence*
     process.JetToolBoxSequence*
     process.bprimeKit
 )

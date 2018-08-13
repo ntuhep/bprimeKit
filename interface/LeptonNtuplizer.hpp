@@ -12,6 +12,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "bpkFrameWork/bprimeKit/interface/NtuplizerBase.hpp"
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 
 class LeptonNtuplizer : public NtuplizerBase
 {
@@ -33,11 +34,18 @@ private:
   const edm::EDGetToken _tautoken;
   const edm::EDGetToken _gentoken;
   const edm::EDGetToken _packedcandtoken;
-  const edm::EDGetToken _electronID_vetotoken;
-  const edm::EDGetToken _electronID_loosetoken;
-  const edm::EDGetToken _electronID_mediumtoken;
-  const edm::EDGetToken _electronID_tighttoken;
-  const edm::EDGetToken _electronID_HEEPtoken;
+  //const edm::EDGetToken _electronID_vetotoken;
+  //const edm::EDGetToken _electronID_loosetoken;
+  //const edm::EDGetToken _electronID_mediumtoken;
+  //const edm::EDGetToken _electronID_tighttoken;
+  //const edm::EDGetToken _electronID_HEEPtoken;
+  const std::string _electronID_vetomap;
+  const std::string _electronID_loosemap;
+  const std::string _electronID_mediummap;
+  const std::string _electronID_tightmap;
+  const std::string _electronID_HEEPmap;
+  EffectiveAreas _electronEffectiveAreaR03_NeuHadronAndPhoton;
+  EffectiveAreas _muonEffectiveAreaR03_NeuHadronAndPhoton;
   const edm::EDGetToken _conversionstoken;
   const edm::EDGetToken _vtxtoken;
   const edm::EDGetToken _beamspottoken;

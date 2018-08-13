@@ -17,7 +17,10 @@ listBtagDiscriminators = [
     'pfDeepCSVJetTags:probbb',
     'pfDeepCSVJetTags:probc',
     'pfDeepCSVJetTags:probudsg',
-    #'pfDeepCSVJetTags:probcc',
+    ##Deep CSV summary
+    'pfDeepCSVDiscriminatorsJetTags:BvsAll',
+    'pfDeepCSVDiscriminatorsJetTags:CvsB',
+    'pfDeepCSVDiscriminatorsJetTags:CvsL',
     #AK8 double b-tagging discriminator
     'pfBoostedDoubleSecondaryVertexAK8BJetTags'
 ]
@@ -26,6 +29,7 @@ ak4Cut='pt > 25 && abs(eta) < 5.'
 ak8Cut='pt > 100 && abs(eta) < 5.'
 
 def jettoolbox_settings( process , runMC ):
+
     process.load('CommonTools/PileupAlgos/Puppi_cff')
     process.puppi.candName = cms.InputTag('packedPFCandidates')
     process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
@@ -66,44 +70,46 @@ def jettoolbox_settings( process , runMC ):
     )
 
     jetToolbox( process, 'ak8', 'ak8puppi', 'edmOut',
-        runOnMC            =runMC,
-        PUMethod           ='Puppi',
-        newPFCollection    =True,
-        nameNewPFCollection='puppi',
-        addSoftDropSubjets =True,
-        addTrimming        =True,
-        addPruning         =True,
-        addFiltering       =True,
-        addSoftDrop        =True,
-        addNsub            =True,
-        bTagDiscriminators =listBtagDiscriminators,
-        addCMSTopTagger    =True,
-        Cut                =ak8Cut,
-        addNsubSubjets     =True,
-        subjetMaxTau       =4
+        runOnMC                   = runMC,
+        PUMethod                  = 'Puppi',
+        newPFCollection           = True,
+        nameNewPFCollection       = 'puppi',
+        addSoftDropSubjets        = True,
+        addTrimming               = True,
+        addPruning                = True,
+        addFiltering              = True,
+        addSoftDrop               = True,
+        addNsub                   = True,
+        bTagDiscriminators        = listBtagDiscriminators,
+        addCMSTopTagger           = True,
+        Cut                       = ak8Cut,
+        addNsubSubjets            = True,
+        subjetMaxTau              = 4,
+        addEnergyCorrFunc         = True,
+        addEnergyCorrFuncSubjets  = True
     )
 
     jetToolbox( process, 'ca8', 'ca8chs', 'edmOut',
-        runOnMC            = runMC ,
+        runOnMC            = runMC,
         addMassDrop        = True,
         addCMSTopTagger    = True,
         GetJetMCFlavour    = True,
         GetSubjetMCFlavour = True,
-        bTagDiscriminators = listBtagDiscriminators ,
+        bTagDiscriminators = listBtagDiscriminators,
         Cut                = ''
     )
 
     jetToolbox( process, 'ca8', 'ca8puppi', 'edmOut',
-        runOnMC            = runMC ,
-        PUMethod           = 'Puppi',
-        newPFCollection    = True,
-        nameNewPFCollection= 'puppi',
-        addMassDrop        = True,
-        addCMSTopTagger    = True,
-        GetJetMCFlavour    = True,
-        GetSubjetMCFlavour = True,
-        bTagDiscriminators = listBtagDiscriminators ,
-        Cut                = ''
+        runOnMC             = runMC,
+        PUMethod            = 'Puppi',
+        newPFCollection     = True,
+        nameNewPFCollection = 'puppi',
+        addMassDrop         = True,
+        addCMSTopTagger     = True,
+        GetJetMCFlavour     = True,
+        GetSubjetMCFlavour  = True,
+        bTagDiscriminators  = listBtagDiscriminators,
+        Cut                 = ''
     )
 
     #To avoid producing additional JetToolBox format files, kick out the "EndPath" attribute of process.
@@ -140,7 +146,28 @@ def jettoolbox_settings( process , runMC ):
     )
     getattr( process, 'patJetsAK4PFPuppi').userData.userFloats.src += ['QGTaggerAK4PFPuppi:qgLikelihood']
 
+    #Add Weighted Puppi Multiplicity
+    #Weighted Puppi Multiplicity https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/PatAlgos/test/patTuple_updateJets_fromMiniAOD_cfg.py#L83
+    from PhysicsTools.PatAlgos.patPuppiJetSpecificProducer_cfi import patPuppiJetSpecificProducer
+    process.patPuppiJetSpecificProducer = patPuppiJetSpecificProducer.clone(
+              src=cms.InputTag("selectedPatJetsAK4PFPuppi"),
+    )
+
+    ##updateJetCollection utility https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/PatAlgos/python/tools/jetTools.py#L1350
+    from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+    updateJetCollection( process,
+                        labelName = 'SelectedAK4PFPuppi',
+                        jetSource = cms.InputTag('selectedPatJetsAK4PFPuppi')
+    )
+
+    process.updatedPatJetsSelectedAK4PFPuppi.userData.userFloats.src = [
+            'patPuppiJetSpecificProducer:puppiMultiplicity',
+            'patPuppiJetSpecificProducer:neutralPuppiMultiplicity'
+    ]
+
     #Use new Task() attribute of python
     process.myTask.add( process.QGTaggerAK4PFPuppi )
+    process.myTask.add( process.patPuppiJetSpecificProducer )
+    process.myTask.add( process.updatedPatJetsSelectedAK4PFPuppi )
     JetToolBoxSequence = cms.Sequence( process.myTask )
     setattr( process, 'JetToolBoxSequence', JetToolBoxSequence)

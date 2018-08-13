@@ -14,8 +14,7 @@ using namespace std;
 *******************************************************************************/
 VertexNtuplizer::VertexNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
   NtuplizerBase( iConfig, bpk ),
-  _vtxtoken( GetToken<vector<reco::Vertex> >( "vtxsrc" ) ),
-  _vtxBStoken( GetToken<vector<reco::Vertex> >( "vtxBSsrc" ) )
+  _vtxtoken( GetToken<vector<reco::Vertex> >( "vtxsrc" ) )
 {
 
 }
@@ -51,22 +50,14 @@ VertexNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
       cerr << "ERROR: number of Tracks exceeds the size of array." << endl;
       break;
     }
-    VertexInfo.Type           [VertexInfo.Size] = 0;// Vertices WITHOUT the Beam Spot constraint
     VertexInfo.isValid        [VertexInfo.Size] = it_vtx->isValid();
-    VertexInfo.isFake         [VertexInfo.Size] = it_vtx->isFake();// Uly 2011-05-16
+    VertexInfo.isFake         [VertexInfo.Size] = it_vtx->isFake();
     VertexInfo.Ndof           [VertexInfo.Size] = it_vtx->ndof();
     VertexInfo.NormalizedChi2 [VertexInfo.Size] = it_vtx->normalizedChi2();
     VertexInfo.x              [VertexInfo.Size] = it_vtx->x();
     VertexInfo.y              [VertexInfo.Size] = it_vtx->y();
     VertexInfo.z              [VertexInfo.Size] = it_vtx->z();
     VertexInfo.Rho            [VertexInfo.Size] = it_vtx->position().Rho();
-    VertexInfo.Pt_Sum         [VertexInfo.Size] = 0.;
-    VertexInfo.Pt_Sum2        [VertexInfo.Size] = 0.;
-
-    for( auto it = it_vtx->tracks_begin(); it != it_vtx->tracks_end(); it++ ){
-      VertexInfo.Pt_Sum  [ VertexInfo.Size ] += ( *it )->pt();
-      VertexInfo.Pt_Sum2 [ VertexInfo.Size ] += ( ( *it )->pt() * ( *it )->pt() );
-    }
 
     VertexInfo.Size++;
   }
