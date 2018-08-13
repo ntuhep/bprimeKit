@@ -103,6 +103,7 @@ print '\nFinished jet toolbox setup.....\n'
 #-------------------------------------------------------------------------------
 #   Settings for Egamma energy correction bug fixing
 #-------------------------------------------------------------------------------
+# ref : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#2017_MiniAOD_V2
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(
     process,
@@ -113,6 +114,7 @@ setupEgammaPostRecoSeq(
 #-------------------------------------------------------------------------------
 #   Settings for MET bug fixing
 #-------------------------------------------------------------------------------
+# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD (
     process,
