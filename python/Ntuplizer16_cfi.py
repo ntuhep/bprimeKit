@@ -11,6 +11,7 @@ import FWCore.ParameterSet.Config as cms
 #   Common objects
 #-------------------------------------------------------------------------------
 rhosrc            = cms.InputTag( 'fixedGridRhoFastjetAll' )
+rhocalosrc        = cms.InputTag( 'fixedGridRhoFastjetCentralCalo' )
 rhonofastjetsrc   = cms.InputTag( 'fixedGridRhoAll' )
 vtxsrc            = cms.InputTag( 'offlineSlimmedPrimaryVertices' )
 beamspotsrc       = cms.InputTag( 'offlineBeamSpot' )
@@ -22,8 +23,7 @@ gensrc            = cms.InputTag( 'prunedGenParticles' )
 evtgenbase = cms.PSet(
     rhosrc          = rhosrc,
     rhonofastjetsrc = rhonofastjetsrc,
-    #metsrc          = cms.InputTag('slimmedMETs'),
-    metsrc          = cms.InputTag('slimmedMETsModifiedMET'),
+    metsrc          = cms.InputTag('slimmedMETs'),
     puppimetsrc     = cms.InputTag('slimmedMETsPuppi'),
     pusrc           = cms.InputTag('slimmedAddPileupInfo'),
     beamspotsrc     = beamspotsrc,
@@ -36,10 +36,9 @@ evtgenbase = cms.PSet(
                         "Flag_HBHENoiseIsoFilter",
                         "Flag_EcalDeadCellTriggerPrimitiveFilter",
                         "Flag_goodVertices",
-                        "Flag_globalTightHalo2016Filter",
+                        "Flag_globalSuperTightHalo2016Filter",
                         "Flag_BadPFMuonFilter",
                         "Flag_BadChargedCandidateFilter",
-                        "Flag_ecalBadCalibFilter",
                     )
 )
 
@@ -97,20 +96,19 @@ photonbase = cms.PSet(
     photonname = cms.string('PhotonInfo'),
     photonsrc  = cms.InputTag('slimmedPhotons'),
     rhosrc     = rhosrc,
-    #phoLooseIdMap  = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-loose'),
-    #phoMediumIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-medium'),
-    #phoTightIdMap  = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-tight'),
-    phoLooseIdMap  = cms.string('cutBasedPhotonID-Fall17-94X-V1-loose'),
-    phoMediumIdMap = cms.string('cutBasedPhotonID-Fall17-94X-V1-medium'),
-    phoTightIdMap  = cms.string('cutBasedPhotonID-Fall17-94X-V1-tight'),
-    phoIdMvaMap    = cms.string('PhotonMVAEstimatorRunIIFall17v1p1Values'),
+    #phoLooseIdMap  = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose'),
+    #phoMediumIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium'),
+    #phoTightIdMap  = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight'),
+    phoLooseIdMap  = cms.string('cutBasedPhotonID-Spring16-V2p2-loose'),
+    phoMediumIdMap = cms.string('cutBasedPhotonID-Spring16-V2p2-medium'),
+    phoTightIdMap  = cms.string('cutBasedPhotonID-Spring16-V2p2-tight'),
+    phoIdMvaMap    = cms.string('PhotonMVAEstimatorRun2Spring16NonTrigV1Values'),
     #phoChargedIsolation       = cms.InputTag('photonIDValueMapProducer:phoChargedIsolation'),
     #phoNeutralHadronIsolation = cms.InputTag('photonIDValueMapProducer:phoNeutralHadronIsolation'),
     #phoPhotonIsolation        = cms.InputTag('photonIDValueMapProducer:phoPhotonIsolation'),
-    effAreaChHadFile  = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_TrueVtx.txt'),
-    effAreaNeuHadFile = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_TrueVtx.txt'),
-    effAreaPhoFile    = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_TrueVtx.txt'),
-
+    effAreaChHadFile  = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfChargedHadrons_90percentBased.txt'),
+    effAreaNeuHadFile = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased.txt'),
+    effAreaPhoFile    = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfPhotons_90percentBased.txt'),
 )
 
 #-------------------------------------------------------------------------------
@@ -122,20 +120,23 @@ leptonbase = cms.PSet(
     elecsrc                = cms.InputTag('slimmedElectrons'),
     tausrc                 = cms.InputTag('slimmedTaus'),
     packedsrc              = cms.InputTag('packedPFCandidates'),
-    #eleVetoIdMap         = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto'),
-    #eleLooseIdMap        = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose'),
-    #eleMediumIdMap       = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium'),
-    #eleTightIdMap        = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight'),
+    #eleVetoIdMap         = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto'),
+    #eleLooseIdMap        = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-loose'),
+    #eleMediumIdMap       = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-medium'),
+    #eleTightIdMap        = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-tight'),
     #eleHEEPIdMap         = cms.InputTag('egmGsfElectronIDs:heepElectronID-HEEPV70'),
-    eleVetoIdMap           = cms.string( 'cutBasedElectronID-Fall17-94X-V1-veto' ),
-    eleLooseIdMap          = cms.string( 'cutBasedElectronID-Fall17-94X-V1-loose' ),
-    eleMediumIdMap         = cms.string( 'cutBasedElectronID-Fall17-94X-V1-medium' ),
-    eleTightIdMap          = cms.string( 'cutBasedElectronID-Fall17-94X-V1-tight' ),
+    eleVetoIdMap           = cms.string( 'cutBasedElectronID-Summer16-80X-V1-veto' ),
+    eleLooseIdMap          = cms.string( 'cutBasedElectronID-Summer16-80X-V1-loose' ),
+    eleMediumIdMap         = cms.string( 'cutBasedElectronID-Summer16-80X-V1-medium' ),
+    eleTightIdMap          = cms.string( 'cutBasedElectronID-Summer16-80X-V1-tight' ),
     eleHEEPIdMap           = cms.string( 'heepElectronID-HEEPV70' ),
-    eleffAreaNeuHadPhoFile = cms.FileInPath('bpkFrameWork/bprimeKit/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
-    mueffAreaNeuHadPhoFile = cms.FileInPath('bpkFrameWork/bprimeKit/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
+    eleffAreaNeuHadPhoFile = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
+    eleffAreaHLTecalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_ecalPFClusterIso.txt'),
+    eleffAreaHLThcalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_hcalPFClusterIso.txt'),
+    mueffAreaNeuHadPhoFile = cms.FileInPath('bpkFrameWork/bprimeKit/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
     conversionsrc          = cms.InputTag('reducedEgamma', 'reducedConversions'),
     rhosrc                 = rhosrc,
+    rhocalosrc             = rhocalosrc,
     vtxsrc                 = vtxsrc,
     gensrc                 = gensrc,
     beamspotsrc            = beamspotsrc,

@@ -138,6 +138,8 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       = it_jet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" );
     JetInfo.pfCombinedMVAV2BJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfCombinedMVAV2BJetTags"                      );
+    JetInfo.pfBoostedDoubleSecondaryVertexAK8BJetTags[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfBoostedDoubleSecondaryVertexAK8BJetTags"    );
     JetInfo.pfDeepCSVJetTags_probb[JetInfo.Size]
       = it_jet->bDiscriminator( "pfDeepCSVJetTags:probb"                       );
     JetInfo.pfDeepCSVJetTags_probbb[JetInfo.Size]
@@ -213,8 +215,6 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     //   AK8 Jet Specific variables
     // ------------------------------------------------------------------------------
     if( IsWideJet() ){
-      JetInfo.pfBoostedDoubleSecondaryVertexAK8BJetTags[JetInfo.Size]
-                                                      = it_jet->bDiscriminator( "pfBoostedDoubleSecondaryVertexAK8BJetTags" );
       JetInfo.NjettinessAK8tau1        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau1"       );
       JetInfo.NjettinessAK8tau2        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau2"       );
       JetInfo.NjettinessAK8tau3        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau3"       );

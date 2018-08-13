@@ -29,6 +29,7 @@ private:
 
   const std::string _leptonname;
   const edm::EDGetToken _rhotoken;
+  const edm::EDGetToken _rhocalotoken;
   const edm::EDGetToken _muontoken;
   const edm::EDGetToken _electrontoken;
   const edm::EDGetToken _tautoken;
@@ -45,12 +46,15 @@ private:
   const std::string _electronID_tightmap;
   const std::string _electronID_HEEPmap;
   EffectiveAreas _electronEffectiveAreaR03_NeuHadronAndPhoton;
+  EffectiveAreas _electronEffectiveArea_HLT_ecalPFClusterIso;
+  EffectiveAreas _electronEffectiveArea_HLT_hcalPFClusterIso;
   EffectiveAreas _muonEffectiveAreaR03_NeuHadronAndPhoton;
   const edm::EDGetToken _conversionstoken;
   const edm::EDGetToken _vtxtoken;
   const edm::EDGetToken _beamspottoken;
 
   edm::Handle<double> _rhohandle;
+  edm::Handle<double> _rhocalohandle;
   edm::Handle<std::vector<pat::Muon> > _muonhandle;
   edm::Handle<std::vector<pat::Electron> > _electronhandle;
   edm::Handle<std::vector<pat::Tau> > _tauhandle;

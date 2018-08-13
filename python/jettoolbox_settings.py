@@ -12,6 +12,8 @@ listBtagDiscriminators = [
     #Standard CSVv2 b-tagging discriminator
     'pfCombinedInclusiveSecondaryVertexV2BJetTags',
     'pfCombinedMVAV2BJetTags',
+    #AK8 double b-tagging discriminator
+    'pfBoostedDoubleSecondaryVertexAK8BJetTags',
     #Deep CSV
     'pfDeepCSVJetTags:probb',
     'pfDeepCSVJetTags:probbb',
@@ -21,8 +23,6 @@ listBtagDiscriminators = [
     'pfDeepCSVDiscriminatorsJetTags:BvsAll',
     'pfDeepCSVDiscriminatorsJetTags:CvsB',
     'pfDeepCSVDiscriminatorsJetTags:CvsL',
-    #AK8 double b-tagging discriminator
-    'pfBoostedDoubleSecondaryVertexAK8BJetTags'
 ]
 
 ak4Cut='pt > 25 && abs(eta) < 5.'
