@@ -117,6 +117,10 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.Eta           [JetInfo.Size] = it_jet->eta();
     JetInfo.Phi           [JetInfo.Size] = it_jet->phi();
     JetInfo.Energy        [JetInfo.Size] = it_jet->energy();
+    JetInfo.Px            [JetInfo.Size] = it_jet->px();
+    JetInfo.Py            [JetInfo.Size] = it_jet->py();
+    JetInfo.Pz            [JetInfo.Size] = it_jet->pz();
+    JetInfo.Et            [JetInfo.Size] = it_jet->et();
 
     // ----- Jet Correction Information  ----------------------------------------------------------------
     JetInfo.PtCorrRaw   [JetInfo.Size] = it_jet->correctedJet( "Uncorrected" ).pt();
