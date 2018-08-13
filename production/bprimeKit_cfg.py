@@ -101,6 +101,27 @@ print '\nFinished jet toolbox setup.....\n'
 #   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 #-------------------------------------------------------------------------------
+#   Settings for Egamma energy correction bug fixing
+#-------------------------------------------------------------------------------
+from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+setupEgammaPostRecoSeq(
+    process,
+    runVID=False, #saves CPU time by not needlessly re-running VID
+    era='2017-Nov17ReReco'
+    )
+
+#-------------------------------------------------------------------------------
+#   Settings for MET bug fixing
+#-------------------------------------------------------------------------------
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD (
+    process,
+    isData = mysetting.isData,
+    fixEE2017 = mysetting.isData,
+    postfix = "ModifiedMET"
+    )
+
+#-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
 #-------------------------------------------------------------------------------
 process.TFileService = cms.Service('TFileService',
@@ -115,9 +136,15 @@ process.bprimeKit = mysetting.bprimeKit
 #-------------------------------------------------------------------------------
 # process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',ignoreTotal = cms.untracked.int32(1) )
 
+process.bugfixingSequence = cms.Sequence()
+if ( mysetting.Year == '2017' ):
+    process.bugfixingSequence += process.egammaPostRecoSeq
+    process.bugfixingSequence += process.fullPatMetSequenceModifiedMET
+
 process.Path = cms.Path(
     #process.egmGsfElectronIDSequence*
     #process.egmPhotonIDSequence*
+    process.bugfixingSequence*
     process.JetToolBoxSequence*
     process.bprimeKit
 )

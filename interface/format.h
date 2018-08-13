@@ -91,6 +91,8 @@ public:
   Float_t PuppiMETRealSig;
   Float_t PuppiGenMET;
   Float_t PuppiGenMETPhi;
+  Float_t PuppiMETx;
+  Float_t PuppiMETy;
 
   void
   RegisterTree( TTree* root, const std::string& name = "EvtInfo" )
@@ -159,6 +161,8 @@ public:
     root->Branch( ( name+".PuppiMETRealSig" ).c_str(),                           &PuppiMETRealSig,                           ( name+"PuppiMETRealSig/F" ).c_str() );
     root->Branch( ( name+".PuppiGenMET" ).c_str(),                               &PuppiGenMET,                               ( name+"PuppiGenMET/F" ).c_str() );
     root->Branch( ( name+".PuppiGenMETPhi" ).c_str(),                            &PuppiGenMETPhi,                            ( name+"PuppiGenMETPhi/F" ).c_str() );
+    root->Branch( ( name+".PuppiMETx" ).c_str(),                                 &PuppiMETx,                                 ( name+"PuppiMETx/F" ).c_str() );
+    root->Branch( ( name+".PuppiMETy" ).c_str(),                                 &PuppiMETy,                                 ( name+"PuppiMETy/F" ).c_str() );
   } 
     
   void
@@ -184,17 +188,17 @@ public:
     root->SetBranchAddress( ( name+".TrueIT" ).c_str(),                                    TrueIT );
     root->SetBranchAddress( ( name+".PFMET" ).c_str(),                                     &PFMET );
     root->SetBranchAddress( ( name+".PFMETPhi" ).c_str(),                                  &PFMETPhi );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetEnUp" ).c_str(),              &PFMETType1CorrPtShiftJetEnUp            );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetEnDown" ).c_str(),            &PFMETType1CorrPtShiftJetEnDown          );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetResUp" ).c_str(),             &PFMETType1CorrPtShiftJetResUp           );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetResDown" ).c_str(),           &PFMETType1CorrPtShiftJetResDown         );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftUnclusteredEnUp" ).c_str(),      &PFMETType1CorrPtShiftUnclusteredEnUp    );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftUnclusteredEnDown" ).c_str(),    &PFMETType1CorrPtShiftUnclusteredEnDown  );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetEnUp" ).c_str(),             &PFMETType1CorrPhiShiftJetEnUp           );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetEnDown" ).c_str(),           &PFMETType1CorrPhiShiftJetEnDown         );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetResUp" ).c_str(),            &PFMETType1CorrPhiShiftJetResUp          );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetResDown" ).c_str(),          &PFMETType1CorrPhiShiftJetResDown        );
-    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftUnclusteredEnUp" ).c_str(),     &PFMETType1CorrPhiShiftUnclusteredEnUp   );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetEnUp" ).c_str(),              &PFMETType1CorrPtShiftJetEnUp );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetEnDown" ).c_str(),            &PFMETType1CorrPtShiftJetEnDown );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetResUp" ).c_str(),             &PFMETType1CorrPtShiftJetResUp );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftJetResDown" ).c_str(),           &PFMETType1CorrPtShiftJetResDown );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftUnclusteredEnUp" ).c_str(),      &PFMETType1CorrPtShiftUnclusteredEnUp );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPtShiftUnclusteredEnDown" ).c_str(),    &PFMETType1CorrPtShiftUnclusteredEnDown );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetEnUp" ).c_str(),             &PFMETType1CorrPhiShiftJetEnUp );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetEnDown" ).c_str(),           &PFMETType1CorrPhiShiftJetEnDown );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetResUp" ).c_str(),            &PFMETType1CorrPhiShiftJetResUp );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftJetResDown" ).c_str(),          &PFMETType1CorrPhiShiftJetResDown );
+    root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftUnclusteredEnUp" ).c_str(),     &PFMETType1CorrPhiShiftUnclusteredEnUp );
     root->SetBranchAddress( ( name+".PFMETType1CorrPhiShiftUnclusteredEnDown" ).c_str(),   &PFMETType1CorrPhiShiftUnclusteredEnDown );
     root->SetBranchAddress( ( name+".PFRawMET" ).c_str(),                                  &PFRawMET );
     root->SetBranchAddress( ( name+".PFRawMETPhi" ).c_str(),                               &PFRawMETPhi );
@@ -208,17 +212,17 @@ public:
     root->SetBranchAddress( ( name+".PFMETy" ).c_str(),                                    &PFMETy );
     root->SetBranchAddress( ( name+".PuppiMET" ).c_str(),                                  &PuppiMET );
     root->SetBranchAddress( ( name+".PuppiMETPhi" ).c_str(),                               &PuppiMETPhi );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetEnUp" ).c_str(),           &PuppiMETType1CorrPtShiftJetEnUp            );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetEnDown" ).c_str(),         &PuppiMETType1CorrPtShiftJetEnDown          );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetResUp" ).c_str(),          &PuppiMETType1CorrPtShiftJetResUp           );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetResDown" ).c_str(),        &PuppiMETType1CorrPtShiftJetResDown         );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftUnclusteredEnUp" ).c_str(),   &PuppiMETType1CorrPtShiftUnclusteredEnUp    );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftUnclusteredEnDown" ).c_str(), &PuppiMETType1CorrPtShiftUnclusteredEnDown  );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetEnUp" ).c_str(),          &PuppiMETType1CorrPhiShiftJetEnUp           );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetEnDown" ).c_str(),        &PuppiMETType1CorrPhiShiftJetEnDown         );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetResUp" ).c_str(),         &PuppiMETType1CorrPhiShiftJetResUp          );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetResDown" ).c_str(),       &PuppiMETType1CorrPhiShiftJetResDown        );
-    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftUnclusteredEnUp" ).c_str(),  &PuppiMETType1CorrPhiShiftUnclusteredEnUp   );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetEnUp" ).c_str(),           &PuppiMETType1CorrPtShiftJetEnUp );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetEnDown" ).c_str(),         &PuppiMETType1CorrPtShiftJetEnDown );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetResUp" ).c_str(),          &PuppiMETType1CorrPtShiftJetResUp );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftJetResDown" ).c_str(),        &PuppiMETType1CorrPtShiftJetResDown );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftUnclusteredEnUp" ).c_str(),   &PuppiMETType1CorrPtShiftUnclusteredEnUp );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPtShiftUnclusteredEnDown" ).c_str(), &PuppiMETType1CorrPtShiftUnclusteredEnDown );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetEnUp" ).c_str(),          &PuppiMETType1CorrPhiShiftJetEnUp );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetEnDown" ).c_str(),        &PuppiMETType1CorrPhiShiftJetEnDown );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetResUp" ).c_str(),         &PuppiMETType1CorrPhiShiftJetResUp );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftJetResDown" ).c_str(),       &PuppiMETType1CorrPhiShiftJetResDown );
+    root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftUnclusteredEnUp" ).c_str(),  &PuppiMETType1CorrPhiShiftUnclusteredEnUp );
     root->SetBranchAddress( ( name+".PuppiMETType1CorrPhiShiftUnclusteredEnDown" ).c_str(),&PuppiMETType1CorrPhiShiftUnclusteredEnDown );
     root->SetBranchAddress( ( name+".PuppiRawMET" ).c_str(),                               &PuppiRawMET );
     root->SetBranchAddress( ( name+".PuppiRawMETPhi" ).c_str(),                            &PuppiRawMETPhi );
@@ -228,6 +232,8 @@ public:
     root->SetBranchAddress( ( name+".PuppiMETRealSig" ).c_str(),                           &PuppiMETRealSig );
     root->SetBranchAddress( ( name+".PuppiGenMET" ).c_str(),                               &PuppiGenMET );
     root->SetBranchAddress( ( name+".PuppiGenMETPhi" ).c_str(),                            &PuppiGenMETPhi );
+    root->SetBranchAddress( ( name+".PuppiMETx" ).c_str(),                                 &PuppiMETx );
+    root->SetBranchAddress( ( name+".PuppiMETy" ).c_str(),                                 &PuppiMETy );
   }
 };
 

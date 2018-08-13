@@ -42,16 +42,16 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   
   // ----- Getting missing momentum information  --------------------------------
   for( auto it_met = _methandle->begin(); it_met != _methandle->end(); it_met++ ){
-    EvtInfo.PFMET             = it_met->pt();
-    EvtInfo.PFMETPhi          = it_met->phi();
-    EvtInfo.PFRawMET          = it_met->uncorPt();
-    EvtInfo.PFRawMETPhi       = it_met->uncorPhi();
-    EvtInfo.PFMETx            = it_met->px();           // Uly 2011-04-04
-    EvtInfo.PFMETy            = it_met->py();           // Uly 2011-04-04
-    EvtInfo.PFSumEt           = it_met->sumEt();
-    EvtInfo.PFMETSig          = it_met->mEtSig();       // MET Significance = MET / std::sqrt(SumET)
-    EvtInfo.PFMETRealSig      = it_met->significance();       // real MET significance
-    EvtInfo.PFMETlongitudinal = it_met->e_longitudinal();// longitudinal component of the vector sum of energy over all object
+    EvtInfo.PFMET                                     = it_met->pt();
+    EvtInfo.PFMETPhi                                  = it_met->phi();
+    EvtInfo.PFRawMET                                  = it_met->uncorPt();
+    EvtInfo.PFRawMETPhi                               = it_met->uncorPhi();
+    EvtInfo.PFMETx                                    = it_met->px();           
+    EvtInfo.PFMETy                                    = it_met->py();           
+    EvtInfo.PFSumEt                                   = it_met->sumEt();
+    EvtInfo.PFMETSig                                  = it_met->mEtSig();       // MET Significance = MET / std::sqrt(SumET)
+    EvtInfo.PFMETRealSig                              = it_met->significance();       // real MET significance
+    EvtInfo.PFMETlongitudinal                         = it_met->e_longitudinal();// longitudinal component of the vector sum of energy over all object
     EvtInfo.PFMETType1CorrPtShiftJetEnUp              = it_met->shiftedPt ( pat::MET::JetEnUp           );
     EvtInfo.PFMETType1CorrPtShiftJetEnDown            = it_met->shiftedPt ( pat::MET::JetEnDown         );
     EvtInfo.PFMETType1CorrPtShiftJetResUp             = it_met->shiftedPt ( pat::MET::JetResUp          );
@@ -73,14 +73,16 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   }
   
   for( auto it_met = _pmethandle->begin(); it_met != _pmethandle->end(); it_met++ ){
-    EvtInfo.PuppiMET             = it_met->pt();
-    EvtInfo.PuppiMETPhi          = it_met->phi();
-    EvtInfo.PuppiRawMET          = it_met->uncorPt();
-    EvtInfo.PuppiRawMETPhi       = it_met->uncorPhi();
-    EvtInfo.PuppiSumEt           = it_met->sumEt();
-    EvtInfo.PuppiMETSig          = it_met->mEtSig();       // MET Significance = MET / std::sqrt(SumET)
-    EvtInfo.PuppiMETRealSig      = it_met->significance();       // real MET significance
-    EvtInfo.PuppiMETlongitudinal = it_met->e_longitudinal();// longitudinal component of the vector sum of energy over all object
+    EvtInfo.PuppiMET                                     = it_met->pt();
+    EvtInfo.PuppiMETPhi                                  = it_met->phi();
+    EvtInfo.PuppiRawMET                                  = it_met->uncorPt();
+    EvtInfo.PuppiRawMETPhi                               = it_met->uncorPhi();
+    EvtInfo.PuppiMETx                                    = it_met->px();           
+    EvtInfo.PuppiMETy                                    = it_met->py();           
+    EvtInfo.PuppiSumEt                                   = it_met->sumEt();
+    EvtInfo.PuppiMETSig                                  = it_met->mEtSig();       // MET Significance = MET / std::sqrt(SumET)
+    EvtInfo.PuppiMETRealSig                              = it_met->significance();       // real MET significance
+    EvtInfo.PuppiMETlongitudinal                         = it_met->e_longitudinal();// longitudinal component of the vector sum of energy over all object
     EvtInfo.PuppiMETType1CorrPtShiftJetEnUp              = it_met->shiftedPt ( pat::MET::JetEnUp           );
     EvtInfo.PuppiMETType1CorrPtShiftJetEnDown            = it_met->shiftedPt ( pat::MET::JetEnDown         );
     EvtInfo.PuppiMETType1CorrPtShiftJetResUp             = it_met->shiftedPt ( pat::MET::JetResUp          );

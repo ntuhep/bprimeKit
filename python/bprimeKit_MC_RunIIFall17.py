@@ -13,6 +13,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer_cfi as ntpl
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
+Year                 = '2017'
 isData               = False
 GlobalTag            = '94X_mc2017_realistic_v14'
 ElectronIDHEEPModule = 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff'
