@@ -8,12 +8,14 @@
 import re
 
 def getdataprocess( dataset ):
-    if re.match( r'/.*/Run2017.*-31Mar2018-v.*/MINIAOD', dataset ):
+    if re.match( r'/.*/Run2017.*31Mar2018.*/MINIAOD', dataset ):
         return 'Data31Mar2018'
-    elif re.match( r'/.*/Run2016.*-17Jul2018-v.*/MINIAOD', dataset ):
+    elif re.match( r'/.*/Run2016.*17Jul2018.*/MINIAOD', dataset ):
         return 'Data17Jul2018'
-    elif re.match( r'/.*/RunIIFall17MiniAODv2-PU2017.*/MINIAODSIM', dataset ):
+    elif re.match( r'/.*/RunIIFall17.*12Apr2018.*/MINIAODSIM', dataset ):
         return 'MC_RunIIFall17'
+    elif re.match( r'/.*/RunIISummer16MiniAODv3.*/MINIAODSIM', dataset ):
+        return 'MC_RunIISummer16'
     else:
         print 'Error! Dataset pattern is not recognized!'
         raise Exception('Unrecognized data')
