@@ -93,7 +93,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
     && checkMETfilter( "Flag_HBHENoiseIsoFilter" )
     && checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" )
     && checkMETfilter( "Flag_goodVertices" )
-    && checkMETfilter( "Flag_globalTightHalo2016Filter" )
+    && checkMETfilter( "Flag_globalSuperTightHalo2016Filter" )
     && checkMETfilter( "Flag_BadPFMuonFilter" )
     && checkMETfilter( "Flag_BadChargedCandidateFilter" )
     && checkMETfilter( "Flag_ecalBadCalibFilter" )
