@@ -4,12 +4,12 @@ echo
 echo "Welcome to the bprimekit setup script!"
 echo
 
-echo "set up fixing codes for the electron energy scale and smearing interacts with the ECAL -tracker combination"
+echo "set up fixing codes for the electron energy scale and smearing interacts with the ECAL-tracker combination"
 git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
 echo
 
 echo "Set up JetToolBox"
-git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X_v1
+git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b jetToolbox_94X_v3
 echo
 
 echo "Set up MET bug fixing code"
