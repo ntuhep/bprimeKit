@@ -63,7 +63,6 @@ def jettoolbox_settings( process , runMC ):
         addSoftDrop        = True,
         addNsub            = True,
         bTagDiscriminators = listBtagDiscriminators,
-        addCMSTopTagger    = True,
         Cut                = ak8Cut ,
         addNsubSubjets     = True,
         subjetMaxTau       = 4
@@ -81,12 +80,11 @@ def jettoolbox_settings( process , runMC ):
         addSoftDrop               = True,
         addNsub                   = True,
         bTagDiscriminators        = listBtagDiscriminators,
-        addCMSTopTagger           = True,
         Cut                       = ak8Cut,
         addNsubSubjets            = True,
         subjetMaxTau              = 4,
-        addEnergyCorrFunc         = True,
-        addEnergyCorrFuncSubjets  = True
+        addEnergyCorrFunc         = True, ecfN3=True,
+        addEnergyCorrFuncSubjets  = True, ecfSubjetN3=True
     )
 
     jetToolbox( process, 'ca8', 'ca8chs', 'edmOut',
@@ -111,9 +109,6 @@ def jettoolbox_settings( process , runMC ):
         bTagDiscriminators  = listBtagDiscriminators,
         Cut                 = ''
     )
-
-    #To avoid producing additional JetToolBox format files, kick out the "EndPath" attribute of process.
-    delattr(process, 'endpath')
 
     #Additional QGTagger Information
     #How to include QGL database : https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood#Step_0_only_for_MiniAOD_CMSSW_7
@@ -166,8 +161,8 @@ def jettoolbox_settings( process , runMC ):
     ]
 
     #Use new Task() attribute of python
-    process.myTask.add( process.QGTaggerAK4PFPuppi )
-    process.myTask.add( process.patPuppiJetSpecificProducer )
-    process.myTask.add( process.updatedPatJetsSelectedAK4PFPuppi )
-    JetToolBoxSequence = cms.Sequence( process.myTask )
+    process.jetTask.add( process.QGTaggerAK4PFPuppi )
+    process.jetTask.add( process.patPuppiJetSpecificProducer )
+    process.jetTask.add( process.updatedPatJetsSelectedAK4PFPuppi )
+    JetToolBoxSequence = cms.Sequence( process.jetTask )
     setattr( process, 'JetToolBoxSequence', JetToolBoxSequence)
