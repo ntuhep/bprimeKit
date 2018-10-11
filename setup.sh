@@ -13,7 +13,7 @@ git clone https://github.com/cms-jet/JetToolbox.git JMEAnalysis/JetToolbox -b je
 echo
 
 echo "Set up MET bug fixing code"
-git cms-merge-topic cms-met:METFixEE2017_949
+git cms-merge-topic cms-met:METFixEE2017_949_v2
 echo
 
 echo "Done with setup script! You still need to build!"
