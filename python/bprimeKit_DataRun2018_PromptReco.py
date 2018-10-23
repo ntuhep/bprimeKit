@@ -16,7 +16,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer_cfi as ntpl
 isData               = True
 GlobalTag            = '102X_dataRun2_Prompt_v11'
 ElectronIDHEEPModule = 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff'
-ElectronIDModule     = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V1_cff'
+ElectronIDModule     = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'
 PhotonIDModule       = 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V1_TrueVtx_cff'
 
 #-------------------------------------------------------------------------------
