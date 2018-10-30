@@ -10,7 +10,7 @@ crabcfgformat="""
 from CRABClient.UserUtilities import config, getUsernameFromSiteDB
 config = config()
 
-config.General.requestName = 'BPK_101X_{0}'
+config.General.requestName = 'BPK_102X_{0}'
 config.General.workArea = 'bprimeKit_crab'
 config.General.transferOutputs = True
 config.General.transferLogs = True
@@ -47,7 +47,7 @@ def submitsample(argv):
     parser=optparse.OptionParser()
     parser.add_option("-d","--dataset",dest='dataset',help='which dataset to run', default=None, type='string')
     parser.add_option('-s','--site',dest='site',help='which site to store output', default='T2_CH_CERN', type='string')
-    parser.add_option('-l','--lfndir',dest='lfndir',help='the storage lfn directory' , default='/store/user/' + os.environ.get('USER') + '/BprimeKit_Ntuples_CMSSW_101X', type='string')
+    parser.add_option('-l','--lfndir',dest='lfndir',help='the storage lfn directory' , default='/store/user/' + os.environ.get('USER') + '/BprimeKit_Ntuples_CMSSW_102X', type='string')
 
     opt, args = parser.parse_args( argv )
 

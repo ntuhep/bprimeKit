@@ -10,8 +10,8 @@ import re
 def getdataprocess( dataset ):
     if re.match( r'/.*/Run2018.*-PromptReco.*/MINIAOD', dataset ):
         return 'DataRun2018_PromptReco'
-    elif re.match( r'/.*/Run2018.*-22May2018.*/MINIAOD', dataset ):
-        return 'DataRun2018_PromptReco'
+    elif re.match( r'/.*/Run2018.*-17Sep2018.*/MINIAOD', dataset ):
+        return 'Data17Sep2018'
     else:
         print 'Error! Dataset pattern is not recognized!'
         raise Exception('Unrecognized data')
