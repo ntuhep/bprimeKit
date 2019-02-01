@@ -18,7 +18,7 @@
 #define MAX_JETS           128
 #define MAX_PHOTONS        128
 #define MAX_GENS           128
-#define MAX_LHE            2048
+#define MAX_LHE            2560
 #define MAX_Vertices       256
 #define MAX_BX             128
 #define MAX_TRGOBJS        64
