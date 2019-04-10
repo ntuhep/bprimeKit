@@ -5,7 +5,7 @@ echo "Welcome to the bprimekit setup script!"
 echo
 
 echo "set up fixing codes for the electron energy scale and smearing interacts with the ECAL-tracker combination"
-git cms-merge-topic cms-egamma:EgammaPostRecoTools_940
+git cms-merge-topic cms-egamma:EgammaPostRecoTools
 echo
 
 echo "Set up JetToolBox"

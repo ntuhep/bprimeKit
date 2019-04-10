@@ -120,7 +120,7 @@ runMetCorAndUncFromMiniAOD (
     process,
     isData = mysetting.isData,
     fixEE2017 = mysetting.isData,
-    fixEE2017Params = {'userawPt': True, 'PtThreshold':50.0, 'MinEtaThreshold':2.65, 'MaxEtaThreshold': 3.139},
+    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
     postfix = "ModifiedMET"
     )
 
