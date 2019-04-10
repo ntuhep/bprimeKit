@@ -39,8 +39,6 @@ evtgenbase = cms.PSet(
                         "Flag_goodVertices",
                         "Flag_globalSuperTightHalo2016Filter",
                         "Flag_BadPFMuonFilter",
-                        "Flag_BadChargedCandidateFilter",
-                        "Flag_ecalBadCalibFilter",
                     )
 )
 
