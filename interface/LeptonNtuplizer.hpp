@@ -35,11 +35,11 @@ private:
   const edm::EDGetToken _tautoken;
   const edm::EDGetToken _gentoken;
   const edm::EDGetToken _packedcandtoken;
-  //const edm::EDGetToken _electronID_vetotoken;
-  //const edm::EDGetToken _electronID_loosetoken;
-  //const edm::EDGetToken _electronID_mediumtoken;
-  //const edm::EDGetToken _electronID_tighttoken;
-  //const edm::EDGetToken _electronID_HEEPtoken;
+  const edm::EDGetToken _electronID_vetotoken;
+  const edm::EDGetToken _electronID_loosetoken;
+  const edm::EDGetToken _electronID_mediumtoken;
+  const edm::EDGetToken _electronID_tighttoken;
+  const edm::EDGetToken _electronID_HEEPtoken;
   const std::string _electronID_vetomap;
   const std::string _electronID_loosemap;
   const std::string _electronID_mediummap;

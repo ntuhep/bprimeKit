@@ -115,13 +115,15 @@ def jettoolbox_settings( process , runMC ):
     from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
 
     #Latest QGL database : https://github.com/cms-jet/QGLDatabase/tree/master/SQLiteFiles
-    qgDatabaseVersion = 'cmssw8020_v2'
+    #qgDatabaseVersion = 'cmssw8020_v2'
+    qgDatabaseVersion = 'AK4chs_94X'
     process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
         CondDBSetup,
         toGet = cms.VPSet(
             cms.PSet(
                 record = cms.string('QGLikelihoodRcd'),
-                tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+                #tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_AK4PFchs'),
+                tag    = cms.string('QGLikelihoodObject_v1_AK4'),
                 label  = cms.untracked.string('QGL_AK4PFchs')
             ),
         ),

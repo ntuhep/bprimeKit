@@ -25,11 +25,6 @@ LeptonNtuplizer::LeptonNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _tautoken( GetToken<std::vector<pat::Tau> >( "tausrc"       ) ),
   _gentoken( GetToken<std::vector<reco::GenParticle> >( "gensrc" ) ),
   _packedcandtoken( GetToken<pat::PackedCandidateCollection>( "packedsrc" ) ),
-  //_electronID_vetotoken( GetToken<edm::ValueMap<bool> >( "eleVetoIdMap"    ) ),
-  //_electronID_loosetoken( GetToken<edm::ValueMap<bool> >( "eleLooseIdMap"   ) ),
-  //_electronID_mediumtoken( GetToken<edm::ValueMap<bool> >( "eleMediumIdMap"  ) ),
-  //_electronID_tighttoken( GetToken<edm::ValueMap<bool> >( "eleTightIdMap"   ) ),
-  //_electronID_HEEPtoken( GetToken<edm::ValueMap<bool> >( "eleHEEPIdMap"    ) ),
   _electronID_vetomap( iConfig.getParameter<string>( "eleVetoIdMap"    ) ),
   _electronID_loosemap( iConfig.getParameter<string>( "eleLooseIdMap"   ) ),
   _electronID_mediummap( iConfig.getParameter<string>( "eleMediumIdMap"  ) ),
@@ -76,11 +71,6 @@ LeptonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
 
   iEvent.getByToken( _packedcandtoken,        _packedhandle     );
   iEvent.getByToken( _conversionstoken,       _conversionhandle );
-  //iEvent.getByToken( _electronID_vetotoken,   _electronIDVeto   );
-  //iEvent.getByToken( _electronID_loosetoken,  _electronIDLoose  );
-  //iEvent.getByToken( _electronID_mediumtoken, _electronIDMedium );
-  //iEvent.getByToken( _electronID_tighttoken,  _electronIDTight  );
-  //iEvent.getByToken( _electronID_HEEPtoken,   _electronIDHEEP   );
 
   memset( &LepInfo, 0x00, sizeof( LepInfo ) );
 

@@ -10,12 +10,12 @@ import FWCore.ParameterSet.Config as cms
 #-------------------------------------------------------------------------------
 #   Common objects
 #-------------------------------------------------------------------------------
-rhosrc            = cms.InputTag( 'fixedGridRhoFastjetAll' )
-rhocalosrc        = cms.InputTag( 'fixedGridRhoFastjetCentralCalo' )
-rhonofastjetsrc   = cms.InputTag( 'fixedGridRhoAll' )
-vtxsrc            = cms.InputTag( 'offlineSlimmedPrimaryVertices' )
-beamspotsrc       = cms.InputTag( 'offlineBeamSpot' )
-gensrc            = cms.InputTag( 'prunedGenParticles' )
+rhosrc            = cms.InputTag('fixedGridRhoFastjetAll')
+rhocalosrc        = cms.InputTag('fixedGridRhoFastjetCentralCalo')
+rhonofastjetsrc   = cms.InputTag('fixedGridRhoAll')
+vtxsrc            = cms.InputTag('offlineSlimmedPrimaryVertices')
+beamspotsrc       = cms.InputTag('offlineBeamSpot')
+gensrc            = cms.InputTag('prunedGenParticles')
 
 #-------------------------------------------------------------------------------
 #   EvtGen settings
@@ -53,9 +53,9 @@ vertexbase = cms.PSet(
 #   Trigger object settings
 #-------------------------------------------------------------------------------
 triggerbase = cms.PSet(
-    triggersrc           = cms.InputTag( 'TriggerResults::HLT' ),
-    triggerprescalessrc  = cms.InputTag( 'patTrigger' ),
-    triggerobjsrc        = cms.InputTag( 'slimmedPatTrigger'),
+    triggersrc           = cms.InputTag('TriggerResults::HLT'),
+    triggerprescalessrc  = cms.InputTag('patTrigger'),
+    triggerobjsrc        = cms.InputTag('slimmedPatTrigger'),
     gtdigisrc            = cms.InputTag('gtDigis'),
     triggerlist          = cms.VPSet(
         cms.PSet(
@@ -93,23 +93,16 @@ triggerbase = cms.PSet(
 #   Photon settings
 #-------------------------------------------------------------------------------
 photonbase = cms.PSet(
-    photonname = cms.string('PhotonInfo'),
-    photonsrc  = cms.InputTag('slimmedPhotons'),
-    rhosrc     = rhosrc,
-    #phoLooseIdMap  = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-loose'),
-    #phoMediumIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-medium'),
-    #phoTightIdMap  = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Fall17-94X-V1-tight'),
-    phoLooseIdMap  = cms.string('cutBasedPhotonID-Fall17-94X-V1-loose'),
-    phoMediumIdMap = cms.string('cutBasedPhotonID-Fall17-94X-V1-medium'),
-    phoTightIdMap  = cms.string('cutBasedPhotonID-Fall17-94X-V1-tight'),
-    phoIdMvaMap    = cms.string('PhotonMVAEstimatorRunIIFall17v1p1Values'),
-    #phoChargedIsolation       = cms.InputTag('photonIDValueMapProducer:phoChargedIsolation'),
-    #phoNeutralHadronIsolation = cms.InputTag('photonIDValueMapProducer:phoNeutralHadronIsolation'),
-    #phoPhotonIsolation        = cms.InputTag('photonIDValueMapProducer:phoPhotonIsolation'),
-    effAreaChHadFile  = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_TrueVtx.txt'),
-    effAreaNeuHadFile = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_TrueVtx.txt'),
-    effAreaPhoFile    = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_TrueVtx.txt'),
-
+    photonname                = cms.string('PhotonInfo'),
+    photonsrc                 = cms.InputTag('slimmedPhotons'),
+    rhosrc                    = rhosrc,
+    phoLooseIdMap             = cms.string('cutBasedPhotonID-Fall17-94X-V2-loose'),
+    phoMediumIdMap            = cms.string('cutBasedPhotonID-Fall17-94X-V2-medium'),
+    phoTightIdMap             = cms.string('cutBasedPhotonID-Fall17-94X-V2-tight'),
+    phoIdMvaMap               = cms.string('PhotonMVAEstimatorRunIIFall17v2Values'),
+    effAreaChHadFile          = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt'),
+    effAreaNeuHadFile         = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt'),
+    effAreaPhoFile            = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt'),
 )
 
 #-------------------------------------------------------------------------------
@@ -121,16 +114,11 @@ leptonbase = cms.PSet(
     elecsrc                = cms.InputTag('slimmedElectrons'),
     tausrc                 = cms.InputTag('slimmedTaus'),
     packedsrc              = cms.InputTag('packedPFCandidates'),
-    #eleVetoIdMap         = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-veto'),
-    #eleLooseIdMap        = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-loose'),
-    #eleMediumIdMap       = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-medium'),
-    #eleTightIdMap        = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Fall17-94X-V1-tight'),
-    #eleHEEPIdMap         = cms.InputTag('egmGsfElectronIDs:heepElectronID-HEEPV70'),
-    eleVetoIdMap           = cms.string( 'cutBasedElectronID-Fall17-94X-V1-veto' ),
-    eleLooseIdMap          = cms.string( 'cutBasedElectronID-Fall17-94X-V1-loose' ),
-    eleMediumIdMap         = cms.string( 'cutBasedElectronID-Fall17-94X-V1-medium' ),
-    eleTightIdMap          = cms.string( 'cutBasedElectronID-Fall17-94X-V1-tight' ),
-    eleHEEPIdMap           = cms.string( 'heepElectronID-HEEPV70' ),
+    eleVetoIdMap           = cms.string('cutBasedElectronID-Fall17-94X-V2-veto'),
+    eleLooseIdMap          = cms.string('cutBasedElectronID-Fall17-94X-V2-loose'),
+    eleMediumIdMap         = cms.string('cutBasedElectronID-Fall17-94X-V2-medium'),
+    eleTightIdMap          = cms.string('cutBasedElectronID-Fall17-94X-V2-tight'),
+    eleHEEPIdMap           = cms.string('heepElectronID-HEEPV70'),
     eleffAreaNeuHadPhoFile = cms.FileInPath('bpkFrameWork/bprimeKit/data/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
     eleffAreaHLTecalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_ecalPFClusterIso.txt'),
     eleffAreaHLThcalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_hcalPFClusterIso.txt'),

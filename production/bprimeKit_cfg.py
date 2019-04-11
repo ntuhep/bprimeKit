@@ -14,10 +14,10 @@ options.register('sample',
     'Sample to analyze')
 
 options.register('outputLabel',
-     'bpk_ntuple.root',
-     opts.VarParsing.multiplicity.singleton,
-     opts.VarParsing.varType.string,
-     'Output label')
+    'bpk_ntuple.root',
+    opts.VarParsing.multiplicity.singleton,
+    opts.VarParsing.varType.string,
+    'Output label')
 
 options.register('DataProcessing',
     '',
@@ -26,10 +26,10 @@ options.register('DataProcessing',
     'Data processing types. Options are file found in python/bprimeKit_*.py')
 
 options.register('Debug',
-         0,
-         opts.VarParsing.multiplicity.singleton,
-         opts.VarParsing.varType.int,
-         'Debugging output level' )
+    0,
+    opts.VarParsing.multiplicity.singleton,
+    opts.VarParsing.varType.int,
+    'Debugging output level' )
 
 options.setDefault('maxEvents', 100 )
 
@@ -45,7 +45,7 @@ print '\nRunning with DataProcessing option [', options.DataProcessing, '] and w
 process = cms.Process('bprimeKit')
 
 process.source = cms.Source('PoolSource',
-    fileNames = cms.untracked.vstring(options.sample))
+fileNames = cms.untracked.vstring(options.sample))
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
@@ -75,40 +75,15 @@ jettoolbox_settings( process, not mysetting.isData )
 print '\nFinished jet toolbox setup.....\n'
 
 #-------------------------------------------------------------------------------
-#   Settings for Egamma Identification
-#-------------------------------------------------------------------------------
-
-# On the fly for Egamma ID tool but still keep
-
-#from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-#
-#dataFormat = DataFormat.MiniAOD
-#switchOnVIDPhotonIdProducer(process, dataFormat)
-#switchOnVIDElectronIdProducer(process, dataFormat)
-#
-#my_elid_modules  = []
-#my_phoid_modules = []
-#
-#my_elid_modules.append( mysetting.ElectronIDModule )
-#my_elid_modules.append( mysetting.ElectronIDHEEPModule )
-#
-#my_phoid_modules.append( mysetting.PhotonIDModule )
-#
-#for idmod in my_elid_modules:
-#   setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
-#
-#for idmod in my_phoid_modules:
-#   setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-
-#-------------------------------------------------------------------------------
-#   Settings for Egamma energy correction bug fixing
+#   Settings for Egamma Identification and Energy Correction bug fixing
 #-------------------------------------------------------------------------------
 # ref : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#2017_MiniAOD_V2
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(
     process,
-    runVID=False, #saves CPU time by not needlessly re-running VID
-    era='2017-Nov17ReReco'
+    runVID = True,
+    runEnergyCorrections = True if mysetting.Year == '2017' else False,
+    era = '2017-Nov17ReReco' if mysetting.Year == '2017' else '2016-Legacy'
     )
 
 #-------------------------------------------------------------------------------
@@ -141,12 +116,13 @@ process.bprimeKit = mysetting.bprimeKit
 
 process.bugfixingSequence = cms.Sequence()
 if ( mysetting.Year == '2017' ):
-    process.bugfixingSequence += process.egammaPostRecoSeq
+    #process.bugfixingSequence += process.egammaPostRecoSeq
     process.bugfixingSequence += process.fullPatMetSequenceModifiedMET
 
 process.Path = cms.Path(
     #process.egmGsfElectronIDSequence*
     #process.egmPhotonIDSequence*
+    process.egammaPostRecoSeq*
     process.bugfixingSequence*
     process.JetToolBoxSequence*
     process.bprimeKit

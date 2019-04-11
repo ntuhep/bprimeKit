@@ -16,9 +16,6 @@ import bpkFrameWork.bprimeKit.Ntuplizer16_cfi as ntpl
 Year                 = '2016'
 isData               = False
 GlobalTag            = '94X_mcRun2_asymptotic_v3'
-ElectronIDHEEPModule = 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff'
-ElectronIDModule     = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff'
-PhotonIDModule       = 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff'
 
 #-------------------------------------------------------------------------------
 #MET Filter Tag for MC

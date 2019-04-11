@@ -32,12 +32,6 @@ private:
   const std::string _photonname;
   const edm::EDGetToken _rhotoken;
   const edm::EDGetToken _photontoken;
-  const edm::EDGetToken _photonLooseIDToken;
-  const edm::EDGetToken _photonMediumIDToken;
-  const edm::EDGetToken _photonTightIDToken;
-  const edm::EDGetToken _photonIsolation_Charged_Token;
-  const edm::EDGetToken _photonIsolation_Neutral_Token;
-  const edm::EDGetToken _photonIsolation_Photon_Token;
   const std::string _photonID_loosemap;
   const std::string _photonID_mediummap;
   const std::string _photonID_tightmap;
@@ -48,12 +42,6 @@ private:
 
   edm::Handle<double> _rhohandle;
   edm::Handle<std::vector<pat::Photon> > _photonhandle;
-  edm::Handle<edm::ValueMap<bool> > _photonIDLoose;
-  edm::Handle<edm::ValueMap<bool> > _photonIDMedium;
-  edm::Handle<edm::ValueMap<bool> > _photonIDTight;
-  edm::Handle<edm::ValueMap<float> > _photonIsolation_Charged_H;
-  edm::Handle<edm::ValueMap<float> > _photonIsolation_Neutral_H;
-  edm::Handle<edm::ValueMap<float> > _photonIsolation_Photon_H;
 
 };
 
