@@ -86,7 +86,7 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
     PhotonInfo.PhoEnergyPostCorrSmearUp    [PhotonInfo.Size] = it_pho->userFloat("energySigmaUp"); 
     PhotonInfo.PhoEnergyPostCorrSmearDown  [PhotonInfo.Size] = it_pho->userFloat("energySigmaDown"); 
 
-    // ----- Cut based photon ID and ID MVA ----------------------------------------------------------------
+    // ----- Cut based photon ID and ID MVA (V2) ----------------------------------------------------------------
     // ----- Cut based photon ID -----
     // Twiki : https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#Offline_selection_criteria
     PhotonInfo.EgammaCutBasedPhoIdLOOSE  [PhotonInfo.Size] = it_pho->photonID( _photonID_loosemap );

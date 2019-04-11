@@ -45,7 +45,8 @@ print '\nRunning with DataProcessing option [', options.DataProcessing, '] and w
 process = cms.Process('bprimeKit')
 
 process.source = cms.Source('PoolSource',
-fileNames = cms.untracked.vstring(options.sample))
+    fileNames = cms.untracked.vstring(options.sample)
+    )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
@@ -103,8 +104,8 @@ runMetCorAndUncFromMiniAOD (
 #   bprimeKit configuration importing
 #-------------------------------------------------------------------------------
 process.TFileService = cms.Service('TFileService',
-        fileName = cms.string( options.outputLabel )
-        )
+    fileName = cms.string( options.outputLabel )
+    )
 
 # See the file python/bprimeKit_* default settings for the various DataProcessings
 process.bprimeKit = mysetting.bprimeKit
@@ -116,14 +117,11 @@ process.bprimeKit = mysetting.bprimeKit
 
 process.bugfixingSequence = cms.Sequence()
 if ( mysetting.Year == '2017' ):
-    #process.bugfixingSequence += process.egammaPostRecoSeq
     process.bugfixingSequence += process.fullPatMetSequenceModifiedMET
 
 process.Path = cms.Path(
-    #process.egmGsfElectronIDSequence*
-    #process.egmPhotonIDSequence*
     process.egammaPostRecoSeq*
     process.bugfixingSequence*
     process.JetToolBoxSequence*
     process.bprimeKit
-)
+    )
