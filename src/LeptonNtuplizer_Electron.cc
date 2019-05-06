@@ -50,15 +50,8 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.ElEnergyPostCorrSmearUp     [LepInfo.Size] = it_el->userFloat("energySigmaUp");
     LepInfo.ElEnergyPostCorrSmearDown   [LepInfo.Size] = it_el->userFloat("energySigmaDown");
 
-    // ----- Cut based electron ID -------------------------------------------------------------------------
-    // NOTE : This is Cut-based ID V1 for 2017. V2 need to be done by user.
-    // Twiki : https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Working_points_for_92X_samples_R
-    //const edm::Ptr<pat::Electron> el( _electronhandle, it_el - _electronhandle->begin() );
-    //LepInfo.EgammaCutBasedEleIdVETO     [LepInfo.Size] = (int)( ( *_electronIDVeto )[el] );
-    //LepInfo.EgammaCutBasedEleIdLOOSE    [LepInfo.Size] = (int)( ( *_electronIDLoose )[el] );
-    //LepInfo.EgammaCutBasedEleIdMEDIUM   [LepInfo.Size] = (int)( ( *_electronIDMedium )[el] );
-    //LepInfo.EgammaCutBasedEleIdTIGHT    [LepInfo.Size] = (int)( ( *_electronIDTight )[el] );
-    //LepInfo.EgammaCutBasedEleIdHEEP     [LepInfo.Size] = (int)( ( *_electronIDHEEP )[el] );
+    // ----- Cut based electron ID (V2) -------------------------------------------------------------------------
+    // Twiki : https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Offline_selection_criteria_for_V
     LepInfo.EgammaCutBasedEleIdVETO     [LepInfo.Size] = (int) it_el->electronID( _electronID_vetomap   ); 
     LepInfo.EgammaCutBasedEleIdLOOSE    [LepInfo.Size] = (int) it_el->electronID( _electronID_loosemap  ); 
     LepInfo.EgammaCutBasedEleIdMEDIUM   [LepInfo.Size] = (int) it_el->electronID( _electronID_mediummap ); 

@@ -17,16 +17,10 @@ PhotonNtuplizer::PhotonNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _photonname( iConfig.getParameter<string>( "photonname" ) ),
   _rhotoken( GetToken<double>( "rhosrc" ) ),
   _photontoken( GetToken<vector<pat::Photon> >( "photonsrc"  ) ),
-  //_photonLooseIDToken( GetToken<edm::ValueMap<bool> >( "phoLooseIdMap"  ) ),
-  //_photonMediumIDToken( GetToken<edm::ValueMap<bool> >( "phoMediumIdMap" ) ),
-  //_photonTightIDToken( GetToken<edm::ValueMap<bool> >( "phoTightIdMap"  ) ),
   _photonID_loosemap( iConfig.getParameter<string>( "phoLooseIdMap" ) ),
   _photonID_mediummap( iConfig.getParameter<string>( "phoMediumIdMap" ) ),
   _photonID_tightmap( iConfig.getParameter<string>( "phoTightIdMap" ) ),
   _photonID_mva( iConfig.getParameter<string>( "phoIdMvaMap" ) ),
-  //_photonIsolation_Charged_Token( GetToken<edm::ValueMap<float> >( "phoChargedIsolation" ) ),
-  //_photonIsolation_Neutral_Token( GetToken<edm::ValueMap<float> >( "phoNeutralHadronIsolation" ) ),
-  //_photonIsolation_Photon_Token( GetToken<edm::ValueMap<float> >( "phoPhotonIsolation" ) ),
   _photonEffectiveArea_ChargeHadron( iConfig.getParameter<edm::FileInPath>( "effAreaChHadFile" ).fullPath() ),
   _photonEffectiveArea_NeutralHadron( iConfig.getParameter<edm::FileInPath>( "effAreaNeuHadFile" ).fullPath() ),
   _photonEffectiveArea_Photons( iConfig.getParameter<edm::FileInPath>( "effAreaPhoFile" ).fullPath()  )
@@ -57,12 +51,6 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
 {
   iEvent.getByToken( _rhotoken,                      _rhohandle                 );
   iEvent.getByToken( _photontoken,                   _photonhandle              );
-  //iEvent.getByToken( _photonLooseIDToken,            _photonIDLoose             );
-  //iEvent.getByToken( _photonMediumIDToken,           _photonIDMedium            );
-  //iEvent.getByToken( _photonTightIDToken,            _photonIDTight             );
-  //iEvent.getByToken( _photonIsolation_Charged_Token, _photonIsolation_Charged_H );
-  //iEvent.getByToken( _photonIsolation_Neutral_Token, _photonIsolation_Neutral_H );
-  //iEvent.getByToken( _photonIsolation_Photon_Token,  _photonIsolation_Photon_H  );
 
   memset( &PhotonInfo, 0x00, sizeof( PhotonInfo ) );
 
@@ -98,13 +86,9 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
     PhotonInfo.PhoEnergyPostCorrSmearUp    [PhotonInfo.Size] = it_pho->userFloat("energySigmaUp"); 
     PhotonInfo.PhoEnergyPostCorrSmearDown  [PhotonInfo.Size] = it_pho->userFloat("energySigmaDown"); 
 
-    // ----- Cut based photon ID and ID MVA ----------------------------------------------------------------
+    // ----- Cut based photon ID and ID MVA (V2) ----------------------------------------------------------------
     // ----- Cut based photon ID -----
     // Twiki : https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedPhotonIdentificationRun2#Offline_selection_criteria
-    //const edm::Ptr<pat::Photon> pho( _photonhandle, it_pho - _photonhandle->begin() );
-    //PhotonInfo.EgammaCutBasedPhoIdLOOSE  [PhotonInfo.Size] = ( *_photonIDLoose )[pho];
-    //PhotonInfo.EgammaCutBasedPhoIdMEDIUM [PhotonInfo.Size] = ( *_photonIDMedium )[pho];
-    //PhotonInfo.EgammaCutBasedPhoIdTIGHT  [PhotonInfo.Size] = ( *_photonIDTight )[pho];
     PhotonInfo.EgammaCutBasedPhoIdLOOSE  [PhotonInfo.Size] = it_pho->photonID( _photonID_loosemap );
     PhotonInfo.EgammaCutBasedPhoIdMEDIUM [PhotonInfo.Size] = it_pho->photonID( _photonID_mediummap );
     PhotonInfo.EgammaCutBasedPhoIdTIGHT  [PhotonInfo.Size] = it_pho->photonID( _photonID_tightmap );
@@ -113,9 +97,6 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
     PhotonInfo.EgammaPhoIdMVA            [PhotonInfo.Size] = it_pho->userFloat( _photonID_mva );
 
     // ----- Photon isolation variables --------------------------------------------------------------------
-    //PhotonInfo.ChargedHadronIsoR03      [PhotonInfo.Size] = ( *_photonIsolation_Charged_H )[pho];
-    //PhotonInfo.NeutralHadronIsoR03      [PhotonInfo.Size] = ( *_photonIsolation_Neutral_H )[pho];
-    //PhotonInfo.PhotonIsoR03             [PhotonInfo.Size] = ( *_photonIsolation_Photon_H )[pho];
     PhotonInfo.ChargedHadronIsoR03      [PhotonInfo.Size] = it_pho->userFloat("phoChargedIsolation"); 
     PhotonInfo.NeutralHadronIsoR03      [PhotonInfo.Size] = it_pho->userFloat("phoNeutralHadronIsolation");
     PhotonInfo.PhotonIsoR03             [PhotonInfo.Size] = it_pho->userFloat("phoPhotonIsolation");

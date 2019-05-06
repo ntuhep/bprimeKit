@@ -16,9 +16,6 @@ import bpkFrameWork.bprimeKit.Ntuplizer16_cfi as ntpl
 Year                 = '2016'
 isData               = True
 GlobalTag            = '94X_dataRun2_v10'
-ElectronIDHEEPModule = 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff'
-ElectronIDModule     = 'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff'
-PhotonIDModule       = 'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff'
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags
