@@ -62,8 +62,6 @@ PhotonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
 
     // ----- Very very loose pre-selection -----------------------------------------------------------------
     if( it_pho->pt() < 10. ){ continue; }
-    if( ( fabs( it_pho->superCluster()->eta() ) > 1.4442 && fabs( it_pho->superCluster()->eta() ) < 1.566 )
-        || fabs( it_pho->superCluster()->eta() ) > 2.5 ) { continue; }
 
     // ----- Basic kinematics ------------------------------------------------------------------------------
     PhotonInfo.Pt            [PhotonInfo.Size] = it_pho->pt();

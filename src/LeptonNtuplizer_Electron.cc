@@ -157,7 +157,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.ElEoverP          [LepInfo.Size] = it_el->eSuperClusterOverP();
     LepInfo.EldeltaEta        [LepInfo.Size] = it_el->deltaEtaSuperClusterTrackAtVtx();
     LepInfo.EldeltaPhi        [LepInfo.Size] = it_el->deltaPhiSuperClusterTrackAtVtx();
-    LepInfo.EldeltaPhiSeed    [LepInfo.Size] = it_el->deltaEtaSeedClusterTrackAtVtx();
+    LepInfo.EldeltaEtaSeed    [LepInfo.Size] = it_el->deltaEtaSeedClusterTrackAtVtx();
 
     // ----- Generation Monte Carlo information ------------------------------------------------------------
     if( !iEvent.isRealData() ){
