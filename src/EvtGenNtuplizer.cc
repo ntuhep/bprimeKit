@@ -20,6 +20,9 @@ EvtGenNtuplizer::EvtGenNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _pmettoken( GetToken<vector<pat::MET> >( "puppimetsrc" ) ),
   _pileuptoken( GetToken<vector<PileupSummaryInfo> >( "pusrc" ) ),
   _beamspottoken( GetToken<reco::BeamSpot>( "beamspotsrc" ) ),
+  _prefweighttoken( GetToken<double>( "prefwgtsrc" ) ),
+  _prefweightuptoken( GetToken<double>( "prefwgtupsrc" ) ),
+  _prefweightdowntoken( GetToken<double>( "prefwgtdownsrc" ) ),
   _genevttoken( GetToken<GenEventInfoProduct>( "genevtsrc" ) ),
   _genparticletoken( GetToken<vector<reco::GenParticle> >( "gensrc" ) ),
   _lhetoken( GetToken<LHEEventProduct>( "lhesrc" ) ),
@@ -54,6 +57,9 @@ EvtGenNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByToken( _mettoken,             _methandle             );
   iEvent.getByToken( _pmettoken,            _pmethandle            );
   iEvent.getByToken( _beamspottoken,        _beamspothandle        );
+  iEvent.getByToken( _prefweighttoken,      _prefweighthandle      );
+  iEvent.getByToken( _prefweightuptoken,    _prefweightuphandle    );
+  iEvent.getByToken( _prefweightdowntoken,  _prefweightdownhandle  );
 
   iEvent.getByToken( _pileuptoken,          _pileuphandle          );
   iEvent.getByToken( _genparticletoken,     _genparticlehandle     );

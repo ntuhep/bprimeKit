@@ -25,7 +25,7 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.Rho          = *_rhohandle;
   EvtInfo.RhoNoFastJet = *_rhonofastjethandle;
 
-  // ----- Pile up information  -----------------------------------------------------------------------
+  // ----- Pile up information  -------------------------------------------------
   if( !iEvent.isRealData() ){// Need to shutdown for Data
     for( auto it = _pileuphandle->begin(); it != _pileuphandle->end(); ++it ){
       EvtInfo.nPU[EvtInfo.nBX]    = it->getPU_NumInteractions();
@@ -39,7 +39,14 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.BeamSpotY = _beamspothandle->position().y();
   EvtInfo.BeamSpotZ = _beamspothandle->position().z();
   EvtInfo.BSsigmaZ  = _beamspothandle->sigmaZ();
-  
+
+  // ----- Level 1 ECAL prefiring Reweighting recipe ----------------------------
+  if( !iEvent.isRealData() ){
+    EvtInfo.PrefiringWeight     = (*_prefweighthandle);
+    EvtInfo.PrefiringWeightUp   = (*_prefweightuphandle);
+    EvtInfo.PrefiringWeightDown = (*_prefweightdownhandle);
+  }
+
   // ----- Getting missing momentum information  --------------------------------
   for( auto it_met = _methandle->begin(); it_met != _methandle->end(); it_met++ ){
     EvtInfo.PFMET                                     = it_met->pt();
