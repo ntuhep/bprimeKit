@@ -38,6 +38,9 @@ private:
   const edm::EDGetToken _pmettoken;
   const edm::EDGetToken _pileuptoken;
   const edm::EDGetToken _beamspottoken;
+  const edm::EDGetToken _prefweighttoken;
+  const edm::EDGetToken _prefweightuptoken;
+  const edm::EDGetToken _prefweightdowntoken;
 
   const edm::EDGetToken _genevttoken;
   const edm::EDGetToken _genparticletoken;
@@ -52,6 +55,9 @@ private:
   edm::Handle<std::vector<pat::MET>> _pmethandle;
   edm::Handle<std::vector<PileupSummaryInfo> > _pileuphandle;
   edm::Handle<reco::BeamSpot> _beamspothandle;
+  edm::Handle<double> _prefweighthandle;
+  edm::Handle<double> _prefweightuphandle;
+  edm::Handle<double> _prefweightdownhandle;
 
   edm::Handle<GenEventInfoProduct> _genevthandle;
   edm::Handle<std::vector<reco::GenParticle> > _genparticlehandle;

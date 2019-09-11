@@ -48,7 +48,7 @@ process.source = cms.Source('PoolSource',
     fileNames = cms.untracked.vstring(options.sample)
     )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.categories.append('HLTrigReport')
@@ -95,9 +95,21 @@ from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMet
 runMetCorAndUncFromMiniAOD (
     process,
     isData = mysetting.isData,
-    fixEE2017 = mysetting.isData,
+    fixEE2017 = True,
     fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
     postfix = "ModifiedMET"
+    )
+
+#-------------------------------------------------------------------------------
+#   Level 1 ECAL prefiring
+#-------------------------------------------------------------------------------
+# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string('2017BtoF' if mysetting.Year == '2017' else '2016BtoH'),
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False
     )
 
 #-------------------------------------------------------------------------------
@@ -115,13 +127,16 @@ process.bprimeKit = mysetting.bprimeKit
 #-------------------------------------------------------------------------------
 # process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',ignoreTotal = cms.untracked.int32(1) )
 
-process.bugfixingSequence = cms.Sequence()
+process.externalCorrectionSequence = cms.Sequence()
 if ( mysetting.Year == '2017' ):
-    process.bugfixingSequence += process.fullPatMetSequenceModifiedMET
+    process.externalCorrectionSequence *= process.fullPatMetSequenceModifiedMET
+
+if ( not mysetting.isData ):
+    process.externalCorrectionSequence *= process.prefiringweight
 
 process.Path = cms.Path(
     process.egammaPostRecoSeq*
-    process.bugfixingSequence*
+    process.externalCorrectionSequence*
     process.JetToolBoxSequence*
     process.bprimeKit
     )

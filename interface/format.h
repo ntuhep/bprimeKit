@@ -41,6 +41,9 @@ public:
   Float_t BeamSpotY;
   Float_t BeamSpotZ;
   Float_t BSsigmaZ;
+  Float_t PrefiringWeight;
+  Float_t PrefiringWeightUp;
+  Float_t PrefiringWeightDown;
   Int_t nBX;
   Int_t nPU [MAX_BX];
   Int_t BXPU [MAX_BX];
@@ -111,6 +114,9 @@ public:
     root->Branch( ( name+".BeamSpotY" ).c_str(),                                 &BeamSpotY,                                 ( name+"BeamSpotY/F" ).c_str() );
     root->Branch( ( name+".BeamSpotZ" ).c_str(),                                 &BeamSpotZ,                                 ( name+"BeamSpotZ/F" ).c_str() );
     root->Branch( ( name+".BSsigmaZ" ).c_str(),                                  &BSsigmaZ,                                  ( name+"BSsigmaZ/F" ).c_str() );
+    root->Branch( ( name+".PrefiringWeight" ).c_str(),                           &PrefiringWeight,                           ( name+"PrefiringWeight/F" ).c_str() );
+    root->Branch( ( name+".PrefiringWeightUp" ).c_str(),                         &PrefiringWeightUp,                         ( name+"PrefiringWeightUp/F" ).c_str() );
+    root->Branch( ( name+".PrefiringWeightDown" ).c_str(),                       &PrefiringWeightDown,                       ( name+"PrefiringWeightDown/F" ).c_str() );
     root->Branch( ( name+".nBX" ).c_str(),                                       &nBX,                                       ( name+"nBX/I" ).c_str() );
     root->Branch( ( name+".nPU" ).c_str(),                                       nPU,                                        ( name+".nPU["+name+".nBX]/I" ).c_str() );
     root->Branch( ( name+".BXPU" ).c_str(),                                      BXPU,                                       ( name+".BXPU["+name+".nBX]/I" ).c_str() );
@@ -182,6 +188,9 @@ public:
     root->SetBranchAddress( ( name+".BeamSpotY" ).c_str(),                                 &BeamSpotY );
     root->SetBranchAddress( ( name+".BeamSpotZ" ).c_str(),                                 &BeamSpotZ );
     root->SetBranchAddress( ( name+".BSsigmaZ" ).c_str(),                                  &BSsigmaZ );
+    root->SetBranchAddress( ( name+".PrefiringWeight" ).c_str(),                           &PrefiringWeight );
+    root->SetBranchAddress( ( name+".PrefiringWeightUp" ).c_str(),                         &PrefiringWeightUp );
+    root->SetBranchAddress( ( name+".PrefiringWeightDown" ).c_str(),                       &PrefiringWeightDown );
     root->SetBranchAddress( ( name+".nBX" ).c_str(),                                       &nBX );
     root->SetBranchAddress( ( name+".nPU" ).c_str(),                                       nPU );
     root->SetBranchAddress( ( name+".BXPU" ).c_str(),                                      BXPU );
@@ -929,7 +938,7 @@ public:
   Float_t ElEoverP [MAX_LEPTONS];
   Float_t EldeltaEta [MAX_LEPTONS];
   Float_t EldeltaPhi [MAX_LEPTONS];
-  Float_t EldeltaPhiSeed [MAX_LEPTONS];
+  Float_t EldeltaEtaSeed [MAX_LEPTONS];
   Int_t isPFTau [MAX_LEPTONS];
   Float_t GenPt [MAX_LEPTONS];
   Float_t GenEta [MAX_LEPTONS];
@@ -1098,7 +1107,7 @@ public:
     root->Branch( ( name+".ElEoverP" ).c_str(),                        ElEoverP,                        ( name+".ElEoverP["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".EldeltaEta" ).c_str(),                      EldeltaEta,                      ( name+".EldeltaEta["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".EldeltaPhi" ).c_str(),                      EldeltaPhi,                      ( name+".EldeltaPhi["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".EldeltaPhiSeed" ).c_str(),                  EldeltaPhiSeed,                  ( name+".EldeltaPhiSeed["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".EldeltaEtaSeed" ).c_str(),                  EldeltaEtaSeed,                  ( name+".EldeltaEtaSeed["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".isPFTau" ).c_str(),                         isPFTau,                         ( name+".isPFTau["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".GenPt" ).c_str(),                           GenPt,                           ( name+".GenPt["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenEta" ).c_str(),                          GenEta,                          ( name+".GenEta["+name+".Size]/F" ).c_str() );
@@ -1266,7 +1275,7 @@ public:
     root->SetBranchAddress( ( name+".ElEoverP" ).c_str(),                        ElEoverP ); 
     root->SetBranchAddress( ( name+".EldeltaEta" ).c_str(),                      EldeltaEta ); 
     root->SetBranchAddress( ( name+".EldeltaPhi" ).c_str(),                      EldeltaPhi ); 
-    root->SetBranchAddress( ( name+".EldeltaPhiSeed" ).c_str(),                  EldeltaPhiSeed ); 
+    root->SetBranchAddress( ( name+".EldeltaEtaSeed" ).c_str(),                  EldeltaEtaSeed ); 
     root->SetBranchAddress( ( name+".isPFTau" ).c_str(),                         isPFTau );
     root->SetBranchAddress( ( name+".GenPt" ).c_str(),                           GenPt );
     root->SetBranchAddress( ( name+".GenEta" ).c_str(),                          GenEta );
