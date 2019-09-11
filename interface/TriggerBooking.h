@@ -1,7 +1,7 @@
 #ifndef __TRIGGERBOOKING_H__
 #define __TRIGGERBOOKING_H__
 
-#define N_TRIGGER_BOOKINGS 2412
+#define N_TRIGGER_BOOKINGS 2416
 
 //2016, 2017 trigger
 
@@ -2418,8 +2418,11 @@ const std::string TriggerBooking[N_TRIGGER_BOOKINGS] = {
     "HLT_TkMu50_v1",
     "HLT_TkMu50_v2",
     "HLT_TkMu50_v3",
-    "HLT_TkMu50_v4"
-
+    "HLT_TkMu50_v4",
+    "HLT_IsoTkMu24_v1",
+    "HLT_IsoTkMu24_v2",
+    "HLT_IsoTkMu24_v3",
+    "HLT_IsoTkMu24_v4"
 };
 
 enum TriggerBitNumber {
@@ -4835,7 +4838,11 @@ enum TriggerBitNumber {
     HLT_TkMu50_v1 = 2408,
     HLT_TkMu50_v2 = 2409,
     HLT_TkMu50_v3 = 2410,
-    HLT_TkMu50_v4 = 2411
+    HLT_TkMu50_v4 = 2411,
+    HLT_IsoTkMu24_v1 = 2412,
+    HLT_IsoTkMu24_v2 = 2413,
+    HLT_IsoTkMu24_v3 = 2414,
+    HLT_IsoTkMu24_v4 = 2415
 
 };
 
