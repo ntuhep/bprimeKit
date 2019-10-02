@@ -128,36 +128,42 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.PtCorrL3    [JetInfo.Size] = it_jet->correctedJet( "L3Absolute" ).pt();// L3(abs)
 
     // ----- Particle flow information  -----------------------------------------------------------------
-    JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
-    JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
-    JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
-    JetInfo.NNH[JetInfo.Size] = it_jet->neutralMultiplicity();
-    JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
-    JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
-    JetInfo.MUF[JetInfo.Size] = it_jet->muonEnergyFraction();
-    JetInfo.JM[JetInfo.Size]  = it_jet->chargedMultiplicity() + it_jet->neutralMultiplicity();
+    if (it_jet->isPFJet() || it_jet->isJPTJet()) {
+        JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
+        JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
+        JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
+        JetInfo.NNH[JetInfo.Size] = it_jet->neutralMultiplicity();
+        JetInfo.NEF[JetInfo.Size] = it_jet->neutralEmEnergyFraction();
+        JetInfo.NHF[JetInfo.Size] = it_jet->neutralHadronEnergyFraction();
+        JetInfo.MUF[JetInfo.Size] = it_jet->muonEnergyFraction();
+        JetInfo.JM[JetInfo.Size]  = it_jet->chargedMultiplicity() + it_jet->neutralMultiplicity();
+    }
 
     // ----- B Tagging discriminators  ------------------------------------------------------------------
-    JetInfo.pfCombinedInclusiveSecondaryVertexV2BJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" );
-    JetInfo.pfCombinedMVAV2BJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfCombinedMVAV2BJetTags"                      );
     JetInfo.pfBoostedDoubleSecondaryVertexAK8BJetTags[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfBoostedDoubleSecondaryVertexAK8BJetTags"    );
+      = it_jet->bDiscriminator( "pfBoostedDoubleSecondaryVertexAK8BJetTags"       );
+    JetInfo.pfMassIndependentDeepDoubleBvLJetTags_probHbb[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfMassIndependentDeepDoubleBvLJetTags:probHbb"   );
     JetInfo.pfDeepCSVJetTags_probb[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probb"                       );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probb"                          );
     JetInfo.pfDeepCSVJetTags_probbb[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probbb"                      );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probbb"                         );
     JetInfo.pfDeepCSVJetTags_probc[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                       );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                          );
     JetInfo.pfDeepCSVJetTags_probudsg[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                    );
-    JetInfo.summaryDeepCSVJetTags_BvsAll[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:BvsAll"        );
-    JetInfo.summaryDeepCSVJetTags_CvsB[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsB"          );
-    JetInfo.summaryDeepCSVJetTags_CvsL[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsL"          );
+      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                       );
+    JetInfo.pfDeepFlavourJetTags_probb   [JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probb"                      );
+    JetInfo.pfDeepFlavourJetTags_probbb  [JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probbb"                     );
+    JetInfo.pfDeepFlavourJetTags_problepb[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:problepb"                   );
+    JetInfo.pfDeepFlavourJetTags_probc   [JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probc"                      );
+    JetInfo.pfDeepFlavourJetTags_probuds [JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probuds"                    );
+    JetInfo.pfDeepFlavourJetTags_probg   [JetInfo.Size]
+      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probg"                      );
 
     // ----- Cleaned Jet four momentum  -----------------------------------------
     const TLorentzVector cleanedJet =
@@ -203,13 +209,10 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     // ------------------------------------------------------------------------------
     if( IsAK4() ){
       if( _jetname == "JetInfo" ){
-        JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
-        JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "AK4PFCHSpileupJetIdEvaluator:fullDiscriminant" );
-        JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "AK4PFCHSpileupJetIdEvaluator:fullId" );
+        JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTagger:qgLikelihood" );
+        JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "pileupJetId:fullDiscriminant" );
+        JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "pileupJetId:fullId" );
       } else if ( _jetname == "JetInfoPuppi" ){
-        JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTaggerAK4PFPuppi:qgLikelihood" );
-        JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "AK4PFPuppipileupJetIdEvaluator:fullDiscriminant" );
-        JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "AK4PFPuppipileupJetIdEvaluator:fullId" );
         JetInfo.NNHw[JetInfo.Size] = it_jet->userFloat( "patPuppiJetSpecificProducer:neutralPuppiMultiplicity" );
         JetInfo.JMw[JetInfo.Size]  = it_jet->userFloat( "patPuppiJetSpecificProducer:puppiMultiplicity" );
       }
@@ -227,7 +230,6 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.PuppiSoftDrop_ECFb1N3  [JetInfo.Size] = it_jet->userFloat( "ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3" );
       }
       JetInfo.ak8PFJetsCHSSoftDropMass [JetInfo.Size] = it_jet->userFloat( UserFloatPrefix() + "SoftDropMass" );
-      JetInfo.ak8PFJetsCHSPrunedMass   [JetInfo.Size] = it_jet->userFloat( UserFloatPrefix() + "PrunedMass"   );
 
       JetInfo.NSubjets        [JetInfo.Size] = 0;
       JetInfo.SubjetsIdxStart [JetInfo.Size] = 0;
@@ -236,12 +238,10 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.SubjetsIdxStart[JetInfo.Size] += JetInfo.NSubjets[idx_pre];
       }
 
-      auto subjet_bunch = GetSubjetBunch( it_jet  );
-      if( subjet_bunch != _subjethandle->end() ){
-        JetInfo.NSubjets[JetInfo.Size] = subjet_bunch->numberOfDaughters();
+      if (_jetname == "JetAK8Puppi") {
+        JetInfo.NSubjets[JetInfo.Size] = it_jet->subjets("SoftDropPuppi").size();
 
-        for( unsigned i = 0; i < subjet_bunch->numberOfDaughters(); ++i ){
-          const pat::Jet* subjet = (pat::Jet*)subjet_bunch->daughter( i );
+        for( const auto& subjet : it_jet->subjets("SoftDropPuppi") ){
           JetInfo.SubjetMass_w.push_back( subjet->mass() );
           JetInfo.SubjetPt_w.push_back( subjet->pt() );
           JetInfo.SubjetEt_w.push_back( subjet->et() );
@@ -249,22 +249,39 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
           JetInfo.SubjetPhi_w.push_back( subjet->phi() );
           JetInfo.SubjetArea_w.push_back( subjet->jetArea() );
           JetInfo.SubjetPtUncorr_w.push_back( subjet->pt()*subjet->jecFactor( "Uncorrected" ) );
-          JetInfo.SubjetCombinedSVBJetTags_w.push_back( subjet->bDiscriminator( "pfCombinedInclusiveSecondaryVertexV2BJetTags" ) );
           JetInfo.SubjetDeepCSVJetTags_probb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probb" ) );
           JetInfo.SubjetDeepCSVJetTags_probbb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probbb" ) );
-          JetInfo.SubjetDeepCSVJetTags_probc_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probc" ) );
-          JetInfo.SubjetDeepCSVJetTags_probudsg_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probudsg" ) );
-          JetInfo.SubjetsummaryDeepCSVJetTags_BvsAll_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:BvsAll" ) );
-          JetInfo.SubjetsummaryDeepCSVJetTags_CvsB_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsB" ) );
-          JetInfo.SubjetsummaryDeepCSVJetTags_CvsL_w.push_back( subjet->bDiscriminator( "pfDeepCSVDiscriminatorsJetTags:CvsL" ) );
-          if (_jetname == "JetAK8Puppi"){
-            JetInfo.PuppiSoftDrop_SubjetECFb1N2_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN2" ) );
-            JetInfo.PuppiSoftDrop_SubjetECFb1N3_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN3" ) );
-          }
+          JetInfo.PuppiSoftDrop_SubjetECFb1N2_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN2" ) );
+          JetInfo.PuppiSoftDrop_SubjetECFb1N3_w.push_back( subjet->userFloat( "nb1AK8PuppiSoftDropSubjets:ecfN3" ) );
           if( !iEvent.isRealData() ){
             JetInfo.SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
             JetInfo.SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
             JetInfo.SubjetGenPdgId_w.push_back( subjet->pdgId() );
+          }
+        }
+      }
+      
+      if (_jetname == "JetCA8Puppi") {
+        auto subjet_bunch = GetSubjetBunch( it_jet  );
+        if( subjet_bunch != _subjethandle->end() ){
+          JetInfo.NSubjets[JetInfo.Size] = subjet_bunch->numberOfDaughters();
+
+          for( unsigned i = 0; i < subjet_bunch->numberOfDaughters(); ++i ){
+            const pat::Jet* subjet = (pat::Jet*)subjet_bunch->daughter( i );
+            JetInfo.SubjetMass_w.push_back( subjet->mass() );
+            JetInfo.SubjetPt_w.push_back( subjet->pt() );
+            JetInfo.SubjetEt_w.push_back( subjet->et() );
+            JetInfo.SubjetEta_w.push_back( subjet->eta() );
+            JetInfo.SubjetPhi_w.push_back( subjet->phi() );
+            JetInfo.SubjetArea_w.push_back( subjet->jetArea() );
+            JetInfo.SubjetPtUncorr_w.push_back( subjet->pt()*subjet->jecFactor( "Uncorrected" ) );
+            JetInfo.SubjetDeepCSVJetTags_probb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probb" ) );
+            JetInfo.SubjetDeepCSVJetTags_probbb_w.push_back( subjet->bDiscriminator( "pfDeepCSVJetTags:probbb" ) );
+            if( !iEvent.isRealData() ){
+              JetInfo.SubjetHadronFlavour_w.push_back( subjet->hadronFlavour() );
+              JetInfo.SubjetGenFlavour_w.push_back( subjet->hadronFlavour() );
+              JetInfo.SubjetGenPdgId_w.push_back( subjet->pdgId() );
+            }
           }
         }
       }
