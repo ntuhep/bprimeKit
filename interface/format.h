@@ -443,6 +443,7 @@ public:
   Float_t QGTagsLikelihood [MAX_JETS];
   Float_t PUJetIDfullDiscriminant [MAX_JETS];
   Int_t PUJetIDcutbased [MAX_JETS];
+  Bool_t isPForJPTJet [MAX_JETS];
   Int_t NCH [MAX_JETS];
   Int_t NNH [MAX_JETS];
   Int_t NNHw [MAX_JETS];
@@ -571,6 +572,7 @@ public:
     root->Branch( ( name+".QGTagsLikelihood" ).c_str(),                             QGTagsLikelihood,                             ( name+".QGTagsLikelihood["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PUJetIDfullDiscriminant" ).c_str(),                      PUJetIDfullDiscriminant,                      ( name+".PUJetIDfullDiscriminant["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased,                              ( name+".PUJetIDcutbased["+name+".Size]/I" ).c_str() );
+    root->Branch( ( name+".isPForJPTJet" ).c_str(),                                 isPForJPTJet,                                 ( name+".isPForJPTJet["+name+".Size]/O" ).c_str() );
     root->Branch( ( name+".NCH" ).c_str(),                                          NCH,                                          ( name+".NCH["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".NNH" ).c_str(),                                          NNH,                                          ( name+".NNH["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".NNHw" ).c_str(),                                         NNHw,                                         ( name+".NNHw["+name+".Size]/I" ).c_str() );
@@ -680,6 +682,7 @@ public:
     root->SetBranchAddress( ( name+".QGTagsLikelihood" ).c_str(),                             QGTagsLikelihood );
     root->SetBranchAddress( ( name+".PUJetIDfullDiscriminant" ).c_str(),                      PUJetIDfullDiscriminant );
     root->SetBranchAddress( ( name+".PUJetIDcutbased" ).c_str(),                              PUJetIDcutbased );
+    root->SetBranchAddress( ( name+".isPForJPTJet" ).c_str(),                                 isPForJPTJet );
     root->SetBranchAddress( ( name+".NCH" ).c_str(),                                          NCH );
     root->SetBranchAddress( ( name+".NNH" ).c_str(),                                          NNH );
     root->SetBranchAddress( ( name+".NNHw" ).c_str(),                                         NNHw );
