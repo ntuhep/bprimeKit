@@ -6,8 +6,6 @@
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/LeptonNtuplizer.hpp"
 
-//#include "DataFormats/MuonReco/interface/MuonSelectors.h"
-
 using namespace std;
 
 void

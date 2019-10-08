@@ -34,7 +34,6 @@ LeptonNtuplizer::LeptonNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _electronEffectiveArea_HLT_ecalPFClusterIso( iConfig.getParameter<edm::FileInPath>( "eleffAreaHLTecalFile" ).fullPath() ),
   _electronEffectiveArea_HLT_hcalPFClusterIso( iConfig.getParameter<edm::FileInPath>( "eleffAreaHLThcalFile" ).fullPath() ),
   _muonEffectiveAreaR03_NeuHadronAndPhoton( iConfig.getParameter<edm::FileInPath>( "mueffAreaNeuHadPhoFile" ).fullPath() ),
-  _conversionstoken( GetToken<reco::ConversionCollection>( "conversionsrc" ) ),
   _vtxtoken( GetToken<std::vector<reco::Vertex> >( "vtxsrc" ) ),
   _beamspottoken( GetToken<reco::BeamSpot>( "beamspotsrc" ) )
 {
@@ -70,7 +69,6 @@ LeptonNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByToken( _beamspottoken,          _beamspothandle );
 
   iEvent.getByToken( _packedcandtoken,        _packedhandle     );
-  iEvent.getByToken( _conversionstoken,       _conversionhandle );
 
   memset( &LepInfo, 0x00, sizeof( LepInfo ) );
 
