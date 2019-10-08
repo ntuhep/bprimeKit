@@ -19,8 +19,6 @@ listBtagDiscriminators = [
     'pfDeepCSVJetTags:probudsg'
 ]
 
-ak8Cut='pt > 100 && abs(eta) < 5.'
-
 def jettoolbox_settings( process , runMC ):
 
     process.load('CommonTools/PileupAlgos/Puppi_cff')
@@ -42,10 +40,10 @@ def jettoolbox_settings( process , runMC ):
     )
 
     #Additional QGTagger Information
-    #How to include QGL database : https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood#Step_0_only_for_MiniAOD_CMSSW_7
+    #How to include QGL database : https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood#Step_0_Load_database_object_only
     from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
 
-    #Latest QGL database : https://github.com/cms-jet/QGLDatabase/tree/master/SQLiteFiles
+    #Latest QGL database : https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood#2017_data_CMSSW_9_4_X_training
     process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
         CondDBSetup,
         toGet = cms.VPSet(

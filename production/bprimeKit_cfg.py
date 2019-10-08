@@ -79,38 +79,26 @@ print '\nFinished jet toolbox setup.....\n'
 #   Settings for Egamma Identification and Energy Correction bug fixing
 #-------------------------------------------------------------------------------
 # ref : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#2017_MiniAOD_V2
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(
-    process,
-    runVID = True,
-    runEnergyCorrections = True if mysetting.Year == '2017' else False,
-    era = '2017-Nov17ReReco' if mysetting.Year == '2017' else '2016-Legacy'
-    )
+#from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+#setupEgammaPostRecoSeq(
+#    process,
+#    runVID = True,
+#    runEnergyCorrections = True if mysetting.Year == '2017' else False,
+#    era = '2017-Nov17ReReco' if mysetting.Year == '2017' else '2016-Legacy'
+#    )
 
 #-------------------------------------------------------------------------------
 #   Settings for MET bug fixing
 #-------------------------------------------------------------------------------
 # ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-    process,
-    isData = mysetting.isData,
-    fixEE2017 = True,
-    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
-    postfix = "ModifiedMET"
-    )
-
-#-------------------------------------------------------------------------------
-#   Level 1 ECAL prefiring
-#-------------------------------------------------------------------------------
-# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
-from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
-process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
-    DataEra = cms.string('2017BtoF' if mysetting.Year == '2017' else '2016BtoH'),
-    UseJetEMPt = cms.bool(False),
-    PrefiringRateSystematicUncty = cms.double(0.2),
-    SkipWarnings = False
-    )
+#from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#runMetCorAndUncFromMiniAOD (
+#    process,
+#    isData = mysetting.isData,
+#    fixEE2017 = True,
+#    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
+#    postfix = "ModifiedMET"
+#    )
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
@@ -127,16 +115,13 @@ process.bprimeKit = mysetting.bprimeKit
 #-------------------------------------------------------------------------------
 # process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',ignoreTotal = cms.untracked.int32(1) )
 
-process.externalCorrectionSequence = cms.Sequence()
-if ( mysetting.Year == '2017' ):
-    process.externalCorrectionSequence *= process.fullPatMetSequenceModifiedMET
-
-if ( not mysetting.isData ):
-    process.externalCorrectionSequence *= process.prefiringweight
+#process.externalCorrectionSequence = cms.Sequence()
+#if ( mysetting.Year == '2017' ):
+#    process.externalCorrectionSequence *= process.fullPatMetSequenceModifiedMET
 
 process.Path = cms.Path(
-    process.egammaPostRecoSeq*
-    process.externalCorrectionSequence*
+#    process.egammaPostRecoSeq*
+#    process.externalCorrectionSequence*
     process.JetToolBoxSequence*
     process.bprimeKit
     )
