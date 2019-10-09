@@ -79,38 +79,52 @@ print '\nFinished jet toolbox setup.....\n'
 #   Settings for Egamma Identification and Energy Correction bug fixing
 #-------------------------------------------------------------------------------
 # ref : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#2017_MiniAOD_V2
-from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-setupEgammaPostRecoSeq(
-    process,
-    runVID = True,
-    runEnergyCorrections = True if mysetting.Year == '2017' else False,
-    era = '2017-Nov17ReReco' if mysetting.Year == '2017' else '2016-Legacy'
-    )
+#from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+#setupEgammaPostRecoSeq(
+#    process,
+#    runVID = True,
+#    runEnergyCorrections = True if mysetting.Year == '2017' else False,
+#    era = '2017-Nov17ReReco' if mysetting.Year == '2017' else '2016-Legacy'
+#    )
 
 #-------------------------------------------------------------------------------
 #   Settings for MET bug fixing
 #-------------------------------------------------------------------------------
 # ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-    process,
-    isData = mysetting.isData,
-    fixEE2017 = True,
-    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
-    postfix = "ModifiedMET"
-    )
+#from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#runMetCorAndUncFromMiniAOD (
+#    process,
+#    isData = mysetting.isData,
+#    fixEE2017 = True,
+#    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
+#    postfix = "ModifiedMET"
+#    )
 
 #-------------------------------------------------------------------------------
-#   Level 1 ECAL prefiring
+#   Extra MET filter for 2017 and 2018
 #-------------------------------------------------------------------------------
-# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
-from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
-process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
-    DataEra = cms.string('2017BtoF' if mysetting.Year == '2017' else '2016BtoH'),
-    UseJetEMPt = cms.bool(False),
-    PrefiringRateSystematicUncty = cms.double(0.2),
-    SkipWarnings = False
-    )
+# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Declaring_the_producer_in_your_c
+process.load('RecoMET.METFilters.ecalBadCalibFilter_cfi')
+
+baddetEcallist = cms.vuint32(
+    [872439604,872422825,872420274,872423218,
+     872423215,872416066,872435036,872439336,
+     872420273,872436907,872420147,872439731,
+     872436657,872420397,872439732,872439339,
+     872439603,872422436,872439861,872437051,
+     872437052,872420649,872422436,872421950,
+     872437185,872422564,872421566,872421695,
+     872421955,872421567,872437184,872421951,
+     872421694,872437056,872437057,872437313])
+
+process.ecalBadCalibReducedMINIAODFilter = cms.EDFilter(
+    "EcalBadCalibFilter",
+    EcalRecHitSource = cms.InputTag("reducedEgamma:reducedEERecHits"),
+    ecalMinEt        = cms.double(50.),
+    baddetEcal       = baddetEcallist,
+    taggingMode      = cms.bool(True),
+    debug            = cms.bool(False)
+)
 
 #-------------------------------------------------------------------------------
 #   bprimeKit configuration importing
@@ -127,16 +141,15 @@ process.bprimeKit = mysetting.bprimeKit
 #-------------------------------------------------------------------------------
 # process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',ignoreTotal = cms.untracked.int32(1) )
 
-process.externalCorrectionSequence = cms.Sequence()
-if ( mysetting.Year == '2017' ):
-    process.externalCorrectionSequence *= process.fullPatMetSequenceModifiedMET
-
-if ( not mysetting.isData ):
-    process.externalCorrectionSequence *= process.prefiringweight
+process.externalSequence = cms.Sequence()
+#if ( mysetting.Year == '2017' ):
+#    process.externalSequence *= process.fullPatMetSequenceModifiedMET
+if ( mysetting.Year == '2017' or mysetting.Year == '2018' ):
+    process.externalSequence *= process.ecalBadCalibReducedMINIAODFilter
 
 process.Path = cms.Path(
-    process.egammaPostRecoSeq*
-    process.externalCorrectionSequence*
+#    process.egammaPostRecoSeq*
+    process.externalSequence*
     process.JetToolBoxSequence*
     process.bprimeKit
     )

@@ -27,7 +27,7 @@ EvtGenNtuplizer::EvtGenNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _genparticletoken( GetToken<vector<reco::GenParticle> >( "gensrc" ) ),
   _lhetoken( GetToken<LHEEventProduct>( "lhesrc" ) ),
   _mettriggertoken( GetToken<edm::TriggerResults>( "mettriggersrc" ) ),
-  _metfilter( iConfig.getParameter<vector<string>>("metfilter") )
+  _ecalBadCalibFilterUpdatetoken( GetToken<bool>( "ecalBadCalibReducedMINIAODFiltersrc" ) )
 {
 
 }
@@ -52,20 +52,21 @@ EvtGenNtuplizer::RegisterTree( TTree* tree )
 void
 EvtGenNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-  iEvent.getByToken( _rhotoken,             _rhohandle             );
-  iEvent.getByToken( _rhonofastjettoken,    _rhonofastjethandle    );
-  iEvent.getByToken( _mettoken,             _methandle             );
-  iEvent.getByToken( _pmettoken,            _pmethandle            );
-  iEvent.getByToken( _beamspottoken,        _beamspothandle        );
-  iEvent.getByToken( _prefweighttoken,      _prefweighthandle      );
-  iEvent.getByToken( _prefweightuptoken,    _prefweightuphandle    );
-  iEvent.getByToken( _prefweightdowntoken,  _prefweightdownhandle  );
+  iEvent.getByToken( _rhotoken,                           _rhohandle                           );
+  iEvent.getByToken( _rhonofastjettoken,                  _rhonofastjethandle                  );
+  iEvent.getByToken( _mettoken,                           _methandle                           );
+  iEvent.getByToken( _pmettoken,                          _pmethandle                          );
+  iEvent.getByToken( _beamspottoken,                      _beamspothandle                      );
+  iEvent.getByToken( _prefweighttoken,                    _prefweighthandle                    );
+  iEvent.getByToken( _prefweightuptoken,                  _prefweightuphandle                  );
+  iEvent.getByToken( _prefweightdowntoken,                _prefweightdownhandle                );
 
-  iEvent.getByToken( _pileuptoken,          _pileuphandle          );
-  iEvent.getByToken( _genparticletoken,     _genparticlehandle     );
-  iEvent.getByToken( _genevttoken,          _genevthandle          );
-  iEvent.getByToken( _lhetoken,             _lhehandle             );
-  iEvent.getByToken( _mettriggertoken,      _mettriggerhandle      );
+  iEvent.getByToken( _pileuptoken,                        _pileuphandle                        );
+  iEvent.getByToken( _genparticletoken,                   _genparticlehandle                   );
+  iEvent.getByToken( _genevttoken,                        _genevthandle                        );
+  iEvent.getByToken( _lhetoken,                           _lhehandle                           );
+  iEvent.getByToken( _mettriggertoken,                    _mettriggerhandle                    );
+  iEvent.getByToken( _ecalBadCalibFilterUpdatetoken,      _ecalBadCalibFilterUpdatehandle      );
 
   memset( &GenInfo, 0x00, sizeof( GenInfo ) );
   memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );

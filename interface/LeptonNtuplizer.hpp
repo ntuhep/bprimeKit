@@ -49,7 +49,6 @@ private:
   EffectiveAreas _electronEffectiveArea_HLT_ecalPFClusterIso;
   EffectiveAreas _electronEffectiveArea_HLT_hcalPFClusterIso;
   EffectiveAreas _muonEffectiveAreaR03_NeuHadronAndPhoton;
-  const edm::EDGetToken _conversionstoken;
   const edm::EDGetToken _vtxtoken;
   const edm::EDGetToken _beamspottoken;
 
@@ -60,7 +59,6 @@ private:
   edm::Handle<std::vector<pat::Tau> > _tauhandle;
   edm::Handle<std::vector<reco::GenParticle> > _genhandle;
   edm::Handle<pat::PackedCandidateCollection> _packedhandle;
-  edm::Handle<reco::ConversionCollection> _conversionhandle;
   edm::Handle<edm::ValueMap<bool> > _electronIDVeto;
   edm::Handle<edm::ValueMap<bool> > _electronIDLoose;
   edm::Handle<edm::ValueMap<bool> > _electronIDMedium;

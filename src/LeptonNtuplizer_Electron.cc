@@ -6,9 +6,6 @@
 *******************************************************************************/
 #include "bpkFrameWork/bprimeKit/interface/LeptonNtuplizer.hpp"
 
-// -----------------------  Electron specific CMSSW libraries  -----------------------
-//#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
-
 using namespace std;
 
 /******************************************************************************/
@@ -42,13 +39,15 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     // ----- Energy scale and smear correction and associated uncertainties --------------------------------
     // Twiki : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2
     // Internal Code : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/RecoEgamma/EgammaTools/src/ElectronEnergyCalibrator.cc#L97
-    LepInfo.ElEnergyCorrFactor          [LepInfo.Size] = it_el->userFloat("ecalTrkEnergyPostCorr") / it_el->energy();
-    LepInfo.ElEnergyPreCorrErr          [LepInfo.Size] = it_el->userFloat("ecalTrkEnergyErrPreCorr");
-    LepInfo.ElEnergyPostCorrErr         [LepInfo.Size] = it_el->userFloat("ecalTrkEnergyErrPostCorr"); 
-    LepInfo.ElEnergyPostCorrScaleUp     [LepInfo.Size] = it_el->userFloat("energyScaleUp");
-    LepInfo.ElEnergyPostCorrScaleDown   [LepInfo.Size] = it_el->userFloat("energyScaleDown");
-    LepInfo.ElEnergyPostCorrSmearUp     [LepInfo.Size] = it_el->userFloat("energySigmaUp");
-    LepInfo.ElEnergyPostCorrSmearDown   [LepInfo.Size] = it_el->userFloat("energySigmaDown");
+    if ( it_el->hasUserFloat("ecalTrkEnergyPostCorr") ){
+      LepInfo.ElEnergyCorrFactor          [LepInfo.Size] = it_el->userFloat("ecalTrkEnergyPostCorr") / it_el->energy();
+      LepInfo.ElEnergyPreCorrErr          [LepInfo.Size] = it_el->userFloat("ecalTrkEnergyErrPreCorr");
+      LepInfo.ElEnergyPostCorrErr         [LepInfo.Size] = it_el->userFloat("ecalTrkEnergyErrPostCorr"); 
+      LepInfo.ElEnergyPostCorrScaleUp     [LepInfo.Size] = it_el->userFloat("energyScaleUp");
+      LepInfo.ElEnergyPostCorrScaleDown   [LepInfo.Size] = it_el->userFloat("energyScaleDown");
+      LepInfo.ElEnergyPostCorrSmearUp     [LepInfo.Size] = it_el->userFloat("energySigmaUp");
+      LepInfo.ElEnergyPostCorrSmearDown   [LepInfo.Size] = it_el->userFloat("energySigmaDown");
+    }
 
     // ----- Cut based electron ID (V2) -------------------------------------------------------------------------
     // Twiki : https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2#Offline_selection_criteria_for_V
@@ -58,7 +57,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.EgammaCutBasedEleIdTIGHT    [LepInfo.Size] = (int) it_el->electronID( _electronID_tightmap  ); 
     LepInfo.EgammaCutBasedEleIdHEEP     [LepInfo.Size] = (int) it_el->electronID( _electronID_HEEPmap   );
 
-    // Full electron info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/EgammaCandidates/interface/GsfElectron.h
+    // Full electron info : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/EgammaCandidates/interface/GsfElectron.h
     // ----- Electron isolation variables ------------------------------------------------------------------
 
     // ----- Non particle-flow based isolation variables -----
@@ -67,7 +66,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.HcalBasedIsoR03         [LepInfo.Size] = it_el->dr03HcalTowerSumEt();
     LepInfo.HcalDepth1Iso           [LepInfo.Size] = it_el->dr03HcalDepth1TowerSumEt();
     LepInfo.HcalDepth2Iso           [LepInfo.Size] = it_el->dr03HcalDepth2TowerSumEt();
-    LepInfo.HEEPTrackIso            [LepInfo.Size] = it_el->userFloat("heepTrkPtIso");
+    if ( it_el->hasUserFloat("heepTrkPtIso") ) LepInfo.HEEPTrackIso            [LepInfo.Size] = it_el->userFloat("heepTrkPtIso");
 
     // ----- Particle-flow based isolation (R = 0.3) variables (use V2 effArea) -----
     LepInfo.ChargedHadronIsoR03     [LepInfo.Size] = it_el->pfIsolationVariables().sumChargedHadronPt;
@@ -116,8 +115,8 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
  
     // ----- Electron GSF track informations ---------------------------------------------------------------
     // Twiki : https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGsfElectronObject
-    // Track Info      : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/TrackBase.h
-    // HitPattern info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/HitPattern.h
+    // Track Info      : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/TrackReco/interface/TrackBase.h
+    // HitPattern info : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/TrackReco/interface/HitPattern.h
     bool hasPV = !_vtxhandle->empty();
     float max_value = numeric_limits<float>::max();
 
@@ -144,7 +143,6 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.NumberOfExpectedInnerHits  [LepInfo.Size]
       = it_el->gsfTrack()->hitPattern().numberOfAllHits( reco::HitPattern::MISSING_INNER_HITS );
     LepInfo.ElhasConv                  [LepInfo.Size] = ! it_el->passConversionVeto();
-        //ConversionTools::hasMatchedConversion( *it_el, _conversionhandle, _beamspothandle->position() );
  
     // ----- Electron track Bremsstrahlung informations -----
     LepInfo.ElClassification  [LepInfo.Size] = it_el->classification();

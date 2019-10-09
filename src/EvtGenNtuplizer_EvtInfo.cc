@@ -41,11 +41,9 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.BSsigmaZ  = _beamspothandle->sigmaZ();
 
   // ----- Level 1 ECAL prefiring Reweighting recipe ----------------------------
-  if( !iEvent.isRealData() ){
-    EvtInfo.PrefiringWeight     = (*_prefweighthandle);
-    EvtInfo.PrefiringWeightUp   = (*_prefweightuphandle);
-    EvtInfo.PrefiringWeightDown = (*_prefweightdownhandle);
-  }
+  EvtInfo.PrefiringWeight     = (*_prefweighthandle);
+  EvtInfo.PrefiringWeightUp   = (*_prefweightuphandle);
+  EvtInfo.PrefiringWeightDown = (*_prefweightdownhandle);
 
   // ----- Getting missing momentum information  --------------------------------
   for( auto it_met = _methandle->begin(); it_met != _methandle->end(); it_met++ ){
@@ -126,10 +124,15 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
         return this->_mettriggerhandle->accept( index ) && this->_mettriggerhandle->wasrun( index ) && !this->_mettriggerhandle->error( index );
       };
 
-  EvtInfo.Flag_METFilter = true;
-  for( const auto& it_metfilter : _metfilter ) 
-      EvtInfo.Flag_METFilter = EvtInfo.Flag_METFilter && checkMETfilter( it_metfilter );
+  EvtInfo.Flag_goodVertices                       = checkMETfilter( "Flag_goodVertices" ); 
+  EvtInfo.Flag_globalSuperTightHalo2016Filter     = checkMETfilter( "Flag_globalSuperTightHalo2016Filter" );
+  EvtInfo.Flag_HBHENoiseFilter                    = checkMETfilter( "Flag_HBHENoiseFilter" );
+  EvtInfo.Flag_HBHENoiseIsoFilter                 = checkMETfilter( "Flag_HBHENoiseIsoFilter" );
+  EvtInfo.Flag_EcalDeadCellTriggerPrimitiveFilter = checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" );
+  EvtInfo.Flag_BadPFMuonFilter                    = checkMETfilter( "Flag_BadPFMuonFilter" );
+  if( _ecalBadCalibFilterUpdatehandle.isValid() ) EvtInfo.Flag_ecalBadCalibReducedMINIAODFilter = *_ecalBadCalibFilterUpdatehandle;
+
   //MC isn't suggested to use Flag_eeBadScFilter
-  if ( iEvent.isRealData() ) EvtInfo.Flag_METFilter = EvtInfo.Flag_METFilter && checkMETfilter( "Flag_eeBadScFilter" );
+  if ( iEvent.isRealData() ) EvtInfo.Flag_eeBadScFilter = checkMETfilter( "Flag_eeBadScFilter" );
 
 }

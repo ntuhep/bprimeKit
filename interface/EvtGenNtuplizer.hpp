@@ -47,7 +47,7 @@ private:
   const edm::EDGetToken _lhetoken;
 
   const edm::EDGetToken _mettriggertoken;
-  std::vector<std::string> _metfilter;
+  const edm::EDGetToken _ecalBadCalibFilterUpdatetoken;
 
   edm::Handle<double> _rhohandle;
   edm::Handle<double> _rhonofastjethandle;
@@ -64,6 +64,7 @@ private:
   edm::Handle<LHEEventProduct> _lhehandle;
 
   edm::Handle<edm::TriggerResults> _mettriggerhandle;
+  edm::Handle<bool> _ecalBadCalibFilterUpdatehandle;
 
   /*******************************************************************************
   *   Helper private functions

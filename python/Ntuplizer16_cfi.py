@@ -33,15 +33,7 @@ evtgenbase = cms.PSet(
     genevtsrc       = cms.InputTag('generator'),
     gensrc          = gensrc,
     lhesrc          = cms.InputTag('externalLHEProducer'),
-    mettriggersrc   = cms.InputTag('TriggerResults','','RECO'),
-    metfilter       = cms.vstring(
-                        "Flag_HBHENoiseFilter",
-                        "Flag_HBHENoiseIsoFilter",
-                        "Flag_EcalDeadCellTriggerPrimitiveFilter",
-                        "Flag_goodVertices",
-                        "Flag_globalSuperTightHalo2016Filter",
-                        "Flag_BadPFMuonFilter",
-                    )
+    mettriggersrc   = cms.InputTag('TriggerResults','','RECO')
 )
 
 #-------------------------------------------------------------------------------
@@ -103,16 +95,16 @@ triggerbase = cms.PSet(
 #   Photon settings
 #-------------------------------------------------------------------------------
 photonbase = cms.PSet(
-    photonname = cms.string('PhotonInfo'),
-    photonsrc  = cms.InputTag('slimmedPhotons'),
-    rhosrc     = rhosrc,
-    phoLooseIdMap  = cms.string('cutBasedPhotonID-Spring16-V2p2-loose'),
-    phoMediumIdMap = cms.string('cutBasedPhotonID-Spring16-V2p2-medium'),
-    phoTightIdMap  = cms.string('cutBasedPhotonID-Spring16-V2p2-tight'),
-    phoIdMvaMap    = cms.string('PhotonMVAEstimatorRun2Spring16NonTrigV1Values'),
-    effAreaChHadFile  = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfChargedHadrons_90percentBased.txt'),
-    effAreaNeuHadFile = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased.txt'),
-    effAreaPhoFile    = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Spring16/effAreaPhotons_cone03_pfPhotons_90percentBased.txt'),
+    photonname                = cms.string('PhotonInfo'),
+    photonsrc                 = cms.InputTag('slimmedPhotons'),
+    rhosrc                    = rhosrc,
+    phoLooseIdMap             = cms.string('cutBasedPhotonID-Fall17-94X-V2-loose'),
+    phoMediumIdMap            = cms.string('cutBasedPhotonID-Fall17-94X-V2-medium'),
+    phoTightIdMap             = cms.string('cutBasedPhotonID-Fall17-94X-V2-tight'),
+    phoIdMvaMap               = cms.string('PhotonMVAEstimatorRunIIFall17v2Values'),
+    effAreaChHadFile          = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt'),
+    effAreaNeuHadFile         = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt'),
+    effAreaPhoFile            = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt'),
 )
 
 #-------------------------------------------------------------------------------
@@ -124,16 +116,15 @@ leptonbase = cms.PSet(
     elecsrc                = cms.InputTag('slimmedElectrons'),
     tausrc                 = cms.InputTag('slimmedTaus'),
     packedsrc              = cms.InputTag('packedPFCandidates'),
-    eleVetoIdMap           = cms.string('cutBasedElectronID-Summer16-80X-V1-veto'),
-    eleLooseIdMap          = cms.string('cutBasedElectronID-Summer16-80X-V1-loose'),
-    eleMediumIdMap         = cms.string('cutBasedElectronID-Summer16-80X-V1-medium'),
-    eleTightIdMap          = cms.string('cutBasedElectronID-Summer16-80X-V1-tight'),
+    eleVetoIdMap           = cms.string('cutBasedElectronID-Fall17-94X-V2-veto'),
+    eleLooseIdMap          = cms.string('cutBasedElectronID-Fall17-94X-V2-loose'),
+    eleMediumIdMap         = cms.string('cutBasedElectronID-Fall17-94X-V2-medium'),
+    eleTightIdMap          = cms.string('cutBasedElectronID-Fall17-94X-V2-tight'),
     eleHEEPIdMap           = cms.string('heepElectronID-HEEPV70'),
-    eleffAreaNeuHadPhoFile = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
+    eleffAreaNeuHadPhoFile = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
     eleffAreaHLTecalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_ecalPFClusterIso.txt'),
     eleffAreaHLThcalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_hcalPFClusterIso.txt'),
     mueffAreaNeuHadPhoFile = cms.FileInPath('bpkFrameWork/bprimeKit/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons_80X.txt'),
-    conversionsrc          = cms.InputTag('reducedEgamma', 'reducedConversions'),
     rhosrc                 = rhosrc,
     rhocalosrc             = rhocalosrc,
     vtxsrc                 = vtxsrc,
@@ -160,39 +151,24 @@ jetcommon = cms.PSet(
 #-------------------------------------------------------------------------
 ak4jetbase = jetcommon.clone()
 ak4jetbase.jettype = cms.string('AK4PFchs')
-ak4jetbase.jetsrc  = cms.InputTag('selectedPatJetsAK4PFCHS')
+ak4jetbase.jetsrc  = cms.InputTag('slimmedJets')
 
 ak4jetpuppi = jetcommon.clone()
 ak4jetpuppi.jetname = cms.string('JetInfoPuppi')
 ak4jetpuppi.jettype = cms.string('AK4PFPuppi')
-#ak4jetpuppi.jetsrc  = cms.InputTag('selectedPatJetsAK4PFPuppi')
-ak4jetpuppi.jetsrc  = cms.InputTag('updatedPatJetsSelectedAK4PFPuppi')
+ak4jetpuppi.jetsrc  = cms.InputTag('slimmedJetsPuppi')
 
 #-------------------------------------------------------------------------
 #   AK8/CA8 jet common settings
 #-------------------------------------------------------------------------
-ak8jetbase = jetcommon.clone()
-ak8jetbase.jetname   = cms.string('JetAK8Info')
-ak8jetbase.jettype   = cms.string('AK8PFchs')
-ak8jetbase.jetsrc    = cms.InputTag('selectedPatJetsAK8PFCHS')
-ak8jetbase.subjetsrc = cms.InputTag('selectedPatJetsAK8PFCHSSoftDropPacked')
-
 ak8jetpuppi = jetcommon.clone()
 ak8jetpuppi.jetname   = cms.string('JetAK8Puppi')
 ak8jetpuppi.jettype   = cms.string('AK8PFPuppi')
-ak8jetpuppi.jetsrc    = cms.InputTag('selectedPatJetsAK8PFPuppi')
-ak8jetpuppi.subjetsrc = cms.InputTag('selectedPatJetsAK8PFPuppiSoftDropPacked')
-
-################
-
-ca8jetbase = jetcommon.clone()
-ca8jetbase.jetname   = cms.string('JetCA8Info')
-ca8jetbase.jettype   = cms.string('AK8PFchs')
-ca8jetbase.jetsrc    = cms.InputTag('selectedPatJetsAK8PFCHS')
-ca8jetbase.subjetsrc = cms.InputTag('patJetsCMSTopTagCHSPacked')
+ak8jetpuppi.jetsrc    = cms.InputTag('slimmedJetsAK8')
+ak8jetpuppi.subjetsrc = cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked', 'SubJets', 'RECO')
 
 ca8jetpuppi = jetcommon.clone()
 ca8jetpuppi.jetname   = cms.string('JetCA8Puppi')
 ca8jetpuppi.jettype   = cms.string('AK8PFPuppi')
-ca8jetpuppi.jetsrc    = cms.InputTag('selectedPatJetsAK8PFPuppi')
+ca8jetpuppi.jetsrc    = cms.InputTag('slimmedJetsAK8')
 ca8jetpuppi.subjetsrc = cms.InputTag('patJetsCMSTopTagPuppiPacked')
