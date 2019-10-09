@@ -36,11 +36,11 @@ LeptonNtuplizer::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSet
     LepInfo.MuType                    [LepInfo.Size] = it_mu->type();
     LepInfo.isPFMuon                  [LepInfo.Size] = it_mu->isPFMuon();
 
-    // Pat muon info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/PatCandidates/interface/Muon.h
-    // Reco muon info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/MuonReco/interface/Muon.h
+    // Pat muon info : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/PatCandidates/interface/Muon.h
+    // Reco muon info : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/MuonReco/interface/Muon.h
     // ----- CutBased muon ID ------------------------------------------------------------------------------
     // Twiki : https://twiki.cern.ch/twiki/bin/viewauth/CMS/SWGuideMuonIdRun2#Muon_selectors_Since_9_4_X
-    // Internal code : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/MuonReco/src/MuonSelectors.cc
+    // Internal code : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/MuonReco/src/MuonSelectors.cc
     // ----- Normal ID -----
     LepInfo.MuonCutBasedMuIdLOOSE          [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdLoose);
     LepInfo.MuonCutBasedMuIdMEDIUM         [LepInfo.Size] = it_mu->passed(reco::Muon::CutBasedIdMedium);
@@ -95,8 +95,8 @@ LeptonNtuplizer::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSet
         = bprimeKit::GetMiniPFIsoRhoCorr( it_mu->miniPFIsolation(), it_mu->pt(), rho, AEffR03 );
 
     // ----- Track and impact parameter info ---------------------------------------------------------------
-    // Track Info      : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/TrackBase.h
-    // HitPattern Info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/HitPattern.h
+    // Track Info      : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/TrackReco/interface/TrackBase.h
+    // HitPattern Info : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/TrackReco/interface/HitPattern.h
     bool hasPV = !_vtxhandle->empty();
     float max_value = numeric_limits<float>::max();
 
@@ -143,7 +143,8 @@ LeptonNtuplizer::FillMuon( const edm::Event& iEvent, const edm::EventSetup& iSet
     // bits 4-5-6-7 = CSC stations 1-2-3-4
     LepInfo.MuStationMask               [LepInfo.Size] = it_mu->stationMask();
     LepInfo.MuNMatchedStations          [LepInfo.Size] = it_mu->numberOfMatchedStations();
-    //LepInfo.MuExpectedNMatchedStations  [LepInfo.Size] = it_mu->expectedNnumberOfMatchedStations(); //Will be added in 102X
+    LepInfo.MuExpectedNMatchedStations  [LepInfo.Size] = it_mu->expectedNnumberOfMatchedStations();
+    LepInfo.MuNMatchedRPCLayers         [LepInfo.Size] = it_mu->numberOfMatchedRPCLayers();
 
     // ----- Muon bestTrack info -----
     if( it_mu->muonBestTrack().isNonnull() ){

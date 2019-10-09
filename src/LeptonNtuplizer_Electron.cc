@@ -57,7 +57,7 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.EgammaCutBasedEleIdTIGHT    [LepInfo.Size] = (int) it_el->electronID( _electronID_tightmap  ); 
     LepInfo.EgammaCutBasedEleIdHEEP     [LepInfo.Size] = (int) it_el->electronID( _electronID_HEEPmap   );
 
-    // Full electron info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/EgammaCandidates/interface/GsfElectron.h
+    // Full electron info : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/EgammaCandidates/interface/GsfElectron.h
     // ----- Electron isolation variables ------------------------------------------------------------------
 
     // ----- Non particle-flow based isolation variables -----
@@ -115,8 +115,8 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
  
     // ----- Electron GSF track informations ---------------------------------------------------------------
     // Twiki : https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideGsfElectronObject
-    // Track Info      : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/TrackBase.h
-    // HitPattern info : https://github.com/cms-sw/cmssw/blob/CMSSW_9_4_X/DataFormats/TrackReco/interface/HitPattern.h
+    // Track Info      : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/TrackReco/interface/TrackBase.h
+    // HitPattern info : https://github.com/cms-sw/cmssw/blob/CMSSW_10_6_X/DataFormats/TrackReco/interface/HitPattern.h
     bool hasPV = !_vtxhandle->empty();
     float max_value = numeric_limits<float>::max();
 

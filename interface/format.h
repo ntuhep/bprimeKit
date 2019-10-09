@@ -847,6 +847,7 @@ public:
   Int_t MuStationMask [MAX_LEPTONS];
   Int_t MuNMatchedStations [MAX_LEPTONS];
   Int_t MuExpectedNMatchedStations [MAX_LEPTONS];
+  Int_t MuNMatchedRPCLayers [MAX_LEPTONS];
   Int_t MuBestTrackType [MAX_LEPTONS];
   Float_t MuBestTrackPt [MAX_LEPTONS];
   Float_t MuBestTrackEta [MAX_LEPTONS];
@@ -1016,6 +1017,7 @@ public:
     root->Branch( ( name+".MuStationMask" ).c_str(),                   MuStationMask,                   ( name+".MuStationMask["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".MuNMatchedStations" ).c_str(),              MuNMatchedStations,              ( name+".MuNMatchedStations["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".MuExpectedNMatchedStations" ).c_str(),      MuExpectedNMatchedStations,      ( name+".MuExpectedNMatchedStations["+name+".Size]/I" ).c_str() );
+    root->Branch( ( name+".MuNMatchedRPCLayers" ).c_str(),             MuNMatchedRPCLayers,             ( name+".MuNMatchedRPCLayers["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".MuBestTrackType" ).c_str(),                 MuBestTrackType,                 ( name+".MuBestTrackType["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".MuBestTrackPt" ).c_str(),                   MuBestTrackPt,                   ( name+".MuBestTrackPt["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".MuBestTrackEta" ).c_str(),                  MuBestTrackEta,                  ( name+".MuBestTrackEta["+name+".Size]/F" ).c_str() );
@@ -1184,6 +1186,8 @@ public:
     root->SetBranchAddress( ( name+".MuInnerTrackKinkVal" ).c_str(),             MuInnerTrackKinkVal );
     root->SetBranchAddress( ( name+".MuStationMask" ).c_str(),                   MuStationMask );
     root->SetBranchAddress( ( name+".MuNMatchedStations" ).c_str(),              MuNMatchedStations );
+    root->SetBranchAddress( ( name+".MuExpectedNMatchedStations" ).c_str(),      MuExpectedNMatchedStations );
+    root->SetBranchAddress( ( name+".MuNMatchedRPCLayers" ).c_str(),             MuNMatchedRPCLayers );
     root->SetBranchAddress( ( name+".MuBestTrackType" ).c_str(),                 MuBestTrackType );
     root->SetBranchAddress( ( name+".MuBestTrackPt" ).c_str(),                   MuBestTrackPt );
     root->SetBranchAddress( ( name+".MuBestTrackEta" ).c_str(),                  MuBestTrackEta );
