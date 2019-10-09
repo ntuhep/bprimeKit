@@ -40,6 +40,7 @@ public:
   Bool_t Flag_HBHENoiseIsoFilter;
   Bool_t Flag_EcalDeadCellTriggerPrimitiveFilter;
   Bool_t Flag_BadPFMuonFilter;
+  Bool_t Flag_ecalBadCalibReducedMINIAODFilter;
   Bool_t Flag_eeBadScFilter;
   Float_t Rho;
   Float_t RhoNoFastJet;
@@ -119,6 +120,7 @@ public:
     root->Branch( ( name+".Flag_HBHENoiseIsoFilter" ).c_str(),                   &Flag_HBHENoiseIsoFilter,                   ( name+"Flag_HBHENoiseIsoFilter/O" ).c_str() );
     root->Branch( ( name+".Flag_EcalDeadCellTriggerPrimitiveFilter" ).c_str(),   &Flag_EcalDeadCellTriggerPrimitiveFilter,   ( name+"Flag_EcalDeadCellTriggerPrimitiveFilter/O" ).c_str() );
     root->Branch( ( name+".Flag_BadPFMuonFilter" ).c_str(),                      &Flag_BadPFMuonFilter,                      ( name+"Flag_BadPFMuonFilter/O" ).c_str() );
+    root->Branch( ( name+".Flag_ecalBadCalibReducedMINIAODFilter" ).c_str(),     &Flag_ecalBadCalibReducedMINIAODFilter,     ( name+"Flag_ecalBadCalibReducedMINIAODFilter/O" ).c_str() );
     root->Branch( ( name+".Flag_eeBadScFilter" ).c_str(),                        &Flag_eeBadScFilter,                        ( name+"Flag_eeBadScFilter/O" ).c_str() );
     root->Branch( ( name+".Rho" ).c_str(),                                       &Rho,                                       ( name+"Rho/F" ).c_str() );
     root->Branch( ( name+".RhoNoFastJet" ).c_str(),                              &RhoNoFastJet,                              ( name+"RhoNoFastJet/F" ).c_str() );
@@ -199,6 +201,7 @@ public:
     root->SetBranchAddress( ( name+".Flag_HBHENoiseIsoFilter" ).c_str(),                   &Flag_HBHENoiseIsoFilter );
     root->SetBranchAddress( ( name+".Flag_EcalDeadCellTriggerPrimitiveFilter" ).c_str(),   &Flag_EcalDeadCellTriggerPrimitiveFilter );
     root->SetBranchAddress( ( name+".Flag_BadPFMuonFilter" ).c_str(),                      &Flag_BadPFMuonFilter );
+    root->SetBranchAddress( ( name+".Flag_ecalBadCalibReducedMINIAODFilter" ).c_str(),     &Flag_ecalBadCalibReducedMINIAODFilter );
     root->SetBranchAddress( ( name+".Flag_eeBadScFilter" ).c_str(),                        &Flag_eeBadScFilter );
     root->SetBranchAddress( ( name+".Rho" ).c_str(),                                       &Rho );
     root->SetBranchAddress( ( name+".RhoNoFastJet" ).c_str(),                              &RhoNoFastJet );

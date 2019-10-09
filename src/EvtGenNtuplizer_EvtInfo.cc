@@ -130,6 +130,8 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.Flag_HBHENoiseIsoFilter                 = checkMETfilter( "Flag_HBHENoiseIsoFilter" );
   EvtInfo.Flag_EcalDeadCellTriggerPrimitiveFilter = checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" );
   EvtInfo.Flag_BadPFMuonFilter                    = checkMETfilter( "Flag_BadPFMuonFilter" );
+  if( _ecalBadCalibFilterUpdatehandle.isValid() ) EvtInfo.Flag_ecalBadCalibReducedMINIAODFilter = *_ecalBadCalibFilterUpdatehandle;
+
   //MC isn't suggested to use Flag_eeBadScFilter
   if ( iEvent.isRealData() ) EvtInfo.Flag_eeBadScFilter = checkMETfilter( "Flag_eeBadScFilter" );
 
