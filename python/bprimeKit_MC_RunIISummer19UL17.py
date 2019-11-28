@@ -15,7 +15,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer17_cfi as ntpl
 #-------------------------------------------------------------------------------
 Year                 = '2017'
 isData               = False
-GlobalTag            = '94X_mc2017_realistic_v17'
+GlobalTag            = '106X_mc2017_realistic_v6'
 
 #-------------------------------------------------------------------------------
 #MET Filter Tag for MC
@@ -47,8 +47,6 @@ bprimeKit = cms.EDAnalyzer(
     #----- Jet Information --------------------------------------------------
     jetsettings=cms.VPSet(
         ntpl.ak4jetbase,
-        ntpl.ak8jetbase,
-        ntpl.ca8jetbase,
         ntpl.ak4jetpuppi,
         ntpl.ak8jetpuppi,
         ntpl.ca8jetpuppi
