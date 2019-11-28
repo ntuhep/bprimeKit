@@ -74,12 +74,8 @@ triggerbase = cms.PSet(
             HLTFilter=cms.string('hltEle35noerWPTightGsfTrackIsoFilter')
         ),
         cms.PSet(
-            HLTPath=cms.string('HLT_Ele38_WPTight_Gsf_v*'),
-            HLTFilter=cms.string('hltEle38noerWPTightGsfTrackIsoFilter')
-        ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Ele40_WPTight_Gsf_v*'),
-            HLTFilter=cms.string('hltEle40noerWPTightGsfTrackIsoFilter')
+            HLTPath=cms.string('HLT_Photon200_v*'),
+            HLTFilter=cms.string('hltEG200HEFilter')
         ),
     )
 )

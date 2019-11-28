@@ -12,8 +12,8 @@ def getdataprocess( dataset ):
         return 'Data09Aug2019_RunII_UL2017'
     elif re.match( r'/.*/Run2016.*17Jul2018.*/MINIAOD', dataset ):
         return 'Data17Jul2018'
-    elif re.match( r'/.*/RunIIFall17.*12Apr2018.*/MINIAODSIM', dataset ):
-        return 'MC_RunIIFall17'
+    elif re.match( r'/.*/RunIISummer19UL17.*/MINIAODSIM', dataset ):
+        return 'MC_RunIISummer19UL17'
     elif re.match( r'/.*/RunIISummer16MiniAODv3.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer16'
     else:
