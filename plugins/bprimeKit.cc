@@ -95,13 +95,13 @@ void
 bprimeKit::beginJob()
 {
   BaseTree = new TTree( "root", "root" );
-  RunTree  = new TTree( "run", "run"  );
+  //RunTree  = new TTree( "run", "run"  );
 
   for( auto ntuplizer : _ntuplizerlist ){
     ntuplizer->RegisterTree( BaseTree );
   }
 
-  RunInfo.RegisterTree( RunTree );
+  //RunInfo.RegisterTree( RunTree );
 }
 
 /******************************************************************************/
@@ -126,9 +126,9 @@ bprimeKit::beginRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
 void
 bprimeKit::endRun( const edm::Run& iRun, const edm::EventSetup& iSetup )
 {
-  GetRunObjects( iRun, iSetup );
-  FillRunInfo();
-  RunTree->Fill();
+  //GetRunObjects( iRun, iSetup );
+  //FillRunInfo();
+  //RunTree->Fill();
 }
 
 /******************************************************************************/
