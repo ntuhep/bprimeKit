@@ -41,9 +41,11 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
   EvtInfo.BSsigmaZ  = _beamspothandle->sigmaZ();
 
   // ----- Level 1 ECAL prefiring Reweighting recipe ----------------------------
-  EvtInfo.PrefiringWeight     = (*_prefweighthandle);
-  EvtInfo.PrefiringWeightUp   = (*_prefweightuphandle);
-  EvtInfo.PrefiringWeightDown = (*_prefweightdownhandle);
+  if( _prefweighthandle.isValid() ) {
+    EvtInfo.PrefiringWeight     = (*_prefweighthandle);
+    EvtInfo.PrefiringWeightUp   = (*_prefweightuphandle);
+    EvtInfo.PrefiringWeightDown = (*_prefweightdownhandle);
+  }
 
   // ----- Getting missing momentum information  --------------------------------
   for( auto it_met = _methandle->begin(); it_met != _methandle->end(); it_met++ ){

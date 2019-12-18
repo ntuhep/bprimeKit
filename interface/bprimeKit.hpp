@@ -4,7 +4,8 @@
 *  Description : The b' analysis kit
 *  Details     : Strips the standard CMSSW data format into a standalone
 *                fBaseTree ntuple
-*  Authors     : May 31, 2015 - Split info mutifile format by Enoch.
+*  Authors     : Oct 09, 2019 - Move on ultra-legacy version for full RunII analysis by You-Ying Li
+*                May 31, 2015 - Split info mutifile format by Enoch.
 *                Jul 05, 2010 - Add Electron ID by Jacky, Add PFMet by Chiyi
 *                May 19, 2010 - Add Muon Iso variables, MCTag, and PF Jet  - by Dmitry Hits & Yeong-jyi Kei
 *                Apr 15, 2010 - Update to CMSSW_3_5_6, fix bTag bug  - by Yeong-jyi Lei
