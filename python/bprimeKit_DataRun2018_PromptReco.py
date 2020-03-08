@@ -8,19 +8,14 @@
  #
 #*******************************************************************************
 import FWCore.ParameterSet.Config        as cms
-import bpkFrameWork.bprimeKit.Ntuplizer16_cfi as ntpl
+import bpkFrameWork.bprimeKit.Ntuplizer18_cfi as ntpl
 
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-Year                 = '2016'
-isData               = False
-GlobalTag            = '102X_mcRun2_asymptotic_v7'
-
-#-------------------------------------------------------------------------------
-#MET Filter Tag for MC
-#-------------------------------------------------------------------------------
-ntpl.evtgenbase.mettriggersrc = cms.InputTag('TriggerResults','','PAT')
+Year                 = '2018'
+isData               = True
+GlobalTag            = '102X_dataRun2_Prompt_v15'
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags
@@ -47,8 +42,6 @@ bprimeKit = cms.EDAnalyzer(
     #----- Jet Information --------------------------------------------------
     jetsettings=cms.VPSet(
         ntpl.ak4jetbase,
-        ntpl.ak8jetbase,
-        ntpl.ca8jetbase,
         ntpl.ak4jetpuppi,
         ntpl.ak8jetpuppi,
         ntpl.ca8jetpuppi

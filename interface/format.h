@@ -457,6 +457,9 @@ public:
   Float_t NEF [MAX_JETS];
   Float_t NHF [MAX_JETS];
   Float_t MUF [MAX_JETS];
+  Bool_t JetIDLOOSE [MAX_JETS];
+  Bool_t JetIDTIGHT [MAX_JETS];
+  Bool_t JetIDTIGHTLEPVETO [MAX_JETS];
   Float_t PtCorrRaw [MAX_JETS];
   Float_t PtCorrL2 [MAX_JETS];
   Float_t PtCorrL3 [MAX_JETS];
@@ -586,6 +589,9 @@ public:
     root->Branch( ( name+".NEF" ).c_str(),                                          NEF,                                          ( name+".NEF["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".NHF" ).c_str(),                                          NHF,                                          ( name+".NHF["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".MUF" ).c_str(),                                          MUF,                                          ( name+".MUF["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".JetIDLOOSE" ).c_str(),                                   JetIDLOOSE,                                   ( name+".JetIDLOOSE["+name+".Size]/O" ).c_str() );
+    root->Branch( ( name+".JetIDTIGHT" ).c_str(),                                   JetIDTIGHT,                                   ( name+".JetIDTIGHT["+name+".Size]/O" ).c_str() );
+    root->Branch( ( name+".JetIDTIGHTLEPVETO" ).c_str(),                            JetIDTIGHTLEPVETO,                            ( name+".JetIDTIGHTLEPVETO["+name+".Size]/O" ).c_str() );
     root->Branch( ( name+".PtCorrRaw" ).c_str(),                                    PtCorrRaw,                                    ( name+".PtCorrRaw["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PtCorrL2" ).c_str(),                                     PtCorrL2,                                     ( name+".PtCorrL2["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PtCorrL3" ).c_str(),                                     PtCorrL3,                                     ( name+".PtCorrL3["+name+".Size]/F" ).c_str() );
@@ -696,6 +702,9 @@ public:
     root->SetBranchAddress( ( name+".NEF" ).c_str(),                                          NEF );
     root->SetBranchAddress( ( name+".NHF" ).c_str(),                                          NHF );
     root->SetBranchAddress( ( name+".MUF" ).c_str(),                                          MUF );
+    root->SetBranchAddress( ( name+".JetIDLOOSE" ).c_str(),                                   JetIDLOOSE );
+    root->SetBranchAddress( ( name+".JetIDTIGHT" ).c_str(),                                   JetIDTIGHT );
+    root->SetBranchAddress( ( name+".JetIDTIGHTLEPVETO" ).c_str(),                            JetIDTIGHTLEPVETO );
     root->SetBranchAddress( ( name+".PtCorrRaw" ).c_str(),                                    PtCorrRaw );
     root->SetBranchAddress( ( name+".PtCorrL2" ).c_str(),                                     PtCorrL2 );
     root->SetBranchAddress( ( name+".PtCorrL3" ).c_str(),                                     PtCorrL3 );
@@ -917,7 +926,7 @@ public:
   Float_t ElTrackNormalizedChi2 [MAX_LEPTONS];
   Int_t ElNTrackLayersWMeasurement [MAX_LEPTONS];
   Int_t ElTrackNHits [MAX_LEPTONS];
-  Int_t NumberOfExpectedInnerHits [MAX_LEPTONS];
+  Int_t NumberOfExpectedMissingInnerHits [MAX_LEPTONS];
   Int_t ElClassification [MAX_LEPTONS];
   Float_t ElFBrem [MAX_LEPTONS];
   Int_t ElNumberOfBrems [MAX_LEPTONS];
@@ -1087,7 +1096,7 @@ public:
     root->Branch( ( name+".ElTrackNormalizedChi2" ).c_str(),           ElTrackNormalizedChi2,           ( name+".ElTrackNormalizedChi2["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ElNTrackLayersWMeasurement" ).c_str(),      ElNTrackLayersWMeasurement,      ( name+".ElNTrackLayersWMeasurement["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".ElTrackNHits" ).c_str(),                    ElTrackNHits,                    ( name+".ElTrackNHits["+name+".Size]/I" ).c_str() );
-    root->Branch( ( name+".NumberOfExpectedInnerHits" ).c_str(),       NumberOfExpectedInnerHits,       ( name+".NumberOfExpectedInnerHits["+name+".Size]/I" ).c_str() );
+    root->Branch( ( name+".NumberOfExpectedMissingInnerHits" ).c_str(),NumberOfExpectedMissingInnerHits,( name+".NumberOfExpectedMissingInnerHits["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".ElClassification" ).c_str(),                ElClassification,                ( name+".ElClassification["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".ElFBrem" ).c_str(),                         ElFBrem,                         ( name+".ElFBrem["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ElNumberOfBrems" ).c_str(),                 ElNumberOfBrems,                 ( name+".ElNumberOfBrems["+name+".Size]/I" ).c_str() );
@@ -1257,7 +1266,7 @@ public:
     root->SetBranchAddress( ( name+".ElTrackNormalizedChi2" ).c_str(),           ElTrackNormalizedChi2 ); 
     root->SetBranchAddress( ( name+".ElNTrackLayersWMeasurement" ).c_str(),      ElNTrackLayersWMeasurement ); 
     root->SetBranchAddress( ( name+".ElTrackNHits" ).c_str(),                    ElTrackNHits ); 
-    root->SetBranchAddress( ( name+".NumberOfExpectedInnerHits" ).c_str(),       NumberOfExpectedInnerHits ); 
+    root->SetBranchAddress( ( name+".NumberOfExpectedMissingInnerHits" ).c_str(),NumberOfExpectedMissingInnerHits ); 
     root->SetBranchAddress( ( name+".ElClassification" ).c_str(),                ElClassification ); 
     root->SetBranchAddress( ( name+".ElFBrem" ).c_str(),                         ElFBrem ); 
     root->SetBranchAddress( ( name+".ElNumberOfBrems" ).c_str(),                 ElNumberOfBrems ); 

@@ -23,8 +23,9 @@ gensrc            = cms.InputTag('prunedGenParticles')
 evtgenbase = cms.PSet(
     rhosrc          = rhosrc,
     rhonofastjetsrc = rhonofastjetsrc,
-    metsrc          = cms.InputTag('slimmedMETs'),
+    metsrc          = cms.InputTag('slimmedMETsUpdated'),
     puppimetsrc     = cms.InputTag('slimmedMETsPuppi'),
+    #puppimetsrc     = cms.InputTag('slimmedMETsPuppiUpdated'),
     pusrc           = cms.InputTag('slimmedAddPileupInfo'),
     beamspotsrc     = beamspotsrc,
     prefwgtsrc      = cms.InputTag('prefiringweight:nonPrefiringProb'),
@@ -136,39 +137,44 @@ leptonbase = cms.PSet(
 #   Jet settings
 #-------------------------------------------------------------------------------
 jetcommon = cms.PSet(
-    jetname=cms.string('JetInfo'),
-    jettype=cms.string(''),
-    muonsrc=cms.InputTag('slimmedMuons'),
-    vtxsrc=vtxsrc,
-    rhosrc=rhosrc,
-    jetsrc=cms.InputTag(''),
-    subjetsrc=cms.InputTag(''),
-    jecversion=cms.string(''),
+    jetname        = cms.string('JetInfo'),
+    jettype        = cms.string(''),
+    jetidversion   = cms.string(''),
+    muonsrc        = cms.InputTag('slimmedMuons'),
+    vtxsrc         = vtxsrc,
+    rhosrc         = rhosrc,
+    jetsrc         = cms.InputTag(''),
+    subjetsrc      = cms.InputTag(''),
+    jecversion     = cms.string(''),
 )
 
 #-------------------------------------------------------------------------
 #   AK4 Jet common settings
 #-------------------------------------------------------------------------
 ak4jetbase = jetcommon.clone()
-ak4jetbase.jettype = cms.string('AK4PFchs')
-ak4jetbase.jetsrc  = cms.InputTag('slimmedJets')
+ak4jetbase.jettype      = cms.string('AK4PFchs')
+ak4jetbase.jetsrc       = cms.InputTag('selectedPatJetsAK4PFCHS')
+ak4jetbase.jetidversion = cms.string('WINTER16')
 
 ak4jetpuppi = jetcommon.clone()
-ak4jetpuppi.jetname = cms.string('JetInfoPuppi')
-ak4jetpuppi.jettype = cms.string('AK4PFPuppi')
-ak4jetpuppi.jetsrc  = cms.InputTag('slimmedJetsPuppi')
+ak4jetpuppi.jetname      = cms.string('JetInfoPuppi')
+ak4jetpuppi.jettype      = cms.string('AK4PFPuppi')
+ak4jetpuppi.jetsrc       = cms.InputTag('selectedPatJetsAK4PFPuppi')
+ak4jetpuppi.jetidversion = cms.string('WINTER16')
 
 #-------------------------------------------------------------------------
 #   AK8/CA8 jet common settings
 #-------------------------------------------------------------------------
 ak8jetpuppi = jetcommon.clone()
-ak8jetpuppi.jetname   = cms.string('JetAK8Puppi')
-ak8jetpuppi.jettype   = cms.string('AK8PFPuppi')
-ak8jetpuppi.jetsrc    = cms.InputTag('slimmedJetsAK8')
-ak8jetpuppi.subjetsrc = cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked', 'SubJets', 'RECO')
+ak8jetpuppi.jetname      = cms.string('JetAK8Puppi')
+ak8jetpuppi.jettype      = cms.string('AK8PFPuppi')
+ak8jetpuppi.jetsrc       = cms.InputTag('selectedPatJetsAK8PFPuppi')
+ak8jetpuppi.subjetsrc    = cms.InputTag('slimmedJetsAK8PFPuppiSoftDropPacked', 'SubJets', 'RECO')
+ak8jetpuppi.jetidversion = cms.string('WINTER16')
 
 ca8jetpuppi = jetcommon.clone()
-ca8jetpuppi.jetname   = cms.string('JetCA8Puppi')
-ca8jetpuppi.jettype   = cms.string('AK8PFPuppi')
-ca8jetpuppi.jetsrc    = cms.InputTag('slimmedJetsAK8')
-ca8jetpuppi.subjetsrc = cms.InputTag('patJetsCMSTopTagPuppiPacked')
+ca8jetpuppi.jetname      = cms.string('JetCA8Puppi')
+ca8jetpuppi.jettype      = cms.string('AK8PFPuppi')
+ca8jetpuppi.jetsrc       = cms.InputTag('selectedPatJetsAK8PFPuppi')
+ca8jetpuppi.subjetsrc    = cms.InputTag('patJetsCMSTopTagPuppiPacked')
+ca8jetpuppi.jetidversion = cms.string('WINTER16')

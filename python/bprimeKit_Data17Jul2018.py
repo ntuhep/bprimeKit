@@ -15,7 +15,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer16_cfi as ntpl
 #-------------------------------------------------------------------------------
 Year                 = '2016'
 isData               = True
-GlobalTag            = '94X_dataRun2_v10'
+GlobalTag            = '102X_dataRun2_v12'
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags

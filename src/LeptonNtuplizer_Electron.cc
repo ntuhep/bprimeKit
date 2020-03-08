@@ -126,23 +126,23 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.Ip3dPVSignificance [LepInfo.Size] = hasPV ? it_el->dB(pat::Electron::PV3D) / it_el->edB(pat::Electron::PV3D) : max_value;
 
     // ----- Basic variables -----
-    LepInfo.isEcalDriven               [LepInfo.Size] = it_el->ecalDrivenSeed();    
-    LepInfo.isTrackerDriven            [LepInfo.Size] = it_el->trackerDrivenSeed();
-    LepInfo.ElTightCharge              [LepInfo.Size] = it_el->isGsfScPixChargeConsistent() + it_el->isGsfCtfScPixChargeConsistent();
-    LepInfo.ElMomentum                 [LepInfo.Size] = it_el->trackMomentumAtVtx().R();
-    LepInfo.ElMomentumErr              [LepInfo.Size] = it_el->trackMomentumError();
-    LepInfo.ElTrackPt                  [LepInfo.Size] = it_el->gsfTrack()->pt();
-    LepInfo.ElTrackEta                 [LepInfo.Size] = it_el->gsfTrack()->eta();
-    LepInfo.ElTrackPhi                 [LepInfo.Size] = it_el->gsfTrack()->phi();
-    LepInfo.ElTrackDz                  [LepInfo.Size] = hasPV ? it_el->gsfTrack()->dz( _vtxhandle->front().position() )  : max_value;
-    LepInfo.ElTrackDxy                 [LepInfo.Size] = hasPV ? it_el->gsfTrack()->dxy( _vtxhandle->front().position() ) : max_value;
-    LepInfo.ElTrackNormalizedChi2      [LepInfo.Size] = it_el->gsfTrack().isNonnull() ? 
+    LepInfo.isEcalDriven                      [LepInfo.Size] = it_el->ecalDrivenSeed();    
+    LepInfo.isTrackerDriven                   [LepInfo.Size] = it_el->trackerDrivenSeed();
+    LepInfo.ElTightCharge                     [LepInfo.Size] = it_el->isGsfScPixChargeConsistent() + it_el->isGsfCtfScPixChargeConsistent();
+    LepInfo.ElMomentum                        [LepInfo.Size] = it_el->trackMomentumAtVtx().R();
+    LepInfo.ElMomentumErr                     [LepInfo.Size] = it_el->trackMomentumError();
+    LepInfo.ElTrackPt                         [LepInfo.Size] = it_el->gsfTrack()->pt();
+    LepInfo.ElTrackEta                        [LepInfo.Size] = it_el->gsfTrack()->eta();
+    LepInfo.ElTrackPhi                        [LepInfo.Size] = it_el->gsfTrack()->phi();
+    LepInfo.ElTrackDz                         [LepInfo.Size] = hasPV ? it_el->gsfTrack()->dz( _vtxhandle->front().position() )  : max_value;
+    LepInfo.ElTrackDxy                        [LepInfo.Size] = hasPV ? it_el->gsfTrack()->dxy( _vtxhandle->front().position() ) : max_value;
+    LepInfo.ElTrackNormalizedChi2             [LepInfo.Size] = it_el->gsfTrack().isNonnull() ? 
                                                    it_el->gsfTrack()->normalizedChi2() : max_value;
-    LepInfo.ElNTrackLayersWMeasurement [LepInfo.Size] = it_el->gsfTrack()->hitPattern().trackerLayersWithMeasurement();
-    LepInfo.ElTrackNHits               [LepInfo.Size] = it_el->gsfTrack()->hitPattern().numberOfValidHits();
-    LepInfo.NumberOfExpectedInnerHits  [LepInfo.Size]
-      = it_el->gsfTrack()->hitPattern().numberOfAllHits( reco::HitPattern::MISSING_INNER_HITS );
-    LepInfo.ElhasConv                  [LepInfo.Size] = ! it_el->passConversionVeto();
+    LepInfo.ElNTrackLayersWMeasurement        [LepInfo.Size] = it_el->gsfTrack()->hitPattern().trackerLayersWithMeasurement();
+    LepInfo.ElTrackNHits                      [LepInfo.Size] = it_el->gsfTrack()->hitPattern().numberOfValidHits();
+    LepInfo.NumberOfExpectedMissingInnerHits  [LepInfo.Size]
+      = it_el->gsfTrack()->hitPattern().numberOfLostHits( reco::HitPattern::MISSING_INNER_HITS );
+    LepInfo.ElhasConv                         [LepInfo.Size] = ! it_el->passConversionVeto();
  
     // ----- Electron track Bremsstrahlung informations -----
     LepInfo.ElClassification  [LepInfo.Size] = it_el->classification();

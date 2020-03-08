@@ -9,6 +9,8 @@
 // ----- Jet Specific CMSSW packages  ---------------------------------------------------------------
 #include "FWCore/Framework/interface/ESHandle.h"
 
+#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
@@ -32,6 +34,7 @@ JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
   NtuplizerBase( iConfig, bpk ),
   _jetname( iConfig.getParameter<std::string>( "jetname" ) ),
   _jettype( iConfig.getParameter<std::string>( "jettype" ) ),
+  _jetidversion( iConfig.getParameter<std::string>( "jetidversion" ) ),
   _jecversion( iConfig.getParameter<std::string>( "jecversion" ) ),
   _rhotoken( GetToken<double>( "rhosrc" ) ),
   _vtxtoken( GetToken<std::vector<reco::Vertex> >( "vtxsrc" ) ),
@@ -141,6 +144,11 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.JM[JetInfo.Size]  = it_jet->chargedMultiplicity() + it_jet->neutralMultiplicity();
     }
 
+    // ----- Jet ID  -----------------------------------------------------------------
+    JetInfo.JetIDLOOSE[JetInfo.Size]        = GetJetID( *it_jet, _jetidversion, "LOOSE" );
+    JetInfo.JetIDTIGHT[JetInfo.Size]        = GetJetID( *it_jet, _jetidversion, "TIGHT" );
+    JetInfo.JetIDTIGHTLEPVETO[JetInfo.Size] = GetJetID( *it_jet, _jetidversion, "TIGHTLEPVETO" );
+
     // ----- B Tagging discriminators  ------------------------------------------------------------------
     JetInfo.pfBoostedDoubleSecondaryVertexAK8BJetTags[JetInfo.Size]
       = it_jet->bDiscriminator( "pfBoostedDoubleSecondaryVertexAK8BJetTags"       );
@@ -211,7 +219,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     // ------------------------------------------------------------------------------
     if( IsAK4() ){
       if( _jetname == "JetInfo" ){
-        JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTagger:qgLikelihood" );
+        JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTaggerAK4PFCHS:qgLikelihood" );
         JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "pileupJetId:fullDiscriminant" );
         JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "pileupJetId:fullId" );
       } else if ( _jetname == "JetInfoPuppi" ){
@@ -326,6 +334,18 @@ JetNtuplizer::GetSubjetBunch( const vector<pat::Jet>::const_iterator& mainjet )
   }
 
   return _subjethandle->end();
+}
+
+bool
+JetNtuplizer::GetJetID( const pat::Jet& jet, string version, string level ) const
+{
+    if( level == "LOOSE" ) version = "WINTER16";
+
+    edm::ParameterSet jetidParam;
+    jetidParam.addParameter<std::string>( "version", version );
+    jetidParam.addParameter<std::string>( "quality", level );
+    PFJetIDSelectionFunctor jetID( jetidParam );
+    return jetID( jet );
 }
 
 /*******************************************************************************
