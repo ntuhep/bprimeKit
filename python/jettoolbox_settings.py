@@ -21,41 +21,13 @@ listBtagDiscriminators = [
 
 def jettoolbox_settings( process , runMC ):
 
-    process.load('CommonTools/PileupAlgos/Puppi_cff')
-    process.puppi.candName = cms.InputTag('packedPFCandidates')
-    process.puppi.vertexName = cms.InputTag('offlineSlimmedPrimaryVertices')
-    process.puppi.useExistingWeights = cms.bool(True)
-
-    jetToolbox( process, 'ca8', 'ca8puppi', 'edmOut',
-        runOnMC             = runMC,
+    jetToolbox( process, 'ca8', 'JetToolBoxSequence', 'noOutput',
         PUMethod            = 'Puppi',
-        newPFCollection     = True,
-        nameNewPFCollection = 'puppi',
         addMassDrop         = True,
         addCMSTopTagger     = True,
         GetJetMCFlavour     = True,
         GetSubjetMCFlavour  = True,
         bTagDiscriminators  = listBtagDiscriminators,
+        runOnMC             = runMC,
         Cut                 = ''
     )
-
-    #Additional QGTagger Information
-    #How to include QGL database : https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood#Step_0_Load_database_object_only
-    from CondCore.DBCommon.CondDBSetup_cfi import CondDBSetup
-
-    #Latest QGL database : https://twiki.cern.ch/twiki/bin/view/CMS/QuarkGluonLikelihood#2017_data_CMSSW_9_4_X_training
-    process.QGPoolDBESSource = cms.ESSource("PoolDBESSource",
-        CondDBSetup,
-        toGet = cms.VPSet(
-            cms.PSet(
-                record = cms.string('QGLikelihoodRcd'),
-                tag    = cms.string('QGLikelihoodObject_v1_AK4'),
-                label  = cms.untracked.string('QGL_AK4PFchs')
-            ),
-        ),
-        connect = cms.string('sqlite_fip:bpkFrameWork/bprimeKit/data/QGL_AK4chs_94X.db')
-    )
-    process.es_prefer_qg = cms.ESPrefer('PoolDBESSource','QGPoolDBESSource')
-
-    JetToolBoxSequence = cms.Sequence( process.jetTask )
-    setattr( process, 'JetToolBoxSequence', JetToolBoxSequence)

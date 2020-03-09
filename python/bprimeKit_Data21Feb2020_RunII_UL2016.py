@@ -15,7 +15,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer16_cfi as ntpl
 #-------------------------------------------------------------------------------
 Year                 = '2016'
 isData               = True
-GlobalTag            = '94X_dataRun2_v10'
+GlobalTag            = '106X_dataRun2_v27'
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags
@@ -42,8 +42,6 @@ bprimeKit = cms.EDAnalyzer(
     #----- Jet Information --------------------------------------------------
     jetsettings=cms.VPSet(
         ntpl.ak4jetbase,
-        ntpl.ak8jetbase,
-        ntpl.ca8jetbase,
         ntpl.ak4jetpuppi,
         ntpl.ak8jetpuppi,
         ntpl.ca8jetpuppi
