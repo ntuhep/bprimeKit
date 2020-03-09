@@ -92,17 +92,17 @@ def met_settings( process, runData, is2017 = False ):
             postfix         = 'Updated'
     )
 
-    #from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
-    #makePuppiesFromMiniAOD( process, True )
+    from PhysicsTools.PatAlgos.slimming.puppiForMET_cff import makePuppiesFromMiniAOD
+    makePuppiesFromMiniAOD( process, True )
 
-    #runMetCorAndUncFromMiniAOD(
-    #        process,
-    #        isData    = runData,
-    #        metType   = 'Puppi',
-    #        jetFlavor = 'AK4PFPuppi',
-    #        postfix   = 'PuppiUpdated'
-    #)
+    runMetCorAndUncFromMiniAOD(
+            process,
+            isData    = runData,
+            metType   = 'Puppi',
+            jetFlavor = 'AK4PFPuppi',
+            postfix   = 'PuppiUpdated'
+    )
 
-    #MetSequence = cms.Sequence(  process.puppiMETSequence * process.fullPatMetSequenceUpdated * process.fullPatMetSequencePuppiUpdated )
-    MetSequence = cms.Sequence( process.fullPatMetSequenceUpdated )
+    MetSequence = cms.Sequence(  process.puppiMETSequence * process.fullPatMetSequenceUpdated * process.fullPatMetSequencePuppiUpdated )
+    #MetSequence = cms.Sequence( process.fullPatMetSequenceUpdated )
     setattr( process, 'MetSequence', MetSequence )

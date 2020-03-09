@@ -49,6 +49,6 @@ bprimeKit = cms.EDAnalyzer(
         ntpl.ak4jetbase,
         ntpl.ak4jetpuppi,
         ntpl.ak8jetpuppi,
-        #ntpl.ca8jetpuppi
+        ntpl.ca8jetpuppi
     )
 )
