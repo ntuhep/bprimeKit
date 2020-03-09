@@ -33,7 +33,8 @@ evtgenbase = cms.PSet(
     genevtsrc       = cms.InputTag('generator'),
     gensrc          = gensrc,
     lhesrc          = cms.InputTag('externalLHEProducer'),
-    mettriggersrc   = cms.InputTag('TriggerResults','','RECO')
+    mettriggersrc   = cms.InputTag('TriggerResults','','RECO'),
+    ecalBadCalibReducedMINIAODFiltersrc   = cms.InputTag('')
 )
 
 #-------------------------------------------------------------------------------
