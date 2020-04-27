@@ -18,8 +18,8 @@ def getdataprocess( dataset ):
         return 'MC_RunIISummer19UL18'
     elif re.match( r'/.*/RunIISummer19UL17.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer19UL17'
-    elif re.match( r'/.*/RunIISummer16MiniAODv3.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer16'
+    elif re.match( r'/.*/RunIISummer19UL16.*/MINIAODSIM', dataset ):
+        return 'MC_RunIISummer19UL16'
     else:
         print 'Error! Dataset pattern is not recognized!'
         raise Exception('Unrecognized data')
