@@ -15,7 +15,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer17_cfi as ntpl
 #-------------------------------------------------------------------------------
 Year                 = '2017'
 isData               = False
-GlobalTag            = '106X_mc2017_realistic_v6'
+GlobalTag            = '102X_mc2017_realistic_v7'
 
 #-------------------------------------------------------------------------------
 #MET Filter Tag for MC

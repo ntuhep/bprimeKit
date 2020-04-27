@@ -71,34 +71,58 @@ print '\nFinished basic setups...\n'
 #     For settings, see the bprimeKit/python/jettoolbox_settings.py
 #-------------------------------------------------------------------------------
 print '\nBeginning jet toolbox setup.....\n'
-from bpkFrameWork.bprimeKit.jettoolbox_settings import *
-jettoolbox_settings( process, not mysetting.isData )
+from bpkFrameWork.bprimeKit.jetmet_settings import *
+jet_settings( process, not mysetting.isData )
 print '\nFinished jet toolbox setup.....\n'
 
+print '\nBeginning met setup.....\n'
+met_settings( process, mysetting.isData, mysetting.Year == '2017' )
+print '\n\nFinished met setup.....\n'
 #-------------------------------------------------------------------------------
 #   Settings for Egamma Identification and Energy Correction bug fixing
 #-------------------------------------------------------------------------------
-# ref : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaMiniAODV2#2017_MiniAOD_V2
-#from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
-#setupEgammaPostRecoSeq(
-#    process,
-#    runVID = True,
-#    runEnergyCorrections = True if mysetting.Year == '2017' else False,
-#    era = '2017-Nov17ReReco' if mysetting.Year == '2017' else '2016-Legacy'
-#    )
+# ref : https://twiki.cern.ch/twiki/bin/view/CMS/EgammaPostRecoRecipes#106X
+from EgammaUser.EgammaPostRecoTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+
+Era = ''
+if mysetting.Year == '2016':
+    Era = '2016-Legacy'
+elif mysetting.Year == '2017':
+    Era = '2017-Nov17ReReco'
+elif mysetting.Year == '2018':
+    Era = '2018-Prompt'
+
+fall17V2PhoIDModules = [
+    'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Fall17_94X_V2_cff',
+    'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff'
+    ]
+fall17V2EleIDModules = [
+    'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
+    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff',
+    'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff',
+    'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff'
+    ]
+
+setupEgammaPostRecoSeq(
+    process,
+    runVID               = True,
+    eleIDModules         = fall17V2EleIDModules,
+    phoIDModules         = fall17V2PhoIDModules,
+    runEnergyCorrections = True,
+    era                  = Era
+    )
 
 #-------------------------------------------------------------------------------
-#   Settings for MET bug fixing
+#   Level 1 ECAL prefiring
 #-------------------------------------------------------------------------------
-# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETUncertaintyPrescription#Instructions_for_9_4_X_X_9_for_2
-#from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-#runMetCorAndUncFromMiniAOD (
-#    process,
-#    isData = mysetting.isData,
-#    fixEE2017 = True,
-#    fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139},
-#    postfix = "ModifiedMET"
-#    )
+# ref : https://twiki.cern.ch/twiki/bin/viewauth/CMS/L1ECALPrefiringWeightRecipe
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra                      = cms.string('2017BtoF' if mysetting.Year == '2017' else '2016BtoH'),
+    UseJetEMPt                   = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False
+)
 
 #-------------------------------------------------------------------------------
 #   Extra MET filter for 2017 and 2018
@@ -142,14 +166,17 @@ process.bprimeKit = mysetting.bprimeKit
 # process.SimpleMemoryCheck = cms.Service('SimpleMemoryCheck',ignoreTotal = cms.untracked.int32(1) )
 
 process.externalSequence = cms.Sequence()
-#if ( mysetting.Year == '2017' ):
-#    process.externalSequence *= process.fullPatMetSequenceModifiedMET
-if ( mysetting.Year == '2017' or mysetting.Year == '2018' ):
+if mysetting.Year == '2016' or mysetting.Year == '2017':
+    if not mysetting.isData:
+        process.externalSequence *= process.prefiringweight
+
+if mysetting.Year == '2017' or mysetting.Year == '2018':
     process.externalSequence *= process.ecalBadCalibReducedMINIAODFilter
 
 process.Path = cms.Path(
-#    process.egammaPostRecoSeq*
-    process.externalSequence*
+    process.egammaPostRecoSeq*
     process.JetToolBoxSequence*
+    process.MetSequence*
+    process.externalSequence*
     process.bprimeKit
     )

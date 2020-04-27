@@ -34,6 +34,7 @@ private:
 
   const std::string _jetname;
   const std::string _jettype;
+  const std::string _jetidversion;
   const std::string _jecversion;
   const edm::EDGetToken _rhotoken;
   const edm::EDGetToken _vtxtoken;
@@ -58,6 +59,12 @@ private:
   bool        IsWideJet() const;
   std::string UserFloatName() const;
   std::string UserFloatPrefix() const;
+
+
+  /*******************************************************************************
+  *   Jet useful function
+  *******************************************************************************/
+  bool GetJetID( const pat::Jet& jet, std::string version, std::string level ) const;
 
   /*******************************************************************************
   *   Fat jet related functions

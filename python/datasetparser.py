@@ -8,16 +8,19 @@
 import re
 
 def getdataprocess( dataset ):
-    if re.match( r'/.*/Run2018.*12Nov2019_UL2018.*/MINIAOD', dataset ):
-        return 'Data12Nov2019_RunII_UL2018'
-    elif re.match( r'/.*/Run2017.*09Aug2019_UL2017.*/MINIAOD', dataset ):
-        return 'Data09Aug2019_RunII_UL2017'
+
+    if re.match( r'/.*/Run2018D.*-PromptReco.*/MINIAOD', dataset ):
+        return 'DataRun2018_PromptReco'
+    elif re.match( r'/.*/Run2018.*-17Sep2018.*/MINIAOD', dataset ):
+        return 'Data17Sep2018'
+    elif re.match( r'/.*/Run2017.*31Mar2018.*/MINIAOD', dataset ):
+        return 'Data31Mar2018'
     elif re.match( r'/.*/Run2016.*17Jul2018.*/MINIAOD', dataset ):
         return 'Data17Jul2018'
-    elif re.match( r'/.*/RunIISummer19UL18.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL18'
-    elif re.match( r'/.*/RunIISummer19UL17.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL17'
+    elif re.match( r'/.*/RunIIAutumn18MiniAOD.*/MINIAODSIM', dataset ):
+        return 'MC_RunIIAutumn18'
+    elif re.match( r'/.*/RunIIFall17.*12Apr2018.*/MINIAODSIM', dataset ):
+        return 'MC_RunIIFall17'
     elif re.match( r'/.*/RunIISummer16MiniAODv3.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer16'
     else:
