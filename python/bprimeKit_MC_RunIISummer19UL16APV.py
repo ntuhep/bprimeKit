@@ -15,7 +15,7 @@ import bpkFrameWork.bprimeKit.Ntuplizer16_cfi as ntpl
 #-------------------------------------------------------------------------------
 Year                 = '2016'
 isData               = False
-GlobalTag            = '106X_mcRun2_asymptotic_v15'
+GlobalTag            = '106X_mcRun2_asymptotic_preVFP_v9'
 
 #-------------------------------------------------------------------------------
 #MET Filter Tag for MC

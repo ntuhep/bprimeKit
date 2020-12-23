@@ -11,7 +11,7 @@ from   JMEAnalysis.JetToolbox.jetToolbox_cff import jetToolbox
 listBtagDiscriminators = [
     #AK8 double b-tagging discriminator
     'pfBoostedDoubleSecondaryVertexAK8BJetTags',
-    'pfMassIndependentDeepDoubleBvLJetTags:probHbb',
+#    'pfMassIndependentDeepDoubleBvLJetTags:probHbb',
     #Deep CSV
     'pfDeepCSVJetTags:probb',
     'pfDeepCSVJetTags:probbb',
