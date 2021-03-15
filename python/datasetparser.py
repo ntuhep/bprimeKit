@@ -8,7 +8,9 @@
 import re
 
 def getdataprocess( dataset ):
-    if re.match( r'/.*/Run2018.*12Nov2019.*UL2018.*/MINIAOD', dataset ):
+    if re.match( r'/.*/Run2018.*UL2018.*MiniAODv2.*/MINIAOD', dataset ):
+        return 'Data_RunII_UL2018_MiniAODv2'
+    elif re.match( r'/.*/Run2018.*12Nov2019.*UL2018.*/MINIAOD', dataset ):
         return 'Data12Nov2019_RunII_UL2018'
     elif re.match( r'/.*/Run2017.*09Aug2019.*UL2017.*/MINIAOD', dataset ):
         return 'Data09Aug2019_RunII_UL2017'
