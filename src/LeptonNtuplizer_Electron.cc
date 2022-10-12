@@ -64,8 +64,8 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
     LepInfo.TrackerBasedIsoR03      [LepInfo.Size] = it_el->dr03TkSumPt();
     LepInfo.EcalBasedIsoR03         [LepInfo.Size] = it_el->dr03EcalRecHitSumEt();
     LepInfo.HcalBasedIsoR03         [LepInfo.Size] = it_el->dr03HcalTowerSumEt();
-    LepInfo.HcalDepth1Iso           [LepInfo.Size] = it_el->dr03HcalDepth1TowerSumEt();
-    LepInfo.HcalDepth2Iso           [LepInfo.Size] = it_el->dr03HcalDepth2TowerSumEt();
+    LepInfo.HcalDepth1Iso           [LepInfo.Size] = it_el->dr03HcalTowerSumEt(1);
+    LepInfo.HcalDepth2Iso           [LepInfo.Size] = it_el->dr03HcalTowerSumEt(2);
     if ( it_el->hasUserFloat("heepTrkPtIso") ) LepInfo.HEEPTrackIso            [LepInfo.Size] = it_el->userFloat("heepTrkPtIso");
 
     // ----- Particle-flow based isolation (R = 0.3) variables (use V2 effArea) -----
@@ -140,8 +140,8 @@ LeptonNtuplizer::FillElectron( const edm::Event& iEvent, const edm::EventSetup& 
                                                    it_el->gsfTrack()->normalizedChi2() : max_value;
     LepInfo.ElNTrackLayersWMeasurement [LepInfo.Size] = it_el->gsfTrack()->hitPattern().trackerLayersWithMeasurement();
     LepInfo.ElTrackNHits               [LepInfo.Size] = it_el->gsfTrack()->hitPattern().numberOfValidHits();
-    LepInfo.NumberOfExpectedInnerHits  [LepInfo.Size]
-      = it_el->gsfTrack()->hitPattern().numberOfAllHits( reco::HitPattern::MISSING_INNER_HITS );
+    LepInfo.NumberOfExpectedMissingInnerHits  [LepInfo.Size]
+      = it_el->gsfTrack()->hitPattern().numberOfLostHits( reco::HitPattern::MISSING_INNER_HITS );
     LepInfo.ElhasConv                  [LepInfo.Size] = ! it_el->passConversionVeto();
  
     // ----- Electron track Bremsstrahlung informations -----

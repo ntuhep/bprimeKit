@@ -13,7 +13,7 @@
 #include "bpkFrameWork/bprimeKit/interface/format.h"
 
 #include "DataFormats/PatCandidates/interface/Photon.h"
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+#include "CommonTools/Egamma/interface/EffectiveAreas.h"
 
 class PhotonNtuplizer : public NtuplizerBase
 {

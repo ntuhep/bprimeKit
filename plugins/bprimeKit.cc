@@ -57,7 +57,7 @@ bprimeKit::bprimeKit( const edm::ParameterSet& iConfig ):
 
   // Jet settings
   for( const auto& jetparam : iConfig.getParameter<edm::VParameterSet>( "jetsettings" ) ){
-    _ntuplizerlist.push_back( new JetNtuplizer( jetparam, this ) );
+    _ntuplizerlist.push_back( new JetNtuplizer( jetparam, this, consumesCollector() ) );
   }
 
   _hltmap.clear();

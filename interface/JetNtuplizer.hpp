@@ -14,15 +14,19 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 
+
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 
 #include "TLorentzVector.h"
 
 class JetNtuplizer : public NtuplizerBase
 {
 public:
-  JetNtuplizer ( const edm::ParameterSet& iConfig, bprimeKit* );
+  JetNtuplizer ( const edm::ParameterSet& iConfig, bprimeKit*, edm::ConsumesCollector&& );
   virtual
   ~JetNtuplizer ();
 
@@ -46,6 +50,10 @@ private:
   edm::Handle<std::vector<pat::Jet> > _jethandle;
   edm::Handle<std::vector<pat::Muon> > _muonhandle;
   edm::Handle<std::vector<pat::Jet> > _subjethandle;
+  edm::ESGetToken<JetCorrectorParametersCollection, JetCorrectionsRecord> _jecPayloadToken;
+  JME::JetResolution::Token _jetResPtTypeToken;
+  JME::JetResolution::Token _jetResPhiTypeToken;
+  JME::JetResolutionScaleFactor::Token _jetSFTypeToken;
   FactorizedJetCorrector* _jetcorrector;
   JetCorrectionUncertainty* _jetunc;
 

@@ -33,8 +33,7 @@ evtgenbase = cms.PSet(
     genevtsrc       = cms.InputTag('generator'),
     gensrc          = gensrc,
     lhesrc          = cms.InputTag('externalLHEProducer'),
-    mettriggersrc   = cms.InputTag('TriggerResults','','RECO'),
-    ecalBadCalibReducedMINIAODFiltersrc   = cms.InputTag('ecalBadCalibReducedMINIAODFilter')
+    mettriggersrc   = cms.InputTag('TriggerResults','','RECO')
 )
 
 #-------------------------------------------------------------------------------
@@ -53,13 +52,18 @@ triggerbase = cms.PSet(
     triggerobjsrc        = cms.InputTag('slimmedPatTrigger'),
     gtdigisrc            = cms.InputTag('gtDigis'),
     triggerlist          = cms.VPSet(
+
+        cms.PSet(
+            HLTPath=cms.string('HLT_IsoMu24_v*'),
+            HLTFilter=cms.string('hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered')
+        ),
         cms.PSet(
             HLTPath=cms.string('HLT_IsoMu27_v*'),
-            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07')
+            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_IsoMu30_v*'),
-            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f30QL3trkIsoFiltered0p07')
+            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f30QL3trkIsoFiltered0p08')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_Mu50_v*'),
@@ -68,6 +72,14 @@ triggerbase = cms.PSet(
         cms.PSet(
             HLTPath=cms.string('HLT_Mu55_v*'),
             HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered55Q')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele27_WPTight_Gsf_v*'),
+            HLTFilter=cms.string('hltEle27WPTightGsfTrackIsoFilter')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele32_WPTight_Gsf_v*'),
+            HLTFilter=cms.string('hltEle32WPTightGsfTrackIsoFilter')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_Ele35_WPTight_Gsf_v*'),
@@ -80,6 +92,14 @@ triggerbase = cms.PSet(
         cms.PSet(
             HLTPath=cms.string('HLT_Ele40_WPTight_Gsf_v*'),
             HLTFilter=cms.string('hltEle40noerWPTightGsfTrackIsoFilter')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Ele115_CaloIdVT_GsfTrkIdT_v*'),
+            HLTFilter=cms.string('hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter')
+        ),
+        cms.PSet(
+            HLTPath=cms.string('HLT_Photon175_v*'),
+            HLTFilter=cms.string('hltEG175HEFilter')
         ),
         cms.PSet(
             HLTPath=cms.string('HLT_Photon200_v*'),

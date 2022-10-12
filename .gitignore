@@ -20,6 +20,7 @@ log*
 
 test/hlt.py
 python/__init__.py
+python/__pycache__/
 interface/makeHeaders/format.h
 interface/makeHeaders/TriggerBooking.h
 

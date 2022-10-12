@@ -40,8 +40,11 @@ public:
   Bool_t Flag_HBHENoiseIsoFilter;
   Bool_t Flag_EcalDeadCellTriggerPrimitiveFilter;
   Bool_t Flag_BadPFMuonFilter;
-  Bool_t Flag_ecalBadCalibReducedMINIAODFilter;
+  Bool_t Flag_BadPFMuonDzFilter;
+  Bool_t Flag_hfNoisyHitsFilter;
+  //Bool_t Flag_ecalBadCalibReducedMINIAODFilter;
   Bool_t Flag_eeBadScFilter;
+  Bool_t Flag_ecalBadCalibFilter;
   Float_t Rho;
   Float_t RhoNoFastJet;
   Float_t BeamSpotX;
@@ -120,8 +123,11 @@ public:
     root->Branch( ( name+".Flag_HBHENoiseIsoFilter" ).c_str(),                   &Flag_HBHENoiseIsoFilter,                   ( name+"Flag_HBHENoiseIsoFilter/O" ).c_str() );
     root->Branch( ( name+".Flag_EcalDeadCellTriggerPrimitiveFilter" ).c_str(),   &Flag_EcalDeadCellTriggerPrimitiveFilter,   ( name+"Flag_EcalDeadCellTriggerPrimitiveFilter/O" ).c_str() );
     root->Branch( ( name+".Flag_BadPFMuonFilter" ).c_str(),                      &Flag_BadPFMuonFilter,                      ( name+"Flag_BadPFMuonFilter/O" ).c_str() );
-    root->Branch( ( name+".Flag_ecalBadCalibReducedMINIAODFilter" ).c_str(),     &Flag_ecalBadCalibReducedMINIAODFilter,     ( name+"Flag_ecalBadCalibReducedMINIAODFilter/O" ).c_str() );
+    root->Branch( ( name+".Flag_BadPFMuonDzFilter" ).c_str(),                    &Flag_BadPFMuonDzFilter,                    ( name+"Flag_BadPFMuonDzFilter/O" ).c_str() );
+    root->Branch( ( name+".Flag_hfNoisyHitsFilter" ).c_str(),                    &Flag_hfNoisyHitsFilter,                    ( name+"Flag_hfNoisyHitsFilter/O" ).c_str() );
+    //root->Branch( ( name+".Flag_ecalBadCalibReducedMINIAODFilter" ).c_str(),     &Flag_ecalBadCalibReducedMINIAODFilter,     ( name+"Flag_ecalBadCalibReducedMINIAODFilter/O" ).c_str() );
     root->Branch( ( name+".Flag_eeBadScFilter" ).c_str(),                        &Flag_eeBadScFilter,                        ( name+"Flag_eeBadScFilter/O" ).c_str() );
+    root->Branch( ( name+".Flag_ecalBadCalibFilter" ).c_str(),                   &Flag_ecalBadCalibFilter,                   ( name+"Flag_ecalBadCalibFilter/O" ).c_str() );
     root->Branch( ( name+".Rho" ).c_str(),                                       &Rho,                                       ( name+"Rho/F" ).c_str() );
     root->Branch( ( name+".RhoNoFastJet" ).c_str(),                              &RhoNoFastJet,                              ( name+"RhoNoFastJet/F" ).c_str() );
     root->Branch( ( name+".BeamSpotX" ).c_str(),                                 &BeamSpotX,                                 ( name+"BeamSpotX/F" ).c_str() );
@@ -201,8 +207,11 @@ public:
     root->SetBranchAddress( ( name+".Flag_HBHENoiseIsoFilter" ).c_str(),                   &Flag_HBHENoiseIsoFilter );
     root->SetBranchAddress( ( name+".Flag_EcalDeadCellTriggerPrimitiveFilter" ).c_str(),   &Flag_EcalDeadCellTriggerPrimitiveFilter );
     root->SetBranchAddress( ( name+".Flag_BadPFMuonFilter" ).c_str(),                      &Flag_BadPFMuonFilter );
-    root->SetBranchAddress( ( name+".Flag_ecalBadCalibReducedMINIAODFilter" ).c_str(),     &Flag_ecalBadCalibReducedMINIAODFilter );
+    root->SetBranchAddress( ( name+".Flag_BadPFMuonDzFilter" ).c_str(),                    &Flag_BadPFMuonDzFilter );
+    root->SetBranchAddress( ( name+".Flag_hfNoisyHitsFilter" ).c_str(),                    &Flag_hfNoisyHitsFilter );
+    //root->SetBranchAddress( ( name+".Flag_ecalBadCalibReducedMINIAODFilter" ).c_str(),     &Flag_ecalBadCalibReducedMINIAODFilter );
     root->SetBranchAddress( ( name+".Flag_eeBadScFilter" ).c_str(),                        &Flag_eeBadScFilter );
+    root->SetBranchAddress( ( name+".Flag_ecalBadCalibFilter" ).c_str(),                   &Flag_ecalBadCalibFilter );
     root->SetBranchAddress( ( name+".Rho" ).c_str(),                                       &Rho );
     root->SetBranchAddress( ( name+".RhoNoFastJet" ).c_str(),                              &RhoNoFastJet );
     root->SetBranchAddress( ( name+".BeamSpotX" ).c_str(),                                 &BeamSpotX );
@@ -917,7 +926,7 @@ public:
   Float_t ElTrackNormalizedChi2 [MAX_LEPTONS];
   Int_t ElNTrackLayersWMeasurement [MAX_LEPTONS];
   Int_t ElTrackNHits [MAX_LEPTONS];
-  Int_t NumberOfExpectedInnerHits [MAX_LEPTONS];
+  Int_t NumberOfExpectedMissingInnerHits [MAX_LEPTONS];
   Int_t ElClassification [MAX_LEPTONS];
   Float_t ElFBrem [MAX_LEPTONS];
   Int_t ElNumberOfBrems [MAX_LEPTONS];
@@ -1087,7 +1096,7 @@ public:
     root->Branch( ( name+".ElTrackNormalizedChi2" ).c_str(),           ElTrackNormalizedChi2,           ( name+".ElTrackNormalizedChi2["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ElNTrackLayersWMeasurement" ).c_str(),      ElNTrackLayersWMeasurement,      ( name+".ElNTrackLayersWMeasurement["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".ElTrackNHits" ).c_str(),                    ElTrackNHits,                    ( name+".ElTrackNHits["+name+".Size]/I" ).c_str() );
-    root->Branch( ( name+".NumberOfExpectedInnerHits" ).c_str(),       NumberOfExpectedInnerHits,       ( name+".NumberOfExpectedInnerHits["+name+".Size]/I" ).c_str() );
+    root->Branch( ( name+".NumberOfExpectedMissingInnerHits" ).c_str(),NumberOfExpectedMissingInnerHits,( name+".NumberOfExpectedMissingInnerHits["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".ElClassification" ).c_str(),                ElClassification,                ( name+".ElClassification["+name+".Size]/I" ).c_str() );
     root->Branch( ( name+".ElFBrem" ).c_str(),                         ElFBrem,                         ( name+".ElFBrem["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ElNumberOfBrems" ).c_str(),                 ElNumberOfBrems,                 ( name+".ElNumberOfBrems["+name+".Size]/I" ).c_str() );
@@ -1257,7 +1266,7 @@ public:
     root->SetBranchAddress( ( name+".ElTrackNormalizedChi2" ).c_str(),           ElTrackNormalizedChi2 ); 
     root->SetBranchAddress( ( name+".ElNTrackLayersWMeasurement" ).c_str(),      ElNTrackLayersWMeasurement ); 
     root->SetBranchAddress( ( name+".ElTrackNHits" ).c_str(),                    ElTrackNHits ); 
-    root->SetBranchAddress( ( name+".NumberOfExpectedInnerHits" ).c_str(),       NumberOfExpectedInnerHits ); 
+    root->SetBranchAddress( ( name+".NumberOfExpectedMissingInnerHits" ).c_str(),NumberOfExpectedMissingInnerHits );
     root->SetBranchAddress( ( name+".ElClassification" ).c_str(),                ElClassification ); 
     root->SetBranchAddress( ( name+".ElFBrem" ).c_str(),                         ElFBrem ); 
     root->SetBranchAddress( ( name+".ElNumberOfBrems" ).c_str(),                 ElNumberOfBrems ); 

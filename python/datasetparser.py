@@ -8,32 +8,10 @@
 import re
 
 def getdataprocess( dataset ):
-    if re.match( r'/.*/Run2018.*UL2018.*MiniAODv2.*/MINIAOD', dataset ):
-        return 'Data_RunII_UL2018_MiniAODv2'
-    elif re.match( r'/.*/Run2018.*12Nov2019.*UL2018.*/MINIAOD', dataset ):
-        return 'Data12Nov2019_RunII_UL2018'
-    elif re.match( r'/.*/Run2017.*09Aug2019.*UL2017.*/MINIAOD', dataset ):
-        return 'Data09Aug2019_RunII_UL2017'
-    elif re.match( r'/.*/Run2016.*21Feb2020.*UL2016.*/MINIAOD', dataset ):
-        return 'Data21Feb2020_RunII_UL2016'
-    elif re.match( r'/.*/RunIISummer19UL18.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL18'
-    elif re.match( r'/.*/RunIISummer19UL17.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL17'
-    elif re.match( r'/.*/RunIISummer19UL16MiniAOD-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL16'
-    elif re.match( r'/.*/RunIISummer19UL16MiniAODAPV-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL16APV'
-    elif re.match( r'/.*/RunIISummer20UL18MiniAOD-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer20UL18'
-    elif re.match( r'/.*/RunIISummer20UL17MiniAOD-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer20UL17'
-    elif re.match( r'/.*/RunIISummer20UL16MiniAOD-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer20UL16'
-    elif re.match( r'/.*/RunIISummer20UL16MiniAODAPV-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer20UL16APV'
+    if re.match( r'/.*/Run2022.*PromptReco.*/MINIAOD', dataset ):
+        return 'DataRun2022_PromptReco'
     else:
-        print 'Error! Dataset pattern is not recognized!'
+        print ('Error! Dataset pattern is not recognized!')
         raise Exception('Unrecognized data')
 
 def makename( dataset ):

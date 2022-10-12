@@ -12,7 +12,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "bpkFrameWork/bprimeKit/interface/NtuplizerBase.hpp"
-#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
+#include "CommonTools/Egamma/interface/EffectiveAreas.h"
 
 class LeptonNtuplizer : public NtuplizerBase
 {

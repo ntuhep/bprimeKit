@@ -26,8 +26,7 @@ EvtGenNtuplizer::EvtGenNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* b
   _genevttoken( GetToken<GenEventInfoProduct>( "genevtsrc" ) ),
   _genparticletoken( GetToken<vector<reco::GenParticle> >( "gensrc" ) ),
   _lhetoken( GetToken<LHEEventProduct>( "lhesrc" ) ),
-  _mettriggertoken( GetToken<edm::TriggerResults>( "mettriggersrc" ) ),
-  _ecalBadCalibFilterUpdatetoken( GetToken<bool>( "ecalBadCalibReducedMINIAODFiltersrc" ) )
+  _mettriggertoken( GetToken<edm::TriggerResults>( "mettriggersrc" ) )
 {
 
 }
@@ -66,7 +65,6 @@ EvtGenNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetu
   iEvent.getByToken( _genevttoken,                        _genevthandle                        );
   iEvent.getByToken( _lhetoken,                           _lhehandle                           );
   iEvent.getByToken( _mettriggertoken,                    _mettriggerhandle                    );
-  iEvent.getByToken( _ecalBadCalibFilterUpdatetoken,      _ecalBadCalibFilterUpdatehandle      );
 
   memset( &GenInfo, 0x00, sizeof( GenInfo ) );
   memset( &EvtInfo, 0x00, sizeof( EvtInfo ) );

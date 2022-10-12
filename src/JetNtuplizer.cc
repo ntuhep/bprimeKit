@@ -7,12 +7,13 @@
 #include "bpkFrameWork/bprimeKit/interface/JetNtuplizer.hpp"
 
 // ----- Jet Specific CMSSW packages  ---------------------------------------------------------------
-#include "FWCore/Framework/interface/ESHandle.h"
+//#include "FWCore/Framework/interface/ESHandle.h"
 
-#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
-#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
-#include "JetMETCorrections/Modules/interface/JetResolution.h"
-#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+//#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
+//#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+//#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+//#include "JetMETCorrections/Modules/interface/JetResolution.h"
+//#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 
 #include "TLorentzVector.h"
 #define _USE_MATH_DEFINES
@@ -28,7 +29,7 @@ static const string prefix = "bpkFrameWork/bprimeKit/data/";
 /*******************************************************************************
 *   Jet Ntuplization constructor
 *******************************************************************************/
-JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
+JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk, edm::ConsumesCollector&& iC ) :
   NtuplizerBase( iConfig, bpk ),
   _jetname( iConfig.getParameter<std::string>( "jetname" ) ),
   _jettype( iConfig.getParameter<std::string>( "jettype" ) ),
@@ -55,6 +56,15 @@ JetNtuplizer::JetNtuplizer( const edm::ParameterSet& iConfig, bprimeKit* bpk ) :
     _jetcorrector = nullptr;
     _jetunc       = nullptr;
   }
+
+  _jecPayloadToken = iC.esConsumes(edm::ESInputTag("", _jettype));
+
+  _jetResPtTypeToken = iC.esConsumes(edm::ESInputTag("", _jettype + "_pt"));
+  _jetResPhiTypeToken = iC.esConsumes(edm::ESInputTag("", _jettype + "_phi"));
+  _jetSFTypeToken = iC.esConsumes(edm::ESInputTag("", _jettype));
+
+
+
 }
 
 /******************************************************************************/
@@ -79,7 +89,7 @@ JetNtuplizer::RegisterTree( TTree* tree )
 void
 JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
-  edm::ESHandle<JetCorrectorParametersCollection> jetCorParColl;
+  //edm::ESHandle<JetCorrectorParametersCollection> jetCorParColl;
   iEvent.getByToken( _rhotoken,    _rhohandle );
   iEvent.getByToken( _jettoken,    _jethandle );
   iEvent.getByToken( _vtxtoken,    _vtxhandle );
@@ -91,13 +101,23 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
   double pt_cut = IsAK4() ? 15. : 100;
   if ( _jetname == "JetCA8Puppi" ) pt_cut = 350.;
 
-  iSetup.get<JetCorrectionsRecord>().get( _jettype.c_str(), jetCorParColl );
-  const JetCorrectorParameters& jetCorPar = ( *jetCorParColl )["Uncertainty"];
-  JetCorrectionUncertainty jecUnc( jetCorPar );
+  //iSetup.get<JetCorrectionsRecord>().get( _jettype.c_str(), jetCorParColl );
+  //const JetCorrectorParameters& jetCorPar = ( *jetCorParColl )["Uncertainty"];
+  //JetCorrectionUncertainty jecUnc( jetCorPar );
 
-  const JME::JetResolution jetptres( JME::JetResolution::get( iSetup, _jettype + "_pt" ) );
-  const JME::JetResolution jetphires( JME::JetResolution::get( iSetup, _jettype + "_phi" ) );
-  const JME::JetResolutionScaleFactor jetressf( JME::JetResolutionScaleFactor::get( iSetup, _jettype ) );
+  const JetCorrectorParametersCollection &JetCorParColl = iSetup.getData(_jecPayloadToken);
+  JetCorrectorParameters const &JetCorPar = JetCorParColl["Uncertainty"];
+  auto jecUnc = std::make_unique<JetCorrectionUncertainty>(JetCorPar);
+
+
+  //const JME::JetResolution jetptres( JME::JetResolution::get( iSetup, _jetResPtTypeToken) );
+  //const JME::JetResolution jetphires( JME::JetResolution::get( iSetup, _jetResPhiTypeToken) );
+  //const JME::JetResolutionScaleFactor jetressf( JME::JetResolutionScaleFactor::get( iSetup, _jetSFTypeToken ) );
+
+  auto jetptres = JME::JetResolution::get( iSetup, _jetResPtTypeToken) ;
+  auto jetphires = JME::JetResolution::get( iSetup, _jetResPhiTypeToken) ;
+  auto jetressf = JME::JetResolutionScaleFactor::get( iSetup, _jetSFTypeToken ) ;
+
 
   // Beginning maing jet loop
   for( auto it_jet = _jethandle->begin(); it_jet != _jethandle->end(); it_jet++ ){
@@ -190,10 +210,10 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         _jetunc->setJetPt( it_jet->correctedJet( "Uncorrected" ).pt() * unc );
         JetInfo.JesUnc[JetInfo.Size] = _jetunc->getUncertainty( true );
       } else {
-        jecUnc.setJetEta( it_jet->eta() );
-        jecUnc.setJetPt( it_jet->pt() );// here you must use the CORRECTED jet pt
+        jecUnc->setJetEta( it_jet->eta() );
+        jecUnc->setJetPt( it_jet->pt() );// here you must use the CORRECTED jet pt
         JetInfo.Unc[JetInfo.Size]    = it_jet->pt() / it_jet->correctedJet( "Uncorrected" ).pt();
-        JetInfo.JesUnc[JetInfo.Size] = jecUnc.getUncertainty( true );
+        JetInfo.JesUnc[JetInfo.Size] = jecUnc->getUncertainty( true );
       }
     }
 
@@ -215,8 +235,8 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "pileupJetId:fullDiscriminant" );
         JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "pileupJetId:fullId" );
       } else if ( _jetname == "JetInfoPuppi" ){
-        JetInfo.NNHw[JetInfo.Size] = it_jet->userFloat( "patPuppiJetSpecificProducer:neutralPuppiMultiplicity" );
-        JetInfo.JMw[JetInfo.Size]  = it_jet->userFloat( "patPuppiJetSpecificProducer:puppiMultiplicity" );
+        //JetInfo.NNHw[JetInfo.Size] = it_jet->userFloat( "patPuppiJetSpecificProducer:neutralPuppiMultiplicity" );
+        //JetInfo.JMw[JetInfo.Size]  = it_jet->userFloat( "patPuppiJetSpecificProducer:puppiMultiplicity" );
       }
     }
 
@@ -227,10 +247,10 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       JetInfo.NjettinessAK8tau1        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau1"       );
       JetInfo.NjettinessAK8tau2        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau2"       );
       JetInfo.NjettinessAK8tau3        [JetInfo.Size] = it_jet->userFloat( "Njettiness" + UserFloatName() + ":tau3"       );
-      if (_jetname == "JetAK8Puppi"){
-        JetInfo.PuppiSoftDrop_ECFb1N2  [JetInfo.Size] = it_jet->userFloat( "ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2" );
-        JetInfo.PuppiSoftDrop_ECFb1N3  [JetInfo.Size] = it_jet->userFloat( "ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3" );
-      }
+      //if (_jetname == "JetAK8Puppi"){
+      //  JetInfo.PuppiSoftDrop_ECFb1N2  [JetInfo.Size] = it_jet->userFloat( "ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2" );
+      //  JetInfo.PuppiSoftDrop_ECFb1N3  [JetInfo.Size] = it_jet->userFloat( "ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3" );
+      //}
       JetInfo.ak8PFJetsCHSSoftDropMass [JetInfo.Size] = it_jet->userFloat( UserFloatPrefix() + "SoftDropMass" );
 
       JetInfo.NSubjets        [JetInfo.Size] = 0;
