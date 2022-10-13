@@ -107,12 +107,8 @@ TriggerNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSet
 
   //for( size_t i = 0; i < TrgNames.size(); ++i ){
   //  const std::string name = TrgNames.triggerName( i );
-  //  cout << name << endl;
-  //  cout << "1" << endl;
   //  TrgInfo.HLTbits[i]           = _triggerhandle->accept( i ) ? 1 : 0;
-  //  cout << "2" << endl;
   //  TrgInfo.HLTPrescaleFactor[i] = _triggerprescaleshandle->getPrescaleForIndex(i);
-  //  cout << "3" << endl;
   //  TrgInfo.HLTName2enum[i]      = bprimeKit::GetTriggerIdx( name );
   //}
 
