@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/bin/env python3
 #*******************************************************************************
  #
  #  Filename    : submitlist.py
@@ -19,7 +19,7 @@ def submitlist( argv ):
     opt, args = parser.parse_args( argv )
 
     if not opt.input:
-        print "Error! input file required!"
+        print ("Error! input file required!")
         return -1
 
     with open(opt.input) as inputfile :

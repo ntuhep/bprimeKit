@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/env python3
 #*******************************************************************************
  #
  #  Filename    : submitsample.py
@@ -52,8 +52,8 @@ def submitsample(argv):
     opt, args = parser.parse_args( argv )
 
     if not opt.dataset :
-        print "Error! Data set argument is required!"
-        print parser.print_help()
+        print ("Error! Data set argument is required!")
+        print (parser.print_help())
         return 1
 
 
@@ -82,7 +82,7 @@ def submitsample(argv):
     if not os.environ.get('CRABCLIENT_ROOT'):
         os.system('source /cvmfs/cms.cern.ch/crab3/crab.sh')
     # os.system('crab submit ' +filename)
-    print "Writting to file {}. Do not sumbit crab jobs directly using this version! At most use crab submit --dryrun!".format( filename )
+    print ("Writting to file {}. Do not sumbit crab jobs directly using this version! At most use crab submit --dryrun!".format( filename ))
 
 
 if __name__ == '__main__':
