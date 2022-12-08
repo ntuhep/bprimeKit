@@ -1,8 +1,9 @@
 #ifndef __TRIGGERBOOKING_H__
 #define __TRIGGERBOOKING_H__
 
-#define N_TRIGGER_BOOKINGS 610
+#define N_TRIGGER_BOOKINGS 649
 
+//update to 355794_362760
 
 const std::string TriggerBooking[N_TRIGGER_BOOKINGS] = {
 
@@ -615,7 +616,46 @@ const std::string TriggerBooking[N_TRIGGER_BOOKINGS] = {
      "HLT_Photon90_R9Id90_HE10_IsoM_v15",
      "HLT_Photon90_R9Id90_HE10_IsoM_v16",
      "HLT_Photon90_v14",
-     "HLT_Photon90_v15"
+     "HLT_Photon90_v15",
+     "HLT_DoubleEle10_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle10_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle25_CaloIdL_MW_v7",
+     "HLT_DoubleEle27_CaloIdL_MW_v7",
+     "HLT_DoubleEle33_CaloIdL_MW_v20",
+     "HLT_DoubleEle4_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle4_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle4p5_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle4p5_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle5_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle5_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle5p5_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle5p5_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle6_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle6_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle6p5_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle6p5_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle7_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle7_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle7p5_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle7p5_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle8_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle8_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle8p5_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle8p5_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle9_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle9_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoubleEle9p5_eta1p22_mMax6_dz0p8_v1",
+     "HLT_DoubleEle9p5_eta1p22_mMax6_trkHits10_v1",
+     "HLT_DoublePhoton33_CaloIdL_v9",
+     "HLT_DoublePhoton70_v9",
+     "HLT_DoublePhoton85_v17",
+     "HLT_Ele115_CaloIdVT_GsfTrkIdT_v17",
+     "HLT_Ele135_CaloIdVT_GsfTrkIdT_v10",
+     "HLT_Photon150_v9",
+     "HLT_Photon175_v17",
+     "HLT_Photon200_v16",
+     "HLT_Photon300_NoHE_v15",
+     "HLT_Photon60_R9Id90_CaloIdL_IsoL_DisplacedIdL_PFHT350MinPFJet15_v14"
 
 };
 
@@ -1230,7 +1270,46 @@ enum TriggerBitNumber {
     HLT_Photon90_R9Id90_HE10_IsoM_v15 = 606,
     HLT_Photon90_R9Id90_HE10_IsoM_v16 = 607,
     HLT_Photon90_v14 = 608,
-    HLT_Photon90_v15 = 609
+    HLT_Photon90_v15 = 609,
+    HLT_DoubleEle10_eta1p22_mMax6_dz0p8_v1 = 610,
+    HLT_DoubleEle10_eta1p22_mMax6_trkHits10_v1 = 611,
+    HLT_DoubleEle25_CaloIdL_MW_v7 = 612,
+    HLT_DoubleEle27_CaloIdL_MW_v7 = 613,
+    HLT_DoubleEle33_CaloIdL_MW_v20 = 614,
+    HLT_DoubleEle4_eta1p22_mMax6_dz0p8_v1 = 615,
+    HLT_DoubleEle4_eta1p22_mMax6_trkHits10_v1 = 616,
+    HLT_DoubleEle4p5_eta1p22_mMax6_dz0p8_v1 = 617,
+    HLT_DoubleEle4p5_eta1p22_mMax6_trkHits10_v1 = 618,
+    HLT_DoubleEle5_eta1p22_mMax6_dz0p8_v1 = 619,
+    HLT_DoubleEle5_eta1p22_mMax6_trkHits10_v1 = 620,
+    HLT_DoubleEle5p5_eta1p22_mMax6_dz0p8_v1 = 621,
+    HLT_DoubleEle5p5_eta1p22_mMax6_trkHits10_v1 = 622,
+    HLT_DoubleEle6_eta1p22_mMax6_dz0p8_v1 = 623,
+    HLT_DoubleEle6_eta1p22_mMax6_trkHits10_v1 = 624,
+    HLT_DoubleEle6p5_eta1p22_mMax6_dz0p8_v1 = 625,
+    HLT_DoubleEle6p5_eta1p22_mMax6_trkHits10_v1 = 626,
+    HLT_DoubleEle7_eta1p22_mMax6_dz0p8_v1 = 627,
+    HLT_DoubleEle7_eta1p22_mMax6_trkHits10_v1 = 628,
+    HLT_DoubleEle7p5_eta1p22_mMax6_dz0p8_v1 = 629,
+    HLT_DoubleEle7p5_eta1p22_mMax6_trkHits10_v1 = 630,
+    HLT_DoubleEle8_eta1p22_mMax6_dz0p8_v1 = 631,
+    HLT_DoubleEle8_eta1p22_mMax6_trkHits10_v1 = 632,
+    HLT_DoubleEle8p5_eta1p22_mMax6_dz0p8_v1 = 633,
+    HLT_DoubleEle8p5_eta1p22_mMax6_trkHits10_v1 = 634,
+    HLT_DoubleEle9_eta1p22_mMax6_dz0p8_v1 = 635,
+    HLT_DoubleEle9_eta1p22_mMax6_trkHits10_v1 = 636,
+    HLT_DoubleEle9p5_eta1p22_mMax6_dz0p8_v1 = 637,
+    HLT_DoubleEle9p5_eta1p22_mMax6_trkHits10_v1 = 638,
+    HLT_DoublePhoton33_CaloIdL_v9 = 639,
+    HLT_DoublePhoton70_v9 = 640,
+    HLT_DoublePhoton85_v17 = 641,
+    HLT_Ele115_CaloIdVT_GsfTrkIdT_v17 = 642,
+    HLT_Ele135_CaloIdVT_GsfTrkIdT_v10 = 643,
+    HLT_Photon150_v9 = 644,
+    HLT_Photon175_v17 = 645,
+    HLT_Photon200_v16 = 646,
+    HLT_Photon300_NoHE_v15 = 647,
+    HLT_Photon60_R9Id90_CaloIdL_IsoL_DisplacedIdL_PFHT350MinPFJet15_v14 = 648
 
 };
 

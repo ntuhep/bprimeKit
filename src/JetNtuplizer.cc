@@ -149,8 +149,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.PtCorrL3    [JetInfo.Size] = it_jet->correctedJet( "L3Absolute" ).pt();// L3(abs)
 
     // ----- Particle flow information  -----------------------------------------------------------------
-    JetInfo.isPForJPTJet[JetInfo.Size] = it_jet->isPFJet() || it_jet->isJPTJet();
-    if (it_jet->isPFJet() || it_jet->isJPTJet()) {
+    if (it_jet->isPFJet()) {
         JetInfo.NCH[JetInfo.Size] = it_jet->chargedMultiplicity();
         JetInfo.CEF[JetInfo.Size] = it_jet->chargedEmEnergyFraction();
         JetInfo.CHF[JetInfo.Size] = it_jet->chargedHadronEnergyFraction();
