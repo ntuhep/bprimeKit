@@ -20,17 +20,13 @@ def getdataprocess( dataset ):
         return 'MC_RunIISummer19UL18'
     elif re.match( r'/.*/RunIISummer19UL17.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer19UL17'
-    elif re.match( r'/.*/RunIISummer19UL16MiniAOD-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL16'
-    elif re.match( r'/.*/RunIISummer19UL16MiniAODAPV-106X.*/MINIAODSIM', dataset ):
-        return 'MC_RunIISummer19UL16APV'
-    elif re.match( r'/.*/RunIISummer20UL18MiniAOD-106X.*/MINIAODSIM', dataset ):
+    elif re.match( r'/.*/RunIISummer20UL18MiniAOD.*-106X.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer20UL18'
-    elif re.match( r'/.*/RunIISummer20UL17MiniAOD-106X.*/MINIAODSIM', dataset ):
+    elif re.match( r'/.*/RunIISummer20UL17MiniAOD.*-106X.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer20UL17'
-    elif re.match( r'/.*/RunIISummer20UL16MiniAOD-106X.*/MINIAODSIM', dataset ):
+    elif re.match( r'/.*/RunIISummer20UL16MiniAOD.*-106X.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer20UL16'
-    elif re.match( r'/.*/RunIISummer20UL16MiniAODAPV-106X.*/MINIAODSIM', dataset ):
+    elif re.match( r'/.*/RunIISummer20UL16MiniAODAPV.*-106X.*/MINIAODSIM', dataset ):
         return 'MC_RunIISummer20UL16APV'
     else:
         print 'Error! Dataset pattern is not recognized!'
