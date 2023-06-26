@@ -21,7 +21,7 @@
 #define __BPRIMEKIT_H__
 
 // ----- ED Analyzer requirements  ----------------------------------------------
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/Run.h"
 
@@ -43,7 +43,7 @@ class NtuplizerBase;
 *   Main ED analyzer class
 *******************************************************************************/
 
-class bprimeKit : public edm::EDAnalyzer
+class bprimeKit : public edm::one::EDAnalyzer<edm::one::SharedResources>
 {
 public:
   explicit

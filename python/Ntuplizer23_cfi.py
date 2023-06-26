@@ -61,10 +61,10 @@ triggerbase = cms.PSet(
             HLTPath=cms.string('HLT_IsoMu27_v*'),
             HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered')
         ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_IsoMu30_v*'),
-            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f30QL3trkIsoFiltered0p08')
-        ),
+#        cms.PSet(
+#            HLTPath=cms.string('HLT_IsoMu30_v*'),
+#            HLTFilter=cms.string('hltL3crIsoL1sMu22Or25L1f0L2f10QL3f30QL3trkIsoFiltered0p08')
+#        ),
         cms.PSet(
             HLTPath=cms.string('HLT_Mu50_v*'),
             HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered50Q')
@@ -73,10 +73,10 @@ triggerbase = cms.PSet(
             HLTPath=cms.string('HLT_Mu55_v*'),
             HLTFilter=cms.string('hltL3fL1sMu22Or25L1f0L2f10QL3Filtered55Q')
         ),
-        cms.PSet(
-            HLTPath=cms.string('HLT_Ele27_WPTight_Gsf_v*'),
-            HLTFilter=cms.string('hltEle27WPTightGsfTrackIsoFilter')
-        ),
+#        cms.PSet(
+#            HLTPath=cms.string('HLT_Ele27_WPTight_Gsf_v*'),
+#            HLTFilter=cms.string('hltEle27WPTightGsfTrackIsoFilter')
+#        ),
         cms.PSet(
             HLTPath=cms.string('HLT_Ele32_WPTight_Gsf_v*'),
             HLTFilter=cms.string('hltEle32WPTightGsfTrackIsoFilter')
@@ -115,13 +115,13 @@ photonbase = cms.PSet(
     photonname                = cms.string('PhotonInfo'),
     photonsrc                 = cms.InputTag('slimmedPhotons'),
     rhosrc                    = rhosrc,
-    phoLooseIdMap             = cms.string('cutBasedPhotonID-Fall17-94X-V2-loose'),
-    phoMediumIdMap            = cms.string('cutBasedPhotonID-Fall17-94X-V2-medium'),
-    phoTightIdMap             = cms.string('cutBasedPhotonID-Fall17-94X-V2-tight'),
-    phoIdMvaMap               = cms.string('PhotonMVAEstimatorRunIIFall17v2Values'),
-    effAreaChHadFile          = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfChargedHadrons_90percentBased_V2.txt'),
-    effAreaNeuHadFile         = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfNeutralHadrons_90percentBased_V2.txt'),
-    effAreaPhoFile            = cms.FileInPath('RecoEgamma/PhotonIdentification/data/Fall17/effAreaPhotons_cone03_pfPhotons_90percentBased_V2.txt'),
+    phoLooseIdMap             = cms.string('cutBasedPhotonID-RunIIIWinter22-122X-V1-loose'),
+    phoMediumIdMap            = cms.string('cutBasedPhotonID-RunIIIWinter22-122X-V1-medium'),
+    phoTightIdMap             = cms.string('cutBasedPhotonID-RunIIIWinter22-122X-V1-tight'),
+    phoIdMvaMap               = cms.string('PhotonMVAEstimatorRunIIIWinter22v1Values'),
+    effAreaChHadFile          = cms.FileInPath('RecoEgamma/PhotonIdentification/data/RunIII_Winter22/effectiveArea_ChgHadronIso_95percentBased.txt'),
+    effAreaNeuHadFile         = cms.FileInPath('RecoEgamma/PhotonIdentification/data/RunIII_Winter22/effectiveArea_ECalClusterIso_95percentBased.txt'),
+    effAreaPhoFile            = cms.FileInPath('RecoEgamma/PhotonIdentification/data/RunIII_Winter22/effectiveArea_HCalClusterIso_95percentBased.txt'),
 )
 
 #-------------------------------------------------------------------------------
@@ -133,12 +133,12 @@ leptonbase = cms.PSet(
     elecsrc                = cms.InputTag('slimmedElectrons'),
     tausrc                 = cms.InputTag('slimmedTaus'),
     packedsrc              = cms.InputTag('packedPFCandidates'),
-    eleVetoIdMap           = cms.string('cutBasedElectronID-Fall17-94X-V2-veto'),
-    eleLooseIdMap          = cms.string('cutBasedElectronID-Fall17-94X-V2-loose'),
-    eleMediumIdMap         = cms.string('cutBasedElectronID-Fall17-94X-V2-medium'),
-    eleTightIdMap          = cms.string('cutBasedElectronID-Fall17-94X-V2-tight'),
+    eleVetoIdMap           = cms.string('cutBasedElectronID-RunIIIWinter22-V1-veto'),
+    eleLooseIdMap          = cms.string('cutBasedElectronID-RunIIIWinter22-V1-loose'),
+    eleMediumIdMap         = cms.string('cutBasedElectronID-RunIIIWinter22-V1-medium'),
+    eleTightIdMap          = cms.string('cutBasedElectronID-RunIIIWinter22-V1-tight'),
     eleHEEPIdMap           = cms.string('heepElectronID-HEEPV70'),
-    eleffAreaNeuHadPhoFile = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
+    eleffAreaNeuHadPhoFile = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Run3_Winter22/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_122X.txt'),
     eleffAreaHLTecalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_ecalPFClusterIso.txt'),
     eleffAreaHLThcalFile   = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Summer16/effAreaElectrons_HLT_hcalPFClusterIso.txt'),
     mueffAreaNeuHadPhoFile = cms.FileInPath('bpkFrameWork/bprimeKit/data/effAreaMuons_cone03_pfNeuHadronsAndPhotons_94X.txt'),
