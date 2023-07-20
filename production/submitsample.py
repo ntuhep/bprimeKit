@@ -79,8 +79,6 @@ def submitsample(argv):
     cfgfile.write(content)
     cfgfile.close()
 
-    if not os.environ.get('CRABCLIENT_ROOT'):
-        os.system('source /cvmfs/cms.cern.ch/crab3/crab.sh')
     # os.system('crab submit ' +filename)
     print ("Writting to file {}. Do not sumbit crab jobs directly using this version! At most use crab submit --dryrun!".format( filename ))
 
