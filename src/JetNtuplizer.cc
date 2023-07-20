@@ -186,6 +186,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     JetInfo.pfDeepFlavourJetTags_probg   [JetInfo.Size]
       = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probg"                      );
 
+
     // ----- Cleaned Jet four momentum  -----------------------------------------
     const TLorentzVector cleanedJet =
       IsAK4() ? CleanAK4Jet( it_jet ) :
@@ -233,9 +234,24 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTagger:qgLikelihood" );
         JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "pileupJetId:fullDiscriminant" );
         JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "pileupJetId:fullId" );
+
+
+        JetInfo.PNet_BvsAll [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSCentralDiscriminatorsJetTags:BvsAll");
+        JetInfo.PNet_CvsL   [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSCentralDiscriminatorsJetTags:CvsL");
+        JetInfo.PNet_CvsB   [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSCentralDiscriminatorsJetTags:CvsB");
+        JetInfo.PNet_QvsG   [JetInfo.Size] = fabs( it_jet->eta() ) <= 2.5 ? it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSCentralDiscriminatorsJetTags:QvsG") :
+                                                    it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSForwardDiscriminatorsJetTags:QvsG");
+
+
       } else if ( _jetname == "JetInfoPuppi" ){
         //JetInfo.NNHw[JetInfo.Size] = it_jet->userFloat( "patPuppiJetSpecificProducer:neutralPuppiMultiplicity" );
         //JetInfo.JMw[JetInfo.Size]  = it_jet->userFloat( "patPuppiJetSpecificProducer:puppiMultiplicity" );
+        JetInfo.PNet_BvsAll [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:BvsAll");
+        JetInfo.PNet_CvsL   [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsL");
+        JetInfo.PNet_CvsB   [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsB");
+        JetInfo.PNet_QvsG   [JetInfo.Size] = fabs( it_jet->eta() ) <= 2.5 ? it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:QvsG") :
+                                                    it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4PuppiForwardDiscriminatorsJetTags:QvsG");
+
       }
     }
 

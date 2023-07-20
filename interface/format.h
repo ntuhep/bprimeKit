@@ -478,6 +478,10 @@ public:
   Float_t pfDeepFlavourJetTags_probc   [MAX_JETS];
   Float_t pfDeepFlavourJetTags_probuds [MAX_JETS];
   Float_t pfDeepFlavourJetTags_probg   [MAX_JETS];
+  Float_t PNet_BvsAll [MAX_JETS]; 
+  Float_t PNet_CvsL   [MAX_JETS]; 
+  Float_t PNet_CvsB   [MAX_JETS]; 
+  Float_t PNet_QvsG   [MAX_JETS]; 
   Float_t pfBoostedDoubleSecondaryVertexAK8BJetTags [MAX_JETS];
   Float_t pfMassIndependentDeepDoubleBvLJetTags_probHbb [MAX_JETS];
   Float_t GenJetPt [MAX_JETS];
@@ -606,6 +610,10 @@ public:
     root->Branch( ( name+".pfDeepFlavourJetTags_probc" ).c_str(),                   pfDeepFlavourJetTags_probc,                   ( name+".pfDeepFlavourJetTags_probc["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfDeepFlavourJetTags_probuds" ).c_str(),                 pfDeepFlavourJetTags_probuds,                 ( name+".pfDeepFlavourJetTags_probuds["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfDeepFlavourJetTags_probg" ).c_str(),                   pfDeepFlavourJetTags_probg,                   ( name+".pfDeepFlavourJetTags_probg["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".PNet_BvsAll" ).c_str(), PNet_BvsAll, ( name+".PNet_BvsAll["+name+".Size]/F" ).c_str() ); 
+    root->Branch( ( name+".PNet_CvsL" ).c_str(), PNet_CvsL,   ( name+".PNet_CvsL["+name+".Size]/F" ).c_str() ); 
+    root->Branch( ( name+".PNet_CvsB" ).c_str(), PNet_CvsB,   ( name+".PNet_CvsB["+name+".Size]/F" ).c_str() ); 
+    root->Branch( ( name+".PNet_QvsG" ).c_str(), PNet_QvsG,   ( name+".PNet_QvsG["+name+".Size]/F" ).c_str() ); 
     root->Branch( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags,    ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfMassIndependentDeepDoubleBvLJetTags_probHbb" ).c_str(),pfMassIndependentDeepDoubleBvLJetTags_probHbb,( name+".pfMassIndependentDeepDoubleBvLJetTags_probHbb["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetPt" ).c_str(),                                     GenJetPt,                                     ( name+".GenJetPt["+name+".Size]/F" ).c_str() );
@@ -715,6 +723,10 @@ public:
     root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probc" ).c_str(),                   pfDeepFlavourJetTags_probc );
     root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probuds" ).c_str(),                 pfDeepFlavourJetTags_probuds );
     root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probg" ).c_str(),                   pfDeepFlavourJetTags_probg );
+    root->SetBranchAddress( ( name+".PNet_BvsAll" ).c_str(), PNet_BvsAll ); 
+    root->SetBranchAddress( ( name+".PNet_CvsL" ).c_str(), PNet_CvsL ); 
+    root->SetBranchAddress( ( name+".PNet_CvsB" ).c_str(), PNet_CvsB ); 
+    root->SetBranchAddress( ( name+".PNet_QvsG" ).c_str(), PNet_QvsG ); 
     root->SetBranchAddress( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags );
     root->SetBranchAddress( ( name+".pfMassIndependentDeepDoubleBvLJetTags_probHbb" ).c_str(),pfMassIndependentDeepDoubleBvLJetTags_probHbb );
     root->SetBranchAddress( ( name+".GenJetPt" ).c_str(),                                     GenJetPt );
