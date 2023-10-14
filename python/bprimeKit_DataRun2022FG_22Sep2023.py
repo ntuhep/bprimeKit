@@ -8,14 +8,14 @@
  #
 #*******************************************************************************
 import FWCore.ParameterSet.Config        as cms
-import bpkFrameWork.bprimeKit.Ntuplizer23_cfi as ntpl
+import bpkFrameWork.bprimeKit.Ntuplizer22_cfi as ntpl
 
 #-------------------------------------------------------------------------------
 #   Additional tag settings
 #-------------------------------------------------------------------------------
-Year                 = '2023'
+Year                 = '2022'
 isData               = True
-GlobalTag            = '130X_dataRun3_Prompt_v4'
+GlobalTag            = '130X_dataRun3_PromptAnalysis_v1'
 
 #-------------------------------------------------------------------------------
 #   BprimeKit input tags
