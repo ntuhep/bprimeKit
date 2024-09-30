@@ -128,14 +128,14 @@ EvtGenNtuplizer::FillEvent( const edm::Event& iEvent, const edm::EventSetup& iSe
 
   EvtInfo.Flag_goodVertices                       = checkMETfilter( "Flag_goodVertices" ); 
   EvtInfo.Flag_globalSuperTightHalo2016Filter     = checkMETfilter( "Flag_globalSuperTightHalo2016Filter" );
-  EvtInfo.Flag_HBHENoiseFilter                    = checkMETfilter( "Flag_HBHENoiseFilter" );
-  EvtInfo.Flag_HBHENoiseIsoFilter                 = checkMETfilter( "Flag_HBHENoiseIsoFilter" );
+  //EvtInfo.Flag_HBHENoiseFilter                    = checkMETfilter( "Flag_HBHENoiseFilter" );
+  //EvtInfo.Flag_HBHENoiseIsoFilter                 = checkMETfilter( "Flag_HBHENoiseIsoFilter" );
   EvtInfo.Flag_EcalDeadCellTriggerPrimitiveFilter = checkMETfilter( "Flag_EcalDeadCellTriggerPrimitiveFilter" );
   EvtInfo.Flag_BadPFMuonFilter                    = checkMETfilter( "Flag_BadPFMuonFilter" );
   EvtInfo.Flag_BadPFMuonDzFilter                  = checkMETfilter( "Flag_BadPFMuonDzFilter" );
   EvtInfo.Flag_hfNoisyHitsFilter                  = checkMETfilter( "Flag_hfNoisyHitsFilter" );
   EvtInfo.Flag_eeBadScFilter                      = checkMETfilter( "Flag_eeBadScFilter" );
-  EvtInfo.Flag_ecalBadCalibFilter                 = checkMETfilter( "Flag_ecalBadCalibFilter" );
+  //EvtInfo.Flag_ecalBadCalibFilter                 = checkMETfilter( "Flag_ecalBadCalibFilter" );
 
   //MC isn't suggested to use Flag_eeBadScFilter
   //if ( iEvent.isRealData() ) EvtInfo.Flag_eeBadScFilter = checkMETfilter( "Flag_eeBadScFilter" );
