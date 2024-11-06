@@ -8,7 +8,7 @@
  #
 #*******************************************************************************
 import FWCore.ParameterSet.Config        as cms
-import bpkFrameWork.bprimeKit.Ntuplizer23_cfi as ntpl
+import bpkFrameWork.bprimeKit.Ntuplizer24_cfi as ntpl
 
 #-------------------------------------------------------------------------------
 #   Additional tag settings

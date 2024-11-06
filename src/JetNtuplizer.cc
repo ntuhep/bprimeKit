@@ -239,8 +239,8 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
     if( IsAK4() ){
       if( _jetname == "JetInfo" ){
         //JetInfo.QGTagsLikelihood [JetInfo.Size]        = it_jet->userFloat( "QGTagger:qgLikelihood" );
-        //JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "pileupJetId:fullDiscriminant" );
-        //JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "pileupJetId:fullId" );
+        JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "pileupJetId:fullDiscriminant" );
+        JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "pileupJetId:fullId" );
 
         // Particle Net
         JetInfo.PNet_BvsAll [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSCentralDiscriminatorsJetTags:BvsAll");
@@ -251,6 +251,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       } else if ( _jetname == "JetInfoPuppi" ){
         //JetInfo.NNHw[JetInfo.Size] = it_jet->userFloat( "patPuppiJetSpecificProducer:neutralPuppiMultiplicity" );
         //JetInfo.JMw[JetInfo.Size]  = it_jet->userFloat( "patPuppiJetSpecificProducer:puppiMultiplicity" );
+
         // Particle Net
         JetInfo.PNet_BvsAll [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:BvsAll");
         JetInfo.PNet_CvsL   [JetInfo.Size] = it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4PuppiCentralDiscriminatorsJetTags:CvsL");
