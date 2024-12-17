@@ -8,7 +8,9 @@
 import re
 
 def getdataprocess( dataset ):
-    if re.match( r'/.*/Run2024.*PromptReco.*/MINIAOD', dataset ):
+    if re.match( r'/.*/RunIII2024Summer24MiniAOD.*/MINIAODSIM', dataset ):
+        return 'MC_RunIII2024Summer24'
+    elif re.match( r'/.*/Run2024.*PromptReco.*/MINIAOD', dataset ):
         return 'DataRun2024_PromptReco'
     elif re.match( r'/.*/Run2023.*PromptReco.*/MINIAOD', dataset ):
         return 'DataRun2023_PromptReco'
