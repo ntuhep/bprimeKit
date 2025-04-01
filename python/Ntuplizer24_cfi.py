@@ -41,6 +41,8 @@ evtgenbase = cms.PSet(
 #-------------------------------------------------------------------------------
 vertexbase = cms.PSet(
     vtxsrc = vtxsrc,
+    Kshortsrc = cms.InputTag('slimmedKshortVertices'),
+    Lambdasrc = cms.InputTag('slimmedLambdaVertices')
 )
 
 #-------------------------------------------------------------------------------

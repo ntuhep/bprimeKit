@@ -12,6 +12,7 @@
 #include "format.h"
 
 #include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/Candidate/interface/VertexCompositePtrCandidate.h"
 
 class VertexNtuplizer : public NtuplizerBase
 {
@@ -25,10 +26,15 @@ public:
 
 private:
   VertexInfoBranches VertexInfo;
+  VertexInfoBranches V0Info;
 
   const edm::EDGetToken _vtxtoken;
+  const edm::EDGetToken _Kshorttoken;
+  const edm::EDGetToken _Lambdatoken;
 
   edm::Handle<std::vector<reco::Vertex>> _vtxhandle;
+  edm::Handle<std::vector<reco::VertexCompositePtrCandidate>> _Kshorthandle;
+  edm::Handle<std::vector<reco::VertexCompositePtrCandidate>> _Lambdahandle;
 
 };
 

@@ -98,7 +98,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 
   memset( &JetInfo, 0x00, sizeof( JetInfo ) );
 
-  double pt_cut = IsAK4() ? 15. : 100;
+  double pt_cut = IsAK4() ? 10. : 100;
   if ( _jetname == "JetCA8Puppi" ) pt_cut = 350.;
 
   //iSetup.get<JetCorrectionsRecord>().get( _jettype.c_str(), jetCorParColl );
@@ -167,32 +167,27 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
       = it_jet->bDiscriminator( "pfMassIndependentDeepDoubleBvLJetTags:probHbb"   );
     JetInfo.pfParticleNetFromMiniAODAK8DiscriminatorsJetTags_HbbvsQCD[JetInfo.Size]
       = it_jet->bDiscriminator( "pfParticleNetFromMiniAODAK8DiscriminatorsJetTags:HbbvsQCD"   );
-    JetInfo.pfDeepCSVJetTags_probb[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probb"                          );
-    JetInfo.pfDeepCSVJetTags_probbb[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probbb"                         );
-    JetInfo.pfDeepCSVJetTags_probc[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probc"                          );
-    JetInfo.pfDeepCSVJetTags_probudsg[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepCSVJetTags:probudsg"                       );
-    JetInfo.pfDeepFlavourJetTags_probb   [JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probb"                      );
-    JetInfo.pfDeepFlavourJetTags_probbb  [JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probbb"                     );
-    JetInfo.pfDeepFlavourJetTags_problepb[JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:problepb"                   );
-    JetInfo.pfDeepFlavourJetTags_probc   [JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probc"                      );
-    JetInfo.pfDeepFlavourJetTags_probuds [JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probuds"                    );
-    JetInfo.pfDeepFlavourJetTags_probg   [JetInfo.Size]
-      = it_jet->bDiscriminator( "pfDeepFlavourJetTags:probg"                      );
+    JetInfo.pfGlobalParticleTransformerAK8JetTags_probXbb[JetInfo.Size]
+      = it_jet->bDiscriminator( "pfGlobalParticleTransformerAK8JetTags:probXbb" );
 
     // Particle Transformer
     JetInfo.ParT_BvsAll [JetInfo.Size] = it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4DiscriminatorsJetTags:BvsAll");
     JetInfo.ParT_CvsL   [JetInfo.Size] = it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4DiscriminatorsJetTags:CvsL");
     JetInfo.ParT_CvsB   [JetInfo.Size] = it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4DiscriminatorsJetTags:CvsB");
     JetInfo.ParT_QvsG   [JetInfo.Size] = it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4DiscriminatorsJetTags:QvsG");
+    JetInfo.ParT_SvsUDG [JetInfo.Size] = it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probs") > 0. ?
+                                            it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probs") /
+                                            (it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probg") +
+                                             it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probu") +
+                                             it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probd") +
+                                             it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probs")) : -1.;
+    JetInfo.ParT_SvsBC  [JetInfo.Size] = it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probs") > 0. ?
+                                            it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probs") /
+                                            (it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probs") +
+                                             it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probc") +
+                                             it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probb") +
+                                             it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probbb") +
+                                             it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:problepb") ) : -1.;
 
     // ----- Cleaned Jet four momentum  -----------------------------------------
     const TLorentzVector cleanedJet =

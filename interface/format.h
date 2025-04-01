@@ -468,16 +468,6 @@ public:
   Float_t PtCorrRaw [MAX_JETS];
   Float_t PtCorrL2 [MAX_JETS];
   Float_t PtCorrL3 [MAX_JETS];
-  Float_t pfDeepCSVJetTags_probb [MAX_JETS];
-  Float_t pfDeepCSVJetTags_probbb [MAX_JETS];
-  Float_t pfDeepCSVJetTags_probc [MAX_JETS];
-  Float_t pfDeepCSVJetTags_probudsg [MAX_JETS];
-  Float_t pfDeepFlavourJetTags_probb   [MAX_JETS];
-  Float_t pfDeepFlavourJetTags_probbb  [MAX_JETS];
-  Float_t pfDeepFlavourJetTags_problepb[MAX_JETS];
-  Float_t pfDeepFlavourJetTags_probc   [MAX_JETS];
-  Float_t pfDeepFlavourJetTags_probuds [MAX_JETS];
-  Float_t pfDeepFlavourJetTags_probg   [MAX_JETS];
   Float_t PNet_BvsAll [MAX_JETS]; 
   Float_t PNet_CvsL   [MAX_JETS]; 
   Float_t PNet_CvsB   [MAX_JETS]; 
@@ -486,9 +476,12 @@ public:
   Float_t ParT_CvsL   [MAX_JETS];
   Float_t ParT_CvsB   [MAX_JETS];
   Float_t ParT_QvsG   [MAX_JETS];
+  Float_t ParT_SvsUDG [MAX_JETS];
+  Float_t ParT_SvsBC  [MAX_JETS];
   Float_t pfBoostedDoubleSecondaryVertexAK8BJetTags [MAX_JETS];
   Float_t pfMassIndependentDeepDoubleBvLJetTags_probHbb [MAX_JETS];
   Float_t pfParticleNetFromMiniAODAK8DiscriminatorsJetTags_HbbvsQCD [MAX_JETS];
+  Float_t pfGlobalParticleTransformerAK8JetTags_probXbb [MAX_JETS];
   Float_t GenJetPt [MAX_JETS];
   Float_t GenJetEta [MAX_JETS];
   Float_t GenJetPhi [MAX_JETS];
@@ -523,11 +516,6 @@ public:
   std::vector<Float_t>* SubjetCombinedSVBJetTags;
   std::vector<Float_t>* SubjetDeepCSVJetTags_probb;
   std::vector<Float_t>* SubjetDeepCSVJetTags_probbb;
-  std::vector<Float_t>* SubjetDeepCSVJetTags_probc;
-  std::vector<Float_t>* SubjetDeepCSVJetTags_probudsg;
-  std::vector<Float_t>* SubjetsummaryDeepCSVJetTags_BvsAll;
-  std::vector<Float_t>* SubjetsummaryDeepCSVJetTags_CvsB;
-  std::vector<Float_t>* SubjetsummaryDeepCSVJetTags_CvsL;
   std::vector<Float_t>* PuppiSoftDrop_SubjetECFb1N2;
   std::vector<Float_t>* PuppiSoftDrop_SubjetECFb1N3;
   std::vector<Float_t>* SubjetGenPdgId;
@@ -605,16 +593,6 @@ public:
     root->Branch( ( name+".PtCorrRaw" ).c_str(),                                    PtCorrRaw,                                    ( name+".PtCorrRaw["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PtCorrL2" ).c_str(),                                     PtCorrL2,                                     ( name+".PtCorrL2["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PtCorrL3" ).c_str(),                                     PtCorrL3,                                     ( name+".PtCorrL3["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepCSVJetTags_probb" ).c_str(),                       pfDeepCSVJetTags_probb,                       ( name+".pfDeepCSVJetTags_probb["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepCSVJetTags_probbb" ).c_str(),                      pfDeepCSVJetTags_probbb,                      ( name+".pfDeepCSVJetTags_probbb["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepCSVJetTags_probc" ).c_str(),                       pfDeepCSVJetTags_probc,                       ( name+".pfDeepCSVJetTags_probc["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepCSVJetTags_probudsg" ).c_str(),                    pfDeepCSVJetTags_probudsg,                    ( name+".pfDeepCSVJetTags_probudsg["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepFlavourJetTags_probb" ).c_str(),                   pfDeepFlavourJetTags_probb,                   ( name+".pfDeepFlavourJetTags_probb["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepFlavourJetTags_probbb" ).c_str(),                  pfDeepFlavourJetTags_probbb,                  ( name+".pfDeepFlavourJetTags_probbb["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepFlavourJetTags_problepb" ).c_str(),                pfDeepFlavourJetTags_problepb,                ( name+".pfDeepFlavourJetTags_problepb["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepFlavourJetTags_probc" ).c_str(),                   pfDeepFlavourJetTags_probc,                   ( name+".pfDeepFlavourJetTags_probc["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepFlavourJetTags_probuds" ).c_str(),                 pfDeepFlavourJetTags_probuds,                 ( name+".pfDeepFlavourJetTags_probuds["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".pfDeepFlavourJetTags_probg" ).c_str(),                   pfDeepFlavourJetTags_probg,                   ( name+".pfDeepFlavourJetTags_probg["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PNet_BvsAll" ).c_str(),                                  PNet_BvsAll,                                  ( name+".PNet_BvsAll["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PNet_CvsL" ).c_str(),                                    PNet_CvsL,                                    ( name+".PNet_CvsL["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".PNet_CvsB" ).c_str(),                                    PNet_CvsB,                                    ( name+".PNet_CvsB["+name+".Size]/F" ).c_str() );
@@ -623,9 +601,12 @@ public:
     root->Branch( ( name+".ParT_CvsL" ).c_str(),                                    ParT_CvsL,                                    ( name+".ParT_CvsL["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ParT_CvsB" ).c_str(),                                    ParT_CvsB,                                    ( name+".ParT_CvsB["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".ParT_QvsG" ).c_str(),                                    ParT_QvsG,                                    ( name+".ParT_QvsG["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".ParT_SvsUDG" ).c_str(),                                  ParT_SvsUDG,                                  ( name+".ParT_SvsUDG["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".ParT_SvsBC" ).c_str(),                                   ParT_SvsBC,                                   ( name+".ParT_SvsBC["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags,    ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfMassIndependentDeepDoubleBvLJetTags_probHbb" ).c_str(),pfMassIndependentDeepDoubleBvLJetTags_probHbb,( name+".pfMassIndependentDeepDoubleBvLJetTags_probHbb["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".pfParticleNetFromMiniAODAK8DiscriminatorsJetTags_HbbvsQCD" ).c_str(),pfParticleNetFromMiniAODAK8DiscriminatorsJetTags_HbbvsQCD,( name+".pfParticleNetFromMiniAODAK8DiscriminatorsJetTags_HbbvsQCD["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".pfGlobalParticleTransformerAK8JetTags_probXbb" ).c_str(),pfGlobalParticleTransformerAK8JetTags_probXbb,( name+".pfGlobalParticleTransformerAK8JetTags_probXbb["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetPt" ).c_str(),                                     GenJetPt,                                     ( name+".GenJetPt["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetEta" ).c_str(),                                    GenJetEta,                                    ( name+".GenJetEta["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".GenJetPhi" ).c_str(),                                    GenJetPhi,                                    ( name+".GenJetPhi["+name+".Size]/F" ).c_str() );
@@ -723,16 +704,6 @@ public:
     root->SetBranchAddress( ( name+".PtCorrRaw" ).c_str(),                                    PtCorrRaw );
     root->SetBranchAddress( ( name+".PtCorrL2" ).c_str(),                                     PtCorrL2 );
     root->SetBranchAddress( ( name+".PtCorrL3" ).c_str(),                                     PtCorrL3 );
-    root->SetBranchAddress( ( name+".pfDeepCSVJetTags_probb" ).c_str(),                       pfDeepCSVJetTags_probb );
-    root->SetBranchAddress( ( name+".pfDeepCSVJetTags_probbb" ).c_str(),                      pfDeepCSVJetTags_probbb );
-    root->SetBranchAddress( ( name+".pfDeepCSVJetTags_probc" ).c_str(),                       pfDeepCSVJetTags_probc );
-    root->SetBranchAddress( ( name+".pfDeepCSVJetTags_probudsg" ).c_str(),                    pfDeepCSVJetTags_probudsg );
-    root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probb" ).c_str(),                   pfDeepFlavourJetTags_probb );
-    root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probbb" ).c_str(),                  pfDeepFlavourJetTags_probbb );
-    root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_problepb" ).c_str(),                pfDeepFlavourJetTags_problepb );
-    root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probc" ).c_str(),                   pfDeepFlavourJetTags_probc );
-    root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probuds" ).c_str(),                 pfDeepFlavourJetTags_probuds );
-    root->SetBranchAddress( ( name+".pfDeepFlavourJetTags_probg" ).c_str(),                   pfDeepFlavourJetTags_probg );
     root->SetBranchAddress( ( name+".PNet_BvsAll" ).c_str(),                                  PNet_BvsAll );
     root->SetBranchAddress( ( name+".PNet_CvsL" ).c_str(),                                    PNet_CvsL );
     root->SetBranchAddress( ( name+".PNet_CvsB" ).c_str(),                                    PNet_CvsB );
@@ -741,9 +712,12 @@ public:
     root->SetBranchAddress( ( name+".ParT_CvsL" ).c_str(),                                    ParT_CvsL );
     root->SetBranchAddress( ( name+".ParT_CvsB" ).c_str(),                                    ParT_CvsB );
     root->SetBranchAddress( ( name+".ParT_QvsG" ).c_str(),                                    ParT_QvsG );
+    root->SetBranchAddress( ( name+".ParT_SvsUDG" ).c_str(),                                  ParT_SvsUDG );
+    root->SetBranchAddress( ( name+".ParT_SvsBC" ).c_str(),                                   ParT_SvsBC );
     root->SetBranchAddress( ( name+".pfBoostedDoubleSecondaryVertexAK8BJetTags" ).c_str(),    pfBoostedDoubleSecondaryVertexAK8BJetTags );
     root->SetBranchAddress( ( name+".pfMassIndependentDeepDoubleBvLJetTags_probHbb" ).c_str(),pfMassIndependentDeepDoubleBvLJetTags_probHbb );
     root->SetBranchAddress( ( name+".pfParticleNetFromMiniAODAK8DiscriminatorsJetTags_HbbvsQCD" ).c_str(),pfParticleNetFromMiniAODAK8DiscriminatorsJetTags_HbbvsQCD );
+    root->SetBranchAddress( ( name+".pfGlobalParticleTransformerAK8JetTags_probXbb" ).c_str(),pfGlobalParticleTransformerAK8JetTags_probXbb );
     root->SetBranchAddress( ( name+".GenJetPt" ).c_str(),                                     GenJetPt );
     root->SetBranchAddress( ( name+".GenJetEta" ).c_str(),                                    GenJetEta );
     root->SetBranchAddress( ( name+".GenJetPhi" ).c_str(),                                    GenJetPhi );
@@ -1597,10 +1571,16 @@ public:
   Bool_t isFake [MAX_Vertices];
   Float_t Ndof [MAX_Vertices];
   Float_t NormalizedChi2 [MAX_Vertices];
+  Float_t Chi2 [MAX_Vertices];
+  Float_t Pt [MAX_Vertices];
+  Float_t Eta [MAX_Vertices];
+  Float_t Phi [MAX_Vertices];
+  Float_t Energy [MAX_Vertices];
   Float_t x [MAX_Vertices];
   Float_t y [MAX_Vertices];
   Float_t z [MAX_Vertices];
   Float_t Rho [MAX_Vertices];
+  Int_t PdgID [MAX_Vertices];
 
   void
   RegisterTree( TTree* root, const std::string& name = "VertexInfo" )
@@ -1610,10 +1590,16 @@ public:
     root->Branch( ( name+".isFake" ).c_str(),         isFake,         ( name+".isFake["+name+".Size]/O" ).c_str() );
     root->Branch( ( name+".Ndof" ).c_str(),           Ndof,           ( name+".Ndof["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".NormalizedChi2" ).c_str(), NormalizedChi2, ( name+".NormalizedChi2["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".Chi2" ).c_str(),           Chi2,           ( name+".Chi2["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".Pt" ).c_str(),             Pt,             ( name+".Pt["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".Eta" ).c_str(),            Eta,            ( name+".Eta["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".Phi" ).c_str(),            Phi,            ( name+".Phi["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".Energy" ).c_str(),         Energy,         ( name+".Energy["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".x" ).c_str(),              x,              ( name+".x["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".y" ).c_str(),              y,              ( name+".y["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".z" ).c_str(),              z,              ( name+".z["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".Rho" ).c_str(),            Rho,            ( name+".Rho["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".PdgID" ).c_str(),          PdgID,          ( name+".PdgID["+name+".Size]/F" ).c_str() );
   }
 
   void
@@ -1624,10 +1610,16 @@ public:
     root->SetBranchAddress( ( name+".isFake" ).c_str(),         isFake );
     root->SetBranchAddress( ( name+".Ndof" ).c_str(),           Ndof );
     root->SetBranchAddress( ( name+".NormalizedChi2" ).c_str(), NormalizedChi2 );
+    root->SetBranchAddress( ( name+".Chi2" ).c_str(),           Chi2 );
+    root->SetBranchAddress( ( name+".Pt" ).c_str(),             Pt );
+    root->SetBranchAddress( ( name+".Eta" ).c_str(),            Eta );
+    root->SetBranchAddress( ( name+".Phi" ).c_str(),            Phi );
+    root->SetBranchAddress( ( name+".Energy" ).c_str(),         Energy );
     root->SetBranchAddress( ( name+".x" ).c_str(),              x );
     root->SetBranchAddress( ( name+".y" ).c_str(),              y );
     root->SetBranchAddress( ( name+".z" ).c_str(),              z );
     root->SetBranchAddress( ( name+".Rho" ).c_str(),            Rho );
+    root->SetBranchAddress( ( name+".PdgID" ).c_str(),          PdgID);
   }
 };
 
