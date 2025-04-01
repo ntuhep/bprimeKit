@@ -107,6 +107,6 @@ process.Path = cms.Path(
 #    process.egammaPostRecoSeq*
     process.externalSequence*
     process.JetToolBoxSequence*
-    process.pileupJetId*
+#    process.pileupJetId*
     process.bprimeKit
     )
