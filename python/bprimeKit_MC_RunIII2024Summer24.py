@@ -46,7 +46,7 @@ bprimeKit = cms.EDAnalyzer(
 
     #----- Jet Information --------------------------------------------------
     jetsettings=cms.VPSet(
-        ntpl.ak4jetbase,
+#        ntpl.ak4jetbase,
         ntpl.ak4jetpuppi,
         ntpl.ak8jetpuppi,
         ntpl.ca8jetpuppi

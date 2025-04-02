@@ -189,6 +189,15 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
                                              it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probbb") +
                                              it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:problepb") ) : -1.;
 
+    // Temporarily put here for checking
+    //cout << " probg : " << it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probg")
+    //     << " probu : " << it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probu")
+    //     << " probd : " << it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probd")
+    //     << " probs : " << it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probs")
+    //     << " probc : " << it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probc")
+    //     << " probb : " << it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probb") + it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:probbb") + it_jet->bDiscriminator("pfUnifiedParticleTransformerAK4JetTags:problepb")
+    //     << endl;
+
     // ----- Cleaned Jet four momentum  -----------------------------------------
     const TLorentzVector cleanedJet =
       IsAK4() ? CleanAK4Jet( it_jet ) :

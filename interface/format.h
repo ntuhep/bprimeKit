@@ -1599,7 +1599,7 @@ public:
     root->Branch( ( name+".y" ).c_str(),              y,              ( name+".y["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".z" ).c_str(),              z,              ( name+".z["+name+".Size]/F" ).c_str() );
     root->Branch( ( name+".Rho" ).c_str(),            Rho,            ( name+".Rho["+name+".Size]/F" ).c_str() );
-    root->Branch( ( name+".PdgID" ).c_str(),          PdgID,          ( name+".PdgID["+name+".Size]/F" ).c_str() );
+    root->Branch( ( name+".PdgID" ).c_str(),          PdgID,          ( name+".PdgID["+name+".Size]/I" ).c_str() );
   }
 
   void
