@@ -81,7 +81,7 @@ EvtGenNtuplizer::FillGen( const edm::Event& iEvent, const edm::EventSetup& iSetu
     NDa    = it_gen->numberOfDaughters();
 
     // ----- GenInfo Branch insertion  --------------------------------------
-    if( GenInfo.Size < 60 ){
+    if( GenInfo.Size < 100 ){
       GenInfo.Pt             [GenInfo.Size] = it_gen->pt();
       GenInfo.Eta            [GenInfo.Size] = it_gen->eta();
       GenInfo.Phi            [GenInfo.Size] = it_gen->phi();
