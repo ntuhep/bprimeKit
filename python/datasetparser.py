@@ -10,6 +10,8 @@ import re
 def getdataprocess( dataset ):
     if re.match( r'/.*/RunIII2024Summer24MiniAOD.*/MINIAODSIM', dataset ):
         return 'MC_RunIII2024Summer24'
+    elif re.match( r'/.*/Run2024.*MINIv6NANOv15.*/MINIAOD', dataset ):
+        return 'DataRun2024_MINIv6NANOv15'
     elif re.match( r'/.*/Run2024.*2024CDEReprocessing.*/MINIAOD', dataset ):
         return 'DataRun2024_2024CDEReprocessing'
     elif re.match( r'/.*/Run2024.*PromptReco.*/MINIAOD', dataset ):
