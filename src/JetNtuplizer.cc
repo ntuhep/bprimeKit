@@ -253,6 +253,8 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
         JetInfo.PNet_QvsG   [JetInfo.Size] = fabs( it_jet->eta() ) <= 2.5 ? it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSCentralDiscriminatorsJetTags:QvsG") :
                                                     it_jet->bDiscriminator("pfParticleNetFromMiniAODAK4CHSForwardDiscriminatorsJetTags:QvsG");
       } else if ( _jetname == "JetInfoPuppi" ){
+        JetInfo.PUJetIDfullDiscriminant [JetInfo.Size] = it_jet->userFloat( "pileupJetIdPuppi:fullDiscriminant" );
+        JetInfo.PUJetIDcutbased [JetInfo.Size]         = it_jet->userInt( "pileupJetIdPuppi:fullId" );
         //JetInfo.NNHw[JetInfo.Size] = it_jet->userFloat( "patPuppiJetSpecificProducer:neutralPuppiMultiplicity" );
         //JetInfo.JMw[JetInfo.Size]  = it_jet->userFloat( "patPuppiJetSpecificProducer:puppiMultiplicity" );
 
