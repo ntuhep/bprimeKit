@@ -14,6 +14,8 @@ def getdataprocess( dataset ):
         return 'DataRun2024_MINIv6NANOv15'
     elif re.match( r'/.*/Run2024.*2024CDEReprocessing.*/MINIAOD', dataset ):
         return 'DataRun2024_2024CDEReprocessing'
+    elif re.match( r'/.*/Run2025.*PromptReco.*/MINIAOD', dataset ):
+        return 'DataRun2025_PromptReco'
     elif re.match( r'/.*/Run2024.*PromptReco.*/MINIAOD', dataset ):
         return 'DataRun2024_PromptReco'
     elif re.match( r'/.*/Run2023.*PromptReco.*/MINIAOD', dataset ):

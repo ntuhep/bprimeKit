@@ -98,7 +98,7 @@ JetNtuplizer::Analyze( const edm::Event& iEvent, const edm::EventSetup& iSetup )
 
   memset( &JetInfo, 0x00, sizeof( JetInfo ) );
 
-  double pt_cut = IsAK4() ? 10. : 100;
+  double pt_cut = IsAK4() ? 0. : 100;
   if ( _jetname == "JetCA8Puppi" ) pt_cut = 350.;
 
   //iSetup.get<JetCorrectionsRecord>().get( _jettype.c_str(), jetCorParColl );
